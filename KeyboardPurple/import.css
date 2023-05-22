@@ -1,0 +1,32 @@
+:root {
+    --channeltextarea-background: var(--background-accent);
+    --scrollbar-auto-track: var(--background-secondary);
+    --scrollbar-auto-thumb: var(--background-tertiary);
+    --scrollbar-thin-thumb: var(--background-tertiary);
+    --button-secondary-background: var(--background-secondary);
+    --button-secondary-background-active: var(--background-secondary);
+    --button-secondary-background-hover: var(--background-secondary-alt);
+    --input-background: var(--background-accent);
+    --background-modifier-selected: var(--background-secondary-alt);
+    --background-modifier-hover: var(--background-primary);
+    --background-modifier-active: var(--background-tertiary);
+}
+.theme-dark {
+    --background-floating: #04070F;
+    --background-tertiary: #080d1d;
+    --background-secondary-alt: #121633;
+    --background-secondary: #1c1f48;
+    --background-primary: #222456;
+    --background-accent: #2f2f70;
+}
+.theme-light {
+    --background-floating: #E6E8E9;
+    --background-tertiary: #cdd1d3;
+    --background-secondary-alt: #D8DBDC;
+    --background-secondary: #e3e4e5;
+    --background-primary: #ededed;
+    --background-accent: #fefefe;
+}
+.lookFilled-1H2Jvj.colorPrimary-2-Lusz {
+    color: var(--header-primary);
+}
