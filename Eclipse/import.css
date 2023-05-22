@@ -1,0 +1,95 @@
+:root {
+    --channeltextarea-background: var(--background-accent);
+    --scrollbar-auto-track: var(--background-secondary);
+    --scrollbar-auto-thumb: var(--background-tertiary);
+    --scrollbar-thin-thumb: var(--background-tertiary);
+    --button-secondary-background: var(--background-secondary);
+    --button-secondary-background-active: var(--background-secondary);
+    --button-secondary-background-hover: var(--background-secondary-alt);
+    --input-background: var(--background-accent);
+    --background-modifier-selected: var(--background-secondary-alt);
+    --background-modifier-hover: var(--background-primary);
+    --background-modifier-active: var(--background-tertiary);
+    --brand-100: hsl(var(--brand-100-hsl)/1);
+    --brand-100-hsl: 92 calc(var(--saturation-factor, 1)*77.8%) 98.2%;
+    --brand-130: hsl(var(--brand-130-hsl)/1);
+    --brand-130-hsl: 88 calc(var(--saturation-factor, 1)*87.5%) 96.9%;
+    --brand-160: hsl(var(--brand-160-hsl)/1);
+    --brand-160-hsl: 87 calc(var(--saturation-factor, 1)*84.6%) 94.9%;
+    --brand-200: hsl(var(--brand-200-hsl)/1);
+    --brand-200-hsl: 88 calc(var(--saturation-factor, 1)*83.3%) 92.9%;
+    --brand-230: hsl(var(--brand-230-hsl)/1);
+    --brand-230-hsl: 88 calc(var(--saturation-factor, 1)*87%) 91%;
+    --brand-260: hsl(var(--brand-260-hsl)/1);
+    --brand-260-hsl: 87 calc(var(--saturation-factor, 1)*86.2%) 88.6%;
+    --brand-300: hsl(var(--brand-300-hsl)/1);
+    --brand-300-hsl: 87 calc(var(--saturation-factor, 1)*86.1%) 85.9%;
+    --brand-330: hsl(var(--brand-330-hsl)/1);
+    --brand-330-hsl: 87 calc(var(--saturation-factor, 1)*85.1%) 81.6%;
+    --brand-345: hsl(var(--brand-345-hsl)/1);
+    --brand-345-hsl: 87 calc(var(--saturation-factor, 1)*85.2%) 78.8%;
+    --brand-360: hsl(var(--brand-360-hsl)/1);
+    --brand-360-hsl: 87 calc(var(--saturation-factor, 1)*86.1%) 77.5%;
+    --brand-400: hsl(var(--brand-400-hsl)/1);
+    --brand-400-hsl: 87 calc(var(--saturation-factor, 1)*86.1%) 71.8%;
+    --brand-430: hsl(var(--brand-430-hsl)/1);
+    --brand-430-hsl: 87 calc(var(--saturation-factor, 1)*85.7%) 69.8%;
+    --brand-460: hsl(var(--brand-460-hsl)/1);
+    --brand-460-hsl: 87 calc(var(--saturation-factor, 1)*85.5%) 67.5%;
+    --brand-500: hsl(var(--brand-500-hsl)/1);
+    --brand-500-hsl: 87 calc(var(--saturation-factor, 1)*85.6%) 64.7%;
+    --brand-530: hsl(var(--brand-530-hsl)/1);
+    --brand-530-hsl: 87 calc(var(--saturation-factor, 1)*66.7%) 58.8%;
+    --brand-560: hsl(var(--brand-560-hsl)/1);
+    --brand-560-hsl: 87 calc(var(--saturation-factor, 1)*51.4%) 52.4%;
+    --brand-600: hsl(var(--brand-600-hsl)/1);
+    --brand-600-hsl: 87 calc(var(--saturation-factor, 1)*46.7%) 44.1%;
+    --brand-630: hsl(var(--brand-630-hsl)/1);
+    --brand-630-hsl: 87 calc(var(--saturation-factor, 1)*46.7%) 38.2%;
+    --brand-660: hsl(var(--brand-660-hsl)/1);
+    --brand-660-hsl: 87 calc(var(--saturation-factor, 1)*47.1%) 33.3%;
+    --brand-700: hsl(var(--brand-700-hsl)/1);
+    --brand-700-hsl: 87 calc(var(--saturation-factor, 1)*47%) 25.9%;
+    --brand-730: hsl(var(--brand-730-hsl)/1);
+    --brand-730-hsl: 87 calc(var(--saturation-factor, 1)*46.8%) 24.3%;
+    --brand-760: hsl(var(--brand-760-hsl)/1);
+    --brand-760-hsl: 86 calc(var(--saturation-factor, 1)*46.9%) 22.2%;
+    --brand-800: hsl(var(--brand-800-hsl)/1);
+    --brand-800-hsl: 87 calc(var(--saturation-factor, 1)*47.5%) 19.4%;
+    --brand-830: hsl(var(--brand-830-hsl)/1);
+    --brand-830-hsl: 87 calc(var(--saturation-factor, 1)*47.4%) 14.9%;
+    --brand-860: hsl(var(--brand-860-hsl)/1);
+    --brand-860-hsl: 87 calc(var(--saturation-factor, 1)*46.9%) 9.6%;
+    --brand-900: hsl(var(--brand-900-hsl)/1);
+    --brand-900-hsl: 85 calc(var(--saturation-factor, 1)*50%) 3.1%;
+}
+.theme-dark {
+    --background-floating: #04070F;
+    --background-tertiary: #0a0a0a;
+    --background-secondary-alt: #3e3e3e;
+    --background-secondary: #181818;
+    --background-primary: #000000;
+    --background-accent: #3e3e3e;
+}
+.theme-light {
+    --background-floating: #E6E8E9;
+    --background-tertiary: #aaaaaa;
+    --background-secondary-alt: #C3C3C3;
+    --background-secondary: #dbdbdb;
+    --background-primary: #ffffff;
+    --background-accent: #fefefe;
+}
+.lookFilled-1H2Jvj.colorPrimary-2-Lusz {
+    color: var(--header-primary);
+}
+.colorBrand-2M3O3N,
+.textBadge-1fdDPJ[style="background-color: var(--brand-500);"] {
+    color: var(--black-500) !important;
+    font-weight: 600;
+}
+.wrapper-3kah-n.selected-1Drb7Z .childWrapper-1j_1ub, .wrapper-3kah-n:hover .childWrapper-1j_1ub {
+    color: var(--black-500) !important;
+}
+.panels-3wFtMD .flex-2S1XBF > button {
+    color: var(--header-primary) !important;
+}
