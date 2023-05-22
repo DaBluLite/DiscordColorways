@@ -1,0 +1,77 @@
+.theme-dark {
+    --cyan-background-lightness: 16%;
+    --background-lightness: -0.4;
+    --background-primary: hsl(220, 8%, calc(23% * (1 + var(--background-lightness))));
+    --background-secondary: hsl(223, 7%, calc(20% * (1 + var(--background-lightness))));
+    --background-secondary-alt: hsl(220, 7%, calc(17% * (1 + var(--background-lightness))));
+    --background-tertiary: hsl(216, 7%, calc(14% * (1 + var(--background-lightness))));
+    --background-accent: hsl(217, 8%, calc(34% * (1 + var(--background-lightness))));
+    --background-floating: hsl(225, 8%, calc(10% * (1 + var(--background-lightness))));
+    --background-nested-floating: hsl(223, 7%, calc(20% * (1 + var(--background-lightness))));
+    --background-mobile-primary: hsl(220, 8%, calc(23% * (1 + var(--background-lightness))));
+    --background-mobile-secondary: hsl(223, 7%, calc(20% * (1 + var(--background-lightness))));
+    --chat-background: hsl(220, 8%, calc(23% * (1 + var(--background-lightness))));
+    --chat-border: hsl(216, 7%, calc(14% * (1 + var(--background-lightness))));
+    --chat-input-container-background: hsl(220, 8%, calc(23% * (1 + var(--background-lightness))));
+    --channeltextarea-background: hsl(218, 8%, calc(27% * (1 + var(--background-lightness))));
+}
+.theme-light {
+    --cyan-background-lightness: 71%;
+}
+:root {
+    --cyan-accent-color: #009f88;
+    --brand-experiment-100: var(--cyan-accent-color);
+    --brand-experiment-130: var(--cyan-accent-color);
+    --brand-experiment-160: var(--cyan-accent-color);
+    --brand-experiment-200: var(--cyan-accent-color);
+    --brand-experiment-230: var(--cyan-accent-color);
+    --brand-experiment-260: var(--cyan-accent-color);
+    --brand-experiment-300: var(--cyan-accent-color);
+    --brand-experiment-330: var(--cyan-accent-color);
+    --brand-experiment-360: var(--cyan-accent-color);
+    --brand-experiment-400: var(--cyan-accent-color);
+    --brand-experiment-430: var(--cyan-accent-color);
+    --brand-experiment-460: var(--cyan-accent-color);
+    --brand-experiment: var(--cyan-accent-color);
+    --brand-experiment-500: var(--cyan-accent-color);
+    --brand-experiment-530: var(--cyan-accent-color);
+    --brand-experiment-560: var(--cyan-accent-color);
+    --brand-experiment-600: var(--cyan-accent-color);
+    --brand-experiment-630: var(--cyan-accent-color);
+    --brand-experiment-660: var(--cyan-accent-color);
+    --brand-experiment-700: var(--cyan-accent-color);
+    --brand-experiment-730: var(--cyan-accent-color);
+    --brand-experiment-760: var(--cyan-accent-color);
+    --brand-experiment-800: var(--cyan-accent-color);
+    --brand-experiment-830: var(--cyan-accent-color);
+    --brand-experiment-860: var(--cyan-accent-color);
+    --brand-experiment-900: var(--cyan-accent-color);
+    --brand-100: var(--cyan-accent-color);
+    --brand-130: var(--cyan-accent-color);
+    --brand-160: var(--cyan-accent-color);
+    --brand-200: var(--cyan-accent-color);
+    --brand-230: var(--cyan-accent-color);
+    --brand-260: var(--cyan-accent-color);
+    --brand-300: var(--cyan-accent-color);
+    --brand-330: var(--cyan-accent-color);
+    --brand-360: var(--cyan-accent-color);
+    --brand-400: var(--cyan-accent-color);
+    --brand-430: var(--cyan-accent-color);
+    --brand-460: var(--cyan-accent-color);
+    --brand: var(--cyan-accent-color);
+    --brand-500: var(--cyan-accent-color);
+    --brand-530: var(--cyan-accent-color);
+    --brand-560: var(--cyan-accent-color);
+    --brand-600: var(--cyan-accent-color);
+    --brand-630: var(--cyan-accent-color);
+    --brand-660: var(--cyan-accent-color);
+    --brand-700: var(--cyan-accent-color);
+    --brand-730: var(--cyan-accent-color);
+    --brand-760: var(--cyan-accent-color);
+    --brand-800: var(--cyan-accent-color);
+    --brand-830: var(--cyan-accent-color);
+    --brand-860: var(--cyan-accent-color);
+    --brand-900: var(--cyan-accent-color);
+    --text-brand: var(--cyan-accent-color);
+    --control-brand-foreground: var(--cyan-accent-color);
+}
