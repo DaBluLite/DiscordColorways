@@ -1,5 +1,10 @@
 # Discord Colorways
 A growing list of Colorways for Discord and most themes
 
-## Currently Available are:
+### Currently Available are:
 * Keyboard Purple
+
+### Currently Supported themes:
+* Discord Default
+* MobileV2
+* Cyan (Though obviously only certain areas are styled for obvious reasons)
