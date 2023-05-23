@@ -5,6 +5,7 @@ A growing list of Colorways for Discord and most themes
 * Keyboard Purple
 * Eclipse
 * Cyan
+* Spotify
 
 ### Currently Supported themes:
 * Discord Default
