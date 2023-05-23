@@ -6,6 +6,7 @@ A growing list of Colorways for Discord and most themes
 * Eclipse
 * Cyan
 * Spotify
+* Bright n' Blue (Original Colorway)
 
 ### Currently Supported themes:
 * Discord Default
