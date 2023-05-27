@@ -1,0 +1,52 @@
+{
+  "colorways": [
+    {
+      "name": "Keyboard Purple",
+      "original": false,
+      "accent": "hsl(235 85.6% 64.7%)",
+      "primary": "#222456",
+      "secondary": "#1c1f48",
+      "tertiary": "#080d1d"
+    },
+    {
+      "name": "Eclipse",
+      "original": false,
+      "accent": "hsl(87 85.6% 64.7%)",
+      "primary": "#000000",
+      "secondary": "#181818",
+      "tertiary": "#0a0a0a"
+    },
+    {
+      "name": "Cyan",
+      "original": false,
+      "accent": "#009f88",
+      "primary": "#202226",
+      "secondary": "#1c1e21",
+      "tertiary": "#141517"
+    },
+    {
+      "name": "Spotify",
+      "original": false,
+      "accent": "hsl(141 76% 48%)",
+      "primary": "#121212",
+      "secondary": "#090909",
+      "tertiary": "#232323"
+    },
+    {
+      "name": "Bright n' Blue",
+      "original": true,
+      "accent": "hsl(234, 68%, 33%)",
+      "primary": "#394aae",
+      "secondary": "#29379d",
+      "tertiary": "#1b278d"
+    },
+    {
+      "name": "Still Young",
+      "original": true,
+      "accent": "hsl(58 85.6% 89%)",
+      "primary": "#443a31",
+      "secondary": "#7c3d3e",
+      "tertiary": "#207578"
+    }
+  ]
+}
