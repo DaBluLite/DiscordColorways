@@ -23,7 +23,7 @@
     --brand-400-hsl: 58 calc(var(--saturation-factor, 1)*86.1%) 100%;
     --brand-430-hsl: 58 calc(var(--saturation-factor, 1)*85.7%) 100%;
     --brand-460-hsl: 58 calc(var(--saturation-factor, 1)*85.5%) 94.9%;
-    --brand-500-hsl: 58 calc(var(--saturation-factor, 1)*85.6%) 89%;/*hsl(58, 86%, 89%)*/
+    --brand-500-hsl: 58 calc(var(--saturation-factor, 1)*85.6%) 89%;
     --brand-530-hsl: 58 calc(var(--saturation-factor, 1)*66.7%) 83.1%;
     --brand-560-hsl: 58 calc(var(--saturation-factor, 1)*51.4%) 77.2%;
     --brand-600-hsl: 58 calc(var(--saturation-factor, 1)*46.7%) 71.3%;
@@ -52,8 +52,11 @@
 .wrapper-3kah-n.selected-1Drb7Z .childWrapper-1j_1ub, .wrapper-3kah-n:hover .childWrapper-1j_1ub {
     color: var(--black-500) !important;
 }
-.colorBrand-2M3O3N,
+.colorBrand-2M3O3N:not(.lookBlank-FgPMy6),
 .textBadge-1fdDPJ[style="background-color: var(--brand-500);"] {
     color: var(--black-500) !important;
     font-weight: 600;
+}
+.theme-dark .menu-2TXYjN .colorDefault-2_rLdz:not(.colorPremiumGradient-38tGFG) .check-3-73a4, .theme-dark .menu-2TXYjN .colorDefault-2_rLdz:not(.colorPremiumGradient-38tGFG).focused-3LIdPu {
+    color: var(--bloack-500);
 }
