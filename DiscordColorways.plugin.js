@@ -213,47 +213,51 @@ module.exports = (() => {
                         className: Utilities.className("colorwayCheckIcon")
                     }))
                     ));
-                    colorwayList.forEach((colorway) => {
-                        let colorwayElem = createElement("div", {
-                            className: Utilities.className("discordColorway"),
-                            id: "colorway-" + colorway.name,
-                            onclick: (el) => {
-                                try {
-                                    PluginUtilities.removeStyle("activeColorway")
-                                } catch(e) {
-                                    console.log("No active colorway, moving on");
+                    try {
+                        colorwayList.forEach((colorway) => {
+                            let colorwayElem = createElement("div", {
+                                className: Utilities.className("discordColorway"),
+                                id: "colorway-" + colorway.name,
+                                onclick: (el) => {
+                                    try {
+                                        PluginUtilities.removeStyle("activeColorway")
+                                    } catch(e) {
+                                        console.log("No active colorway, moving on");
+                                    }
+                                    Settings.set("activeColorway", colorway.import);
+                                    Settings.set("activeColorwayID", colorway.name);
+                                    PluginUtilities.addStyle("activeColorway", Settings.get("activeColorway"));
+                                    el.path[1].classList.add("active");
                                 }
-                                Settings.set("activeColorway", colorway.import);
-                                Settings.set("activeColorwayID", colorway.name);
-                                PluginUtilities.addStyle("activeColorway", Settings.get("activeColorway"));
-                                el.path[1].classList.add("active");
-                            }
-                        },
-                            createElement("div", {
-                                className: Utilities.className("discordColorwayPreviewColor"),
-                                style: "background-color: " + colorway.accent
-                            }),
-                            createElement("div", {
-                                className: Utilities.className("discordColorwayPreviewColor"),
-                                style: "background-color: " + colorway.primary
-                            }),
-                            createElement("div", {
-                                className: Utilities.className("discordColorwayPreviewColor"),
-                                style: "background-color: " + colorway.secondary
-                            }),
-                            createElement("div", {
-                                className: Utilities.className("discordColorwayPreviewColor"),
-                                style: "background-color: " + colorway.tertiary
-                            }),
-                            createElement("div", {
-                                className: Utilities.className("colorwayCheckIconContainer")
                             },
-                            createElement("div", {
-                                className: Utilities.className("colorwayCheckIcon")
-                            }))
-                        );
-                        colorwayArray.push(colorwayElem);
-                    });
+                                createElement("div", {
+                                    className: Utilities.className("discordColorwayPreviewColor"),
+                                    style: "background-color: " + colorway.accent
+                                }),
+                                createElement("div", {
+                                    className: Utilities.className("discordColorwayPreviewColor"),
+                                    style: "background-color: " + colorway.primary
+                                }),
+                                createElement("div", {
+                                    className: Utilities.className("discordColorwayPreviewColor"),
+                                    style: "background-color: " + colorway.secondary
+                                }),
+                                createElement("div", {
+                                    className: Utilities.className("discordColorwayPreviewColor"),
+                                    style: "background-color: " + colorway.tertiary
+                                }),
+                                createElement("div", {
+                                    className: Utilities.className("colorwayCheckIconContainer")
+                                },
+                                createElement("div", {
+                                    className: Utilities.className("colorwayCheckIcon")
+                                }))
+                            );
+                            colorwayArray.push(colorwayElem);
+                        });
+                    } catch(e) {
+                        console.warn("Unexpected error: " + e);
+                    }
 
                     const container = this.container.cloneNode(true);
                     const state = this.state = this.getState();
