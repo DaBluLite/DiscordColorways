@@ -38,10 +38,18 @@ module.exports = (() => {
                     name: "DaBluLite",
                     discord_id: "582170007505731594",
                     github_username: "DaBluLite"
+                },
+                {
+                    name: "Strencher",
+                    discord_id: "415849376598982656",
+                    github_username: "Strencher",
+                    twitter_username: "Strencher3"
                 }
             ],
             version: "1.0.0",
-            description: "A set of Color-Only themes for Discord, because who doesn't like a little color?"
+            description: "A set of Color-Only themes for Discord, because who doesn't like a little color? (Plugin source based on Strencher's PlatformIndicators, this plugin wouldn't have been possible without it)",
+            github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
+            github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
         }
     };
     
