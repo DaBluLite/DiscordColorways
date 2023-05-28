@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.0.0
+* @version 1.0.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -29,6 +29,13 @@
 @else@*/
 
 let colorwayList;
+let defaultSettings = {
+    activeColorway: "",
+    activeColorwayID: ""
+};
+let userSettings = {};
+let completeSettings = Object.assign(userSettings, defaultSettings, BdApi.loadData("DiscordColorways", "settings"));
+BdApi.saveData("DiscordColorways", "settings", completeSettings);
 module.exports = (() => {
     const config = {
         info: {
@@ -40,7 +47,7 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.0.0",
+            version: "1.0.1",
             description: "A set of Color-Only themes for Discord, because who doesn't like a little color? (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -195,15 +202,22 @@ module.exports = (() => {
                     colorwayArray.push(createElement("div", {
                         className: Utilities.className("discordColorway"),
                         id: "colorway-disablecolorway",
-                        onclick: () => {
+                        onclick: (el) => {
                             try {
                                 PluginUtilities.removeStyle("activeColorway")
                             } catch(e) {
                                 console.log("No active colorway, moving on");
                             }
-                            Settings.set("activeColorway", "");
-                            Settings.set("activeColorwayID", "disablecolorway");
-                            PluginUtilities.addStyle("activeColorway", Settings.get("activeColorway"));
+                            userSettings = {
+                                activeColorway: "",
+                                activeColorwayID: "disabledcolorway"
+                            }
+                            BdApi.saveData("DiscordColorways", "settings", userSettings);
+                            PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
+                            if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                document.querySelector(".discordColorway.active").classList.remove("active");
+                            }
+                            el.path[1].classList.add("active");
                         }
                     }, createElement("div", {
                         className: Utilities.className("colorwayDisableIcon")
@@ -226,9 +240,15 @@ module.exports = (() => {
                                     } catch(e) {
                                         console.log("No active colorway, moving on");
                                     }
-                                    Settings.set("activeColorway", colorway.import);
-                                    Settings.set("activeColorwayID", colorway.name);
-                                    PluginUtilities.addStyle("activeColorway", Settings.get("activeColorway"));
+                                    userSettings = {
+                                        activeColorway: colorway.import,
+                                        activeColorwayID: colorway.name
+                                    }
+                                    BdApi.saveData("DiscordColorways", "settings", userSettings);
+                                    PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
+                                    if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                        document.querySelector(".discordColorway.active").classList.remove("active");
+                                    }
                                     el.path[1].classList.add("active");
                                 }
                             },
@@ -294,7 +314,7 @@ module.exports = (() => {
 
                     colorwayArray.forEach(elem => {
                         container.append(elem);
-                        if(elem.id == `colorway-${Settings.get("activeColorwayID")}`) {
+                        if(elem.id == `colorway-${BdApi.loadData("DiscordColorways", "settings").activeColorwayID}`) {
                             elem.classList.add("active");
                         }
                     });
@@ -304,7 +324,7 @@ module.exports = (() => {
             }
 
             const ElementInjections = {
-                [BasicThemeSelector?.basicThemeSelectors]: elements => {
+                "basicThemeSelectors-2wNKs6": elements => {
                     for (const el of elements) {
                         if (el.getElementsByClassName("ColorwaySelectorWrapper").length || el._patched) continue;
 
@@ -312,6 +332,7 @@ module.exports = (() => {
                     }
                 },
                 [ThemeEditor?.editorBody]: elements => {
+                    console.log(ThemeEditor.editorBody);
                     for (const el of elements) {
                         if (el.getElementsByClassName("ColorwaySelectorWrapper").length || el._patched) continue;
 
@@ -455,11 +476,9 @@ module.exports = (() => {
                         const elements = Array.from(document.body.getElementsByClassName(className));
 
                         if (elements.length) {
+                            console.log(elements);
                             ElementInjections[className](elements);
                         }
-                    }
-                    if(Settings.get("activeColorwayID") == undefined) {
-                        Settings.set("activeColorwayID", "disablecolorway");
                     }
                     try {
                         PluginUtilities.removeStyle("activeColorway")
@@ -467,7 +486,7 @@ module.exports = (() => {
                         console.log("No active colorway, moving on");
                     }
                     try {
-                        PluginUtilities.addStyle("activeColorway", Settings.get("activeColorway"));
+                        PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
                     } catch(e) {
                         console.log("No active colorway, moving on");
                     }
@@ -481,6 +500,7 @@ module.exports = (() => {
                             const elements = Array.from(added.getElementsByClassName(className));
 
                             if (elements.length) {
+                                console.log(className);
                                 ElementInjections[className](elements);
                             }
                         }
@@ -493,6 +513,7 @@ module.exports = (() => {
                     PluginUtilities.removeStyle(config.info.name);
                     PluginUtilities.removeStyle("activeColorway");
                     document.querySelectorAll("ColorwaySelector").forEach(el => el._unmount?.());
+                    BdApi.saveData("DiscordColorways", "settings", userSettings);
                 }
             };
         };
