@@ -53,6 +53,15 @@
       "secondary": "#7c3d3e",
       "tertiary": "#207578",
       "import": "@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);"
+    },
+    {
+      "name": "Still Young",
+      "original": true,
+      "accent": "hsl(58 85.6% 89%)",
+      "primary": "#443a31",
+      "secondary": "#7c3d3e",
+      "tertiary": "#207578",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);"
     }
   ]
 }
