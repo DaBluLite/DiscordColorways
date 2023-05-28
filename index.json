@@ -6,7 +6,8 @@
       "accent": "hsl(235 85.6% 64.7%)",
       "primary": "#222456",
       "secondary": "#1c1f48",
-      "tertiary": "#080d1d"
+      "tertiary": "#080d1d",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/KeyboardPurple/import.css);"
     },
     {
       "name": "Eclipse",
@@ -14,7 +15,8 @@
       "accent": "hsl(87 85.6% 64.7%)",
       "primary": "#000000",
       "secondary": "#181818",
-      "tertiary": "#0a0a0a"
+      "tertiary": "#0a0a0a",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Eclipse/import.css);"
     },
     {
       "name": "Cyan",
@@ -22,7 +24,8 @@
       "accent": "#009f88",
       "primary": "#202226",
       "secondary": "#1c1e21",
-      "tertiary": "#141517"
+      "tertiary": "#141517",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Cyan/import.css);"
     },
     {
       "name": "Spotify",
@@ -30,7 +33,8 @@
       "accent": "hsl(141 76% 48%)",
       "primary": "#121212",
       "secondary": "#090909",
-      "tertiary": "#232323"
+      "tertiary": "#232323",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Spotify/import.css);"
     },
     {
       "name": "Bright n' Blue",
@@ -38,7 +42,8 @@
       "accent": "hsl(234, 68%, 33%)",
       "primary": "#394aae",
       "secondary": "#29379d",
-      "tertiary": "#1b278d"
+      "tertiary": "#1b278d",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/BrightBlue/import.css);"
     },
     {
       "name": "Still Young",
@@ -46,7 +51,8 @@
       "accent": "hsl(58 85.6% 89%)",
       "primary": "#443a31",
       "secondary": "#7c3d3e",
-      "tertiary": "#207578"
+      "tertiary": "#207578",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);"
     }
   ]
 }
