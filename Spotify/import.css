@@ -53,7 +53,7 @@ rect[fill="#23a55a"] {
 .lookFilled-1H2Jvj.colorPrimary-2-Lusz {
     color: var(--header-primary);
 }
-.colorBrand-2M3O3N,
+.colorBrand-2M3O3N:not(.navItem-3McpmW),
 .textBadge-1fdDPJ[style="background-color: var(--brand-500);"] {
     color: var(--black-500) !important;
     font-weight: 600;
