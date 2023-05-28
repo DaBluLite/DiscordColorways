@@ -1,7 +1,7 @@
 # Discord Colorways
 A growing list of Colorways for Discord and most themes
 
-* [Download The DiscordColorways Plugin](https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js) or use the available @imports
+* [Download The DiscordColorways Plugin](https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js) (Credits to Strencher, since the source of the plugin is based on his PlatformIndicators plugin) or use the available @imports
 
 ### Currently Available are:
 * [Keyboard Purple](https://github.com/DaBluLite/DiscordColorways/tree/master/KeyboardPurple)
