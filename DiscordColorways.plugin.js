@@ -31,7 +31,7 @@
 let colorwayList;
 let defaultSettings = {
     activeColorway: "",
-    activeColorwayID: ""
+    activeColorwayID: "disablecolorway"
 };
 let userSettings = {};
 let completeSettings = Object.assign(userSettings, defaultSettings, BdApi.loadData("DiscordColorways", "settings"));
@@ -210,12 +210,16 @@ module.exports = (() => {
                             }
                             userSettings = {
                                 activeColorway: "",
-                                activeColorwayID: "disabledcolorway"
+                                activeColorwayID: "disablecolorway"
                             }
                             BdApi.saveData("DiscordColorways", "settings", userSettings);
                             PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
-                            if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
-                                document.querySelector(".discordColorway.active").classList.remove("active");
+                            try {
+                                if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                    document.querySelector(".discordColorway.active").classList.remove("active");
+                                }
+                            } catch(e) {
+                                console.warn("Uncaught Exception: " + e);
                             }
                             el.path[1].classList.add("active");
                         }
@@ -246,8 +250,12 @@ module.exports = (() => {
                                     }
                                     BdApi.saveData("DiscordColorways", "settings", userSettings);
                                     PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
-                                    if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
-                                        document.querySelector(".discordColorway.active").classList.remove("active");
+                                    try {
+                                        if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                            document.querySelector(".discordColorway.active").classList.remove("active");
+                                        }
+                                    } catch(e) {
+                                        console.warn("Uncaught Exception: " + e);
                                     }
                                     el.path[1].classList.add("active");
                                 }
@@ -318,6 +326,14 @@ module.exports = (() => {
                             elem.classList.add("active");
                         }
                     });
+
+                    if(!document.querySelector(".discordColorway.active")) {
+                        try {
+                            document.getElementById("colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID).classList.add("active");
+                        } catch(e) {
+                            console.warn("Uncaught Exception: " + e);
+                        }
+                    }
 
                     return container;
                 }
