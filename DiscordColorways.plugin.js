@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.0.1
+* @version 1.0.2
 */
 /*@cc_on
 @if (@_jscript)
