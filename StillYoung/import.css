@@ -36,6 +36,8 @@
     --brand-830-hsl: 58 calc(var(--saturation-factor, 1)*47.4%) 30%;
     --brand-860-hsl: 58 calc(var(--saturation-factor, 1)*46.9%) 24.1%;
     --brand-900-hsl: 56 calc(var(--saturation-factor, 1)*50%) 18.2%;
+    --modal-background: var(--background-primary);
+    --modal-footer-background: var(--background-secondary);
 }
 .theme-dark {
     --background-floating: #2f182a;
