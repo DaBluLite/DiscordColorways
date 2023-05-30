@@ -10,6 +10,8 @@
     --background-modifier-selected: var(--background-secondary-alt);
     --background-modifier-hover: var(--background-primary);
     --background-modifier-active: var(--background-tertiary);
+    --modal-background: var(--background-primary);
+    --modal-footer-background: var(--background-secondary);
 }
 .theme-dark {
     --background-floating: #04070F;
