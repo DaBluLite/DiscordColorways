@@ -7,7 +7,9 @@
       "primary": "#222456",
       "secondary": "#1c1f48",
       "tertiary": "#080d1d",
-      "import": "@import url(//dablulite.github.io/DiscordColorways/KeyboardPurple/import.css);"
+      "import": "@import url(//dablulite.github.io/DiscordColorways/KeyboardPurple/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     },
     {
       "name": "Eclipse",
@@ -16,7 +18,9 @@
       "primary": "#000000",
       "secondary": "#181818",
       "tertiary": "#0a0a0a",
-      "import": "@import url(//dablulite.github.io/DiscordColorways/Eclipse/import.css);"
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Eclipse/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     },
     {
       "name": "Cyan",
@@ -25,7 +29,9 @@
       "primary": "#202226",
       "secondary": "#1c1e21",
       "tertiary": "#141517",
-      "import": "@import url(//dablulite.github.io/DiscordColorways/Cyan/import.css);"
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Cyan/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     },
     {
       "name": "Spotify",
@@ -34,7 +40,9 @@
       "primary": "#121212",
       "secondary": "#090909",
       "tertiary": "#232323",
-      "import": "@import url(//dablulite.github.io/DiscordColorways/Spotify/import.css);"
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Spotify/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     },
     {
       "name": "Bright n' Blue",
@@ -43,7 +51,9 @@
       "primary": "#394aae",
       "secondary": "#29379d",
       "tertiary": "#1b278d",
-      "import": "@import url(//dablulite.github.io/DiscordColorways/BrightBlue/import.css);"
+      "import": "@import url(//dablulite.github.io/DiscordColorways/BrightBlue/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     },
     {
       "name": "Still Young",
@@ -52,7 +62,9 @@
       "primary": "#443a31",
       "secondary": "#7c3d3e",
       "tertiary": "#207578",
-      "import": "@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);"
+      "import": "@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     }
   ]
 }
