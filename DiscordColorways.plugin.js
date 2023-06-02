@@ -1488,6 +1488,11 @@ module.exports = (() => {
             };
             return class DiscordColorways extends Plugin {
                 css = `
+                .colorwaySettingsContainer {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
                 .colorwayPreview-background {
                     width: 564px;
                     height: 270px;
