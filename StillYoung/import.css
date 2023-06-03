@@ -1,14 +1,4 @@
 :root {
-    --scrollbar-auto-track: var(--background-secondary);
-    --scrollbar-auto-thumb: var(--background-tertiary);
-    --scrollbar-thin-thumb: var(--background-tertiary);
-    --button-secondary-background: var(--background-secondary);
-    --button-secondary-background-active: var(--background-secondary);
-    --button-secondary-background-hover: var(--background-secondary-alt);
-    --input-background: var(--background-accent);
-    --background-modifier-selected: var(--background-secondary-alt);
-    --background-modifier-hover: var(--background-primary);
-    --background-modifier-active: var(--background-tertiary);
     --brand-100: hsl(var(--brand-100-hsl)/1);
     --brand-100-hsl: 63 calc(var(--saturation-factor, 1)*77.8%) 100%;
     --brand-130-hsl: 59 calc(var(--saturation-factor, 1)*87.5%) 100%;
@@ -36,29 +26,28 @@
     --brand-830-hsl: 58 calc(var(--saturation-factor, 1)*47.4%) 30%;
     --brand-860-hsl: 58 calc(var(--saturation-factor, 1)*46.9%) 24.1%;
     --brand-900-hsl: 56 calc(var(--saturation-factor, 1)*50%) 18.2%;
-    --modal-background: var(--background-primary);
-    --modal-footer-background: var(--background-secondary);
+    --primary-800-hsl: 313 32% 14%;
+    --primary-730-hsl: 182 58% 30%;
+    --primary-700-hsl: 182 58% 30%;
+    --primary-660-hsl: 359 34% 32.4%;
+    --primary-630-hsl: 359 34% 36%;
+    --primary-600-hsl: 28 16% 23%;
+    --primary-560-hsl: 27 16% 35%;
+    --primary-530-hsl: 27 16% 35%;
+    --primary-500-hsl: 27 16% 35%;
+    --primary-430-hsl: 27 16% 35%;
+    --white-500-hsl: 28 16% 77%;
+    --primary-130-hsl: 359 34% 64%;
+    --primary-160-hsl: 359 34% 60.4%;
+    --primary-200-hsl: 182 58% 70%;
 }
-.theme-dark {
-    --background-floating: #2f182a;
-    --background-tertiary: #207578;
-    --background-secondary-alt: #924b4e;
-    --background-secondary: #7c3d3e;
-    --background-primary: #443a31;
-    --background-accent: #69594c;
-    --channeltextarea-background: var(--background-accent);
+
+.focused-3LIdPu,
+[style="background-color: var(--brand-500);"],
+.selected-1Drb7Z *,
+.lookFilled-1H2Jvj.colorBrand-2M3O3N:not(.buttonColor-3bP3fX) {
+    color: #000;
 }
-.panels-3wFtMD .flex-2S1XBF > button {
-    color: var(--header-primary) !important;
-}
-.wrapper-3kah-n.selected-1Drb7Z .childWrapper-1j_1ub, .wrapper-3kah-n:hover .childWrapper-1j_1ub {
-    color: var(--black-500) !important;
-}
-.colorBrand-2M3O3N:not(.lookBlank-FgPMy6),
-.textBadge-1fdDPJ[style="background-color: var(--brand-500);"] {
-    color: var(--black-500) !important;
-    font-weight: 600;
-}
-.theme-dark .menu-2TXYjN .colorDefault-2_rLdz:not(.colorPremiumGradient-38tGFG) .check-3-73a4, .theme-dark .menu-2TXYjN .colorDefault-2_rLdz:not(.colorPremiumGradient-38tGFG).focused-3LIdPu {
-    color: var(--bloack-500);
+.ColorwaySelectorBtn:hover > div {
+    background-color: #000 !important;
 }
