@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.3.2
+* @version 1.4.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,7 +49,7 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.3.2",
+            version: "1.4.0",
             description: "A set of Color-Only themes for Discord, because who doesn't like a little color? (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -81,7 +81,7 @@ module.exports = (() => {
         stop() {}
     } : (([Plugin, Api]) => {
         const plugin = (Plugin, Api) => {
-            const {DiscordClasses, DOMTools, Utilities, WebpackModules, PluginUtilities, ReactTools, Components, DiscordModules: {LocaleManager: {Messages}, UserStatusStore, UserStore}} = Api;
+            const {DiscordClasses, DOMTools, Utilities, WebpackModules, PluginUtilities, ReactTools, Components, Popouts, DiscordModules: {LocaleManager: {Messages}, UserStatusStore, UserStore}} = Api;
             const Dispatcher = WebpackModules.getByProps("dispatch", "register");
             const Flux = Object.assign({}, WebpackModules.getByProps("Store", "connectStores"), WebpackModules.getByProps("useStateFromStores"));
             const SessionsStore = WebpackModules.getByProps("getSessions", "_dispatchToken");
@@ -93,7 +93,7 @@ module.exports = (() => {
                 Filters.byProps("homeIcon"),
                 Filters.byProps("createToast")
             ].map(fn => ({filter: fn})));
-
+            
             let nativeToast = (text,type) => {
                 let toast = Toast.createToast(text,type);
                 Toast.showToast(toast);
@@ -138,13 +138,13 @@ module.exports = (() => {
             let alphaBadge = () => {
                 return createElement("div", {
                     class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
-                    style: "background-color: var(--primary-730);"
+                    style: "background-color: var(--background-secondary);"
                 }, "Alpha");
             }
             let versionBadge = (text,ver) => {
                 return createElement("div", {
                     class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
-                    style: "background-color: var(--primary-730);"
+                    style: "background-color: var(--background-secondary);"
                 }, text + " V" + ver);
             }
             let unstableBadge = () => {
@@ -204,7 +204,15 @@ module.exports = (() => {
 
                 if (children.length) node.append(...children);
 
+                node.getElementByClass = (clss) => {
+                    return node.getElementsByClassName(clss)[0];
+                }
+
                 return node;
+            };
+
+            const getElementByClass = (clss) => {
+                return document.getElementsByClassName(clss)[0];
             };
 
             const bdSwitch = (status) => {
@@ -532,7 +540,11 @@ module.exports = (() => {
                                                 BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-secondary", style:{backgroundColor: colorway.secondary}}),
                                                 BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-tertiary", style:{backgroundColor: colorway.tertiary}})
                                             ]),
-                                            BdApi.React.createElement("span",{class: "colorwayAuthor"}, ["Author: ",BdApi.React.createElement("span",{class: "colorwayAuthorLink"},colorway.author)]),
+                                            BdApi.React.createElement("span",{class: "colorwayAuthor"}, ["Author: ",BdApi.React.createElement("span",{class: "colorwayAuthorLink",onClick: (e) => {
+                                                setTimeout(() => {
+                                                    Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),WebpackModules.getByProps("getCurrentUser", "getUser").getUser(colorway.authorID),{position:"right"});
+                                                },10);
+                                            }},colorway.author)]),
                                             BdApi.React.createElement("span",{class: "colorwayImport colorwayCodeblockWrapper"}, ["Import: ",BdApi.React.createElement("span",{class: "colorwayCodeblock"},colorway.import)])
                                         ]),{
                                             confirmText: "Set Theme",
@@ -665,6 +677,7 @@ module.exports = (() => {
                                                     <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;">
                                                       <div style="display: flex;width: 408px; height: 46px; flex-direction: row;"><div style="background-color: ${colorway.accent.background};height: 46px;width: 102px;border-top-left-radius: 8px;float:left;"></div><div style="background-color: ${colorway.primary.background};height: 46px; width: 102px;float:left;"></div><div style="background-color: ${colorway.secondary.background};height: 46px;width: 102px;float:left;"></div><div style="background-color: ${colorway.tertiary.background};height: 46px;width: 102px;border-top-right-radius: 8px;float:left;"></div></div>
                                                       <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
+                                                      <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
                                                       <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
                                                     </div>
                                                   </foreignObject>
@@ -682,6 +695,7 @@ module.exports = (() => {
                                                     <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;width:300px;">
                                                       <div style="display: flex;width: 300px; height: 46px; flex-direction: row;"><div style="background-color: ${colorway.accent.background};height: 46px;width: 75px;border-top-left-radius: 8px;float:left;"></div><div style="background-color: ${colorway.primary.background};height: 46px; width: 75px;float:left;"></div><div style="background-color: ${colorway.secondary.background};height: 46px;width: 75px;float:left;"></div><div style="background-color: ${colorway.tertiary.background};height: 46px;width: 75px;border-top-right-radius: 8px;float:left;"></div></div>
                                                       <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
+                                                      <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
                                                       <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
                                                     </div>
                                                   </foreignObject>
@@ -711,6 +725,11 @@ module.exports = (() => {
                                                 BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-secondary", style:{backgroundColor: colorway.secondary.background}}),
                                                 BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-tertiary", style:{backgroundColor: colorway.tertiary.background}})
                                             ]),
+                                            BdApi.React.createElement("span",{class: "colorwayAuthor"}, ["Author: ",BdApi.React.createElement("span",{class: "colorwayAuthorLink",onClick: (e) => {
+                                                setTimeout(() => {
+                                                    Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),WebpackModules.getByProps("getCurrentUser", "getUser").getUser(colorway.authorID),{position:"right"});
+                                                },10);
+                                            }},colorway.author)]),
                                             BdApi.React.createElement("span",{class: "colorwayImport colorwayCodeblockWrapper"}, ["CSS: ",BdApi.React.createElement("span",{class: "colorwayCodeblock"},colorway.import)]),
                                             BdApi.React.createElement("div",{class: "colorwayModalFooter"}, [
                                                 BdApi.React.createElement("button",{
@@ -1077,6 +1096,7 @@ module.exports = (() => {
                     let secondaryToSecondaryAltContrast = -3.6;
                     let secondaryAlt = "#232428";
                     let primaryLighter = "#383a40";
+                    let currentUserProps = WebpackModules.getByProps("getCurrentUser", "getUser").getCurrentUser();
 
                     function componentToHex(c) {
                         var hex = c.toString(16);
@@ -1446,7 +1466,9 @@ module.exports = (() => {
                                                     background: document.getElementById("colorwayCreatorColorpicker_accent").value,
                                                     foreground: accentTextColor
                                                 },
-                                                import: customColorwayCSS
+                                                import: customColorwayCSS,
+                                                author: currentUserProps.username,
+                                                authorID: currentUserProps.id
                                             }];
 
                                             let customColorwayArray = [];
@@ -1531,6 +1553,16 @@ module.exports = (() => {
             };
             return class DiscordColorways extends Plugin {
                 css = `
+                .colorwayAuthorLink {
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    background-color: var(--background-primary);
+                    transition: .15s;
+                    cursor: pointer;
+                }
+                .colorwayAuthorLink:hover {
+                    background-color: var(--background-accent);
+                }
                 .discordColorwayOnToast {
                     display: flex;
                     flex-direction: row;
@@ -1548,6 +1580,7 @@ module.exports = (() => {
                 }
                 .toast-2sz4eO:has(.discordColorwayOnToast) {
                     border-radius: 100px;
+                    background-color: var(--green-360);
                 }
                 .colorwaySettingsContainer {
                     display: flex;
@@ -1650,6 +1683,10 @@ module.exports = (() => {
                     margin-bottom: 4px;
                     padding-bottom: 8px;
                     border-bottom: 1px solid var(--header-secondary);
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 8px;
                 }
                 #colorway-disablecolorway > .colorwayDisableIcon {
                     height: 60px;
@@ -1881,7 +1918,38 @@ module.exports = (() => {
                     color: var(--text-normal);
                     background: var(--background-secondary);
                     user-select: text;
+                    max-height: 200px;
+                    overflow: hidden auto;
                 }
+
+                .colorwayCodeblock::-webkit-scrollbar {
+                    width: 16px;
+                    height: 16px;
+                }
+                .colorwayCodeblock::-webkit-scrollbar-corner {
+                    background-color: transparent;
+                }
+                .colorwayCodeblock::-webkit-scrollbar-thumb {
+                    background-color: var(--scrollbar-auto-thumb);
+                    min-height: 40px;
+                }
+                .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track {
+                    border: 4px solid transparent;
+                    background-clip: padding-box;
+                    border-radius: 8px;
+                }
+                .scroller-kQBbkU::-webkit-scrollbar-track {
+                    margin-bottom: 8px;
+                }
+                .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track {
+                    border: 4px solid transparent;
+                    background-clip: padding-box;
+                    border-radius: 8px;
+                }
+                .colorwayCodeblock::-webkit-scrollbar-track {
+                    background-color: var(--scrollbar-auto-track);
+                }
+
                 .colorwayCodeblockWrapper {
                     display: flex;
                     flex-direction: column;
