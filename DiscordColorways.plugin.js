@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.3.0
+* @version 1.3.2
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,7 +49,7 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.3.0",
+            version: "1.3.2",
             description: "A set of Color-Only themes for Discord, because who doesn't like a little color? (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -86,13 +86,18 @@ module.exports = (() => {
             const Flux = Object.assign({}, WebpackModules.getByProps("Store", "connectStores"), WebpackModules.getByProps("useStateFromStores"));
             const SessionsStore = WebpackModules.getByProps("getSessions", "_dispatchToken");
  
-            const {Webpack, Webpack: {Filters}} = BdApi;
-            const [BasicThemeSelector, ThemeEditor, HomeIcon, TextInput] = Webpack.getBulk.apply(null, [
+            const {Webpack, Webpack: {Filters}, React} = BdApi;
+            const [BasicThemeSelector, ThemeEditor, HomeIcon, Toast] = Webpack.getBulk.apply(null, [
                 Filters.byProps("basicThemeSelectors"),
                 Filters.byProps("themeEditor"),
                 Filters.byProps("homeIcon"),
-                Filters.byProps("input")
+                Filters.byProps("createToast")
             ].map(fn => ({filter: fn})));
+
+            let nativeToast = (text,type) => {
+                let toast = Toast.createToast(text,type);
+                Toast.showToast(toast);
+            }
 
             let textInput = (placeholdr, idd) => {
                 if(placeholdr) {
@@ -351,6 +356,7 @@ module.exports = (() => {
                                 }
                                 el.path[1].classList.add("active");
                             }
+                            nativeToast("Disabled Colorway Successfully",1);
                         }
                     }, createElement("div", {
                         className: Utilities.className("colorwayDisableIcon")
@@ -417,6 +423,26 @@ module.exports = (() => {
                                         }
                                         el.path[1].classList.add("active");
                                     }
+                                    nativeToast(React.createElement("div",{class:"discordColorwayOnToast"},[React.createElement("div",{
+                                        class: "discordColorway"
+                                    },[
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.accent}
+                                        }),
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.primary}
+                                        }),
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.secondary}
+                                        }),
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.tertiary}
+                                        })
+                                    ]),"Applied Colorway Successfully"]),0);
                                 }
                             },
                                 createElement("div", {
@@ -491,9 +517,7 @@ module.exports = (() => {
                                                     DiscordNative.clipboard.copyImage(buffer, "colorway-share")
                                                 }
                                                 img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
-                                                BdApi.showToast("Copied Banner Successfully", {
-                                                    type: "success"
-                                                })
+                                                nativeToast("Copied Banner Successfully",1);
                                                 },
                                                 confirmText: "Copy Banner"
                                               })
@@ -579,6 +603,27 @@ module.exports = (() => {
                                         }
                                         el.path[1].classList.add("active");
                                     }
+
+                                    nativeToast(React.createElement("div",{class:"discordColorwayOnToast"},[React.createElement("div",{
+                                        class: "discordColorway"
+                                    },[
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.accent.background}
+                                        }),
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.primary.background}
+                                        }),
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.secondary.background}
+                                        }),
+                                        React.createElement("div", {
+                                            className: Utilities.className("discordColorwayPreviewColor"),
+                                            style: {backgroundColor: colorway.tertiary.background}
+                                        })
+                                    ]),"Applied Custom Colorway Successfully"]),0);
                                 }
                             },
                                 createElement("div", {
@@ -651,9 +696,7 @@ module.exports = (() => {
                                                     DiscordNative.clipboard.copyImage(buffer, "colorway-share")
                                                 }
                                                 img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
-                                                BdApi.showToast("Copied Banner Successfully", {
-                                                    type: "success"
-                                                })
+                                                nativeToast("Copied Banner Successfully",1);
                                                 },
                                                 confirmText: "Copy Banner"
                                               })
@@ -1488,6 +1531,24 @@ module.exports = (() => {
             };
             return class DiscordColorways extends Plugin {
                 css = `
+                .discordColorwayOnToast {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 18px;
+                }
+                .discordColorwayOnToast > .discordColorway {
+                    box-shadow: none;
+                }
+                .discordColorwayOnToast > .discordColorway > .discordColorwayPreviewColor {
+                    margin: 0;
+                    width: 30px;
+                    height: 30px;
+                }
+                .toast-2sz4eO:has(.discordColorwayOnToast) {
+                    border-radius: 100px;
+                }
                 .colorwaySettingsContainer {
                     display: flex;
                     flex-direction: column;
