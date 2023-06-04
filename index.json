@@ -76,6 +76,17 @@
       "import": "@import url(//dablulite.github.io/DiscordColorways/Sea/import.css);",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
+    },
+    {
+      "name": "AMOLED",
+      "original": true,
+      "accent": "hsl(235 85.6% 64.7%)",
+      "primary": "#000000",
+      "secondary": "#000000",
+      "tertiary": "#000000",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Amoled/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     }
   ]
 }
