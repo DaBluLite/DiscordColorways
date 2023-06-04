@@ -65,6 +65,17 @@
       "import": "@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
+    },
+    {
+      "name": "Sea",
+      "original": true,
+      "accent": "hsl(184, 100%, 50%)",
+      "primary": "#07353b",
+      "secondary": "#0b5e60",
+      "tertiary": "#08201d",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Sea/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     }
   ]
 }
