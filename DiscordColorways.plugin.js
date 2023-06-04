@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.4.0
+* @version 1.4.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,7 +49,7 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.4.0",
+            version: "1.4.1",
             description: "A set of Color-Only themes for Discord, because who doesn't like a little color? (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -918,7 +918,7 @@ module.exports = (() => {
                     },
                     createElement("div", {
                         className: Utilities.className("colorwayHeaderTitle")
-                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.0"), betaBadge()));
+                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.1")));
 
 
                     container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
@@ -1089,11 +1089,11 @@ module.exports = (() => {
 
                     let settingsPanel = 
                         createElement("span",{className: "colorwaySetting",id: "showInGuildBar"}, "Show In Guild bar", bdSwitch(BdApi.loadData("DiscordColorways", "settings").showInGuildBar)) +
-                        createElement("span",{className: "colorwaySetting",id: "showCustomColorways"}, createElement("span",{},"Show Custom Colorways",unstableBadge()), bdSwitch(BdApi.loadData("DiscordColorways", "settings").showCustomColorways))
+                        createElement("span",{className: "colorwaySetting",id: "showCustomColorways"}, createElement("span",{},"Show Custom Colorways"), bdSwitch(BdApi.loadData("DiscordColorways", "settings").showCustomColorways))
                     
 
                     container.append(createElement("span",{className: "colorwaySetting",id: "showInGuildBar"}, "Show In Guild bar", bdSwitch(BdApi.loadData("DiscordColorways", "settings").showInGuildBar)),
-                    createElement("span",{className: "colorwaySetting",id: "showCustomColorways"}, createElement("span",{},"Show Custom Colorways",unstableBadge()), bdSwitch(BdApi.loadData("DiscordColorways", "settings").showCustomColorways)));
+                    createElement("span",{className: "colorwaySetting",id: "showCustomColorways"}, createElement("span",{},"Show Custom Colorways"), bdSwitch(BdApi.loadData("DiscordColorways", "settings").showCustomColorways)));
 
                     return container;
                 }
@@ -1170,6 +1170,7 @@ module.exports = (() => {
                     let secondaryToSecondaryAltContrast = -20;
                     let secondaryAlt = "#232428";
                     let primaryLighter = "#383a40";
+                    let secondaryMuted = "gray";
                     let currentUserProps = WebpackModules.getByProps("getCurrentUser", "getUser").getCurrentUser();
 
                     function componentToHex(c) {
@@ -1267,6 +1268,8 @@ module.exports = (() => {
                                         }
                                         let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
                                         let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                                        let RgbToHsl = RGBToHSL(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                                        secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)"
                                         secondaryAlt = shadeColor(RgbToHex, secondaryToSecondaryAltContrast);
                                         let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
                                             (parseInt(splitRGBValues[1]) * 587) +
@@ -1498,9 +1501,21 @@ module.exports = (() => {
 .theme-dark .sidebarRegionScroller-FXiQOh *,
 .theme-dark .header-1XpmZs {
     --white-500: ${secondaryTextColor} !important;
+    --channels-default: ${secondaryMuted} !important;
+    --channel-icon: ${secondaryMuted} !important;
 }
-.theme-dark .activity-2EQDZv {
-    --channels-default: var(--white-500);
+.theme-dark #app-mount .activity-2EQDZv,
+.theme-dark #app-mount .activity-2EQDZv * {
+    --channels-default: var(--white-500) !important;
+}
+.theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
+.theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
+.theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
+.theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
+    --channel-icon: var(--interactive-active) !important;
+}
+.theme-dark .bannerVisible-Vkyg1I {
+    color: #fff;
 }
 /*Tertiary*/
 .theme-dark .winButton-3UMjdg,
@@ -1887,6 +1902,7 @@ module.exports = (() => {
                     gap: 16px 24px;
                     position: relative;
                     width: 100%;
+                    flex-wrap: wrap;
                 }
                 .ColorwaySelectorWrapperContainer {
                     display: flex;
@@ -1952,6 +1968,7 @@ module.exports = (() => {
                     padding: 12px;
                     border-radius: 8px;
                     background-color: var(--background-floating);
+                    max-width: 564px;
                 }
                 .colorwayColors {
                     width: calc(100% + 24px);
