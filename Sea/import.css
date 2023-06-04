@@ -40,7 +40,7 @@
     --mention-foreground: black !important;
 }
 .theme-dark {
-    --background-floating: #000000;
+    --background-floating: #010e0f;
     --background-tertiary: #08201d;
     --background-secondary-alt: #084b4c;
     --background-secondary: #0b5e60;
