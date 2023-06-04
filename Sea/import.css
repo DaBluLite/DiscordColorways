@@ -1,0 +1,108 @@
+:root {
+    --scrollbar-auto-track: var(--background-secondary);
+    --scrollbar-auto-thumb: var(--background-tertiary);
+    --scrollbar-thin-thumb: var(--background-tertiary);
+    --button-secondary-background: var(--background-secondary);
+    --button-secondary-background-active: var(--background-secondary);
+    --button-secondary-background-hover: var(--background-secondary-alt);
+    --background-modifier-selected: var(--background-secondary-alt);
+    --background-modifier-hover: var(--background-primary);
+    --background-modifier-active: var(--background-tertiary);
+    --brand-100-hsl: 184 100% 3.1999999999999957%;
+    --brand-140-hsl: 184 100% 6.799999999999997%;
+    --brand-160-hsl: 184 100% 10.399999999999999%;
+    --brand-200-hsl: 184 100% 14%;
+    --brand-230-hsl: 184 100% 17.6%;
+    --brand-260-hsl: 184 100% 21.2%;
+    --brand-300-hsl: 184 100% 24.8%;
+    --brand-330-hsl: 184 100% 28.4%;
+    --brand-345-hsl: 184 100% 32%;
+    --brand-360-hsl: 184 100% 35.6%;
+    --brand-400-hsl: 184 100% 39.2%;
+    --brand-430-hsl: 184 100% 42.8%;
+    --brand-460-hsl: 184 100% 46.4%;
+    --brand-500-hsl: 184 100% 50%;
+    --brand-530-hsl: 184 100% 53.6%;
+    --brand-560-hsl: 184 100% 57.2%;
+    --brand-600-hsl: 184 100% 60.8%;
+    --brand-630-hsl: 184 100% 64.4%;
+    --brand-660-hsl: 184 100% 68%;
+    --brand-700-hsl: 184 100% 71.6%;
+    --brand-730-hsl: 184 100% 75.2%;
+    --brand-760-hsl: 184 100% 78.8%;
+    --brand-800-hsl: 184 100% 82.4%;
+    --brand-830-hsl: 184 100% 86%;
+    --brand-860-hsl: 184 100% 89.6%;
+    --brand-900-hsl: 184 100% 93.2%;
+    --modal-background: var(--background-primary);
+    --modal-footer-background: var(--background-secondary);
+    --primary-460: gray;
+    --mention-foreground: black !important;
+}
+.theme-dark {
+    --background-floating: #000000;
+    --background-tertiary: #08201d;
+    --background-secondary-alt: #084b4c;
+    --background-secondary: #0b5e60;
+    --background-primary: #07353b;
+    --background-accent: #083f46;
+    --input-background: var(--background-accent);
+    --channeltextarea-background: var(--background-accent);
+}
+
+/*Primary*/
+.theme-dark .container-2cd8Mz *,
+.theme-dark .body-16rSsp *,
+.theme-dark .toolbar-3_r2xA *,
+.theme-dark .container-89zvna *,
+.theme-dark .messageContent-2t3eCI,
+.theme-dark .channelTextArea-1FufC0 *,
+.theme-dark .attachButtonPlus-3IYelE,
+.theme-dark .username-h_Y3Us:not([style]),
+.theme-dark .children-3xh0VB *,
+.theme-dark .buttonContainer-1502pf * {
+    --white-500: white !important;
+}
+.theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
+    --white-500: white !important;
+}
+.theme-dark .callContainer-HtHELf * {
+    --white-500: white !important;
+}
+/*Secondary*/
+.theme-dark .wrapper-2RrXDg *,
+.theme-dark .sidebar-1tnWFu *:not(.hasBanner-2IrYih *),
+.theme-dark .members-3WRCEx *:not([style]),
+.theme-dark .sidebarRegionScroller-FXiQOh *,
+.theme-dark .header-1XpmZs {
+    --white-500: white !important;
+    --channels-default: hsl(181.41176470588235, 100%, 90%) !important;
+    --channel-icon: hsl(181.41176470588235, 100%, 90%) !important;
+}
+.theme-dark #app-mount .activity-2EQDZv,
+.theme-dark #app-mount .activity-2EQDZv * {
+    --channels-default: var(--white-500) !important;
+}
+.theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
+.theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
+.theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
+.theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
+    --channel-icon: var((--interactive-active) !important;
+}
+.theme-dark .bannerVisible-Vkyg1I {
+    color: #fff;
+}
+/*Tertiary*/
+.theme-dark .winButton-3UMjdg,
+.theme-dark .listItem-3SmSlK *,
+.theme-dark .searchBar-2aylmZ *,
+.theme-dark .wordmarkWindows-2dq6rw,
+.theme-dark .searchBar-jGtisZ *,
+.theme-dark .searchBarComponent-3N7dCG {
+    --white-500: white !important;
+}
+/*Accent*/
+.theme-dark .selected-2r1Hvo *,
+.theme-dark .selected-1Drb7Z * {
+    --white-500: black !important;
+}
