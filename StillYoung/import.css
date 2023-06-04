@@ -35,13 +35,13 @@
     --primary-560-hsl: 27 16% 35%;
     --primary-530-hsl: 27 16% 35%;
     --primary-500-hsl: 27 16% 35%;
-    --primary-430-hsl: 27 16% 35%;
     --primary-130-hsl: 359 34% 64%;
     --primary-160-hsl: 359 34% 60.4%;
     --primary-200-hsl: 182 58% 70%;
 }
 .theme-light {
     --white-500-hsl: 28 16% 77%;
+    --primary-430-hsl: 27 16% 35%;
 }
 
 .focused-3LIdPu,
