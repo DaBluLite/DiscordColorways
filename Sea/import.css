@@ -87,7 +87,7 @@
 .theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
 .theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
 .theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
-    --channel-icon: var((--interactive-active) !important;
+    --channel-icon: var(--interactive-active) !important;
 }
 .theme-dark .bannerVisible-Vkyg1I {
     color: #fff;
