@@ -11,6 +11,7 @@ A growing list of Colorways for Discord and most themes
 * [Spotify](https://github.com/DaBluLite/DiscordColorways/tree/master/Spotify)
 * [Bright n' Blue (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/BrightBlue)
 * [Still Young (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/StillYoung)
+* [Sea (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Sea)
 
 ### Currently Supported themes:
 * Discord Default
