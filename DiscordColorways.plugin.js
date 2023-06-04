@@ -211,6 +211,76 @@ module.exports = (() => {
                 return node;
             };
 
+            const HexToHSL = (hex) => {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+              
+                if (!result) {
+                  throw new Error("Could not parse Hex Color");
+                }
+              
+                const rHex = parseInt(result[1], 16);
+                const gHex = parseInt(result[2], 16);
+                const bHex = parseInt(result[3], 16);
+              
+                const r = rHex / 255;
+                const g = gHex / 255;
+                const b = bHex / 255;
+              
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+              
+                let h = (max + min) / 2;
+                let s = h;
+                let l = h;
+              
+                if (max === min) {
+                  // Achromatic
+                  return { h: 0, s: 0, l };
+                }
+              
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                  case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                  case g:
+                    h = (b - r) / d + 2;
+                    break;
+                  case b:
+                    h = (r - g) / d + 4;
+                    break;
+                }
+                h /= 6;
+              
+                s = s * 100;
+                s = Math.round(s);
+                l = l * 100;
+                l = Math.round(l);
+                h = Math.round(360 * h);
+              
+                return [ h, s, l ];
+            }
+
+            const RGBToHSL = (r, g, b) => {
+                r /= 255;
+                g /= 255;
+                b /= 255;
+                const l = Math.max(r, g, b);
+                const s = l - Math.min(r, g, b);
+                const h = s
+                  ? l === r
+                    ? (g - b) / s
+                    : l === g
+                    ? 2 + (b - r) / s
+                    : 4 + (r - g) / s
+                  : 0;
+                let finalH = 60 * h < 0 ? 60 * h + 360 : 60 * h;
+                let finalS = 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0);
+                let finalL = (100 * (2 * l - s)) / 2;
+                return [ finalH, finalS, finalL ];
+            };
+
             const getElementByClass = (clss) => {
                 return document.getElementsByClassName(clss)[0];
             };
@@ -848,7 +918,7 @@ module.exports = (() => {
                     },
                     createElement("div", {
                         className: Utilities.className("colorwayHeaderTitle")
-                    }, "Custom Colorways", versionBadge("ColorwayCreator", "0.1"), alphaBadge(), unstableBadge()));
+                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.0"), betaBadge()));
 
 
                     container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
@@ -1091,9 +1161,13 @@ module.exports = (() => {
                     let secondaryTextColor = 'white';
                     let tertiaryTextColor = 'white';
                     let accentTextColor = 'white';
+                    let primaryTextColor_secondary = 'white';
+                    let secondaryTextColor_secondary = 'white';
+                    let tertiaryTextColor_secondary = 'white';
+                    let accentTextColor_secondary = 'white';
                     let customColorway;
-                    let primaryToAccentContrast = 3.6;
-                    let secondaryToSecondaryAltContrast = -3.6;
+                    let primaryToAccentContrast = 20;
+                    let secondaryToSecondaryAltContrast = -20;
                     let secondaryAlt = "#232428";
                     let primaryLighter = "#383a40";
                     let currentUserProps = WebpackModules.getByProps("getCurrentUser", "getUser").getCurrentUser();
@@ -1161,7 +1235,7 @@ module.exports = (() => {
                                         }
                                         let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
                                         let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
-                                        primaryLighter = shadeColor(RgbToHex, primaryToAccentContrast);
+                                        primaryLighter = shadeColor(RgbToHex, 20);
                                         let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
                                             (parseInt(splitRGBValues[1]) * 587) +
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
@@ -1263,7 +1337,6 @@ module.exports = (() => {
                                 }),
                                 createElement("span",{},"Accent")
                             )
-                            
                         )
                     )
 
@@ -1347,8 +1420,7 @@ module.exports = (() => {
                                     }),
                                     modalBtn("Finish",{
                                         onclick: (e) => {
-                                            let customColorwayCSS = `
-:root {
+                                            let customColorwayCSS = `:root {
     --scrollbar-auto-track: var(--background-secondary);
     --scrollbar-auto-thumb: var(--background-tertiary);
     --scrollbar-thin-thumb: var(--background-tertiary);
@@ -1358,34 +1430,36 @@ module.exports = (() => {
     --background-modifier-selected: var(--background-secondary-alt);
     --background-modifier-hover: var(--background-primary);
     --background-modifier-active: var(--background-tertiary);
-    --brand-100: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-140: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-160: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-200: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-230: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-260: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-300: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-330: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-345: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-360: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-400: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-430: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-460: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-500: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-530: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-560: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-600: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-630: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-660: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-700: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-730: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-760: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-800: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-830: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-860: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
-    --brand-900: ${document.getElementById("colorwayCreatorColorpicker_accent").value};
+    --brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*13)}%;
+    --brand-140-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*12)}%;
+    --brand-160-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*11)}%;
+    --brand-200-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*10)}%;
+    --brand-230-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*9)}%;
+    --brand-260-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*8)}%;
+    --brand-300-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*7)}%;
+    --brand-330-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*6)}%;
+    --brand-345-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*5)}%;
+    --brand-360-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*4)}%;
+    --brand-400-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*3)}%;
+    --brand-430-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*2)}%;
+    --brand-460-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - 3.6}%;
+    --brand-500-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2]}%;
+    --brand-530-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + 3.6}%;
+    --brand-560-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*2)}%;
+    --brand-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*3)}%;
+    --brand-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*4)}%;
+    --brand-660-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*5)}%;
+    --brand-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*6)}%;
+    --brand-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*7)}%;
+    --brand-760-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*8)}%;
+    --brand-800-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*9)}%;
+    --brand-830-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*10)}%;
+    --brand-860-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*11)}%;
+    --brand-900-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*12)}%;
     --modal-background: var(--background-primary);
     --modal-footer-background: var(--background-secondary);
+    --primary-460: gray;
+    --mention-foreground: ${accentTextColor} !important;
 }
 .theme-dark {
     --background-floating: #000000;
@@ -1409,14 +1483,13 @@ module.exports = (() => {
 .theme-dark .username-h_Y3Us:not([style]),
 .theme-dark .children-3xh0VB *,
 .theme-dark .buttonContainer-1502pf * {
-    color: ${primaryTextColor} !important;
+    --white-500: ${primaryTextColor} !important;
 }
 .theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
-    color: ${primaryTextColor} !important;
+    --white-500: ${primaryTextColor} !important;
 }
 .theme-dark .callContainer-HtHELf * {
-    color: white !important;
-    fill: white !important;
+    --white-500: white !important;
 }
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
@@ -1424,7 +1497,10 @@ module.exports = (() => {
 .theme-dark .members-3WRCEx *:not([style]),
 .theme-dark .sidebarRegionScroller-FXiQOh *,
 .theme-dark .header-1XpmZs {
-    color: ${secondaryTextColor} !important;
+    --white-500: ${secondaryTextColor} !important;
+}
+.theme-dark .activity-2EQDZv {
+    --channels-default: var(--white-500);
 }
 /*Tertiary*/
 .theme-dark .winButton-3UMjdg,
@@ -1433,14 +1509,12 @@ module.exports = (() => {
 .theme-dark .wordmarkWindows-2dq6rw,
 .theme-dark .searchBar-jGtisZ *,
 .theme-dark .searchBarComponent-3N7dCG {
-    color: ${tertiaryTextColor} !important;
-    fill: ${tertiaryTextColor} !important;
+    --white-500: ${tertiaryTextColor} !important;
 }
 /*Accent*/
 .theme-dark .selected-2r1Hvo *,
 .theme-dark .selected-1Drb7Z * {
-    color: ${accentTextColor} !important;
-    fill: ${accentTextColor} !important;
+    --white-500: ${accentTextColor} !important;
 }
 `
                                             customColorway = [
