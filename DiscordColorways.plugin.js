@@ -50,7 +50,7 @@ module.exports = (() => {
                 }
             ],
             version: "1.5.0",
-            description: "A set of Color-Only themes for Discord, because who doesn't like a little color? (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
+            description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
         }
@@ -956,7 +956,7 @@ module.exports = (() => {
                     },
                     createElement("div", {
                         className: Utilities.className("colorwayHeaderTitle")
-                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.2")));
+                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.3")));
 
 
                     container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
@@ -1196,6 +1196,7 @@ module.exports = (() => {
                     container._unmount = this.unmount.bind(this);
 
                     let primaryTextColor = 'white';
+                    let primaryLighterTextColor = 'white';
                     let secondaryTextColor = 'white';
                     let tertiaryTextColor = 'white';
                     let accentTextColor = 'white';
@@ -1275,10 +1276,19 @@ module.exports = (() => {
                                                 return +a
                                             });
                                         }
+                                        function hexToRgb(hex) {
+                                            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                                            let r = parseInt(result[1], 16)
+                                            let g = parseInt(result[2], 16)
+                                            let b = parseInt(result[3], 16)
+                                            return [r,g,b]
+                                        }
                                         let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
                                         let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
                                         primaryLighter = shadeColor(RgbToHex, 20);
+                                        let splitRGBValuesLighter = hexToRgb(primaryLighter);
                                         document.querySelector(".colorwayPreview-chat").style.backgroundColor = e.path[0].value;
+                                        document.querySelector(".colorwayPreview-chatbox").style.backgroundColor = primaryLighter;
                                         backgroundPrimary = e.path[0].value;
                                         document.querySelectorAll(".colorwayPreview-guildsIcon").forEach(el => {
                                             el.style = "background-color: " + backgroundPrimary + "; --background-hover: " + accent + ";";
@@ -1286,7 +1296,11 @@ module.exports = (() => {
                                         let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
                                             (parseInt(splitRGBValues[1]) * 587) +
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
+                                        let RGBLuminanceCalcLighter = Math.round(((parseInt(splitRGBValuesLighter[0]) * 299) +
+                                            (parseInt(splitRGBValuesLighter[1]) * 587) +
+                                            (parseInt(splitRGBValuesLighter[2]) * 114)) / 1000);
                                         primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
+                                        primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'white';
                                         e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                                     }
@@ -1439,7 +1453,11 @@ module.exports = (() => {
                         class: "colorwayPreview-userArea",
                         style: "background-color: " + secondaryAlt + ";"
                     })
-                    )
+                    ),
+                    createElement("div",{
+                        class: "colorwayPreview-chatbox",
+                        style: "background-color: " + primaryLighter + ";"
+                    })
                     ),
                     createElement("div",{
                         class: "colorwayPreview-guildsWrapper"
@@ -1521,7 +1539,7 @@ module.exports = (() => {
     --background-tertiary: ${document.getElementById("colorwayCreatorColorpicker_tertiary").value};
     --background-secondary-alt: ${secondaryAlt};
     --background-secondary: ${document.getElementById("colorwayCreatorColorpicker_secondary").value};
-    --background-primary: ${document.getElementById("colorwayCreatorColorpicker_primary").value};
+    --primary-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2]}%;
     --background-accent: ${primaryLighter};
     --input-background: var(--background-accent);
     --channeltextarea-background: var(--background-accent);
@@ -1533,7 +1551,6 @@ module.exports = (() => {
 .theme-dark .toolbar-3_r2xA *,
 .theme-dark .container-89zvna *,
 .theme-dark .messageContent-2t3eCI,
-.theme-dark .channelTextArea-1FufC0 *,
 .theme-dark .attachButtonPlus-3IYelE,
 .theme-dark .username-h_Y3Us:not([style]),
 .theme-dark .children-3xh0VB *,
@@ -1545,6 +1562,13 @@ module.exports = (() => {
 }
 .theme-dark .callContainer-HtHELf * {
     --white-500: white !important;
+}
+.theme-dark .channelTextArea-1FufC0 * {
+    --text-normal: ${primaryLighterTextColor};
+}
+.placeholder-1rCBhr {
+    --channel-text-area-placeholder: ${primaryLighterTextColor};
+    opacity: .6;
 }
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
@@ -1667,7 +1691,6 @@ module.exports = (() => {
                     }
                 },
                 [ThemeEditor?.editorBody]: elements => {
-                    console.log(ThemeEditor.editorBody);
                     for (const el of elements) {
                         if (el.getElementsByClassName("ColorwaySelectorWrapper").length || el._patched) continue;
 
@@ -1707,6 +1730,14 @@ module.exports = (() => {
             };
             return class DiscordColorways extends Plugin {
                 css = `
+                .colorwayPreview-chatbox {
+                    position: absolute;
+                    width: 332px;
+                    bottom: 10px;
+                    right: 10px;
+                    height: 32px;
+                    border-radius: 8px;
+                }
                 .colorwayAuthorLink {
                     padding: 4px 8px;
                     border-radius: 4px;
@@ -1734,7 +1765,6 @@ module.exports = (() => {
                 }
                 .toast-2sz4eO:has(.discordColorwayOnToast) {
                     border-radius: 100px;
-                    background-color: var(--green-360);
                 }
                 .colorwaySettingsContainer {
                     display: flex;
@@ -2243,7 +2273,8 @@ module.exports = (() => {
                     display: flex;
                     flex-direction: row;
                     justify-content: end;
-                    gap: 4px;
+                    gap: 8px;
+                    margin-top: 4px;
                 }
                 .customColorwaySelector {
                     display: none;
@@ -2278,9 +2309,6 @@ module.exports = (() => {
                     } catch(e) {
                         console.log("No active colorway, moving on");
                     }
-                    if(!document.documentElement.classList.contains("theme-colorway")) {
-                        document.documentElement.classList.add("theme-colorway")
-                    }
                 }
 
                 observer({addedNodes}) {
@@ -2295,9 +2323,6 @@ module.exports = (() => {
                             }
                         }
                     }
-                    if(!document.documentElement.classList.contains("theme-colorway")) {
-                        document.documentElement.classList.add("theme-colorway")
-                    }
                 }
 
                 onStop() {
@@ -2309,9 +2334,6 @@ module.exports = (() => {
                     document.querySelectorAll("ColorwaySelector").forEach(el => el._unmount?.());
                     document.querySelectorAll("ColorwaySelectorBtnContainer").forEach(el => el._unmount?.());
                     BdApi.saveData("DiscordColorways", "settings", userSettings);
-                    if(document.documentElement.classList.contains("theme-colorway")) {
-                        document.documentElement.classList.remove("theme-colorway")
-                    }
                 }
 
                 getSettingsPanel() {
