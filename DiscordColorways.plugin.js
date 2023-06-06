@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.5.0
+* @version 1.5.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,7 +49,7 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.5.0",
+            version: "1.5.1",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -831,6 +831,101 @@ module.exports = (() => {
                                                     }
                                                 },"Close"),
                                                 BdApi.React.createElement("button",{
+                                                    class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                    onClick: (e) => {
+                                                        try {
+                                                            e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                        } catch(e) {
+                        
+                                                        }
+                                                        BdApi.showConfirmationModal("Rename Colorway:",BdApi.React.createElement("div", {
+                                                            class: "colorwayInfoModalDetails"
+                                                        },[
+                                                            React.createElement("input", {
+                                                                type: "text",
+                                                                class: "inputDefault-Ciwd-S input-3O04eu",
+                                                                placeholder: "Give your colorway a new name"
+                                                            }),
+                                                            React.createElement("div",{class: "colorwayModalFooter"},[
+                                                                React.createElement("button",{
+                                                                    class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                                    onClick: (e) => {
+                                                                        try {
+                                                                            e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                                        } catch(e) {
+                                        
+                                                                        }
+                                                                    }
+                                                                },"Cancel"),
+                                                                React.createElement("button",{
+                                                                    class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                                    onClick: (e) => {
+                                                                        if(!e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
+                                                                            e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "C'mon, you can do better!"
+                                                                        } else {
+                                                                            let customColorwayArray = [];
+                                                                            BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
+                                                                                if(el.name != colorway.name && el.name != e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
+                                                                                    customColorwayArray.push(el);
+                                                                                }
+                                                                            })
+                                                                            let customColorway = [
+                                                                            {
+                                                                                name: e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value,
+                                                                                primary: {
+                                                                                    background: colorway.primary.background,
+                                                                                    foreground: colorway.primary.foreground
+                                                                                },
+                                                                                secondary: {
+                                                                                    background: colorway.secondary.background,
+                                                                                    foreground: colorway.secondary.foreground
+                                                                                },
+                                                                                secondaryAlt: {
+                                                                                    background: colorway.secondaryAlt.background,
+                                                                                    foreground: colorway.secondaryAlt.foreground
+                                                                                },
+                                                                                tertiary: {
+                                                                                    background: colorway.tertiary.background,
+                                                                                    foreground: colorway.tertiary.foreground
+                                                                                },
+                                                                                accent: {
+                                                                                    background: colorway.accent.background,
+                                                                                    foreground: colorway.accent.foreground
+                                                                                },
+                                                                                import: colorway.import,
+                                                                                author: colorway.author,
+                                                                                authorID: colorway.authorID
+                                                                            }
+                                                                            ];
+                                                                            customColorwayArray.push(customColorway[0]);
+                                                                            BdApi.saveData("DiscordColorways", "custom_colorways", customColorwayArray);
+                                                                            try {
+                                                                                e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                                            } catch(e) {
+                                        
+                                                                            }
+                                                                            const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
+                                                                            if (elements.length) {
+                                                                                for (const el of elements) {
+                                                                                    document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                                                                                    new ColorwaySelector(el).mount();
+                                                                                }
+                                                                            }
+                                                                            const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
+                                                                            if (elements2.length) {
+                                                                                for (const el of elements2) {
+                                                                                    document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                                                                                    new ColorwaySelector(el).mount();
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },"Finish")
+                                                            ])
+                                                        ]));
+                                                    }
+                                                },"Rename"),
+                                                BdApi.React.createElement("button",{
                                                     class: "button-ejjZWC lookFilled-1H2Jvj colorRed-2VFhM4 sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                                     onClick: (e) => {
                                                         try {
@@ -956,7 +1051,7 @@ module.exports = (() => {
                     },
                     createElement("div", {
                         className: Utilities.className("colorwayHeaderTitle")
-                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.3")));
+                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.4")));
 
 
                     container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
@@ -1300,6 +1395,45 @@ module.exports = (() => {
                                             (parseInt(splitRGBValuesLighter[1]) * 587) +
                                             (parseInt(splitRGBValuesLighter[2]) * 114)) / 1000);
                                         primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
+                                        console.log(primaryTextColor);
+                                        primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'white';
+                                        e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
+                                        stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
+                                    },
+                                    onchange: (e) => {
+                                        e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
+                                        let splitRGB = (color) => {
+                                            if (color.indexOf('rgba') === -1)
+                                            color += ',1';
+                                            return color.match(/[\.\d]+/g).map(function (a) {
+                                                return +a
+                                            });
+                                        }
+                                        function hexToRgb(hex) {
+                                            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                                            let r = parseInt(result[1], 16)
+                                            let g = parseInt(result[2], 16)
+                                            let b = parseInt(result[3], 16)
+                                            return [r,g,b]
+                                        }
+                                        let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
+                                        let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                                        primaryLighter = shadeColor(RgbToHex, 20);
+                                        let splitRGBValuesLighter = hexToRgb(primaryLighter);
+                                        document.querySelector(".colorwayPreview-chat").style.backgroundColor = e.path[0].value;
+                                        document.querySelector(".colorwayPreview-chatbox").style.backgroundColor = primaryLighter;
+                                        backgroundPrimary = e.path[0].value;
+                                        document.querySelectorAll(".colorwayPreview-guildsIcon").forEach(el => {
+                                            el.style = "background-color: " + backgroundPrimary + "; --background-hover: " + accent + ";";
+                                        })
+                                        let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
+                                            (parseInt(splitRGBValues[1]) * 587) +
+                                            (parseInt(splitRGBValues[2]) * 114)) / 1000);
+                                        let RGBLuminanceCalcLighter = Math.round(((parseInt(splitRGBValuesLighter[0]) * 299) +
+                                            (parseInt(splitRGBValuesLighter[1]) * 587) +
+                                            (parseInt(splitRGBValuesLighter[2]) * 114)) / 1000);
+                                        primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
+                                        console.log(primaryTextColor);
                                         primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'white';
                                         e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
@@ -1319,6 +1453,34 @@ module.exports = (() => {
                                     value: "#2b2d31",
                                     id: "colorwayCreatorColorpicker_secondary",
                                     oninput: (e) => {
+                                        e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
+                                        let splitRGB = (color) => {
+                                            if (color.indexOf('rgba') === -1)
+                                            color += ',1';
+                                            return color.match(/[\.\d]+/g).map(function (a) {
+                                                return +a
+                                            });
+                                        }
+                                        let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
+                                        let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                                        let RgbToHsl = RGBToHSL(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                                        secondaryAlt = shadeColor(RgbToHex, secondaryToSecondaryAltContrast);
+                                        backgroundSecondary = e.path[0].value;
+                                        document.querySelector(".colorwayPreview-channels").style.backgroundColor = e.path[0].value;
+                                        document.querySelector(".colorwayPreview-userArea").style.backgroundColor = secondaryAlt;
+                                        let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
+                                            (parseInt(splitRGBValues[1]) * 587) +
+                                            (parseInt(splitRGBValues[2]) * 114)) / 1000);
+                                        secondaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
+                                        if(secondaryTextColor == 'white') {
+                                            secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)";
+                                        } else if(secondaryTextColor == 'black') {
+                                            secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 20%)";
+                                        }
+                                        e.path[0].parentElement.querySelector("span").style = "color: " + secondaryTextColor + ";";
+                                        stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
+                                    },
+                                    onchange: (e) => {
                                         e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                                         let splitRGB = (color) => {
                                             if (color.indexOf('rgba') === -1)
@@ -1380,6 +1542,27 @@ module.exports = (() => {
                                         backgroundFloating = HexToHSL(backgroundFloatingBefore);
                                         e.path[0].parentElement.querySelector("span").style = "color: " + tertiaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
+                                    },
+                                    onchange: (e) => {
+                                        e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
+                                        let splitRGB = (color) => {
+                                            if (color.indexOf('rgba') === -1)
+                                            color += ',1';
+                                            return color.match(/[\.\d]+/g).map(function (a) {
+                                                return +a
+                                            });
+                                        }
+                                        let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
+                                        let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
+                                            (parseInt(splitRGBValues[1]) * 587) +
+                                            (parseInt(splitRGBValues[2]) * 114)) / 1000);
+                                        tertiaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
+                                        backgroundTertiary = e.path[0].value;
+                                        document.querySelector(".colorwayPreview-background").style.backgroundColor = e.path[0].value;
+                                        let backgroundFloatingBefore = shadeColor(e.path[0].value, -30);
+                                        backgroundFloating = HexToHSL(backgroundFloatingBefore);
+                                        e.path[0].parentElement.querySelector("span").style = "color: " + tertiaryTextColor + ";";
+                                        stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                                     }
                                 }),
                                 createElement("span",{},"Tertiary")
@@ -1396,6 +1579,27 @@ module.exports = (() => {
                                     value: "#5865f2",
                                     id: "colorwayCreatorColorpicker_accent",
                                     oninput: (e) => {
+                                        e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
+                                        let splitRGB = (color) => {
+                                            if (color.indexOf('rgba') === -1)
+                                            color += ',1';
+                                            return color.match(/[\.\d]+/g).map(function (a) {
+                                                return +a
+                                            });
+                                        }
+                                        accent = e.path[0].value;
+                                        document.querySelectorAll(".colorwayPreview-guildsIcon").forEach(el => {
+                                            el.style = "background-color: " + backgroundPrimary + "; --background-hover: " + accent + ";";
+                                        })
+                                        let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
+                                        let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
+                                            (parseInt(splitRGBValues[1]) * 587) +
+                                            (parseInt(splitRGBValues[2]) * 114)) / 1000);
+                                        accentTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
+                                        e.path[0].parentElement.querySelector("span").style = "color: " + accentTextColor + ";";
+                                        stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
+                                    },
+                                    onchange: (e) => {
                                         e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                                         let splitRGB = (color) => {
                                             if (color.indexOf('rgba') === -1)
@@ -1488,21 +1692,158 @@ module.exports = (() => {
                                 }
                             }
                         }),
+                        modalBtnGray("Copy Current Colors",{
+                            onclick: (e) => {
+                                let checkColorType = (color) => {
+                                    if(color.includes("#")) {
+                                        return "hex";
+                                    }
+                                    if(color.includes("hsl")) {
+                                        return "hsl";
+                                    }
+                                    if(color.includes("rgb")) {
+                                        return "rgb";
+                                    }
+                                }
+                                let HSLToHex = (h,s,l) => {
+                                    s /= 100;
+                                    l /= 100;
+                                  
+                                    let c = (1 - Math.abs(2 * l - 1)) * s,
+                                        x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+                                        m = l - c/2,
+                                        r = 0,
+                                        g = 0, 
+                                        b = 0; 
+                                  
+                                    if (0 <= h && h < 60) {
+                                      r = c; g = x; b = 0;
+                                    } else if (60 <= h && h < 120) {
+                                      r = x; g = c; b = 0;
+                                    } else if (120 <= h && h < 180) {
+                                      r = 0; g = c; b = x;
+                                    } else if (180 <= h && h < 240) {
+                                      r = 0; g = x; b = c;
+                                    } else if (240 <= h && h < 300) {
+                                      r = x; g = 0; b = c;
+                                    } else if (300 <= h && h < 360) {
+                                      r = c; g = 0; b = x;
+                                    }
+                                    // Having obtained RGB, convert channels to hex
+                                    r = Math.round((r + m) * 255).toString(16);
+                                    g = Math.round((g + m) * 255).toString(16);
+                                    b = Math.round((b + m) * 255).toString(16);
+                                  
+                                    // Prepend 0s, if necessary
+                                    if (r.length == 1)
+                                      r = "0" + r;
+                                    if (g.length == 1)
+                                      g = "0" + g;
+                                    if (b.length == 1)
+                                      b = "0" + b;
+                                  
+                                    return "#" + r + g + b;
+                                }
+                                let changeColors = new UIEvent("change", {
+                                    "view": window,
+                                    "bubbles": true,
+                                    "cancelable": true
+                                });
+                                let calc = (str) => {
+                                    return Function(`'use strict'; return (${str})`)()
+                                }
+                                try {
+                                    console.log(getComputedStyle(document.body).getPropertyValue('--background-primary'));
+                                    if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "hex") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--background-primary').includes(" ")) {
+                                            document.getElementById("colorwayCreatorColorpicker_primary").value = getComputedStyle(document.body).getPropertyValue('--background-primary').replace(" ","").replace(" ","").replace(" ","");
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_primary").value = getComputedStyle(document.body).getPropertyValue('--background-primary');
+                                        }
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "rgb") {
+                                        document.getElementById("colorwayCreatorColorpicker_primary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-primary'));
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "hsl") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_primary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("%")[0])));
+                                        } else if(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_primary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[4].split("%")[0])));
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_primary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("/")[0].split("%")[0]);
+                                        }
+                                    }
+
+                                    console.log(getComputedStyle(document.body).getPropertyValue('--background-secondary'));
+                                    if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "hex") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--background-secondary').includes(" ")) {
+                                            document.getElementById("colorwayCreatorColorpicker_secondary").value = getComputedStyle(document.body).getPropertyValue('--background-secondary').replace(" ","").replace(" ","").replace(" ","");
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_secondary").value = getComputedStyle(document.body).getPropertyValue('--background-secondary');
+                                        }
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "rgb") {
+                                        document.getElementById("colorwayCreatorColorpicker_secondary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-secondary'));
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "hsl") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_secondary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("%")[0])));
+                                        } else if(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_secondary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[4].split("%")[0])));
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_secondary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("/")[0].split("%")[0]);
+                                        }
+                                    }
+
+                                    console.log(getComputedStyle(document.body).getPropertyValue('--background-tertiary'));
+                                    if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "hex") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--background-tertiary').includes(" ")) {
+                                            document.getElementById("colorwayCreatorColorpicker_tertiary").value = getComputedStyle(document.body).getPropertyValue('--background-tertiary').replace(" ","").replace(" ","").replace(" ","");
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_tertiary").value = getComputedStyle(document.body).getPropertyValue('--background-tertiary');
+                                        }
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "rgb") {
+                                        document.getElementById("colorwayCreatorColorpicker_tertiary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-tertiary'));
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "hsl") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_tertiary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("%")[0])));
+                                        } else if(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_tertiary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[4].split("%")[0])));
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_tertiary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("/")[0].split("%")[0]);
+                                        }
+                                    }
+
+                                    if(checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "hex") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--brand-experiment').includes(" ")) {
+                                            document.getElementById("colorwayCreatorColorpicker_accent").value = getComputedStyle(document.body).getPropertyValue('--brand-experiment').replace(" ","").replace(" ","").replace(" ","");
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_accent").value = getComputedStyle(document.body).getPropertyValue('--brand-experiment');
+                                        }
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "rgb") {
+                                        document.getElementById("colorwayCreatorColorpicker_accent").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--brand-experiment'));
+                                    } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "hsl") {
+                                        if(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_accent").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("%")[0])));
+                                        } else if(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].includes("calc")) {
+                                            document.getElementById("colorwayCreatorColorpicker_accent").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[4].split("%")[0])));
+                                        } else {
+                                            document.getElementById("colorwayCreatorColorpicker_accent").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("/")[0].split("%")[0]);
+                                        }
+                                    }
+
+                                    document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
+                                    document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
+                                } catch(e) {
+
+                                }
+                            }
+                        }),
                         modalBtn("Finish",{
                             onclick: (e) => {
                                 if(!document.getElementById("discordColorwayCreator_name").value) {
                                     document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
                                 }
-                                let customColorwayCSS = `:root {
-    --scrollbar-auto-track: var(--background-secondary);
-    --scrollbar-auto-thumb: var(--background-tertiary);
-    --scrollbar-thin-thumb: var(--background-tertiary);
-    --button-secondary-background: var(--background-secondary);
-    --button-secondary-background-active: var(--background-secondary);
-    --button-secondary-background-hover: var(--background-secondary-alt);
-    --background-modifier-selected: var(--background-secondary-alt);
-    --background-modifier-hover: var(--background-primary);
-    --background-modifier-active: var(--background-tertiary);
+                                let customColorwayCSS = `/*Automatically Generated - Colorway Creator V1.4*/
+:root {
     --brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*13)}%;
     --brand-140-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*12)}%;
     --brand-160-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*11)}%;
@@ -1529,20 +1870,18 @@ module.exports = (() => {
     --brand-830-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*10)}%;
     --brand-860-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*11)}%;
     --brand-900-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*12)}%;
-    --modal-background: var(--background-primary);
-    --modal-footer-background: var(--background-secondary);
     --primary-460: gray;
     --mention-foreground: ${accentTextColor} !important;
     --primary-800-hsl: ${backgroundFloating[0]} ${backgroundFloating[1]}% ${backgroundFloating[2]}%;
-}
-.theme-dark {
-    --background-tertiary: ${document.getElementById("colorwayCreatorColorpicker_tertiary").value};
-    --background-secondary-alt: ${secondaryAlt};
-    --background-secondary: ${document.getElementById("colorwayCreatorColorpicker_secondary").value};
+    --primary-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
+    --primary-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
+    --primary-660-hsl: ${HexToHSL(secondaryAlt)[0]} ${HexToHSL(secondaryAlt)[1]}% ${HexToHSL(secondaryAlt)[2]}%;
+    --primary-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[2]}%;
     --primary-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2]}%;
-    --background-accent: ${primaryLighter};
-    --input-background: var(--background-accent);
-    --channeltextarea-background: var(--background-accent);
+    --primary-560-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
+    --primary-530-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
+    --primary-500-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
+    --primary-430-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 10}%;
 }
 
 /*Primary*/
@@ -1554,36 +1893,51 @@ module.exports = (() => {
 .theme-dark .attachButtonPlus-3IYelE,
 .theme-dark .username-h_Y3Us:not([style]),
 .theme-dark .children-3xh0VB *,
-.theme-dark .buttonContainer-1502pf * {
+.theme-dark .buttonContainer-1502pf *,
+.theme-dark .listItem-3SmSlK * {
     --white-500: ${primaryTextColor} !important;
+    --text-normal: ${primaryTextColor} !important;
+    --header-primary: ${primaryTextColor} !important;
 }
 .theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
     --white-500: ${primaryTextColor} !important;
 }
 .theme-dark .callContainer-HtHELf * {
-    --white-500: white !important;
+    --white-500: ${tertiaryTextColor} !important;
 }
 .theme-dark .channelTextArea-1FufC0 * {
     --text-normal: ${primaryLighterTextColor};
 }
-.placeholder-1rCBhr {
+.theme-dark .placeholder-1rCBhr {
     --channel-text-area-placeholder: ${primaryLighterTextColor};
     opacity: .6;
+}
+.theme-dark .colorwaySelectorIcon {
+    background-color: ${primaryTextColor};
+}
+.theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
+    color: ${primaryTextColor};
 }
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
 .theme-dark .sidebar-1tnWFu *:not(.hasBanner-2IrYih *),
 .theme-dark .members-3WRCEx *:not([style]),
 .theme-dark .sidebarRegionScroller-FXiQOh *,
-.theme-dark .header-1XpmZs {
+.theme-dark .header-1XpmZs,
+.theme-dark .lookFilled-1H2Jvj.colorPrimary-2-Lusz {
     --white-500: ${secondaryTextColor} !important;
     --channels-default: ${secondaryMuted} !important;
     --channel-icon: ${secondaryMuted} !important;
+    --interactive-normal: var(--white-500);
     --interactive-active: var(--white-500);
 }
 .theme-dark #app-mount .activity-2EQDZv,
 .theme-dark #app-mount .activity-2EQDZv * {
     --channels-default: var(--white-500) !important;
+}
+.theme-dark .nameTag-sc-gpq {
+    --header-primary: ${secondaryTextColor} !important;
+    --header-secondary: ${secondaryMuted} !important;
 }
 .theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
 .theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
@@ -1599,17 +1953,30 @@ module.exports = (() => {
 }
 /*Tertiary*/
 .theme-dark .winButton-3UMjdg,
-.theme-dark .listItem-3SmSlK *,
 .theme-dark .searchBar-2aylmZ *,
 .theme-dark .wordmarkWindows-2dq6rw,
 .theme-dark .searchBar-jGtisZ *,
 .theme-dark .searchBarComponent-3N7dCG {
     --white-500: ${tertiaryTextColor} !important;
 }
+.theme-dark [style="background-color: var(--background-secondary);"] {
+    color: ${secondaryTextColor};
+}
+.theme-dark .popout-TdhJ6Z > *,
+.theme-dark .colorwayHeaderTitle {
+    --interactive-normal: ${tertiaryTextColor} !important;
+    --header-secondary: ${tertiaryTextColor} !important;
+}
+.theme-dark .tooltip-33Jwqe {
+    --text-normal: ${tertiaryTextColor} !important;
+}
 /*Accent*/
 .theme-dark .selected-2r1Hvo *,
 .theme-dark .selected-1Drb7Z * {
     --white-500: ${accentTextColor} !important;
+}
+.theme-dark .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
+    background-color: ${accentTextColor} !important;
 }
 `
                                 customColorway = [
