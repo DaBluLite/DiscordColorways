@@ -14,11 +14,12 @@
     --modal-footer-background: var(--background-secondary);
 }
 .theme-dark {
-    --background-floating: #04070F;
-    --background-tertiary: #080d1d;
-    --background-secondary-alt: #121633;
-    --background-secondary: #1c1f48;
-    --background-primary: #222456;
+    --primary-800: #04070F;
+    --primary-700: #080d1d;
+    --primary-660: #121633;
+    --primary-645: #171B3E;
+    --primary-630: #1c1f48;
+    --primary-600: #222456;
     --background-accent: #2f2f70;
 }
 .theme-light {
