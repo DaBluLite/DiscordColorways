@@ -88,5 +88,19 @@
       "author": "DaBluLite",
       "authorID": "582170007505731594"
     }
+  ],
+  "layouts": [
+    {
+      "name": "Default",
+      "import": "",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
+    },
+    {
+      "name": "MobileV2",
+      "import": "@import url(//dablulite.github.io/MobileV2/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
+    }
   ]
 }
