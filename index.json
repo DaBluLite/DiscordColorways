@@ -78,6 +78,28 @@
       "authorID": "582170007505731594"
     },
     {
+      "name": "Lava",
+      "original": true,
+      "accent": "hsl(4, 80.4%, 32%)",
+      "primary": "#401b17",
+      "secondary": "#351917",
+      "tertiary": "#230b0b",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Lava/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
+    },
+    {
+      "name": "Solid Pink",
+      "original": true,
+      "accent": "hsl(340, 55.2%, 56.3%)",
+      "primary": "#1e151c",
+      "secondary": "#21181f",
+      "tertiary": "#291e27",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/SolidPink/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
+    },
+    {
       "name": "AMOLED",
       "original": true,
       "accent": "hsl(235 85.6% 64.7%)",
