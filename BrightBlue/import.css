@@ -1,55 +1,151 @@
+/*Automatically Generated - Colorway Creator V1.7*/
 :root {
-    --scrollbar-auto-track: var(--background-secondary);
-    --scrollbar-auto-thumb: var(--background-tertiary);
-    --scrollbar-thin-thumb: var(--background-tertiary);
-    --button-secondary-background: var(--background-secondary);
-    --button-secondary-background-active: var(--background-secondary);
-    --button-secondary-background-hover: var(--background-secondary-alt);
-    --background-modifier-selected: var(--background-secondary-alt);
-    --background-modifier-hover: var(--background-primary);
-    --background-modifier-active: var(--background-tertiary);
-    --brand-100-hsl: 230 45% 84%;
-    --brand-130-hsl: 230 45% 84%;
-    --brand-160-hsl: 230 45% 84%;
-    --brand-200-hsl: 231 44% 74%;
-    --brand-230-hsl: 231 44% 74%;
-    --brand-260-hsl: 231 44% 74%;
-    --brand-300-hsl: 231 44% 64%;
-    --brand-330-hsl: 231 44% 64%;
-    --brand-345-hsl: 231 44% 64%;
-    --brand-360-hsl: 231 44% 64%;
-    --brand-400-hsl: 231 44% 56%;
-    --brand-430-hsl: 231 44% 56%;
-    --brand-460-hsl: 231 44% 56%;
-    --brand-500-hsl: 234 68% 33%;
-    --brand-530-hsl: 231 48% 48%;
-    --brand-560-hsl: 231 48% 48%;
-    --brand-600-hsl: 231 51% 45%;
-    --brand-630-hsl: 231 51% 45%;
-    --brand-660-hsl: 231 51% 45%;
-    --brand-700-hsl: 232 54% 42%;
-    --brand-730-hsl: 232 54% 42%;
-    --brand-760-hsl: 232 54% 42%;
-    --brand-800-hsl: 233 59% 39%;
-    --brand-830-hsl: 233 59% 39%;
-    --brand-860-hsl: 233 59% 39%;
-    --brand-900-hsl: 234 68% 33%;
-    --modal-background: var(--background-primary);
-    --modal-footer-background: var(--background-secondary);
+    --brand-100-hsl: 234 67.9% -13.900000000000006%;
+    --brand-140-hsl: 234 67.9% -10.300000000000004%;
+    --brand-160-hsl: 234 67.9% -6.700000000000003%;
+    --brand-200-hsl: 234 67.9% -3.1000000000000014%;
+    --brand-230-hsl: 234 67.9% 0.5%;
+    --brand-260-hsl: 234 67.9% 4.099999999999998%;
+    --brand-300-hsl: 234 67.9% 7.699999999999999%;
+    --brand-330-hsl: 234 67.9% 11.299999999999997%;
+    --brand-345-hsl: 234 67.9% 14.899999999999999%;
+    --brand-360-hsl: 234 67.9% 18.5%;
+    --brand-400-hsl: 234 67.9% 22.099999999999998%;
+    --brand-430-hsl: 234 67.9% 25.7%;
+    --brand-460-hsl: 234 67.9% 29.299999999999997%;
+    --brand-500-hsl: 234 67.9% 32.9%;
+    --brand-530-hsl: 234 67.9% 36.5%;
+    --brand-560-hsl: 234 67.9% 40.1%;
+    --brand-600-hsl: 234 67.9% 43.7%;
+    --brand-630-hsl: 234 67.9% 47.3%;
+    --brand-660-hsl: 234 67.9% 50.9%;
+    --brand-700-hsl: 234 67.9% 54.5%;
+    --brand-730-hsl: 234 67.9% 58.099999999999994%;
+    --brand-760-hsl: 234 67.9% 61.7%;
+    --brand-800-hsl: 234 67.9% 65.3%;
+    --brand-830-hsl: 234 67.9% 68.9%;
+    --brand-860-hsl: 234 67.9% 72.5%;
+    --brand-900-hsl: 234 67.9% 76.1%;
+    --primary-460: gray;
+    --mention-foreground: white !important;
+    --primary-800-hsl: 234 69% 22.7%;
+    --primary-730-hsl: 234 67.9% 32.9%;
+    --primary-700-hsl: 234 67.9% 32.9%;
+    --primary-660-hsl: 233 59.2% 30.8%;
+    --primary-645-hsl: 231 50.6% 40.3%;
+    --primary-630-hsl: 233 58.6% 38.8%;
+    --primary-600-hsl: 231 50.6% 45.3%;
+    --primary-560-hsl: 231 59.8% 54.1%;
+    --primary-530-hsl: 231 59.8% 54.1%;
+    --primary-500-hsl: 231 59.8% 54.1%;
+    --primary-430-hsl: 231 59.8% 46.9%;
+    --primary-400-hsl: 231 59.8% 43.3%;
 }
-.theme-dark {
-    --background-floating: #2c2f4c;
-    --background-tertiary: #1b278d;
-    --background-secondary-alt: #3140a5;
-    --background-secondary: #29379d;
-    --background-primary: #394aae;
-    --background-accent: #3140a5;
-    --input-background: var(--background-accent);
-    --channeltextarea-background: var(--background-accent);
+.theme-dark .container-2IKOsH, .theme-dark .header-3xB4vB, .theme-dark .container-1um7CU {
+    background: var(--primary-645) !important;
 }
-.lookFilled-1H2Jvj.colorPrimary-2-Lusz {
-    color: var(--header-primary);
+.innerHeader-1cC3Fp:after {
+    content: none;
 }
-.panels-3wFtMD .flex-2S1XBF > button {
-    color: var(--header-primary) !important;
+/*Primary*/
+.theme-dark .container-2cd8Mz *,
+.theme-dark .body-16rSsp *,
+.theme-dark .toolbar-3_r2xA *,
+.theme-dark .container-89zvna *,
+.theme-dark .messageContent-2t3eCI,
+.theme-dark .attachButtonPlus-3IYelE,
+.theme-dark .username-h_Y3Us:not([style]),
+.theme-dark .children-3xh0VB *,
+.theme-dark .buttonContainer-1502pf *,
+.theme-dark .listItem-3SmSlK * {
+    --white-500: white !important;
+    --text-normal: white !important;
+    --header-primary: white !important;
+}
+.theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
+    --white-500: white !important;
+}
+.theme-dark .callContainer-HtHELf * {
+    --white-500: white !important;
+}
+.theme-dark .channelTextArea-1FufC0 * {
+    --text-normal: white;
+}
+.theme-dark .placeholder-1rCBhr {
+    --channel-text-area-placeholder: white;
+    opacity: .6;
+}
+.theme-dark .colorwaySelectorIcon {
+    background-color: white;
+}
+.theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
+    color: white;
+}
+.theme-dark .chat-2ZfjoI * {
+    --channel-icon: white !important;
+}
+/*Secondary*/
+.theme-dark .wrapper-2RrXDg *,
+.theme-dark .sidebar-1tnWFu *:not(.hasBanner-2IrYih *),
+.theme-dark .members-3WRCEx *:not([style]),
+.theme-dark .sidebarRegionScroller-FXiQOh *,
+.theme-dark .header-1XpmZs,
+.theme-dark .lookFilled-1H2Jvj.colorPrimary-2-Lusz {
+    --white-500: white !important;
+    --channels-default: hsl(233.2758620689655, 100%, 90%) !important;
+    --channel-icon: hsl(233.2758620689655, 100%, 90%) !important;
+    --interactive-normal: var(--white-500);
+    --interactive-active: var(--white-500);
+}
+.theme-dark #app-mount .activity-2EQDZv,
+.theme-dark #app-mount .activity-2EQDZv * {
+    --channels-default: var(--white-500) !important;
+}
+.theme-dark .nameTag-sc-gpq {
+    --header-primary: white !important;
+    --header-secondary: hsl(233.2758620689655, 100%, 90%) !important;
+}
+.theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
+.theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
+.theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
+.theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
+    --channel-icon: var(--interactive-active) !important;
+}
+.theme-dark .bannerVisible-Vkyg1I .headerContent-2SNbie {
+    color: #fff;
+}
+.theme-dark .embedFull-1HGV2S {
+    --text-normal: white;
+}
+/*Tertiary*/
+.theme-dark .winButton-3UMjdg,
+.theme-dark .searchBar-2aylmZ *,
+.theme-dark .wordmarkWindows-2dq6rw,
+.theme-dark .searchBar-jGtisZ *,
+.theme-dark .searchBarComponent-3N7dCG {
+    --white-500: white !important;
+}
+.theme-dark [style="background-color: var(--background-secondary);"] {
+    color: white;
+}
+.theme-dark .popout-TdhJ6Z > *,
+.theme-dark .colorwayHeaderTitle {
+    --interactive-normal: white !important;
+    --header-secondary: white !important;
+}
+.theme-dark .tooltip-33Jwqe {
+    --text-normal: white !important;
+}
+/*Accent*/
+.selected-2r1Hvo *,
+.selected-1Drb7Z *,
+#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N,
+.colorDefault-2_rLdz.focused-3LIdPu,
+.row-1qtctT:hover,
+.colorwayInfoIcon,
+.colorwayCheckIcon {
+    --white-500: white !important;
+}
+.ColorwaySelectorBtn:hover .colorwaySelectorIcon {
+    background-color: white !important;
 }
