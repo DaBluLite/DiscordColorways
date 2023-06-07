@@ -1,3 +1,4 @@
+/*Automatically Generated - Colorway Creator V1.7*/
 :root {
     --brand-100-hsl: 340 55.2% 9.499999999999993%;
     --brand-140-hsl: 340 55.2% 13.099999999999994%;
@@ -31,6 +32,7 @@
     --primary-730-hsl: 311 15.5% 13.9%;
     --primary-700-hsl: 311 15.5% 13.9%;
     --primary-660-hsl: 317 15.6% 8.8%;
+    --primary-645-hsl: 313 17.6% 5%;
     --primary-630-hsl: 313 15.8% 11.2%;
     --primary-600-hsl: 313 17.6% 10%;
     --primary-560-hsl: 316 18% 12%;
@@ -39,7 +41,12 @@
     --primary-430-hsl: 316 18% 4.8%;
     --primary-400-hsl: 316 18% 1.1999999999999993%;
 }
-
+.theme-dark .container-2IKOsH, .theme-dark .header-3xB4vB, .theme-dark .container-1um7CU {
+    background: var(--primary-645) !important;
+}
+.innerHeader-1cC3Fp:after {
+    content: none;
+}
 /*Primary*/
 .theme-dark .container-2cd8Mz *,
 .theme-dark .body-16rSsp *,
@@ -73,6 +80,9 @@
 }
 .theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
     color: white;
+}
+.theme-dark .chat-2ZfjoI * {
+    --channel-icon: white !important;
 }
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
@@ -127,11 +137,15 @@
     --text-normal: white !important;
 }
 /*Accent*/
-.theme-dark .selected-2r1Hvo *,
-.theme-dark .selected-1Drb7Z *,
-.theme-dark #app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N {
+.selected-2r1Hvo *,
+.selected-1Drb7Z *,
+#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N,
+.colorDefault-2_rLdz.focused-3LIdPu,
+.row-1qtctT:hover,
+.colorwayInfoIcon,
+.colorwayCheckIcon {
     --white-500: white !important;
 }
-.theme-dark .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
+.ColorwaySelectorBtn:hover .colorwaySelectorIcon {
     background-color: white !important;
 }
