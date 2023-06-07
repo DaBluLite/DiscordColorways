@@ -36,7 +36,8 @@
     --primary-560-hsl: 316 18% 12%;
     --primary-530-hsl: 316 18% 12%;
     --primary-500-hsl: 316 18% 12%;
-    --primary-430-hsl: 316 18% 2%;
+    --primary-430-hsl: 316 18% 4.8%;
+    --primary-400-hsl: 316 18% 1.1999999999999993%;
 }
 
 /*Primary*/
@@ -127,7 +128,8 @@
 }
 /*Accent*/
 .theme-dark .selected-2r1Hvo *,
-.theme-dark .selected-1Drb7Z * {
+.theme-dark .selected-1Drb7Z *,
+.theme-dark #app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N {
     --white-500: white !important;
 }
 .theme-dark .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
