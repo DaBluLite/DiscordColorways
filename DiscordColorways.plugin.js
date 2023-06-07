@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.5.2
+* @version 1.5.3
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,7 +49,8 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.5.2",
+            version: "1.5.3",
+            creatorVersion: "1.6",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -959,6 +960,29 @@ module.exports = (() => {
                                                                         new ColorwaySelector(el).mount();
                                                                     }
                                                                 }
+                                                                if(colorway.name == BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                                                    try {
+                                                                        PluginUtilities.removeStyle("activeColorway")
+                                                                    } catch(e) {
+                                                                        console.log("No active colorway, moving on");
+                                                                    }
+                                                                    userSettings = {
+                                                                        activeColorway: "",
+                                                                        activeColorwayID: "disablecolorway",
+                                                                        showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar,
+                                                                        showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
+                                                                    }
+                                                                    BdApi.saveData("DiscordColorways", "settings", userSettings);
+                                                                    PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
+                                                                    try {
+                                                                        if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                                                            document.querySelector(".discordColorway.active").classList.remove("active");
+                                                                        }
+                                                                    } catch(e) {
+                                                                        console.warn("Uncaught Exception: " + e);
+                                                                    }
+                                                                    document.getElementById("colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID).classList.add("active");
+                                                                }
                                                             }
                                                         });
                                                     }
@@ -1051,7 +1075,7 @@ module.exports = (() => {
                     },
                     createElement("div", {
                         className: Utilities.className("colorwayHeaderTitle")
-                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.5")));
+                    }, "Custom Colorways", versionBadge("ColorwayCreator", config.info.creatorVersion)));
 
 
                     container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
@@ -1395,7 +1419,6 @@ module.exports = (() => {
                                             (parseInt(splitRGBValuesLighter[1]) * 587) +
                                             (parseInt(splitRGBValuesLighter[2]) * 114)) / 1000);
                                         primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
-                                        console.log(primaryTextColor);
                                         primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'white';
                                         e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
@@ -1433,7 +1456,6 @@ module.exports = (() => {
                                             (parseInt(splitRGBValuesLighter[1]) * 587) +
                                             (parseInt(splitRGBValuesLighter[2]) * 114)) / 1000);
                                         primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
-                                        console.log(primaryTextColor);
                                         primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'white';
                                         e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
@@ -1753,7 +1775,6 @@ module.exports = (() => {
                                     return Function(`'use strict'; return (${str})`)()
                                 }
                                 try {
-                                    console.log(getComputedStyle(document.body).getPropertyValue('--background-primary'));
                                     if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "hex") {
                                         if(getComputedStyle(document.body).getPropertyValue('--background-primary').includes(" ")) {
                                             document.getElementById("colorwayCreatorColorpicker_primary").value = getComputedStyle(document.body).getPropertyValue('--background-primary').replace(" ","").replace(" ","").replace(" ","");
@@ -1772,7 +1793,6 @@ module.exports = (() => {
                                         }
                                     }
 
-                                    console.log(getComputedStyle(document.body).getPropertyValue('--background-secondary'));
                                     if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "hex") {
                                         if(getComputedStyle(document.body).getPropertyValue('--background-secondary').includes(" ")) {
                                             document.getElementById("colorwayCreatorColorpicker_secondary").value = getComputedStyle(document.body).getPropertyValue('--background-secondary').replace(" ","").replace(" ","").replace(" ","");
@@ -1791,7 +1811,6 @@ module.exports = (() => {
                                         }
                                     }
 
-                                    console.log(getComputedStyle(document.body).getPropertyValue('--background-tertiary'));
                                     if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "hex") {
                                         if(getComputedStyle(document.body).getPropertyValue('--background-tertiary').includes(" ")) {
                                             document.getElementById("colorwayCreatorColorpicker_tertiary").value = getComputedStyle(document.body).getPropertyValue('--background-tertiary').replace(" ","").replace(" ","").replace(" ","");
@@ -1842,7 +1861,7 @@ module.exports = (() => {
                                 if(!document.getElementById("discordColorwayCreator_name").value) {
                                     document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
                                 }
-                                let customColorwayCSS = `/*Automatically Generated - Colorway Creator V1.5*/
+                                let customColorwayCSS = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion}*/
 :root {
     --brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*13)}%;
     --brand-140-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*12)}%;
@@ -1972,12 +1991,16 @@ module.exports = (() => {
     --text-normal: ${tertiaryTextColor} !important;
 }
 /*Accent*/
-.theme-dark .selected-2r1Hvo *,
-.theme-dark .selected-1Drb7Z *,
-.theme-dark #app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N {
+.selected-2r1Hvo *,
+.selected-1Drb7Z *,
+#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N,
+.colorDefault-2_rLdz.focused-3LIdPu,
+.row-1qtctT:hover,
+.colorwayInfoIcon,
+.colorwayCheckIcon {
     --white-500: ${accentTextColor} !important;
 }
-.theme-dark .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
+.ColorwaySelectorBtn:hover .colorwaySelectorIcon {
     background-color: ${accentTextColor} !important;
 }
 `
