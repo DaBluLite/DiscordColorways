@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.5.3
+* @version 1.6.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,8 +49,8 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.5.3",
-            creatorVersion: "1.6",
+            version: "1.6.0",
+            creatorVersion: "1.7",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -147,6 +147,12 @@ module.exports = (() => {
                     class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
                     style: "background-color: var(--background-secondary);"
                 }, text + " V" + ver);
+            }
+            let primaryBadge = (text) => {
+                return createElement("div", {
+                    class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
+                    style: "background-color: var(--background-secondary);"
+                }, text);
             }
             let unstableBadge = () => {
                 return createElement("div", {
@@ -396,12 +402,15 @@ module.exports = (() => {
                 render() {
                     let colorwayArray = [];
                     let customcolorwayArray = [];
+
                     let wrapper = createElement("div", {
                         className: Utilities.className("ColorwaySelectorWrapper"),
                     });
+
                     let customwrapper = createElement("div", {
                         className: Utilities.className("ColorwaySelectorWrapper customColorwaySelector"),
                     });
+
                     let disableColorwayBtn = createElement("div", {
                         className: Utilities.className("discordColorway"),
                         id: "colorway-disablecolorway",
@@ -646,7 +655,9 @@ module.exports = (() => {
                                                     }
                                                     userSettings = {
                                                         activeColorway: colorway.import,
-                                                        activeColorwayID: colorway.name
+                                                        activeColorwayID: colorway.name,
+                                                        showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar,
+                                                        showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
                                                     }
                                                     BdApi.saveData("DiscordColorways", "settings", userSettings);
                                                     PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
@@ -835,6 +846,17 @@ module.exports = (() => {
                                                     class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                                     onClick: (e) => {
                                                         try {
+                                                            DiscordNative.clipboard.copy(colorway.import);
+                                                        } catch(e) {
+                        
+                                                        }
+                                                        nativeToast("Copied CSS to Clipboard",1);
+                                                    }
+                                                },"Copy CSS"),
+                                                BdApi.React.createElement("button",{
+                                                    class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                    onClick: (e) => {
+                                                        try {
                                                             e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
                                                         } catch(e) {
                         
@@ -999,7 +1021,9 @@ module.exports = (() => {
                                                     }
                                                     userSettings = {
                                                         activeColorway: colorway.import,
-                                                        activeColorwayID: colorway.name
+                                                        activeColorwayID: colorway.name,
+                                                        showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar,
+                                                        showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
                                                     }
                                                     BdApi.saveData("DiscordColorways", "settings", userSettings);
                                                     PluginUtilities.addStyle("activeColorway", BdApi.loadData("DiscordColorways", "settings").activeColorway);
@@ -1026,8 +1050,6 @@ module.exports = (() => {
                     } catch(e) {
                         console.warn("Unexpected error: " + e);
                     }
-
-
 
                     const container = this.container.cloneNode(true);
                     const state = this.state = this.getState();
@@ -1076,7 +1098,6 @@ module.exports = (() => {
                     createElement("div", {
                         className: Utilities.className("colorwayHeaderTitle")
                     }, "Custom Colorways", versionBadge("ColorwayCreator", config.info.creatorVersion)));
-
 
                     container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
 
@@ -1895,6 +1916,7 @@ module.exports = (() => {
     --primary-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
     --primary-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
     --primary-660-hsl: ${HexToHSL(secondaryAlt)[0]} ${HexToHSL(secondaryAlt)[1]}% ${HexToHSL(secondaryAlt)[2]}%;
+    --primary-645-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2] - 5}%;
     --primary-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[2]}%;
     --primary-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2]}%;
     --primary-560-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
@@ -1903,7 +1925,12 @@ module.exports = (() => {
     --primary-430-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 7.2}%;
     --primary-400-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 10.8}%;
 }
-
+.theme-dark .container-2IKOsH, .theme-dark .header-3xB4vB, .theme-dark .container-1um7CU {
+    background: var(--primary-645) !important;
+}
+.innerHeader-1cC3Fp:after {
+    content: none;
+}
 /*Primary*/
 .theme-dark .container-2cd8Mz *,
 .theme-dark .body-16rSsp *,
@@ -1937,6 +1964,9 @@ module.exports = (() => {
 }
 .theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
     color: ${primaryTextColor};
+}
+.theme-dark .chat-2ZfjoI * {
+    --channel-icon: ${primaryTextColor} !important;
 }
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
@@ -2122,6 +2152,27 @@ module.exports = (() => {
             };
             return class DiscordColorways extends Plugin {
                 css = `
+                .discordColorway-layout {
+                    height: 100px;
+                    width: 176px;
+                    border-radius: 8px;
+                    display: flex;
+                    padding: 3px;
+                    overflow: hidden;
+                    box-shadow: inset 0 0 0 1px var(--interactive-normal);
+                    cursor: pointer;
+                    position: relative;
+                }
+                .discordColorway-layout > * {
+                    border-radius: 6px;
+                    overflow: hidden;
+                }
+                .LayoutWrapper {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                }
                 .colorwayPreview-chatbox {
                     position: absolute;
                     width: 332px;
@@ -2249,7 +2300,8 @@ module.exports = (() => {
                     flex-wrap: wrap;
                     position: relative;
                 }
-                .discordColorway.active {
+                .discordColorway.active,
+                .discordColorway-layout.active {
                     box-shadow: inset 0 0 0 2px var(--brand-500),inset 0 0 0 4px var(--background-primary);
                 }
                 .colorwayAuthor {
@@ -2301,8 +2353,13 @@ module.exports = (() => {
                     border-radius: 50%;
                     opacity: 0;
                 }
-                .discordColorway.active .colorwayCheckIconContainer {
+                .discordColorway.active .colorwayCheckIconContainer,
+                .discordColorway-layout.active .colorwayCheckIconContainer {
                     opacity: 1;
+                }
+                .discordColorway-layout .colorwayCheckIconContainer {
+                    top: 4px;
+                    right: 4px;
                 }
                 .colorwayCheckIcon {
                     height: 20px;
