@@ -100,6 +100,17 @@
       "authorID": "582170007505731594"
     },
     {
+      "name": "Sand",
+      "original": true,
+      "accent": "hsl(41, 31%, 45%)",
+      "primary": "#7f6c43",
+      "secondary": "#665b33",
+      "tertiary": "#5c5733",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Sand/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
+    },
+    {
       "name": "AMOLED",
       "original": true,
       "accent": "hsl(235 85.6% 64.7%)",
@@ -107,6 +118,17 @@
       "secondary": "#000000",
       "tertiary": "#000000",
       "import": "@import url(//dablulite.github.io/DiscordColorways/Amoled/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
+    },
+    {
+      "name": "Zorin",
+      "original": false,
+      "accent": "hsl(200, 89%, 86%)",
+      "primary": "#171d20",
+      "secondary": "#171d20",
+      "tertiary": "#1e2529",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Zorin/import.css);",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
     }
