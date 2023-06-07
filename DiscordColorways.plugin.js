@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.5.1
+* @version 1.5.2
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,7 +49,7 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.5.1",
+            version: "1.5.2",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -1842,7 +1842,7 @@ module.exports = (() => {
                                 if(!document.getElementById("discordColorwayCreator_name").value) {
                                     document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
                                 }
-                                let customColorwayCSS = `/*Automatically Generated - Colorway Creator V1.4*/
+                                let customColorwayCSS = `/*Automatically Generated - Colorway Creator V1.5*/
 :root {
     --brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*13)}%;
     --brand-140-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*12)}%;
@@ -1881,7 +1881,8 @@ module.exports = (() => {
     --primary-560-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
     --primary-530-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
     --primary-500-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
-    --primary-430-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 10}%;
+    --primary-430-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 7.2}%;
+    --primary-400-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 10.8}%;
 }
 
 /*Primary*/
@@ -1972,7 +1973,8 @@ module.exports = (() => {
 }
 /*Accent*/
 .theme-dark .selected-2r1Hvo *,
-.theme-dark .selected-1Drb7Z * {
+.theme-dark .selected-1Drb7Z *,
+.theme-dark #app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N {
     --white-500: ${accentTextColor} !important;
 }
 .theme-dark .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
@@ -2249,7 +2251,7 @@ module.exports = (() => {
                     -webkit-mask-position: center;
                 }
                 #colorway-createcolorway {
-                    
+                    box-shadow: inset 0 0 0 1px var(--interactive-normal);
                 }
                 .colorwayImport {
                     font-weight: 400;
