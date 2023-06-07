@@ -131,6 +131,17 @@
       "import": "@import url(//dablulite.github.io/DiscordColorways/Zorin/import.css);",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
+    },
+    {
+      "name": "Desaturated",
+      "original": false,
+      "accent": "hsl(227, 58%, 65%)",
+      "primary": "#35383d",
+      "secondary": "#2c2f34",
+      "tertiary": "#1e1f24",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Desaturated/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     }
   ],
   "layouts": [
