@@ -1051,7 +1051,7 @@ module.exports = (() => {
                     },
                     createElement("div", {
                         className: Utilities.className("colorwayHeaderTitle")
-                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.4")));
+                    }, "Custom Colorways", versionBadge("ColorwayCreator", "1.5")));
 
 
                     container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
