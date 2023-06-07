@@ -17,6 +17,7 @@ A growing list of Colorways for Discord and most themes
 * [Sand (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/sand)
 * [AMOLED (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Amoled)
 * [Zorin](https://github.com/DaBluLite/DiscordColorways/tree/master/Zorin)
+* [Desaturated](https://github.com/DaBluLite/DiscordColorways/tree/master/Desaturated)
 
 ### Currently Supported themes:
 * Discord Default
