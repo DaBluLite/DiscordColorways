@@ -7,4 +7,4 @@ A Colorway that reverts Discord's 2021 brand color change
 ```
 
 ### Screenshots:
-![image](https://github.com/DaBluLite/DiscordColorways/assets/73998678/93a33a0f-9f42-42fd-a4fd-edd483d1cb7d)
+![image](https://github.com/DaBluLite/DiscordColorways/assets/73998678/8d869d90-2d43-4e10-ad14-7a5c4e3397db)
