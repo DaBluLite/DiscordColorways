@@ -1,7 +1,7 @@
 :root {
-    --brand-100-hsl: 184 100% 3.2%;
-    --brand-140-hsl: 184 100% 6.8%;
-    --brand-160-hsl: 184 100% 10.4%;
+    --brand-100-hsl: 184 100% 3.1999999999999957%;
+    --brand-140-hsl: 184 100% 6.799999999999997%;
+    --brand-160-hsl: 184 100% 10.399999999999999%;
     --brand-200-hsl: 184 100% 14%;
     --brand-230-hsl: 184 100% 17.6%;
     --brand-260-hsl: 184 100% 21.2%;
@@ -27,18 +27,17 @@
     --brand-900-hsl: 184 100% 93.2%;
     --primary-460: gray;
     --mention-foreground: black !important;
-}
-.theme-dark {
-    --primary-800: #010e0f;
-    --primary-700: #08201d;
-    --primary-660-hsl: 181 81% 16%;
-    --primary-645: #0A5556;
-    --primary-630: #0b5e60;
-    --primary-600: #07353b;
-    --primary-560-hsl: 187 79% 15%;
-    --primary-530-hsl: 187 79% 15%;
-    --primary-500-hsl: 187 79% 15%;
-    --primary-430-hsl: 181 81% 16%;
+    --primary-800-hsl: 173 63% 5.3%;
+    --primary-730-hsl: 173 60% 7.8%;
+    --primary-700-hsl: 173 60% 7.8%;
+    --primary-660-hsl: 180 81% 16.5%;
+    --primary-630-hsl: 181 79.4% 21%;
+    --primary-600-hsl: 187 78.8% 12.9%;
+    --primary-560-hsl: 187 79.5% 15.3%;
+    --primary-530-hsl: 187 79.5% 15.3%;
+    --primary-500-hsl: 187 79.5% 15.3%;
+    --primary-430-hsl: 187 79.5% 8.100000000000001%;
+    --primary-400-hsl: 187 79.5% 4.5%;
 }
 
 /*Primary*/
@@ -47,12 +46,14 @@
 .theme-dark .toolbar-3_r2xA *,
 .theme-dark .container-89zvna *,
 .theme-dark .messageContent-2t3eCI,
-.theme-dark .channelTextArea-1FufC0 *,
 .theme-dark .attachButtonPlus-3IYelE,
 .theme-dark .username-h_Y3Us:not([style]),
 .theme-dark .children-3xh0VB *,
-.theme-dark .buttonContainer-1502pf * {
+.theme-dark .buttonContainer-1502pf *,
+.theme-dark .listItem-3SmSlK * {
     --white-500: white !important;
+    --text-normal: white !important;
+    --header-primary: white !important;
 }
 .theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
     --white-500: white !important;
@@ -60,19 +61,39 @@
 .theme-dark .callContainer-HtHELf * {
     --white-500: white !important;
 }
+.theme-dark .channelTextArea-1FufC0 * {
+    --text-normal: white;
+}
+.theme-dark .placeholder-1rCBhr {
+    --channel-text-area-placeholder: white;
+    opacity: .6;
+}
+.theme-dark .colorwaySelectorIcon {
+    background-color: white;
+}
+.theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
+    color: white;
+}
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
 .theme-dark .sidebar-1tnWFu *:not(.hasBanner-2IrYih *),
 .theme-dark .members-3WRCEx *:not([style]),
 .theme-dark .sidebarRegionScroller-FXiQOh *,
-.theme-dark .header-1XpmZs {
+.theme-dark .header-1XpmZs,
+.theme-dark .lookFilled-1H2Jvj.colorPrimary-2-Lusz {
     --white-500: white !important;
-    --channels-default: hsl(181.4, 100%, 90%) !important;
-    --channel-icon: hsl(181.4, 100%, 90%) !important;
+    --channels-default: hsl(180.70588235294116, 100%, 90%) !important;
+    --channel-icon: hsl(180.70588235294116, 100%, 90%) !important;
+    --interactive-normal: var(--white-500);
+    --interactive-active: var(--white-500);
 }
 .theme-dark #app-mount .activity-2EQDZv,
 .theme-dark #app-mount .activity-2EQDZv * {
     --channels-default: var(--white-500) !important;
+}
+.theme-dark .nameTag-sc-gpq {
+    --header-primary: white !important;
+    --header-secondary: hsl(180.70588235294116, 100%, 90%) !important;
 }
 .theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
 .theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
@@ -80,20 +101,37 @@
 .theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
     --channel-icon: var(--interactive-active) !important;
 }
-.theme-dark .bannerVisible-Vkyg1I {
+.theme-dark .bannerVisible-Vkyg1I .headerContent-2SNbie {
     color: #fff;
+}
+.theme-dark .embedFull-1HGV2S {
+    --text-normal: white;
 }
 /*Tertiary*/
 .theme-dark .winButton-3UMjdg,
-.theme-dark .listItem-3SmSlK *,
 .theme-dark .searchBar-2aylmZ *,
 .theme-dark .wordmarkWindows-2dq6rw,
 .theme-dark .searchBar-jGtisZ *,
 .theme-dark .searchBarComponent-3N7dCG {
     --white-500: white !important;
 }
+.theme-dark [style="background-color: var(--background-secondary);"] {
+    color: white;
+}
+.theme-dark .popout-TdhJ6Z > *,
+.theme-dark .colorwayHeaderTitle {
+    --interactive-normal: white !important;
+    --header-secondary: white !important;
+}
+.theme-dark .tooltip-33Jwqe {
+    --text-normal: white !important;
+}
 /*Accent*/
 .theme-dark .selected-2r1Hvo *,
-.theme-dark .selected-1Drb7Z * {
+.theme-dark .selected-1Drb7Z *,
+.theme-dark #app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N {
     --white-500: black !important;
+}
+.theme-dark .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
+    background-color: black !important;
 }
