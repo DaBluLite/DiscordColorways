@@ -14,7 +14,9 @@ A growing list of Colorways for Discord and most themes
 * [Sea (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Sea)
 * [Lava (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Lava)
 * [Solid Pink (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/SolidPink)
+* [Sand (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/sand)
 * [AMOLED (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Amoled)
+* [Zorin](https://github.com/DaBluLite/DiscordColorways/tree/master/Zorin)
 
 ### Currently Supported themes:
 * Discord Default
