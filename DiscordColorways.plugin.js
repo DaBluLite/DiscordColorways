@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.6.1
+* @version 1.7.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,8 +49,8 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.6.1",
-            creatorVersion: "1.7.1",
+            version: "1.7.0",
+            creatorVersion: "1.8",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -686,6 +686,7 @@ module.exports = (() => {
 
                     try {
                         BdApi.loadData("DiscordColorways", "custom_colorways").forEach((colorway) => {
+
                             let colorwayElem = createElement("div", {
                                 className: Utilities.className("discordColorway"),
                                 id: "colorway-" + colorway.name,
@@ -736,22 +737,6 @@ module.exports = (() => {
                                     ]),"Applied Custom Colorway Successfully"]),0);
                                 }
                             },
-                                createElement("div", {
-                                    className: Utilities.className("discordColorwayPreviewColor"),
-                                    style: "background-color: " + colorway.accent.background
-                                }),
-                                createElement("div", {
-                                    className: Utilities.className("discordColorwayPreviewColor"),
-                                    style: "background-color: " + colorway.primary.background
-                                }),
-                                createElement("div", {
-                                    className: Utilities.className("discordColorwayPreviewColor"),
-                                    style: "background-color: " + colorway.secondary.background
-                                }),
-                                createElement("div", {
-                                    className: Utilities.className("discordColorwayPreviewColor"),
-                                    style: "background-color: " + colorway.tertiary.background
-                                }),
                                 createElement("div", {
                                     className: Utilities.className("colorwayCheckIconContainer")
                                 },
@@ -913,6 +898,7 @@ module.exports = (() => {
                                                                                     background: colorway.accent.background,
                                                                                     foreground: colorway.accent.foreground
                                                                                 },
+                                                                                isGradient: colorway.isGradient || false,
                                                                                 import: colorway.import,
                                                                                 author: colorway.author,
                                                                                 authorID: colorway.authorID
@@ -1040,6 +1026,16 @@ module.exports = (() => {
                                     className: Utilities.className("colorwayInfoIcon")
                                 }))
                             );
+
+                            if(colorway.isGradient == true) {
+                                colorwayElem.append(createElement("div", {className: Utilities.className("discordColorwayPreviewGradient"),style: "background: linear-gradient(45deg, " + colorway.tertiary.background + " 0%, " + colorway.primary.background + " 100%);"}),colorwayElem.children[0]);
+                            } else {
+                                colorwayElem.insertBefore(createElement("div", {className: Utilities.className("discordColorwayPreviewColor"),style: "background-color: " + colorway.tertiary.background}),colorwayElem.children[0]);
+                                colorwayElem.insertBefore(createElement("div", {className: Utilities.className("discordColorwayPreviewColor"),style: "background-color: " + colorway.secondary.background}),colorwayElem.children[0]);
+                                colorwayElem.insertBefore(createElement("div", {className: Utilities.className("discordColorwayPreviewColor"),style: "background-color: " + colorway.primary.background}),colorwayElem.children[0]);
+                                colorwayElem.insertBefore(createElement("div", {className: Utilities.className("discordColorwayPreviewColor"),style: "background-color: " + colorway.accent.background}),colorwayElem.children[0]);
+                            }
+
                             BdApi.UI.createTooltip(colorwayElem, colorway.name, {});
                             customcolorwayArray.push(colorwayElem);
                         });
@@ -1334,8 +1330,8 @@ module.exports = (() => {
 
                     container._unmount = this.unmount.bind(this);
 
-                    let primaryTextColor = 'white';
-                    let primaryLighterTextColor = 'white';
+                    let primaryTextColor = 'hsl(210 9.1% 87.1%)';
+                    let primaryLighterTextColor = 'hsl(210 9.1% 87.1%)';
                     let secondaryTextColor = 'white';
                     let tertiaryTextColor = 'white';
                     let accentTextColor = 'white';
@@ -1352,6 +1348,8 @@ module.exports = (() => {
                     let secondaryMuted = "gray";
                     let currentUserProps = WebpackModules.getByProps("getCurrentUser", "getUser").getCurrentUser();
                     let backgroundFloating = [220, 8, 7];
+
+                    let useGradient = false;
 
                     function componentToHex(c) {
                         var hex = c.toString(16);
@@ -1475,8 +1473,8 @@ module.exports = (() => {
                                         let RGBLuminanceCalcLighter = Math.round(((parseInt(splitRGBValuesLighter[0]) * 299) +
                                             (parseInt(splitRGBValuesLighter[1]) * 587) +
                                             (parseInt(splitRGBValuesLighter[2]) * 114)) / 1000);
-                                        primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
-                                        primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'white';
+                                        primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'hsl(210 9.1% 87.1%)';
+                                        primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'hsl(210 9.1% 87.1%)';
                                         e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                                     }
@@ -1514,10 +1512,14 @@ module.exports = (() => {
                                             (parseInt(splitRGBValues[1]) * 587) +
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
                                         secondaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
-                                        if(secondaryTextColor == 'white') {
-                                            secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)";
-                                        } else if(secondaryTextColor == 'black') {
-                                            secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 20%)";
+                                        if(RgbToHsl[0] == 0) {
+                                            secondaryMuted = 'gray'
+                                        } else {
+                                            if(secondaryTextColor == 'white') {
+                                                secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)";
+                                            } else if(secondaryTextColor == 'black') {
+                                                secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 20%)";
+                                            }
                                         }
                                         e.path[0].parentElement.querySelector("span").style = "color: " + secondaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
@@ -1542,10 +1544,14 @@ module.exports = (() => {
                                             (parseInt(splitRGBValues[1]) * 587) +
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
                                         secondaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
-                                        if(secondaryTextColor == 'white') {
-                                            secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)";
-                                        } else if(secondaryTextColor == 'black') {
-                                            secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 20%)";
+                                        if(RgbToHsl[0] == 0) {
+                                            secondaryMuted = 'gray'
+                                        } else {
+                                            if(secondaryTextColor == 'white') {
+                                                secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)";
+                                            } else if(secondaryTextColor == 'black') {
+                                                secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 20%)";
+                                            }
                                         }
                                         e.path[0].parentElement.querySelector("span").style = "color: " + secondaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
@@ -1682,7 +1688,32 @@ module.exports = (() => {
                         className: Utilities.className("colorwayCreatorWrapperStage")
                     });
 
-                    stageOne.append(modalHeader("Name:"),textInput("Give your Colorway a name","discordColorwayCreator_name"),modalHeader("Colors:"),creationPanel,modalHeader("Preview:"),
+                    stageOne.append(modalHeader("Name:"),textInput("Give your Colorway a name","discordColorwayCreator_name"),modalHeader("Colors:"),creationPanel,createElement("div", {
+                        class: "settingRow"
+                    },
+                    "Gradient",createElement("div",{
+                        class: "choiceContainer"
+                    },
+                    createElement("div",{
+                        class:"choice",
+                        onclick: (e) => {
+                            if(!e.path[0].classList.contains("active")) {
+                                e.path[0].parentElement.querySelector(".active").classList.remove("active");
+                                e.path[0].classList.add("active");
+                                useGradient = true;
+                            }
+                        }
+                    },"On"),
+                    createElement("div",{
+                        class:"choice active",
+                        onclick: (e) => {
+                            if(!e.path[0].classList.contains("active")) {
+                                e.path[0].parentElement.querySelector(".active").classList.remove("active");
+                                e.path[0].classList.add("active");
+                                useGradient = false;
+                            }
+                        }
+                    },"Off"))),modalHeader("Preview:"),
                     createElement("div",{
                         class: "colorwayPreview-background",
                         style: "background-color: " + backgroundTertiary + ";"
@@ -1878,8 +1909,54 @@ module.exports = (() => {
                         }),
                         modalBtn("Finish",{
                             onclick: (e) => {
+                                let gradientCSS = ``;
                                 if(!document.getElementById("discordColorwayCreator_name").value) {
                                     document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
+                                }
+                                if(useGradient == true) {
+                                    gradientCSS = `:root {
+    --bg-overlay-color: 0 0 0;
+    --bg-overlay-color-inverse: 255 255 255;
+    --bg-overlay-opacity-1: 0.2;
+    --bg-overlay-opacity-2: 0;
+    --bg-overlay-opacity-3: 0.3;
+    --bg-overlay-opacity-4: 0.5;
+    --bg-overlay-opacity-5: 0.4;
+    --bg-overlay-opacity-6: 0.1;
+    --bg-overlay-opacity-hover: 0.5;
+    --bg-overlay-opacity-hover-inverse: 0.08;
+    --bg-overlay-opacity-active: 0.45;
+    --bg-overlay-opacity-active-inverse: 0.1;
+    --bg-overlay-opacity-selected: 0.4;
+    --bg-overlay-opacity-selected-inverse: 0.15;
+    --bg-overlay-opacity-chat: 0;
+    --bg-overlay-opacity-home: 0.85;
+    --bg-overlay-opacity-home-card: 0.8;
+    --bg-overlay-opacity-app-frame: var(--bg-overlay-opacity-4);
+    --bg-overlay-1: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-1)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-1))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-2: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-2)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-2))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-3: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-3)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-3))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-4: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-4)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-4))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-5: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-5)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-5))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-6: linear-gradient(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6)),rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-hover: linear-gradient(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-hover-inverse)),rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-hover-inverse))) fixed 0 0/cover,linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-hover)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-hover))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-active: linear-gradient(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-active-inverse)),rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-active-inverse))) fixed 0 0/cover,linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-active)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-active))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-selected: linear-gradient(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-selected-inverse)),rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-selected-inverse))) fixed 0 0/cover,linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-selected)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-selected))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-chat: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-chat)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-chat))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-home: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-home-card: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home-card)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home-card))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --bg-overlay-app-frame: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-app-frame)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-app-frame))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
+    --custom-theme-background: linear-gradient(128.92deg, var(--primary-800) 3.94%, var(--primary-700) 26.1%, var(--primary-600) 39.82%, var(--primary-500) 56.89%, var(--primary-400) 76.45%);
+}
+                                    .guilds-2JjMmN {
+    background: var(--bg-overlay-app-frame,--background-tertiary);
+}
+.sidebarRegionScroller-FXiQOh {
+    background: var(--bg-overlay-1,--background-secondary);
+}
+.contentRegionScroller-2_GT_N {
+    background: var(--bg-overlay-chat,--background-primary);
+}`
                                 }
                                 let customColorwayCSS = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion}*/
 :root {
@@ -1979,6 +2056,7 @@ module.exports = (() => {
     --channels-default: ${secondaryMuted} !important;
     --channel-icon: ${secondaryMuted} !important;
     --interactive-normal: var(--white-500);
+    --interactive-hover: var(--white-500);
     --interactive-active: var(--white-500);
 }
 .theme-dark .channelRow-4X_3fi {
@@ -1994,12 +2072,6 @@ module.exports = (() => {
 .theme-dark .nameTag-sc-gpq {
     --header-primary: ${secondaryTextColor} !important;
     --header-secondary: ${secondaryMuted} !important;
-}
-.theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
-.theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
-    --channel-icon: var(--interactive-active) !important;
 }
 .theme-dark .bannerVisible-Vkyg1I .headerContent-2SNbie {
     color: #fff;
@@ -2039,6 +2111,7 @@ module.exports = (() => {
 .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
     background-color: ${accentTextColor} !important;
 }
+${gradientCSS}
 `
                                 customColorway = [
                                     {
@@ -2063,6 +2136,7 @@ module.exports = (() => {
                                         background: document.getElementById("colorwayCreatorColorpicker_accent").value,
                                         foreground: accentTextColor
                                     },
+                                    isGradient: useGradient,
                                     import: customColorwayCSS,
                                     author: currentUserProps.username,
                                     authorID: currentUserProps.id
@@ -2158,6 +2232,41 @@ module.exports = (() => {
             };
             return class DiscordColorways extends Plugin {
                 css = `
+                .choiceContainer {
+                    display: flex;
+                    flex-direction: row;
+                    border-radius: 8px;
+                    background-color: var(--background-primary);
+                    box-shadow: 0 0 0 1px var(--background-secondary-alt);
+                    height: 40px;
+                    overflow: hidden;
+                    width: fit-content;
+                }
+                .choiceContainer > .choice {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: fit-content;
+                    padding: 0 24px;
+                    cursor: pointer;
+                    transition: .15s;
+                }
+                .choiceContainer > .choice:hover {
+                    background-color: var(--background-accent);
+                }
+                .choiceContainer > .choice:active {
+                    background-color: var(--background-secondary-alt);
+                }
+                .choiceContainer > .choice.active {
+                    background-color: var(--background-secondary);
+                }
+                .settingRow {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    color: var(--header-primary);
+                    line-height: 36px;
+                }
                 .colorwayPreview-chatbox {
                     position: absolute;
                     width: 332px;
@@ -2358,6 +2467,7 @@ module.exports = (() => {
                     left: 0;
                     border-radius: 50%;
                     opacity: 0;
+                    z-index: +1;
                 }
                 .colorwayInfoIconContainer:hover {
                     background-color: var(--brand-700);
@@ -2378,6 +2488,14 @@ module.exports = (() => {
                 .discordColorwayPreviewColor {
                     width: 27px;
                     height: 27px;
+                    pointer-events: none;
+                }
+                .discordColorwayPreviewGradient {
+                    width: 54px;
+                    height: 54px;
+                    pointer-events: none;
+                    margin: 3px;
+                    border-radius: 50%;
                 }
                 .discordColorwayPreviewColor:first-of-type {
                     border-radius: 50px 0 0 0;
