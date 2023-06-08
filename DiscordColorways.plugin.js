@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.7.0
+* @version 1.7.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -50,7 +50,7 @@ module.exports = (() => {
                 }
             ],
             version: "1.7.0",
-            creatorVersion: "1.8",
+            creatorVersion: "1.8.1",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -1028,7 +1028,7 @@ module.exports = (() => {
                             );
 
                             if(colorway.isGradient == true) {
-                                colorwayElem.append(createElement("div", {className: Utilities.className("discordColorwayPreviewGradient"),style: "background: linear-gradient(45deg, " + colorway.tertiary.background + " 0%, " + colorway.primary.background + " 100%);"}),colorwayElem.children[0]);
+                                colorwayElem.append(createElement("div", {className: Utilities.className("discordColorwayPreviewGradient"),style: "background: linear-gradient(-45deg, " + colorway.primary.background + " 0%, " + colorway.tertiary.background + " 100%);"}),colorwayElem.children[0]);
                             } else {
                                 colorwayElem.insertBefore(createElement("div", {className: Utilities.className("discordColorwayPreviewColor"),style: "background-color: " + colorway.tertiary.background}),colorwayElem.children[0]);
                                 colorwayElem.insertBefore(createElement("div", {className: Utilities.className("discordColorwayPreviewColor"),style: "background-color: " + colorway.secondary.background}),colorwayElem.children[0]);
@@ -1349,6 +1349,8 @@ module.exports = (() => {
                     let currentUserProps = WebpackModules.getByProps("getCurrentUser", "getUser").getCurrentUser();
                     let backgroundFloating = [220, 8, 7];
 
+                    let gradientPreview = ''
+
                     let useGradient = false;
 
                     function componentToHex(c) {
@@ -1424,9 +1426,9 @@ module.exports = (() => {
                                         let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
                                         primaryLighter = shadeColor(RgbToHex, 20);
                                         let splitRGBValuesLighter = hexToRgb(primaryLighter);
-                                        document.querySelector(".colorwayPreview-chat").style.backgroundColor = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-chatbox").style.backgroundColor = primaryLighter;
                                         backgroundPrimary = e.path[0].value;
+                                        document.querySelector(".colorwayPreview-chat").style = "background: var(--primary-gradient,var(--primary)); --primary: " + backgroundPrimary + ";";
+                                        document.querySelector(".colorwayPreview-chatbox").style = "background: var(--lighter-gradient,var(--lighter)); --lighter: " + primaryLighter + ";";
                                         document.querySelectorAll(".colorwayPreview-guildsIcon").forEach(el => {
                                             el.style = "background-color: " + backgroundPrimary + "; --background-hover: " + accent + ";";
                                         })
@@ -1461,9 +1463,9 @@ module.exports = (() => {
                                         let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
                                         primaryLighter = shadeColor(RgbToHex, 20);
                                         let splitRGBValuesLighter = hexToRgb(primaryLighter);
-                                        document.querySelector(".colorwayPreview-chat").style.backgroundColor = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-chatbox").style.backgroundColor = primaryLighter;
                                         backgroundPrimary = e.path[0].value;
+                                        document.querySelector(".colorwayPreview-chat").style = "background: var(--primary-gradient,var(--primary)); --primary: " + backgroundPrimary + ";";
+                                        document.querySelector(".colorwayPreview-chatbox").style = "background: var(--lighter-gradient,var(--lighter)); --lighter: " + primaryLighter + ";";
                                         document.querySelectorAll(".colorwayPreview-guildsIcon").forEach(el => {
                                             el.style = "background-color: " + backgroundPrimary + "; --background-hover: " + accent + ";";
                                         })
@@ -1506,8 +1508,8 @@ module.exports = (() => {
                                         let RgbToHsl = RGBToHSL(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
                                         secondaryAlt = shadeColor(RgbToHex, secondaryToSecondaryAltContrast);
                                         backgroundSecondary = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-channels").style.backgroundColor = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-userArea").style.backgroundColor = secondaryAlt;
+                                        document.querySelector(".colorwayPreview-channels").style = "background: var(--secondary-gradient,var(--secondary)); --secondary: " + backgroundSecondary + ";";
+                                        document.querySelector(".colorwayPreview-userArea").style = "background: var(--secondaryalt-gradient,var(--secondaryalt)); --secondaryalt: " + secondaryAlt + ";";
                                         let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
                                             (parseInt(splitRGBValues[1]) * 587) +
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
@@ -1538,8 +1540,8 @@ module.exports = (() => {
                                         let RgbToHsl = RGBToHSL(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
                                         secondaryAlt = shadeColor(RgbToHex, secondaryToSecondaryAltContrast);
                                         backgroundSecondary = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-channels").style.backgroundColor = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-userArea").style.backgroundColor = secondaryAlt;
+                                        document.querySelector(".colorwayPreview-channels").style = "background: var(--secondary-gradient,var(--secondary)); --secondary: " + backgroundSecondary + ";";
+                                        document.querySelector(".colorwayPreview-userArea").style = "background: var(--secondaryalt-gradient,var(--secondaryalt)); --secondaryalt: " + secondaryAlt + ";";
                                         let RGBLuminanceCalc = Math.round(((parseInt(splitRGBValues[0]) * 299) +
                                             (parseInt(splitRGBValues[1]) * 587) +
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
@@ -1585,9 +1587,9 @@ module.exports = (() => {
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
                                         tertiaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
                                         backgroundTertiary = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-background").style.backgroundColor = e.path[0].value;
                                         let backgroundFloatingBefore = shadeColor(e.path[0].value, -30);
                                         backgroundFloating = HexToHSL(backgroundFloatingBefore);
+                                        document.querySelector(".colorwayPreview-background").style = "background: var(--tertiary-gradient,var(--tertiary)); --tertiary: " + backgroundTertiary + ";";
                                         e.path[0].parentElement.querySelector("span").style = "color: " + tertiaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                                     },
@@ -1606,9 +1608,9 @@ module.exports = (() => {
                                             (parseInt(splitRGBValues[2]) * 114)) / 1000);
                                         tertiaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
                                         backgroundTertiary = e.path[0].value;
-                                        document.querySelector(".colorwayPreview-background").style.backgroundColor = e.path[0].value;
                                         let backgroundFloatingBefore = shadeColor(e.path[0].value, -30);
                                         backgroundFloating = HexToHSL(backgroundFloatingBefore);
+                                        document.querySelector(".colorwayPreview-background").style = "background: var(--tertiary-gradient,var(--tertiary)); --tertiary: " + backgroundTertiary + ";";
                                         e.path[0].parentElement.querySelector("span").style = "color: " + tertiaryTextColor + ";";
                                         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                                     }
@@ -1716,24 +1718,24 @@ module.exports = (() => {
                     },"Off"))),modalHeader("Preview:"),
                     createElement("div",{
                         class: "colorwayPreview-background",
-                        style: "background-color: " + backgroundTertiary + ";"
+                        style: "background: " + backgroundTertiary + ";"
                     },
                     createElement("div",{
                         class: "colorwayPreview-chat",
-                        style: "background-color: " + backgroundPrimary + ";"
+                        style: "background: " + backgroundPrimary + ";"
                     },
                     createElement("div",{
                         class: "colorwayPreview-channels",
-                        style: "background-color: " + backgroundSecondary + ";"
+                        style: "background: " + backgroundSecondary + ";"
                     },
                     createElement("div",{
                         class: "colorwayPreview-userArea",
-                        style: "background-color: " + secondaryAlt + ";"
+                        style: "background: " + secondaryAlt + ";"
                     })
                     ),
                     createElement("div",{
                         class: "colorwayPreview-chatbox",
-                        style: "background-color: " + primaryLighter + ";"
+                        style: "background: var(--lighter-gradient,--lighter); --lighter: " + primaryLighter + ";"
                     })
                     ),
                     createElement("div",{
@@ -2488,12 +2490,10 @@ ${gradientCSS}
                 .discordColorwayPreviewColor {
                     width: 27px;
                     height: 27px;
-                    pointer-events: none;
                 }
                 .discordColorwayPreviewGradient {
                     width: 54px;
                     height: 54px;
-                    pointer-events: none;
                     margin: 3px;
                     border-radius: 50%;
                 }
