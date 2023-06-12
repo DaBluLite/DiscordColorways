@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.8
+* @version 1.8.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,8 +49,8 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.8",
-            creatorVersion: "1.9",
+            version: "1.8.1",
+            creatorVersion: "1.9.1",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -1380,10 +1380,10 @@ module.exports = (() => {
                                 });
                                 let colorwayValueArray = res.parentElement.classList[2].split("-")[3].split(/(\w\w)/g).filter(p => !!p).map(c => String.fromCharCode(parseInt(c, 16))).join("").split(",");
                                 try {
-                                    document.getElementById("colorwayCreatorColorpicker_primary").value = colorwayValueArray[0];
-                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[1];
-                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = colorwayValueArray[2];
-                                    document.getElementById("colorwayCreatorColorpicker_accent").value = colorwayValueArray[3];
+                                    document.getElementById("colorwayCreatorColorpicker_primary").value = colorwayValueArray[1];
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[2];
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = colorwayValueArray[3];
+                                    document.getElementById("colorwayCreatorColorpicker_accent").value = colorwayValueArray[0];
 
                                     document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
                                     document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
