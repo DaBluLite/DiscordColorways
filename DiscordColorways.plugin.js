@@ -3,7 +3,7 @@
 * @displayName Discord Colorways
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 1.7.1
+* @version 1.8
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,8 +49,8 @@ module.exports = (() => {
                     github_username: "DaBluLite"
                 }
             ],
-            version: "1.7.1",
-            creatorVersion: "1.8.1",
+            version: "1.8",
+            creatorVersion: "1.9",
             description: "A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))",
             github: "https://github.com/DaBluLite/DiscordColorways/blob/master/DiscordColorways.plugin.js",
             github_raw: "https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js"
@@ -87,12 +87,13 @@ module.exports = (() => {
             const Flux = Object.assign({}, WebpackModules.getByProps("Store", "connectStores"), WebpackModules.getByProps("useStateFromStores"));
             const SessionsStore = WebpackModules.getByProps("getSessions", "_dispatchToken");
  
-            const {Webpack, Webpack: {Filters}, React} = BdApi;
-            const [BasicThemeSelector, ThemeEditor, HomeIcon, Toast] = Webpack.getBulk.apply(null, [
+            const {Webpack, Patcher, Webpack: {Filters}, React} = BdApi;
+            const [BasicThemeSelector, ThemeEditor, HomeIcon, Toast, MessageContent] = Webpack.getBulk.apply(null, [
                 Filters.byProps("basicThemeSelectors"),
                 Filters.byProps("themeEditor"),
                 Filters.byProps("homeIcon"),
-                Filters.byProps("createToast")
+                Filters.byProps("createToast"),
+                Filters.byProps("messageContent")
             ].map(fn => ({filter: fn})));
             
             let nativeToast = (text,type) => {
@@ -747,56 +748,120 @@ module.exports = (() => {
                                     className: Utilities.className("colorwayInfoIconContainer"),
                                     onclick: (el) => {
                                         el.stopPropagation();
+                                        function lines(text) {  
+                                            return text.split('\n')
+                                        }
+                                        let codeblockLines = []
+                                        lines(colorway.import).forEach((importedLine,i) => {
+                                            let line = React.createElement("span",{style:{display: "flex",alignItems: "center", whiteSpace:"pre"}},React.createElement("span",{style:{width: 64, height:19, textAlign: "center", backgroundColor:"rgba(0,0,0,.4)",userSelect:"none",flexBasis:64,flexGrow:1,flexShrink:0,maxWidth:64}},i+1),importedLine);
+                                            codeblockLines.push(line);
+                                        })
+                                        let ColorwayCard;
+                                        let ColorwayCardShared;
+                                        if(colorway.isGradient == true) {
+                                            ColorwayCard = BdApi.React.createElement("img",{style: {borderRadius: 16},src:'data:image/svg+xml,' + encodeURIComponent(`
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="408" height="150">
+                                              <foreignObject width="408" height="150">
+                                                <div xmlns="http://www.w3.org/1999/xhtml" style="padding-top: 8px;border-radius:8px;background:linear-gradient(-45deg, ${colorway.primary.background} 0%, ${colorway.tertiary.background} 100%);height: 150px;">
+                                                  <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
+                                                  <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
+                                                  <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
+                                                </div>
+                                              </foreignObject>
+                                            </svg>
+                                            `)})
+                                            ColorwayCardShared = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
+                                                <foreignObject width="300" height="150">
+                                                    <div xmlns="http://www.w3.org/1999/xhtml" style="padding-top: 8px;border-radius:8px;background:linear-gradient(-45deg, ${colorway.primary.background} 0%, ${colorway.tertiary.background} 100%);height: 150px;width:300px;">
+                                                        <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
+                                                        <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
+                                                        <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
+                                                    </div>
+                                                </foreignObject>
+                                            </svg>`
+                                        } else {
+                                            ColorwayCard = BdApi.React.createElement("img",{src:'data:image/svg+xml,' + encodeURIComponent(`
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="408" height="150">
+                                              <foreignObject width="408" height="150">
+                                                <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;">
+                                                  <div style="display: flex;width: 408px; height: 46px; flex-direction: row;"><div style="background-color: ${colorway.accent.background};height: 46px;width: 102px;border-top-left-radius: 8px;float:left;"></div><div style="background-color: ${colorway.primary.background};height: 46px; width: 102px;float:left;"></div><div style="background-color: ${colorway.secondary.background};height: 46px;width: 102px;float:left;"></div><div style="background-color: ${colorway.tertiary.background};height: 46px;width: 102px;border-top-right-radius: 8px;float:left;"></div></div>
+                                                  <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
+                                                  <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
+                                                  <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
+                                                </div>
+                                              </foreignObject>
+                                            </svg>
+                                            `)})
+                                            ColorwayCardShared = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
+                                                <foreignObject width="300" height="150">
+                                                    <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;width:300px;">
+                                                        <div style="display: flex;width: 300px; height: 46px; flex-direction: row;"><div style="background-color: ${colorway.accent.background};height: 46px;width: 75px;border-top-left-radius: 8px;float:left;"></div><div style="background-color: ${colorway.primary.background};height: 46px; width: 75px;float:left;"></div><div style="background-color: ${colorway.secondary.background};height: 46px;width: 75px;float:left;"></div><div style="background-color: ${colorway.tertiary.background};height: 46px;width: 75px;border-top-right-radius: 8px;float:left;"></div></div>
+                                                        <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
+                                                        <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
+                                                        <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
+                                                    </div>
+                                                </foreignObject>
+                                            </svg>`
+                                        }
                                         let shareIconBtn = BdApi.React.createElement("div", {
                                             class:"colorwayShareIcon",
                                             onClick: () => {
-                                                let original = "";
-                                                    if(colorway.original == true) {
-                                                        original = `<span style="display: flex;transform:translateY(-50%);position:absolute;top:23px;right:12px;padding: 4px 8px;border-radius: 50px;background-color: #0a0a0a;color: #fff;font-family: Arial;">Original</span>`
-                                                    }
-                                                BdApi.showConfirmationModal("Share Colorway", BdApi.React.createElement("img",{src:'data:image/svg+xml,' + encodeURIComponent(`
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="408" height="150">
-                                                  <foreignObject width="408" height="150">
-                                                    <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;">
-                                                      <div style="display: flex;width: 408px; height: 46px; flex-direction: row;"><div style="background-color: ${colorway.accent.background};height: 46px;width: 102px;border-top-left-radius: 8px;float:left;"></div><div style="background-color: ${colorway.primary.background};height: 46px; width: 102px;float:left;"></div><div style="background-color: ${colorway.secondary.background};height: 46px;width: 102px;float:left;"></div><div style="background-color: ${colorway.tertiary.background};height: 46px;width: 102px;border-top-right-radius: 8px;float:left;"></div></div>
-                                                      <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
-                                                      <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
-                                                      <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
-                                                    </div>
-                                                  </foreignObject>
-                                                </svg>
-                                              `)}),{
-                                                onConfirm: () => {
-                                                    let canvas = document.createElement("canvas")
-                                                    let ctx = canvas.getContext("2d");
-                                                    let original = "";
-                                                    if(colorway.original == true) {
-                                                        original = `<span style="display: flex;transform:translateY(-50%);position:absolute;top:23px;right:12px;padding: 4px 8px;border-radius: 50px;background-color: #0a0a0a;color: #fff;font-family: Arial;">Original</span>`
-                                                    }
-                                                    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
-                                                  <foreignObject width="300" height="150">
-                                                    <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;width:300px;">
-                                                      <div style="display: flex;width: 300px; height: 46px; flex-direction: row;"><div style="background-color: ${colorway.accent.background};height: 46px;width: 75px;border-top-left-radius: 8px;float:left;"></div><div style="background-color: ${colorway.primary.background};height: 46px; width: 75px;float:left;"></div><div style="background-color: ${colorway.secondary.background};height: 46px;width: 75px;float:left;"></div><div style="background-color: ${colorway.tertiary.background};height: 46px;width: 75px;border-top-right-radius: 8px;float:left;"></div></div>
-                                                      <span style="display: flex;font-weight: 600;font-size: 20px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">${colorway.name}</span>
-                                                      <span style="display: flex;font-weight: 500;font-size: 18px; margin-top: 4px;margin-left: 12px;color: ${colorway.primary.foreground};font-family: Arial;">By ${colorway.author}</span>
-                                                      <span style="display: flex;font-weight: 300;font-size: 12px; margin-top: 12px;margin-left: 12px;color: ${colorway.primary.foreground};opacity:.7;font-family: Arial;">Available in DiscordColorways</span>
-                                                    </div>
-                                                  </foreignObject>
-                                                </svg>`
- 
-                                                var img = new Image();
-                                                img.crossOrigin = "anonymous"
-                                                img.onload = function() {
-                                                    ctx.drawImage(img, 0, 0);
-                                                    let buffer = Buffer.from(canvas.toDataURL().split(",")[1], 'base64');
- 
-                                                    DiscordNative.clipboard.copyImage(buffer, "colorway-share")
-                                                }
-                                                img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
-                                                nativeToast("Copied Banner Successfully",1);
+                                                let colorwayIDArray = `${colorway.accent.background},${colorway.primary.background},${colorway.secondary.background},${colorway.tertiary.background}`;
+                                                let colorwayID = Buffer(colorwayIDArray).toString('hex');
+                                                BdApi.showConfirmationModal("Share Colorway", React.createElement("div",{
+                                                    class: "colorwayInfoModalDetails",
+                                                    style: {gap: 4}
                                                 },
-                                                confirmText: "Copy Banner"
-                                              })
+                                                ColorwayCard,
+                                                React.createElement("div",{class: "colorwayModalFooter"},
+                                                BdApi.React.createElement("button",{
+                                                    class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                    onClick: (e) => {
+                                                        try {
+                                                            e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                        } catch(e) {
+                        
+                                                        }
+                                                    }
+                                                },"Close"),
+                                                BdApi.React.createElement("button",{
+                                                    class: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                    onClick: (e) => {
+                                                        DiscordNative.clipboard.copy(colorwayID);
+                                                        nativeToast("Copied Colorway ID Successfully",1);
+                                                        try {
+                                                            e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                        } catch(e) {
+                        
+                                                        }
+                                                    }
+                                                },"Copy Colorway ID"),
+                                                BdApi.React.createElement("button",{
+                                                    class: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                    onClick: (e) => {
+                                                        let canvas = document.createElement("canvas")
+                                                        let ctx = canvas.getContext("2d");
+                                                        let svg = ColorwayCardShared;
+ 
+                                                        var img = new Image();
+                                                        img.crossOrigin = "anonymous"
+                                                        img.onload = function() {
+                                                            ctx.drawImage(img, 0, 0);
+                                                            let buffer = Buffer.from(canvas.toDataURL().split(",")[1], 'base64');
+ 
+                                                            DiscordNative.clipboard.copyImage(buffer, "colorway-share")
+                                                        }
+                                                        img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
+                                                        nativeToast("Copied Banner Successfully",1);
+                                                        try {
+                                                            e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                        } catch(e) {
+                        
+                                                        }
+                                                    }
+                                                },"Copy Banner")
+                                            )
+                                                ),{})
                                             }
                                         });
                                         BdApi.showConfirmationModal(["Colorway Details: " + colorway.name,shareIconBtn],BdApi.React.createElement("div", {
@@ -813,7 +878,7 @@ module.exports = (() => {
                                                     Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),WebpackModules.getByProps("getCurrentUser", "getUser").getUser(colorway.authorID),{position:"right"});
                                                 },10);
                                             }},colorway.author)]),
-                                            BdApi.React.createElement("span",{class: "colorwayImport colorwayCodeblockWrapper"}, ["CSS: ",BdApi.React.createElement("span",{class: "colorwayCodeblock"},colorway.import)]),
+                                            BdApi.React.createElement("span",{class: "colorwayImport colorwayCodeblockWrapper"}, ["CSS: ",BdApi.React.createElement("span",{class: "colorwayCodeblock"},codeblockLines)]),
                                             BdApi.React.createElement("div",{class: "colorwayModalFooter"}, [
                                                 BdApi.React.createElement("button",{
                                                     class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
@@ -901,7 +966,8 @@ module.exports = (() => {
                                                                                 isGradient: colorway.isGradient || false,
                                                                                 import: colorway.import,
                                                                                 author: colorway.author,
-                                                                                authorID: colorway.authorID
+                                                                                authorID: colorway.authorID,
+                                                                                creatorVersion: config.info.creatorVersion
                                                                             }
                                                                             ];
                                                                             customColorwayArray.push(customColorway[0]);
@@ -1306,6 +1372,27 @@ module.exports = (() => {
                             
                         } else {
                             this.target.appendChild(res);
+                            if(res.parentElement.classList.contains("data-colorway-id")) {
+                                let changeColors = new UIEvent("change", {
+                                    "view": window,
+                                    "bubbles": true,
+                                    "cancelable": true
+                                });
+                                let colorwayValueArray = res.parentElement.classList[2].split("-")[3].split(/(\w\w)/g).filter(p => !!p).map(c => String.fromCharCode(parseInt(c, 16))).join("").split(",");
+                                try {
+                                    document.getElementById("colorwayCreatorColorpicker_primary").value = colorwayValueArray[0];
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[1];
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = colorwayValueArray[2];
+                                    document.getElementById("colorwayCreatorColorpicker_accent").value = colorwayValueArray[3];
+
+                                    document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
+                                    document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
+                                } catch(e) {
+
+                                }
+                            }
                         }
                         
                         this.ref = res;
@@ -1767,6 +1854,69 @@ module.exports = (() => {
                                 }
                             }
                         }),
+                        modalBtnGray("Enter Colorway ID",{
+                            onclick: (e) => {
+                                BdApi.showConfirmationModal("Enter Colorway ID:",BdApi.React.createElement("div", {
+                                    class: "colorwayInfoModalDetails"
+                                },[
+                                    React.createElement("input", {
+                                        type: "text",
+                                        class: "inputDefault-Ciwd-S input-3O04eu",
+                                        placeholder: "Enter Colorway ID"
+                                    }),
+                                    React.createElement("div",{class: "colorwayModalFooter"},[
+                                        React.createElement("button",{
+                                            class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                            onClick: (e) => {
+                                                try {
+                                                    e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                } catch(e) {
+                
+                                                }
+                                            }
+                                        },"Cancel"),
+                                        React.createElement("button",{
+                                            class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                            onClick: (e) => {
+                                                if(!e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
+                                                    e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "Invalid Colorway ID";
+                                                } else {
+                                                    if(e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.length < 63) {
+                                                        let colorwayValueArray = e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.split(/(\w\w)/g).filter(p => !!p).map(c => String.fromCharCode(parseInt(c, 16))).join("").split(",");
+                                                        try {
+                                                            e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                        } catch(e) {
+                        
+                                                        }
+                                                            let changeColors = new UIEvent("change", {
+                                                                "view": window,
+                                                                "bubbles": true,
+                                                                "cancelable": true
+                                                            });
+                                                            try {
+                                                                document.getElementById("colorwayCreatorColorpicker_primary").value = colorwayValueArray[0];
+                                                                document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[1];
+                                                                document.getElementById("colorwayCreatorColorpicker_tertiary").value = colorwayValueArray[2];
+                                                                document.getElementById("colorwayCreatorColorpicker_accent").value = colorwayValueArray[3];
+                            
+                                                                document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
+                                                                document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
+                                                                document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
+                                                                document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
+                                                            } catch(e) {
+                            
+                                                            }
+                                                    } else {
+                                                        e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value = '';
+                                                        e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "Invalid Colorway ID";
+                                                    }
+                                                }
+                                            }
+                                        },"Finish")
+                                    ])
+                                ]));
+                            }
+                        }),
                         modalBtnGray("Copy Current Colors",{
                             onclick: (e) => {
                                 let checkColorType = (color) => {
@@ -1948,7 +2098,7 @@ module.exports = (() => {
     --bg-overlay-home: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
     --bg-overlay-home-card: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home-card)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-home-card))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
     --bg-overlay-app-frame: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-app-frame)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-app-frame))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
-    --custom-theme-background: linear-gradient(128.92deg, var(--primary-800) 3.94%, var(--primary-700) 26.1%, var(--primary-600) 39.82%, var(--primary-500) 56.89%, var(--primary-400) 76.45%);
+    --custom-theme-background: linear-gradient(-45deg, var(--primary-400) 0%, var(--primary-630) 20%, var(--primary-800) 80%, var(--primary-800) 100%);
 }
                                     .guilds-2JjMmN {
     background: var(--bg-overlay-app-frame,--background-tertiary);
@@ -2141,7 +2291,8 @@ ${gradientCSS}
                                     isGradient: useGradient,
                                     import: customColorwayCSS,
                                     author: currentUserProps.username,
-                                    authorID: currentUserProps.id
+                                    authorID: currentUserProps.id,
+                                    creatorVersion: config.info.creatorVersion
                                 }];
                                 
                                 let customColorwayArray = [];
@@ -2187,6 +2338,11 @@ ${gradientCSS}
             }
 
             const ElementInjections = {
+                [MessageContent?.messageContent]: elements => {
+                    for (const el of elements) {
+                        console.log(el);
+                    }
+                },
                 "basicThemeSelectors-2wNKs6": elements => {
                     for (const el of elements) {
                         if (el.getElementsByClassName("ColorwaySelectorWrapper").length || el._patched) continue;
@@ -2234,6 +2390,9 @@ ${gradientCSS}
             };
             return class DiscordColorways extends Plugin {
                 css = `
+                .sparkles-32w-Af {
+                    z-index: 50;
+                }
                 .choiceContainer {
                     display: flex;
                     flex-direction: row;
@@ -2595,6 +2754,7 @@ ${gradientCSS}
                 .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) {
                     width: fit-content;
                     min-width: 620px;
+                    max-width: 915px;
                 }
                 .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) .footer-IubaaS {
                     display: none;
@@ -2641,7 +2801,6 @@ ${gradientCSS}
                     border: 1px solid var(--background-tertiary);
                     display: block;
                     overflow-x: auto;
-                    padding: 0.5em;
                     border-radius: 4px;
                     -webkit-text-size-adjust: none;
                     -moz-text-size-adjust: none;
@@ -2651,7 +2810,8 @@ ${gradientCSS}
                     background: var(--background-secondary);
                     user-select: text;
                     max-height: 200px;
-                    overflow: hidden auto;
+                    overflow: auto;
+                    white-space: nowrap;
                 }
 
                 .colorwayCodeblock::-webkit-scrollbar {
@@ -2825,6 +2985,12 @@ ${gradientCSS}
                 .customColorwaySelector {
                     display: none;
                 }
+                code.inline[data-origin-content] {
+                    display: flex;
+                    background-color: transparent;
+                    width: fit-content;
+                    float: left;
+                }
                 `;
                 onStart() {
                     colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => colorwayList = colors.colorways);
@@ -2845,6 +3011,11 @@ ${gradientCSS}
                             ElementInjections[className](elements);
                         }
                     }
+                    document.querySelectorAll("code.inline").forEach(el => {
+                        if(el.innerText.includes("colorway:")) {
+                            el.parentElement.innerHTML = el.parentElement.innerHTML + `<button class="inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg" type="button" onclick="BdApi.showConfirmationModal('Create Colorway', BdApi.React.createElement('div', {class:'colorwayCreationModal data-colorway-id data-colorway-id-${el.innerText.split(":")[1]}'}))">Add This Colorway</button>`;
+                        }
+                    })
                     try {
                         PluginUtilities.removeStyle("activeColorway")
                     } catch(e) {
@@ -2860,6 +3031,13 @@ ${gradientCSS}
                 observer({addedNodes}) {
                     for (const added of addedNodes) {
                         if (added.nodeType === Node.TEXT_NODE) continue;
+                        if(added.outerHTML.includes(`<code class="inline">`)) {
+                            added.querySelectorAll("code.inline").forEach(el => {
+                                if(el.innerText.includes("colorway:")) {
+                                    el.parentElement.innerHTML = el.parentElement.innerHTML + `<button class="inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg" type="button" onclick="BdApi.showConfirmationModal('Create Colorway', BdApi.React.createElement('div', {class:'colorwayCreationModal data-colorway-id data-colorway-id-${el.innerText.split(":")[1]}'}))">Add This Colorway</button>`;
+                                }
+                            })
+                        }
 
                         for (const className in ElementInjections) {
                             const elements = Array.from(added.getElementsByClassName(className));
@@ -2880,6 +3058,9 @@ ${gradientCSS}
                     document.querySelectorAll("ColorwaySelector").forEach(el => el._unmount?.());
                     document.querySelectorAll("ColorwaySelectorBtnContainer").forEach(el => el._unmount?.());
                     BdApi.saveData("DiscordColorways", "settings", userSettings);
+                    document.querySelectorAll(".inlineCreateColorwayBtn").forEach(el => {
+                        el.remove();
+                    });
                 }
 
                 getSettingsPanel() {
