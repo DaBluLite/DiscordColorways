@@ -1,31 +1,31 @@
-/*Automatically Generated - Colorway Creator V1.7*/
+/*Automatically Generated - Colorway Creator V1.9.2*/
 :root {
-    --brand-100-hsl: 41 31% -1.3000000000000043%;
-    --brand-140-hsl: 41 31% 2.299999999999997%;
-    --brand-160-hsl: 41 31% 5.899999999999999%;
-    --brand-200-hsl: 41 31% 9.5%;
-    --brand-230-hsl: 41 31% 13.100000000000001%;
-    --brand-260-hsl: 41 31% 16.7%;
-    --brand-300-hsl: 41 31% 20.3%;
-    --brand-330-hsl: 41 31% 23.9%;
-    --brand-345-hsl: 41 31% 27.5%;
-    --brand-360-hsl: 41 31% 31.1%;
-    --brand-400-hsl: 41 31% 34.7%;
-    --brand-430-hsl: 41 31% 38.3%;
-    --brand-460-hsl: 41 31% 41.9%;
+    --brand-100-hsl: 41 31% 92.30000000000001%;
+    --brand-140-hsl: 41 31% 88.7%;
+    --brand-160-hsl: 41 31% 85.1%;
+    --brand-200-hsl: 41 31% 81.5%;
+    --brand-230-hsl: 41 31% 77.9%;
+    --brand-260-hsl: 41 31% 74.3%;
+    --brand-300-hsl: 41 31% 70.7%;
+    --brand-330-hsl: 41 31% 67.1%;
+    --brand-345-hsl: 41 31% 63.5%;
+    --brand-360-hsl: 41 31% 59.9%;
+    --brand-400-hsl: 41 31% 56.3%;
+    --brand-430-hsl: 41 31% 52.7%;
+    --brand-460-hsl: 41 31% 49.1%;
     --brand-500-hsl: 41 31% 45.5%;
-    --brand-530-hsl: 41 31% 49.1%;
-    --brand-560-hsl: 41 31% 52.7%;
-    --brand-600-hsl: 41 31% 56.3%;
-    --brand-630-hsl: 41 31% 59.9%;
-    --brand-660-hsl: 41 31% 63.5%;
-    --brand-700-hsl: 41 31% 67.1%;
-    --brand-730-hsl: 41 31% 70.7%;
-    --brand-760-hsl: 41 31% 74.3%;
-    --brand-800-hsl: 41 31% 77.9%;
-    --brand-830-hsl: 41 31% 81.5%;
-    --brand-860-hsl: 41 31% 85.1%;
-    --brand-900-hsl: 41 31% 88.7%;
+    --brand-530-hsl: 41 31% 41.9%;
+    --brand-560-hsl: 41 31% 38.3%;
+    --brand-600-hsl: 41 31% 34.7%;
+    --brand-630-hsl: 41 31% 31.1%;
+    --brand-660-hsl: 41 31% 27.5%;
+    --brand-700-hsl: 41 31% 23.9%;
+    --brand-730-hsl: 41 31% 20.3%;
+    --brand-760-hsl: 41 31% 16.7%;
+    --brand-800-hsl: 41 31% 13.100000000000001%;
+    --brand-830-hsl: 41 31% 9.5%;
+    --brand-860-hsl: 41 31% 5.899999999999999%;
+    --brand-900-hsl: 41 31% 2.299999999999997%;
     --primary-460: gray;
     --mention-foreground: black !important;
     --primary-800-hsl: 52 29.3% 19.4%;
@@ -41,12 +41,6 @@
     --primary-430-hsl: 41 31% 38.3%;
     --primary-400-hsl: 41 31% 34.7%;
 }
-.theme-dark .container-2IKOsH, .theme-dark .header-3xB4vB, .theme-dark .container-1um7CU {
-    background: var(--primary-645) !important;
-}
-.innerHeader-1cC3Fp:after {
-    content: none;
-}
 /*Primary*/
 .theme-dark .container-2cd8Mz *,
 .theme-dark .body-16rSsp *,
@@ -58,12 +52,21 @@
 .theme-dark .children-3xh0VB *,
 .theme-dark .buttonContainer-1502pf *,
 .theme-dark .listItem-3SmSlK * {
-    --white-500: white !important;
-    --text-normal: white !important;
-    --header-primary: white !important;
+    --white-500: hsl(210 9.1% 87.1%) !important;
+    --text-normal: hsl(210 9.1% 87.1%) !important;
+    --header-primary: hsl(210 9.1% 87.1%) !important;
 }
 .theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
-    --white-500: white !important;
+    --white-500: hsl(210 9.1% 87.1%) !important;
+}
+.theme-dark .container-1um7CU,
+.theme-dark .container-2IKOsH,
+.theme-dark .header-3xB4vB {
+    background: transparent;
+}
+.theme-dark .header-3xB4vB *,
+.theme-dark .title-31SJ6t * {
+    --channel-icon: hsl(210 9.1% 87.1%);
 }
 .theme-dark .callContainer-HtHELf * {
     --white-500: white !important;
@@ -76,13 +79,10 @@
     opacity: .6;
 }
 .theme-dark .colorwaySelectorIcon {
-    background-color: white;
+    background-color: hsl(210 9.1% 87.1%);
 }
 .theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
-    color: white;
-}
-.theme-dark .chat-2ZfjoI * {
-    --channel-icon: white !important;
+    color: hsl(210 9.1% 87.1%);
 }
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
@@ -95,7 +95,14 @@
     --channels-default: hsl(47.05882352941176, 100%, 90%) !important;
     --channel-icon: hsl(47.05882352941176, 100%, 90%) !important;
     --interactive-normal: var(--white-500);
+    --interactive-hover: var(--white-500);
     --interactive-active: var(--white-500);
+}
+.theme-dark .channelRow-4X_3fi {
+    background-color: var(--background-secondary);
+}
+.theme-dark .channelRow-4X_3fi * {
+    --channel-icon: white;
 }
 .theme-dark #app-mount .activity-2EQDZv,
 .theme-dark #app-mount .activity-2EQDZv * {
@@ -104,12 +111,6 @@
 .theme-dark .nameTag-sc-gpq {
     --header-primary: white !important;
     --header-secondary: hsl(47.05882352941176, 100%, 90%) !important;
-}
-.theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
-.theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
-    --channel-icon: var(--interactive-active) !important;
 }
 .theme-dark .bannerVisible-Vkyg1I .headerContent-2SNbie {
     color: #fff;
@@ -137,9 +138,9 @@
     --text-normal: white !important;
 }
 /*Accent*/
-.selected-2r1Hvo *,
-.selected-1Drb7Z *,
-#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N,
+#app-mount .selected-2r1Hvo *,
+#app-mount .selected-1Drb7Z *,
+#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N:not(.buttonColor-3bP3fX),
 .colorDefault-2_rLdz.focused-3LIdPu,
 .row-1qtctT:hover,
 .colorwayInfoIcon,
@@ -149,3 +150,4 @@
 .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
     background-color: black !important;
 }
+.children-3xh0VB:after, #app-mount .form-3gdLxP:before{display: none !important;}
