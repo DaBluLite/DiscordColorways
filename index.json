@@ -39,7 +39,7 @@
       "accent": "hsl(141 76% 48%)",
       "primary": "#121212",
       "secondary": "#090909",
-      "tertiary": "#232323",
+      "tertiary": "#090909",
       "import": "@import url(//dablulite.github.io/DiscordColorways/Spotify/import.css);",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
