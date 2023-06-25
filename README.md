@@ -22,5 +22,5 @@ A growing list of Colorways for Discord and most themes
 ### Currently Supported themes:
 * Discord Default
 * [MobileV2](https://github.com/DaBluLite/MobileV2)
-* [Cyan](https://github.com/DaBluLite/Cyan) (Though only certain areas are styled for obvious reasons)
+* [Cyan](https://github.com/DaBluLite/Cyan) (Requires the CyanColorway addon, available in Cyan's GitHub and Cyan+)
 * You tell me, this list can still grow with your help. If you know any compatible themes, open an Issue with the name of the supported theme.
