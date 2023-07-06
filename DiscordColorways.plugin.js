@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 2.1.1
+* @version 2.2.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -31,96 +31,33 @@
 @else@*/
 
 let colorwayList;
-let defaultSettings = {
-    activeColorway: "",
-    activeColorwayID: "disablecolorway",
-    showInGuildBar: false,
-    showCustomColorways: true
-};
+let defaultSettings = { activeColorway: "", activeColorwayID: "disablecolorway", showInGuildBar: false, showCustomColorways: true };
 let userSettings = {};
 let completeSettings = Object.assign(userSettings, defaultSettings, BdApi.loadData("DiscordColorways", "settings"));
 BdApi.saveData("DiscordColorways", "settings", completeSettings);
-let config = {
-    info: {
-        creatorVersion: "1.10"
-    }
-};
+let config = { info: { creatorVersion: "1.10" } };
 
-const {Webpack, Webpack: {Filters}, React, DOM} = BdApi;
-const [ThemeEditor, HomeIcon, Toast] = Webpack.getBulk.apply(null, [
-    Filters.byProps("themeEditor"),
-    Filters.byProps("homeIcon"),
-    Filters.byProps("createToast")
-].map(fn => ({filter: fn})));
+const { Webpack, Webpack: { Filters }, React, DOM } = BdApi;
+const [ThemeEditor, HomeIcon, Toast, TextBadge, InputDefault] = Webpack.getBulk.apply(null, [ Filters.byProps("themeEditor"), Filters.byProps("homeIcon"), Filters.byProps("createToast"), Filters.byProps("textBadge"), Filters.byProps("inputDefault") ].map(fn => ({ filter: fn })));
+const H5 = Webpack.getByKeys("h5")['h5'];
+const TextBadgeClassName = TextBadge['textBadge']+" "+TextBadge['baseShapeRound'];
+const ButtonBrandClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorBrand'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow']
+const ButtonPrimaryClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorPrimary'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow']
 
-let nativeToast = (text,type) => {
-    let toast = Toast.createToast(text,type);
-    Toast.showToast(toast);
-}
-
-let textInput = (placeholdr, idd) => {
-    if(placeholdr) {
-        return createElement("input", {
-            type: "text",
-            class: "inputDefault-Ciwd-S input-3O04eu",
-            placeholder: placeholdr,
-            id: idd
-        })
-    } else {
-        return createElement("input", {
-            type: "text",
-            class: "inputDefault-Ciwd-S input-3O04eu"
-        })
-    }
-};
-
-let modalHeader = (text) => {
-    return createElement("h2", {
-        class: "h5-2feg8J eyebrow-2wJAoF"
-    },text);
-}
-
-let modalBtn = (text,options) => {
-    options['class'] = "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn";
-    return createElement("button", options, text);
-}
-let modalBtnGray = (text,options) => {
-    options['class'] = "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn";
-    return createElement("button", options, text);
-}
-let betaBadge = () => {
-    return createElement("div", {
-        class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
-        style: "background-color: var(--brand-500);"
-    }, "Beta");
-}
-let alphaBadge = () => {
-    return createElement("div", {
-        class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
-        style: "background-color: var(--background-secondary);"
-    }, "Alpha");
-}
-let versionBadge = (text,ver) => {
-    return createElement("div", {
-        class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
-        style: "background-color: var(--background-secondary);"
-    }, text + " V" + ver);
-}
-let primaryBadge = (text) => {
-    return createElement("div", {
-        class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
-        style: "background-color: var(--background-secondary);"
-    }, text);
-}
-let unstableBadge = () => {
-    return createElement("div", {
-        class: "textBadge-1fdDPJ base-3IDx3L eyebrow-132Xza baseShapeRound-3epLEv",
-        style: "background-color: var(--red-430);"
-    }, "Unstable");
-}
+let nativeToast = (e,t) => Toast.showToast(Toast.createToast(e,t));
+let textInput = (e,t) => { let n = { type: "text", class: InputDefault['inputDefault'] }; if (e) n['placeholder'] = e; if (t) n['id'] = t; return createElement("input", n); };
+let modalBtn = (e,t) => { if(!t) t = {}; t['class'] = ButtonBrandClass + " colorwayModalBtn"; return createElement("button", t, e); }
+let modalBtnGray = (e,t) => { if(!t) t = {}; t['class'] = ButtonPrimaryClass + " colorwayModalBtn"; return createElement("button",t,e); }
+let modalHeader = (e) => createElement("h2", { class: H5 },e);
+//let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
+//let alphaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, "Alpha");
+let versionBadge = (e,t) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, `${e} V${t}`);
+//let primaryBadge = (e) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" },e);
+//let unstableBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--red-430);" }, "Unstable");
+const bdSwitch = (e,t) => { t['class'] = "bd-switch"; this.switch = createElement("div", t,new DOMParser().parseFromString('<input type="checkbox" ' + (() => {if(e==true) return "checked"})() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[0],new DOMParser().parseFromString('<input type="checkbox" ' + (() => {if(e==true) return "checked"})() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[1]); return this.switch; }
 
 const createElement = (type, props, ...children) => {
-    if (typeof type === "function") return type({...props, children: [].concat()})
+    if (typeof type === "function") return type({ ...props, children: [].concat() })
 
     const node = document.createElement(type);
 
@@ -145,128 +82,37 @@ const createElement = (type, props, ...children) => {
 function HexToHSL(H) {
     let r = 0, g = 0, b = 0;
     if (H.length == 4) {
-      r = "0x" + H[1] + H[1];
-      g = "0x" + H[2] + H[2];
-      b = "0x" + H[3] + H[3];
+        r = "0x" + H[1] + H[1];
+        g = "0x" + H[2] + H[2];
+        b = "0x" + H[3] + H[3];
     } else if (H.length == 7) {
-      r = "0x" + H[1] + H[2];
-      g = "0x" + H[3] + H[4];
-      b = "0x" + H[5] + H[6];
+        r = "0x" + H[1] + H[2];
+        g = "0x" + H[3] + H[4];
+        b = "0x" + H[5] + H[6];
     }
     r /= 255;
     g /= 255;
     b /= 255;
-    let cmin = Math.min(r,g,b),
-        cmax = Math.max(r,g,b),
-        delta = cmax - cmin,
-        h = 0,
-        s = 0,
-        l = 0;
-  
-    if (delta == 0)
-      h = 0;
-    else if (cmax == r)
-      h = ((g - b) / delta) % 6;
-    else if (cmax == g)
-      h = (b - r) / delta + 2;
-    else
-      h = (r - g) / delta + 4;
-  
+    let cmin = Math.min(r, g, b), cmax = Math.max(r, g, b), delta = cmax - cmin, h = 0, s = 0, l = 0;
+
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+
     h = Math.round(h * 60);
-  
-    if (h < 0)
-      h += 360;
-  
+
+    if (h < 0) h += 360;
+
     l = (cmax + cmin) / 2;
     s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
     s = +(s * 100).toFixed(1);
     l = +(l * 100).toFixed(1);
-  
-    return [ h, s, l ];
+
+    return [h, s, l];
 }
 
-const RGBToHSL = (r, g, b) => {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    const l = Math.max(r, g, b);
-    const s = l - Math.min(r, g, b);
-    const h = s
-      ? l === r
-        ? (g - b) / s
-        : l === g
-        ? 2 + (b - r) / s
-        : 4 + (r - g) / s
-      : 0;
-    let finalH = 60 * h < 0 ? 60 * h + 360 : 60 * h;
-    let finalS = 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0);
-    let finalL = (100 * (2 * l - s)) / 2;
-    return [ finalH, finalS, finalL ];
-};
-
-const getElementByClass = (clss) => {
-    return document.getElementsByClassName(clss)[0];
-};
-
-const bdSwitch = (status) => {
-    let _checked;
-    this.switch = createElement("div", {
-        className: "bd-switch",
-        onclick: (e) => {
-            if(e.path[1].parentElement.id == "showInGuildBar") {
-                userSettings = {
-                    activeColorway: BdApi.loadData("DiscordColorways", "settings").activeColorway,
-                    activeColorwayID: BdApi.loadData("DiscordColorways", "settings").activeColorwayID,
-                    showInGuildBar: e.path[1].querySelector("input").checked,
-                    showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
-                }
-                BdApi.saveData("DiscordColorways", "settings", userSettings);
-                const className = HomeIcon?.tutorialContainer;
-                const elements = Array.from(document.getElementsByClassName(className));
-
-                if (elements.length) {
-                    if(e.path[1].querySelector("input").checked) {
-                        new BelowHomeColorwaySelector(document.getElementsByClassName(className)[0]).mount();
-                    } else {
-                        document.querySelector(".ColorwaySelectorBtnContainer").remove();
-                    }
-                }
-            }
-            if(e.path[1].parentElement.id == "showCustomColorways") {
-                userSettings = {
-                    activeColorway: BdApi.loadData("DiscordColorways", "settings").activeColorway,
-                    activeColorwayID: BdApi.loadData("DiscordColorways", "settings").activeColorwayID,
-                    showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar,
-                    showCustomColorways: e.path[1].querySelector("input").checked
-                }
-                BdApi.saveData("DiscordColorways", "settings", userSettings);
-                if(e.path[1].querySelector("input").checked) {
-                    try {
-                        document.head.append(createElement("style", { id: "visibleCustomColorways" }, `
-                        .customColorwaySelector {display: flex !important;}
-                                                `));
-                    } catch(e) {
-
-                    }
-                } else {
-                    try {
-                        document.getElementById("visibleCustomColorways").remove();
-                    } catch(e) {
-
-                    }
-                }
-            }
-        }
-    });
-    
-    if(status==true) {
-        _checked = "checked";
-    }
-
-    this.switch.innerHTML = `<input type="checkbox" ${_checked}><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>`;
-
-    return this.switch;
-}
+const RGBToHSL = (r, g, b) => { r /= 255; g /= 255; b /= 255; const l = Math.max(r, g, b); const s = l - Math.min(r, g, b); const h = s ? l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s : 0; let finalH = 60 * h < 0 ? 60 * h + 360 : 60 * h; let finalS = 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0); let finalL = (100 * (2 * l - s)) / 2; return [finalH, finalS, finalL]; };
 
 class ColorwaySelector {
     constructor(target) {
@@ -297,11 +143,11 @@ class ColorwaySelector {
         if (!res) this.ref?.remove();
         else {
             if (this.ref) {
-                
+
             } else {
                 this.target.appendChild(res);
             }
-            
+
             this.ref = res;
         }
     }
@@ -315,7 +161,7 @@ class ColorwaySelector {
     }
 
     getState() {
-        
+
     }
 
     render() {
@@ -334,7 +180,7 @@ class ColorwaySelector {
             className: "discordColorway themeSelection-2u4ce0",
             id: "colorway-disablecolorway",
             onclick: (el) => {
-                if(!el.srcElement.classList.contains("active")) {
+                if (!el.srcElement.classList.contains("active")) {
                     userSettings = {
                         activeColorway: "",
                         activeColorwayID: "disablecolorway",
@@ -342,31 +188,31 @@ class ColorwaySelector {
                         showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
                     }
                     BdApi.saveData("DiscordColorways", "settings", userSettings);
-                    if(document.getElementById("activeColorway")) {
+                    if (document.getElementById("activeColorway")) {
                         document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
                     } else {
                         document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
                     }
                     try {
-                        if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                        if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
                             document.querySelector(".discordColorway.active").classList.remove("active");
                         }
-                    } catch(e) {
+                    } catch (e) {
                         console.warn("Uncaught Exception: " + e);
                     }
                     el.srcElement.classList.add("active");
                 }
-                nativeToast("Disabled Colorway Successfully",1);
+                nativeToast("Disabled Colorway Successfully", 1);
             }
         }, createElement("div", {
             className: "colorwayDisableIcon"
         }),
-        createElement("div", {
-            className: "colorwayCheckIconContainer"
-        },
-        createElement("div", {
-            className: "colorwayCheckIcon"
-        }))
+            createElement("div", {
+                className: "colorwayCheckIconContainer"
+            },
+                createElement("div", {
+                    className: "colorwayCheckIcon"
+                }))
         );
         BdApi.UI.createTooltip(disableColorwayBtn, "Disable Colorway", {});
         colorwayArray.push(disableColorwayBtn);
@@ -377,17 +223,17 @@ class ColorwaySelector {
             className: "discordColorway themeSelection-2u4ce0",
             id: "colorway-createcolorway",
             onclick: (el) => {
-                BdApi.showConfirmationModal("Create Colorway", BdApi.React.createElement("div", {class:"colorwayCreationModal"}))
+                BdApi.showConfirmationModal("Create Colorway", BdApi.React.createElement("div", { class: "colorwayCreationModal" }))
             }
         }, createElement("div", {
             className: "colorwayCreateIcon"
         }),
-        createElement("div", {
-            className: "colorwayCheckIconContainer"
-        },
-        createElement("div", {
-            className: "colorwayCheckIcon"
-        }))
+            createElement("div", {
+                className: "colorwayCheckIconContainer"
+            },
+                createElement("div", {
+                    className: "colorwayCheckIcon"
+                }))
         );
         BdApi.UI.createTooltip(addColorwayBtn, "Create Colorway", {});
         customcolorwayArray.push(addColorwayBtn);
@@ -400,7 +246,7 @@ class ColorwaySelector {
                     className: "discordColorway themeSelection-2u4ce0",
                     id: "colorway-" + colorway.name,
                     onclick: (el) => {
-                        if(!el.srcElement.classList.contains("active")) {
+                        if (!el.srcElement.classList.contains("active")) {
                             userSettings = {
                                 activeColorway: colorway.import,
                                 activeColorwayID: colorway.name,
@@ -408,105 +254,106 @@ class ColorwaySelector {
                                 showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
                             }
                             BdApi.saveData("DiscordColorways", "settings", userSettings);
-                            if(document.getElementById("activeColorway")) {
+                            if (document.getElementById("activeColorway")) {
                                 document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
                             } else {
                                 document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
                             }
                             try {
-                                if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
                                     document.querySelector(".discordColorway.active").classList.remove("active");
                                 }
-                            } catch(e) {
+                            } catch (e) {
                                 console.warn("Uncaught Exception: " + e);
                             }
                             el.srcElement.classList.add("active");
                         }
-                        nativeToast(React.createElement("div",{class:"discordColorwayOnToast"},[React.createElement("div",{
+                        nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
                             class: "discordColorway themeSelection-2u4ce0"
-                        },React.createElement("div",{
+                        }, React.createElement("div", {
                             class: "discordColorwayPreviewColorContainer"
-                        },[
+                        }, [
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.accent}
+                                style: { backgroundColor: colorway.accent }
                             }),
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.primary}
+                                style: { backgroundColor: colorway.primary }
                             }),
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.secondary}
+                                style: { backgroundColor: colorway.secondary }
                             }),
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.tertiary}
+                                style: { backgroundColor: colorway.tertiary }
                             })
-                        ])),"Applied Colorway Successfully"]),0);
+                        ])), "Applied Colorway Successfully"]), 0);
                     }
                 },
-                    createElement("div",{
+                    createElement("div", {
                         class: "discordColorwayPreviewColorContainer"
                     },
-                    createElement("div", {
-                        className: "discordColorwayPreviewColor",
-                        style: "background-color: " + colorway.accent
-                    }),
-                    createElement("div", {
-                        className: "discordColorwayPreviewColor",
-                        style: "background-color: " + colorway.primary
-                    }),
-                    createElement("div", {
-                        className: "discordColorwayPreviewColor",
-                        style: "background-color: " + colorway.secondary
-                    }),
-                    createElement("div", {
-                        className: "discordColorwayPreviewColor",
-                        style: "background-color: " + colorway.tertiary
-                    })),
+                        createElement("div", {
+                            className: "discordColorwayPreviewColor",
+                            style: "background-color: " + colorway.accent
+                        }),
+                        createElement("div", {
+                            className: "discordColorwayPreviewColor",
+                            style: "background-color: " + colorway.primary
+                        }),
+                        createElement("div", {
+                            className: "discordColorwayPreviewColor",
+                            style: "background-color: " + colorway.secondary
+                        }),
+                        createElement("div", {
+                            className: "discordColorwayPreviewColor",
+                            style: "background-color: " + colorway.tertiary
+                        })),
                     createElement("div", {
                         className: "colorwayCheckIconContainer"
                     },
-                    createElement("div", {
-                        className: "colorwayCheckIcon"
-                    })),
+                        createElement("div", {
+                            className: "colorwayCheckIcon"
+                        })),
                     createElement("div", {
                         className: "colorwayInfoIconContainer",
                         onclick: (el) => {
                             el.stopPropagation();
                             let shareIconBtn = BdApi.React.createElement("div", {
-                                class:"colorwayShareIcon",
+                                class: "colorwayShareIcon",
                                 onClick: () => {
                                     function shadeColor(color, percent) {
 
-                                        var R = parseInt(color.substring(1,3),16);
-                                        var G = parseInt(color.substring(3,5),16);
-                                        var B = parseInt(color.substring(5,7),16);
-                                    
+                                        var R = parseInt(color.substring(1, 3), 16);
+                                        var G = parseInt(color.substring(3, 5), 16);
+                                        var B = parseInt(color.substring(5, 7), 16);
+
                                         R = parseInt(R * (100 + percent) / 100);
                                         G = parseInt(G * (100 + percent) / 100);
                                         B = parseInt(B * (100 + percent) / 100);
-                                    
-                                        R = (R<255)?R:255;  
-                                        G = (G<255)?G:255;  
-                                        B = (B<255)?B:255;  
-                                    
+
+                                        R = (R < 255) ? R : 255;
+                                        G = (G < 255) ? G : 255;
+                                        B = (B < 255) ? B : 255;
+
                                         R = Math.round(R)
                                         G = Math.round(G)
                                         B = Math.round(B)
-                                    
-                                        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-                                        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-                                        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-                                    
-                                        return "#"+RR+GG+BB;
+
+                                        var RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+                                        var GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+                                        var BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+
+                                        return "#" + RR + GG + BB;
                                     }
                                     let original = "";
-                                    if(colorway.original == true) {
-                                        original = `<span style="display: flex;transform:translateY(-50%);position:absolute;top:23px;right:12px;padding: 4px 8px;border-radius: 50px;background-color: ${shadeColor(colorway.tertiary,-30)};color: #fff;font-family: Arial;">Original</span>`
+                                    if (colorway.original == true) {
+                                        original = `<span style="display: flex;transform:translateY(-50%);position:absolute;top:23px;right:12px;padding: 4px 8px;border-radius: 50px;background-color: ${shadeColor(colorway.tertiary, -30)};color: #fff;font-family: Arial;">Original</span>`
                                     }
-                                    BdApi.showConfirmationModal("Share Colorway", BdApi.React.createElement("img",{src:'data:image/svg+xml,' + encodeURIComponent(`
+                                    BdApi.showConfirmationModal("Share Colorway", BdApi.React.createElement("img", {
+                                        src: 'data:image/svg+xml,' + encodeURIComponent(`
                                     <svg xmlns="http://www.w3.org/2000/svg" width="408" height="150">
                                       <foreignObject width="408" height="150">
                                         <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary};height: 150px;">
@@ -517,15 +364,16 @@ class ColorwaySelector {
                                         </div>
                                       </foreignObject>
                                     </svg>
-                                  `)}),{
-                                    onConfirm: () => {
-                                        let canvas = document.createElement("canvas")
-                                        let ctx = canvas.getContext("2d");
-                                        let original = "";
-                                        if(colorway.original == true) {
-                                            original = `<span style="display: flex;transform:translateY(-50%);position:absolute;top:23px;right:12px;padding: 4px 8px;border-radius: 50px;background-color: #0a0a0a;color: #fff;font-family: Arial;">Original</span>`
-                                        }
-                                        let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
+                                  `)
+                                    }), {
+                                        onConfirm: () => {
+                                            let canvas = document.createElement("canvas")
+                                            let ctx = canvas.getContext("2d");
+                                            let original = "";
+                                            if (colorway.original == true) {
+                                                original = `<span style="display: flex;transform:translateY(-50%);position:absolute;top:23px;right:12px;padding: 4px 8px;border-radius: 50px;background-color: #0a0a0a;color: #fff;font-family: Arial;">Original</span>`
+                                            }
+                                            let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
                                       <foreignObject width="300" height="150">
                                         <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary};height: 150px;width:300px;">
                                           <div style="display: flex;width: 300px; height: 46px; flex-direction: row;"><div style="background-color: ${colorway.accent};height: 46px;width: 75px;border-top-left-radius: 8px;float:left;"></div><div style="background-color: ${colorway.primary};height: 46px; width: 75px;float:left;"></div><div style="background-color: ${colorway.secondary};height: 46px;width: 75px;float:left;"></div><div style="background-color: ${colorway.tertiary};height: 46px;width: 75px;border-top-right-radius: 8px;float:left;"></div>${original}</div>
@@ -536,55 +384,57 @@ class ColorwaySelector {
                                       </foreignObject>
                                     </svg>`
 
-                                    var img = new Image();
-                                    img.crossOrigin = "anonymous"
-                                    img.onload = function() {
-                                        ctx.drawImage(img, 0, 0);
-                                        let buffer = Buffer.from(canvas.toDataURL().split(",")[1], 'base64');
+                                            var img = new Image();
+                                            img.crossOrigin = "anonymous"
+                                            img.onload = function () {
+                                                ctx.drawImage(img, 0, 0);
+                                                let buffer = Buffer.from(canvas.toDataURL().split(",")[1], 'base64');
 
-                                        DiscordNative.clipboard.copyImage(buffer, "colorway-share")
-                                    }
-                                    img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
-                                    nativeToast("Copied Banner Successfully",1);
-                                    },
-                                    confirmText: "Copy Banner"
-                                  })
+                                                DiscordNative.clipboard.copyImage(buffer, "colorway-share")
+                                            }
+                                            img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
+                                            nativeToast("Copied Banner Successfully", 1);
+                                        },
+                                        confirmText: "Copy Banner"
+                                    })
                                 }
                             });
-                            BdApi.showConfirmationModal(["Colorway Details: " + colorway.name,shareIconBtn],BdApi.React.createElement("div", {
+                            BdApi.showConfirmationModal(["Colorway Details: " + colorway.name, shareIconBtn], BdApi.React.createElement("div", {
                                 class: "colorwayInfoModalDetails"
-                            },[
-                                BdApi.React.createElement("div",{class: "colorwayColors"},[
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-accent", style:{backgroundColor: colorway.accent}}),
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-primary", style:{backgroundColor: colorway.primary}}),
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-secondary", style:{backgroundColor: colorway.secondary}}),
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-tertiary", style:{backgroundColor: colorway.tertiary}})
+                            }, [
+                                BdApi.React.createElement("div", { class: "colorwayColors" }, [
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-accent", style: { backgroundColor: colorway.accent } }),
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-primary", style: { backgroundColor: colorway.primary } }),
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-secondary", style: { backgroundColor: colorway.secondary } }),
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-tertiary", style: { backgroundColor: colorway.tertiary } })
                                 ]),
-                                BdApi.React.createElement("span",{class: "colorwayAuthor"}, ["Author: ",BdApi.React.createElement("span",{class: "colorwayAuthorLink",onClick: (e) => {
-                                    setTimeout(() => {
-                                        //Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),Webpack.getModule(Filters.byProps("getCurrentUser", "getUser")).getUser(colorway.authorID),{position:"right"});
-                                    },10);
-                                }},colorway.author)]),
-                                BdApi.React.createElement("span",{class: "colorwayImport colorwayCodeblockWrapper"}, ["Import: ",BdApi.React.createElement("span",{class: "colorwayCodeblock"},colorway.import)])
-                            ]),{
+                                BdApi.React.createElement("span", { class: "colorwayAuthor" }, ["Author: ", BdApi.React.createElement("span", {
+                                    class: "colorwayAuthorLink", onClick: (e) => {
+                                        setTimeout(() => {
+                                            //Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),Webpack.getModule(Filters.byProps("getCurrentUser", "getUser")).getUser(colorway.authorID),{position:"right"});
+                                        }, 10);
+                                    }
+                                }, colorway.author)]),
+                                BdApi.React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, ["Import: ", BdApi.React.createElement("span", { class: "colorwayCodeblock" }, colorway.import)])
+                            ]), {
                                 confirmText: "Set Theme",
                                 onConfirm: () => {
-                                    if(!el.path[1].parentElement.classList.contains("active")) {
+                                    if (!el.path[1].parentElement.classList.contains("active")) {
                                         userSettings = {
                                             activeColorway: colorway.import,
                                             activeColorwayID: colorway.name
                                         }
                                         BdApi.saveData("DiscordColorways", "settings", userSettings);
-                                        if(document.getElementById("activeColorway")) {
+                                        if (document.getElementById("activeColorway")) {
                                             document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
                                         } else {
                                             document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
                                         }
                                         try {
-                                            if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                            if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
                                                 document.querySelector(".discordColorway.active").classList.remove("active");
                                             }
-                                        } catch(e) {
+                                        } catch (e) {
                                             console.warn("Uncaught Exception: " + e);
                                         }
                                         el.path[1].parentElement.classList.add("active");
@@ -593,14 +443,14 @@ class ColorwaySelector {
                             });
                         }
                     },
-                    createElement("div", {
-                        className: "colorwayInfoIcon"
-                    }))
+                        createElement("div", {
+                            className: "colorwayInfoIcon"
+                        }))
                 );
                 BdApi.UI.createTooltip(colorwayElem, colorway.name, {});
                 colorwayArray.push(colorwayElem);
             });
-        } catch(e) {
+        } catch (e) {
             console.warn("Unexpected error: " + e);
         }
 
@@ -612,7 +462,7 @@ class ColorwaySelector {
                     className: "discordColorway themeSelection-2u4ce0",
                     id: "colorway-" + colorway.name,
                     onclick: (el) => {
-                        if(!el.srcElement.classList.contains("active")) {
+                        if (!el.srcElement.classList.contains("active")) {
                             userSettings = {
                                 activeColorway: colorway.import,
                                 activeColorwayID: colorway.name,
@@ -620,67 +470,68 @@ class ColorwaySelector {
                                 showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
                             }
                             BdApi.saveData("DiscordColorways", "settings", userSettings);
-                            if(document.getElementById("activeColorway")) {
+                            if (document.getElementById("activeColorway")) {
                                 document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
                             } else {
                                 document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
                             }
                             try {
-                                if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
                                     document.querySelector(".discordColorway.active").classList.remove("active");
                                 }
-                            } catch(e) {
+                            } catch (e) {
                                 console.warn("Uncaught Exception: " + e);
                             }
                             el.srcElement.classList.add("active");
                         }
 
-                        nativeToast(React.createElement("div",{class:"discordColorwayOnToast"},[React.createElement("div",{
+                        nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
                             class: "discordColorway themeSelection-2u4ce0"
-                        },React.createElement("div",{
+                        }, React.createElement("div", {
                             class: "discordColorwayPreviewColorContainer"
-                        },[
+                        }, [
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.accent.background}
+                                style: { backgroundColor: colorway.accent.background }
                             }),
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.primary.background}
+                                style: { backgroundColor: colorway.primary.background }
                             }),
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.secondary.background}
+                                style: { backgroundColor: colorway.secondary.background }
                             }),
                             React.createElement("div", {
                                 className: "discordColorwayPreviewColor",
-                                style: {backgroundColor: colorway.tertiary.background}
+                                style: { backgroundColor: colorway.tertiary.background }
                             })
-                        ])),"Applied Custom Colorway Successfully"]),0);
+                        ])), "Applied Custom Colorway Successfully"]), 0);
                     }
                 },
                     createElement("div", {
                         className: "colorwayCheckIconContainer"
                     },
-                    createElement("div", {
-                        className: "colorwayCheckIcon"
-                    })),
+                        createElement("div", {
+                            className: "colorwayCheckIcon"
+                        })),
                     createElement("div", {
                         className: "colorwayInfoIconContainer",
                         onclick: (el) => {
                             el.stopPropagation();
-                            function lines(text) {  
+                            function lines(text) {
                                 return text.split('\n')
                             }
                             let codeblockLines = []
-                            lines(colorway.import).forEach((importedLine,i) => {
-                                let line = React.createElement("span",{style:{display: "flex",alignItems: "center", whiteSpace:"pre"}},React.createElement("span",{style:{width: 64, height:19, textAlign: "center", backgroundColor:"rgba(0,0,0,.4)",userSelect:"none",flexBasis:64,flexGrow:1,flexShrink:0,maxWidth:64}},i+1),importedLine);
+                            lines(colorway.import).forEach((importedLine, i) => {
+                                let line = React.createElement("span", { style: { display: "flex", alignItems: "center", whiteSpace: "pre" } }, React.createElement("span", { style: { width: 64, height: 19, textAlign: "center", backgroundColor: "rgba(0,0,0,.4)", userSelect: "none", flexBasis: 64, flexGrow: 1, flexShrink: 0, maxWidth: 64 } }, i + 1), importedLine);
                                 codeblockLines.push(line);
                             })
                             let ColorwayCard;
                             let ColorwayCardShared;
-                            if(colorway.isGradient == true) {
-                                ColorwayCard = BdApi.React.createElement("img",{style: {borderRadius: 16},src:'data:image/svg+xml,' + encodeURIComponent(`
+                            if (colorway.isGradient == true) {
+                                ColorwayCard = BdApi.React.createElement("img", {
+                                    style: { borderRadius: 16 }, src: 'data:image/svg+xml,' + encodeURIComponent(`
                                 <svg xmlns="http://www.w3.org/2000/svg" width="408" height="150">
                                   <foreignObject width="408" height="150">
                                     <div xmlns="http://www.w3.org/1999/xhtml" style="padding-top: 8px;border-radius:8px;background:linear-gradient(-45deg, ${colorway.primary.background} 0%, ${colorway.tertiary.background} 100%);height: 150px;">
@@ -690,7 +541,8 @@ class ColorwaySelector {
                                     </div>
                                   </foreignObject>
                                 </svg>
-                                `)})
+                                `)
+                                })
                                 ColorwayCardShared = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
                                     <foreignObject width="300" height="150">
                                         <div xmlns="http://www.w3.org/1999/xhtml" style="padding-top: 8px;border-radius:8px;background:linear-gradient(-45deg, ${colorway.primary.background} 0%, ${colorway.tertiary.background} 100%);height: 150px;width:300px;">
@@ -701,7 +553,8 @@ class ColorwaySelector {
                                     </foreignObject>
                                 </svg>`
                             } else {
-                                ColorwayCard = BdApi.React.createElement("img",{src:'data:image/svg+xml,' + encodeURIComponent(`
+                                ColorwayCard = BdApi.React.createElement("img", {
+                                    src: 'data:image/svg+xml,' + encodeURIComponent(`
                                 <svg xmlns="http://www.w3.org/2000/svg" width="408" height="150">
                                   <foreignObject width="408" height="150">
                                     <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;">
@@ -712,7 +565,8 @@ class ColorwaySelector {
                                     </div>
                                   </foreignObject>
                                 </svg>
-                                `)})
+                                `)
+                                })
                                 ColorwayCardShared = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
                                     <foreignObject width="300" height="150">
                                         <div xmlns="http://www.w3.org/1999/xhtml" style="border-radius:8px;background-color:${colorway.primary.background};height: 150px;width:300px;">
@@ -725,178 +579,180 @@ class ColorwaySelector {
                                 </svg>`
                             }
                             let shareIconBtn = BdApi.React.createElement("div", {
-                                class:"colorwayShareIcon",
+                                class: "colorwayShareIcon",
                                 onClick: () => {
                                     let colorwayIDArray = `${colorway.accent.background},${colorway.primary.background},${colorway.secondary.background},${colorway.tertiary.background}`;
                                     let colorwayID = Buffer(colorwayIDArray).toString('hex');
-                                    BdApi.showConfirmationModal("Share Colorway", React.createElement("div",{
+                                    BdApi.showConfirmationModal("Share Colorway", React.createElement("div", {
                                         class: "colorwayInfoModalDetails",
-                                        style: {gap: 4}
+                                        style: { gap: 4 }
                                     },
-                                    ColorwayCard,
-                                    React.createElement("div",{class: "colorwayModalFooter"},
-                                    BdApi.React.createElement("button",{
-                                        class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
-                                        onClick: (e) => {
-                                            try {
-                                                e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                            } catch(e) {
-            
-                                            }
-                                        }
-                                    },"Close"),
-                                    BdApi.React.createElement("button",{
-                                        class: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
-                                        onClick: (e) => {
-                                            DiscordNative.clipboard.copy(colorwayID);
-                                            nativeToast("Copied Colorway ID Successfully",1);
-                                            try {
-                                                e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                            } catch(e) {
-            
-                                            }
-                                        }
-                                    },"Copy Colorway ID"),
-                                    BdApi.React.createElement("button",{
-                                        class: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
-                                        onClick: (e) => {
-                                            let canvas = document.createElement("canvas")
-                                            let ctx = canvas.getContext("2d");
-                                            let svg = ColorwayCardShared;
+                                        ColorwayCard,
+                                        React.createElement("div", { class: "colorwayModalFooter" },
+                                            BdApi.React.createElement("button", {
+                                                class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                onClick: (e) => {
+                                                    try {
+                                                        e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                    } catch (e) {
 
-                                            var img = new Image();
-                                            img.crossOrigin = "anonymous"
-                                            img.onload = function() {
-                                                ctx.drawImage(img, 0, 0);
-                                                let buffer = Buffer.from(canvas.toDataURL().split(",")[1], 'base64');
+                                                    }
+                                                }
+                                            }, "Close"),
+                                            BdApi.React.createElement("button", {
+                                                class: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                onClick: (e) => {
+                                                    DiscordNative.clipboard.copy(colorwayID);
+                                                    nativeToast("Copied Colorway ID Successfully", 1);
+                                                    try {
+                                                        e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                    } catch (e) {
 
-                                                DiscordNative.clipboard.copyImage(buffer, "colorway-share")
-                                            }
-                                            img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
-                                            nativeToast("Copied Banner Successfully",1);
-                                            try {
-                                                e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                            } catch(e) {
-            
-                                            }
-                                        }
-                                    },"Copy Banner")
-                                )
-                                    ),{})
+                                                    }
+                                                }
+                                            }, "Copy Colorway ID"),
+                                            BdApi.React.createElement("button", {
+                                                class: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                                onClick: (e) => {
+                                                    let canvas = document.createElement("canvas")
+                                                    let ctx = canvas.getContext("2d");
+                                                    let svg = ColorwayCardShared;
+
+                                                    var img = new Image();
+                                                    img.crossOrigin = "anonymous"
+                                                    img.onload = function () {
+                                                        ctx.drawImage(img, 0, 0);
+                                                        let buffer = Buffer.from(canvas.toDataURL().split(",")[1], 'base64');
+
+                                                        DiscordNative.clipboard.copyImage(buffer, "colorway-share")
+                                                    }
+                                                    img.src = `data:image/svg+xml,` + encodeURIComponent(svg);
+                                                    nativeToast("Copied Banner Successfully", 1);
+                                                    try {
+                                                        e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                    } catch (e) {
+
+                                                    }
+                                                }
+                                            }, "Copy Banner")
+                                        )
+                                    ), {})
                                 }
                             });
-                            BdApi.showConfirmationModal(["Colorway Details: " + colorway.name,shareIconBtn],BdApi.React.createElement("div", {
+                            BdApi.showConfirmationModal(["Colorway Details: " + colorway.name, shareIconBtn], BdApi.React.createElement("div", {
                                 class: "colorwayInfoModalDetails"
-                            },[
-                                BdApi.React.createElement("div",{class: "colorwayColors"},[
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-accent", style:{backgroundColor: colorway.accent.background}}),
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-primary", style:{backgroundColor: colorway.primary.background}}),
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-secondary", style:{backgroundColor: colorway.secondary.background}}),
-                                    BdApi.React.createElement("div",{class: "colorwayColor colorwayColor-tertiary", style:{backgroundColor: colorway.tertiary.background}})
+                            }, [
+                                BdApi.React.createElement("div", { class: "colorwayColors" }, [
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-accent", style: { backgroundColor: colorway.accent.background } }),
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-primary", style: { backgroundColor: colorway.primary.background } }),
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-secondary", style: { backgroundColor: colorway.secondary.background } }),
+                                    BdApi.React.createElement("div", { class: "colorwayColor colorwayColor-tertiary", style: { backgroundColor: colorway.tertiary.background } })
                                 ]),
-                                BdApi.React.createElement("span",{class: "colorwayAuthor"}, ["Author: ",BdApi.React.createElement("span",{class: "colorwayAuthorLink",onClick: (e) => {
-                                    setTimeout(() => {
-                                        //Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),Webpack.getModule(Filters.byProps("getCurrentUser", "getUser")).getUser(colorway.authorID),{position:"right"});
-                                    },10);
-                                }},colorway.author)]),
-                                BdApi.React.createElement("span",{class: "colorwayImport colorwayCodeblockWrapper"}, ["CSS: ",BdApi.React.createElement("span",{class: "colorwayCodeblock"},codeblockLines)]),
-                                BdApi.React.createElement("div",{class: "colorwayModalFooter"}, [
-                                    BdApi.React.createElement("button",{
+                                BdApi.React.createElement("span", { class: "colorwayAuthor" }, ["Author: ", BdApi.React.createElement("span", {
+                                    class: "colorwayAuthorLink", onClick: (e) => {
+                                        setTimeout(() => {
+                                            //Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),Webpack.getModule(Filters.byProps("getCurrentUser", "getUser")).getUser(colorway.authorID),{position:"right"});
+                                        }, 10);
+                                    }
+                                }, colorway.author)]),
+                                BdApi.React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, ["CSS: ", BdApi.React.createElement("span", { class: "colorwayCodeblock" }, codeblockLines)]),
+                                BdApi.React.createElement("div", { class: "colorwayModalFooter" }, [
+                                    BdApi.React.createElement("button", {
                                         class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                         onClick: (e) => {
                                             try {
                                                 e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                            } catch(e) {
-            
+                                            } catch (e) {
+
                                             }
                                         }
-                                    },"Close"),
-                                    BdApi.React.createElement("button",{
+                                    }, "Close"),
+                                    BdApi.React.createElement("button", {
                                         class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                         onClick: (e) => {
                                             try {
                                                 DiscordNative.clipboard.copy(colorway.import);
-                                            } catch(e) {
-            
+                                            } catch (e) {
+
                                             }
-                                            nativeToast("Copied CSS to Clipboard",1);
+                                            nativeToast("Copied CSS to Clipboard", 1);
                                         }
-                                    },"Copy CSS"),
-                                    BdApi.React.createElement("button",{
+                                    }, "Copy CSS"),
+                                    BdApi.React.createElement("button", {
                                         class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                         onClick: (e) => {
                                             try {
                                                 e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                            } catch(e) {
-            
+                                            } catch (e) {
+
                                             }
-                                            BdApi.showConfirmationModal("Rename Colorway:",BdApi.React.createElement("div", {
+                                            BdApi.showConfirmationModal("Rename Colorway:", BdApi.React.createElement("div", {
                                                 class: "colorwayInfoModalDetails"
-                                            },[
+                                            }, [
                                                 React.createElement("input", {
                                                     type: "text",
                                                     class: "inputDefault-Ciwd-S input-3O04eu",
                                                     placeholder: "Give your colorway a new name"
                                                 }),
-                                                React.createElement("div",{class: "colorwayModalFooter"},[
-                                                    React.createElement("button",{
+                                                React.createElement("div", { class: "colorwayModalFooter" }, [
+                                                    React.createElement("button", {
                                                         class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                                         onClick: (e) => {
                                                             try {
                                                                 e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                                            } catch(e) {
-                            
+                                                            } catch (e) {
+
                                                             }
                                                         }
-                                                    },"Cancel"),
-                                                    React.createElement("button",{
+                                                    }, "Cancel"),
+                                                    React.createElement("button", {
                                                         class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                                         onClick: (e) => {
-                                                            if(!e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
+                                                            if (!e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
                                                                 e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "C'mon, you can do better!"
                                                             } else {
                                                                 let customColorwayArray = [];
                                                                 BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
-                                                                    if(el.name != colorway.name && el.name != e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
+                                                                    if (el.name != colorway.name && el.name != e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
                                                                         customColorwayArray.push(el);
                                                                     }
                                                                 })
                                                                 let customColorway = [
-                                                                {
-                                                                    name: e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value,
-                                                                    primary: {
-                                                                        background: colorway.primary.background,
-                                                                        foreground: colorway.primary.foreground
-                                                                    },
-                                                                    secondary: {
-                                                                        background: colorway.secondary.background,
-                                                                        foreground: colorway.secondary.foreground
-                                                                    },
-                                                                    secondaryAlt: {
-                                                                        background: colorway.secondaryAlt.background,
-                                                                        foreground: colorway.secondaryAlt.foreground
-                                                                    },
-                                                                    tertiary: {
-                                                                        background: colorway.tertiary.background,
-                                                                        foreground: colorway.tertiary.foreground
-                                                                    },
-                                                                    accent: {
-                                                                        background: colorway.accent.background,
-                                                                        foreground: colorway.accent.foreground
-                                                                    },
-                                                                    isGradient: colorway.isGradient || false,
-                                                                    import: colorway.import,
-                                                                    author: colorway.author,
-                                                                    authorID: colorway.authorID,
-                                                                    creatorVersion: config.info.creatorVersion
-                                                                }
+                                                                    {
+                                                                        name: e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value,
+                                                                        primary: {
+                                                                            background: colorway.primary.background,
+                                                                            foreground: colorway.primary.foreground
+                                                                        },
+                                                                        secondary: {
+                                                                            background: colorway.secondary.background,
+                                                                            foreground: colorway.secondary.foreground
+                                                                        },
+                                                                        secondaryAlt: {
+                                                                            background: colorway.secondaryAlt.background,
+                                                                            foreground: colorway.secondaryAlt.foreground
+                                                                        },
+                                                                        tertiary: {
+                                                                            background: colorway.tertiary.background,
+                                                                            foreground: colorway.tertiary.foreground
+                                                                        },
+                                                                        accent: {
+                                                                            background: colorway.accent.background,
+                                                                            foreground: colorway.accent.foreground
+                                                                        },
+                                                                        isGradient: colorway.isGradient || false,
+                                                                        import: colorway.import,
+                                                                        author: colorway.author,
+                                                                        authorID: colorway.authorID,
+                                                                        creatorVersion: config.info.creatorVersion
+                                                                    }
                                                                 ];
                                                                 customColorwayArray.push(customColorway[0]);
                                                                 BdApi.saveData("DiscordColorways", "custom_colorways", customColorwayArray);
                                                                 try {
                                                                     e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                                                } catch(e) {
-                            
+                                                                } catch (e) {
+
                                                                 }
                                                                 const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
                                                                 if (elements.length) {
@@ -914,26 +770,26 @@ class ColorwaySelector {
                                                                 }
                                                             }
                                                         }
-                                                    },"Finish")
+                                                    }, "Finish")
                                                 ])
                                             ]));
                                         }
-                                    },"Rename"),
-                                    BdApi.React.createElement("button",{
+                                    }, "Rename"),
+                                    BdApi.React.createElement("button", {
                                         class: "button-ejjZWC lookFilled-1H2Jvj colorRed-2VFhM4 sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                         onClick: (e) => {
                                             try {
                                                 e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                            } catch(e) {
-            
+                                            } catch (e) {
+
                                             }
-                                            BdApi.showConfirmationModal("Delete Colorway","Are you sure you want to delete this Colorway?", {
+                                            BdApi.showConfirmationModal("Delete Colorway", "Are you sure you want to delete this Colorway?", {
                                                 danger: true,
                                                 confirmText: "Delete",
                                                 onConfirm: () => {
                                                     let customColorwayArray = [];
                                                     BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
-                                                        if(el.name != colorway.name) {
+                                                        if (el.name != colorway.name) {
                                                             customColorwayArray.push(el);
                                                         }
                                                     })
@@ -953,7 +809,7 @@ class ColorwaySelector {
                                                             new ColorwaySelector(el).mount();
                                                         }
                                                     }
-                                                    if(colorway.name == BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                                    if (colorway.name == BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
                                                         userSettings = {
                                                             activeColorway: "",
                                                             activeColorwayID: "disablecolorway",
@@ -961,16 +817,16 @@ class ColorwaySelector {
                                                             showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
                                                         }
                                                         BdApi.saveData("DiscordColorways", "settings", userSettings);
-                                                        if(document.getElementById("activeColorway")) {
+                                                        if (document.getElementById("activeColorway")) {
                                                             document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
                                                         } else {
                                                             document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
                                                         }
                                                         try {
-                                                            if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                                            if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
                                                                 document.querySelector(".discordColorway.active").classList.remove("active");
                                                             }
-                                                        } catch(e) {
+                                                        } catch (e) {
                                                             console.warn("Uncaught Exception: " + e);
                                                         }
                                                         document.getElementById("colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID).classList.add("active");
@@ -978,27 +834,27 @@ class ColorwaySelector {
                                                 }
                                             });
                                         }
-                                    },"Delete Colorway")
+                                    }, "Delete Colorway")
                                 ])
-                            ]),{
+                            ]), {
                                 confirmText: "Set Theme",
                                 onConfirm: () => {
-                                    if(!el.path[1].parentElement.classList.contains("active")) {
+                                    if (!el.path[1].parentElement.classList.contains("active")) {
                                         userSettings = {
                                             activeColorway: colorway.import,
                                             activeColorwayID: colorway.name
                                         }
                                         BdApi.saveData("DiscordColorways", "settings", userSettings);
-                                        if(document.getElementById("activeColorway")) {
+                                        if (document.getElementById("activeColorway")) {
                                             document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
                                         } else {
                                             document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
                                         }
                                         try {
-                                            if(document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
+                                            if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
                                                 document.querySelector(".discordColorway.active").classList.remove("active");
                                             }
-                                        } catch(e) {
+                                        } catch (e) {
                                             console.warn("Uncaught Exception: " + e);
                                         }
                                         el.path[1].parentElement.classList.add("active");
@@ -1007,27 +863,27 @@ class ColorwaySelector {
                             });
                         }
                     },
-                    createElement("div", {
-                        className: "colorwayInfoIcon"
-                    }))
+                        createElement("div", {
+                            className: "colorwayInfoIcon"
+                        }))
                 );
 
-                if(colorway.isGradient == true) {
-                    colorwayElem.append(createElement("div", {className: "discordColorwayPreviewGradient",style: "background: linear-gradient(-45deg, " + colorway.primary.background + " 0%, " + colorway.tertiary.background + " 100%);"}),colorwayElem.children[0]);
+                if (colorway.isGradient == true) {
+                    colorwayElem.append(createElement("div", { className: "discordColorwayPreviewGradient", style: "background: linear-gradient(-45deg, " + colorway.primary.background + " 0%, " + colorway.tertiary.background + " 100%);" }), colorwayElem.children[0]);
                 } else {
-                    colorwayElem.append(createElement("div",{
+                    colorwayElem.append(createElement("div", {
                         class: "discordColorwayPreviewColorContainer"
                     },
-                    createElement("div", {className: "discordColorwayPreviewColor",style: "background-color: " + colorway.accent.background}),
-                    createElement("div", {className: "discordColorwayPreviewColor",style: "background-color: " + colorway.primary.background}),
-                    createElement("div", {className: "discordColorwayPreviewColor",style: "background-color: " + colorway.secondary.background}),
-                    createElement("div", {className: "discordColorwayPreviewColor",style: "background-color: " + colorway.tertiary.background})))
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.accent.background }),
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.primary.background }),
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.secondary.background }),
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.tertiary.background })))
                 }
 
                 BdApi.UI.createTooltip(colorwayElem, colorway.name, {});
                 customcolorwayArray.push(colorwayElem);
             });
-        } catch(e) {
+        } catch (e) {
             console.warn("Unexpected error: " + e);
         }
 
@@ -1041,67 +897,67 @@ class ColorwaySelector {
         this.colorwayHeaderContainer = createElement("div", {
             className: "colorwayHeaderContainer"
         },
-        createElement("div", {
-            className: "colorwayHeaderTitle"
-        }, "Colorways", createElement("div", {
-            className: "colorwaySettingsIcon",
-            onclick: () => {
-                BdApi.showConfirmationModal("DiscordColorway Settings",[BdApi.React.createElement("div",{className: "colorwaySettingsContainer"})]);
-            }
-        })),
-        createElement("button", {
-            className: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg",
-            type: "button",
-            onclick: () => {
-                colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
-                    colorwayList = colors.colorways;
-                    const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
-                                if (elements.length) {
-                                    for (const el of elements) {
-                                        document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                                        new ColorwaySelector(el).mount();
-                                    }
-                                }
-                                const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
-                                if (elements2.length) {
-                                    for (const el of elements2) {
-                                        document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                                        new ColorwaySelector(el).mount();
-                                    }
-                                }
-                });
-            }
-        }, "Refresh Colorway List")
+            createElement("div", {
+                className: "colorwayHeaderTitle"
+            }, "Colorways", createElement("div", {
+                className: "colorwaySettingsIcon",
+                onclick: () => {
+                    BdApi.showConfirmationModal("DiscordColorway Settings", [BdApi.React.createElement("div", { className: "colorwaySettingsContainer" })]);
+                }
+            })),
+            createElement("button", {
+                className: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg",
+                type: "button",
+                onclick: () => {
+                    colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
+                        colorwayList = colors.colorways;
+                        const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
+                        if (elements.length) {
+                            for (const el of elements) {
+                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                                new ColorwaySelector(el).mount();
+                            }
+                        }
+                        const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
+                        if (elements2.length) {
+                            for (const el of elements2) {
+                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                                new ColorwaySelector(el).mount();
+                            }
+                        }
+                    });
+                }
+            }, "Refresh Colorway List")
         );
 
         this.customColorwayHeaderContainer = createElement("div", {
             className: "colorwayHeaderContainer customColorwaySelector"
         },
-        createElement("div", {
-            className: "colorwayHeaderTitle"
-        }, "Custom Colorways", versionBadge("ColorwayCreator", config.info.creatorVersion)));
+            createElement("div", {
+                className: "colorwayHeaderTitle"
+            }, "Custom Colorways", versionBadge("ColorwayCreator", config.info.creatorVersion)));
 
 
-        container.append(this.colorwayHeaderContainer,wrapper,this.customColorwayHeaderContainer,customwrapper);
+        container.append(this.colorwayHeaderContainer, wrapper, this.customColorwayHeaderContainer, customwrapper);
 
         colorwayArray.forEach(elem => {
             wrapper.append(elem);
-            if(elem.id == `colorway-${BdApi.loadData("DiscordColorways", "settings").activeColorwayID}`) {
+            if (elem.id == `colorway-${BdApi.loadData("DiscordColorways", "settings").activeColorwayID}`) {
                 elem.classList.add("active");
             }
         });
 
         customcolorwayArray.forEach(elem => {
             customwrapper.append(elem);
-            if(elem.id == `colorway-${BdApi.loadData("DiscordColorways", "settings").activeColorwayID}`) {
+            if (elem.id == `colorway-${BdApi.loadData("DiscordColorways", "settings").activeColorwayID}`) {
                 elem.classList.add("active");
             }
         });
 
-        if(!document.querySelector(".discordColorway.active")) {
+        if (!document.querySelector(".discordColorway.active")) {
             try {
                 document.getElementById("colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID).classList.add("active");
-            } catch(e) {
+            } catch (e) {
                 console.warn("Uncaught Exception: " + e);
             }
         }
@@ -1144,7 +1000,7 @@ class BelowHomeColorwaySelector {
             } else {
                 this.target.appendChild(res);
             }
-            
+
             this.ref = res;
         }
     }
@@ -1158,7 +1014,7 @@ class BelowHomeColorwaySelector {
     }
 
     getState() {
-        
+
     }
 
     render() {
@@ -1170,9 +1026,9 @@ class BelowHomeColorwaySelector {
         let ColorwaySelectorBtn = createElement("div", {
             className: "ColorwaySelectorBtn",
             onclick: () => {
-                BdApi.showConfirmationModal("Select Colorway:",BdApi.React.createElement("div", {class: "colorwaySelectorModal"}));
+                BdApi.showConfirmationModal("Select Colorway:", BdApi.React.createElement("div", { class: "colorwaySelectorModal" }));
             }
-        },createElement("div", {
+        }, createElement("div", {
             className: "colorwaySelectorIcon"
         }));
 
@@ -1219,7 +1075,7 @@ class SettingsRenderer {
             } else {
                 this.target.appendChild(res);
             }
-            
+
             this.ref = res;
         }
     }
@@ -1233,7 +1089,7 @@ class SettingsRenderer {
     }
 
     getState() {
-        
+
     }
 
     render() {
@@ -1242,13 +1098,53 @@ class SettingsRenderer {
 
         container._unmount = this.unmount.bind(this);
 
-        let settingsPanel = 
-            createElement("span",{className: "colorwaySetting",id: "showInGuildBar"}, "Show In Guild bar", bdSwitch(BdApi.loadData("DiscordColorways", "settings").showInGuildBar)) +
-            createElement("span",{className: "colorwaySetting",id: "showCustomColorways"}, createElement("span",{},"Show Custom Colorways"), bdSwitch(BdApi.loadData("DiscordColorways", "settings").showCustomColorways))
-        
+        container.append(createElement("span", { className: "colorwaySetting", id: "showInGuildBar" }, "Show In Guild bar", bdSwitch(BdApi.loadData("DiscordColorways", "settings").showInGuildBar,{
+            onclick: (e) => {
+                userSettings = {
+                    activeColorway: BdApi.loadData("DiscordColorways", "settings").activeColorway,
+                    activeColorwayID: BdApi.loadData("DiscordColorways", "settings").activeColorwayID,
+                    showInGuildBar: e.path[1].querySelector("input").checked,
+                    showCustomColorways: BdApi.loadData("DiscordColorways", "settings").showCustomColorways
+                }
+                BdApi.saveData("DiscordColorways", "settings", userSettings);
+                const className = HomeIcon?.tutorialContainer;
+                const elements = Array.from(document.getElementsByClassName(className));
 
-        container.append(createElement("span",{className: "colorwaySetting",id: "showInGuildBar"}, "Show In Guild bar", bdSwitch(BdApi.loadData("DiscordColorways", "settings").showInGuildBar)),
-        createElement("span",{className: "colorwaySetting",id: "showCustomColorways"}, createElement("span",{},"Show Custom Colorways"), bdSwitch(BdApi.loadData("DiscordColorways", "settings").showCustomColorways)));
+                if (elements.length) {
+                    if (e.path[1].querySelector("input").checked) {
+                        new BelowHomeColorwaySelector(document.getElementsByClassName(className)[0]).mount();
+                    } else {
+                        document.querySelector(".ColorwaySelectorBtnContainer").remove();
+                    }
+                }
+            }
+        })),
+        createElement("span", { className: "colorwaySetting", id: "showCustomColorways" }, createElement("span", {}, "Show Custom Colorways"), bdSwitch(BdApi.loadData("DiscordColorways", "settings").showCustomColorways,{
+            onclick: (e) => {
+                userSettings = {
+                    activeColorway: BdApi.loadData("DiscordColorways", "settings").activeColorway,
+                    activeColorwayID: BdApi.loadData("DiscordColorways", "settings").activeColorwayID,
+                    showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar,
+                    showCustomColorways: e.path[1].querySelector("input").checked
+                }
+                BdApi.saveData("DiscordColorways", "settings", userSettings);
+                if (e.path[1].querySelector("input").checked) {
+                    try {
+                        document.head.append(createElement("style", { id: "visibleCustomColorways" }, `
+                        .customColorwaySelector {display: flex !important;}
+                                                `));
+                    } catch (e) {
+
+                    }
+                } else {
+                    try {
+                        document.getElementById("visibleCustomColorways").remove();
+                    } catch (e) {
+
+                    }
+                }
+            }
+        })));
 
         return container;
     }
@@ -1282,10 +1178,10 @@ class ColorwayCreator {
         if (!res) this.ref?.remove();
         else {
             if (this.ref) {
-                
+
             } else {
                 this.target.appendChild(res);
-                if(res.parentElement.classList.contains("data-colorway-id")) {
+                if (res.parentElement.classList.contains("data-colorway-id")) {
                     let changeColors = new UIEvent("change", {
                         "view": window,
                         "bubbles": true,
@@ -1302,12 +1198,12 @@ class ColorwayCreator {
                         document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
                         document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
                         document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
-                    } catch(e) {
+                    } catch (e) {
 
                     }
                 }
             }
-            
+
             this.ref = res;
         }
     }
@@ -1321,7 +1217,7 @@ class ColorwayCreator {
     }
 
     getState() {
-        
+
     }
 
     render() {
@@ -1349,8 +1245,6 @@ class ColorwayCreator {
         let currentUserProps = Webpack.getModule(Filters.byProps("getCurrentUser", "getUser")).getCurrentUser();
         let backgroundFloating = [220, 8, 7];
 
-        let gradientPreview = ''
-
         let useGradient = false;
 
         function componentToHex(c) {
@@ -1362,27 +1256,27 @@ class ColorwayCreator {
         }
         function shadeColor(color, percent) {
 
-            var R = parseInt(color.substring(1,3),16);
-            var G = parseInt(color.substring(3,5),16);
-            var B = parseInt(color.substring(5,7),16);
-        
+            var R = parseInt(color.substring(1, 3), 16);
+            var G = parseInt(color.substring(3, 5), 16);
+            var B = parseInt(color.substring(5, 7), 16);
+
             R = parseInt(R * (100 + percent) / 100);
             G = parseInt(G * (100 + percent) / 100);
             B = parseInt(B * (100 + percent) / 100);
-        
-            R = (R<255)?R:255;  
-            G = (G<255)?G:255;  
-            B = (B<255)?B:255;  
-        
+
+            R = (R < 255) ? R : 255;
+            G = (G < 255) ? G : 255;
+            B = (B < 255) ? B : 255;
+
             R = Math.round(R)
             G = Math.round(G)
             B = Math.round(B)
-        
-            var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-            var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-            var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-        
-            return "#"+RR+GG+BB;
+
+            var RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+            var GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+            var BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+
+            return "#" + RR + GG + BB;
         }
 
         let stageOne = createElement("div", {
@@ -1391,18 +1285,18 @@ class ColorwayCreator {
         stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
 
         let creationPanel = (
-            createElement("div",{
+            createElement("div", {
                 className: "colorwayCreator-colorPreviews"
             },
-                
-                createElement("div",{
+
+                createElement("div", {
                     className: "colorwayCreator-colorPreview",
                     onclick: (e) => {
-                        try{e.path[0].querySelector("input").click();}catch(e){}
+                        try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: #313338;"
                 },
-                    createElement("input",{
+                    createElement("input", {
                         type: "color",
                         value: "#313338",
                         id: "colorwayCreatorColorpicker_primary",
@@ -1410,7 +1304,7 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
@@ -1420,10 +1314,10 @@ class ColorwayCreator {
                                 let r = parseInt(result[1], 16)
                                 let g = parseInt(result[2], 16)
                                 let b = parseInt(result[3], 16)
-                                return [r,g,b]
+                                return [r, g, b]
                             }
                             let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
-                            let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                            let RgbToHex = rgbToHex(splitRGBValues[0], splitRGBValues[1], splitRGBValues[2]);
                             primaryLighter = shadeColor(RgbToHex, 20);
                             let splitRGBValuesLighter = hexToRgb(primaryLighter);
                             backgroundPrimary = e.path[0].value;
@@ -1447,7 +1341,7 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
@@ -1457,10 +1351,10 @@ class ColorwayCreator {
                                 let r = parseInt(result[1], 16)
                                 let g = parseInt(result[2], 16)
                                 let b = parseInt(result[3], 16)
-                                return [r,g,b]
+                                return [r, g, b]
                             }
                             let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
-                            let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                            let RgbToHex = rgbToHex(splitRGBValues[0], splitRGBValues[1], splitRGBValues[2]);
                             primaryLighter = shadeColor(RgbToHex, 20);
                             let splitRGBValuesLighter = hexToRgb(primaryLighter);
                             backgroundPrimary = e.path[0].value;
@@ -1481,16 +1375,16 @@ class ColorwayCreator {
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
-                    createElement("span",{},"Primary")
+                    createElement("span", {}, "Primary")
                 ),
-                createElement("div",{
+                createElement("div", {
                     className: "colorwayCreator-colorPreview",
                     onclick: (e) => {
-                        try{e.path[0].querySelector("input").click();}catch(e){}
+                        try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: #2b2d31;"
                 },
-                    createElement("input",{
+                    createElement("input", {
                         type: "color",
                         value: "#2b2d31",
                         id: "colorwayCreatorColorpicker_secondary",
@@ -1498,14 +1392,14 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
                             }
                             let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
-                            let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
-                            let RgbToHsl = RGBToHSL(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                            let RgbToHex = rgbToHex(splitRGBValues[0], splitRGBValues[1], splitRGBValues[2]);
+                            let RgbToHsl = RGBToHSL(splitRGBValues[0], splitRGBValues[1], splitRGBValues[2]);
                             secondaryAlt = shadeColor(RgbToHex, secondaryToSecondaryAltContrast);
                             backgroundSecondary = e.path[0].value;
                             document.querySelector(".colorwayPreview-channels").style = "background: var(--secondary-gradient,var(--secondary)); --secondary: " + backgroundSecondary + ";";
@@ -1514,12 +1408,12 @@ class ColorwayCreator {
                                 (parseInt(splitRGBValues[1]) * 587) +
                                 (parseInt(splitRGBValues[2]) * 114)) / 1000);
                             secondaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
-                            if(RgbToHsl[0] == 0) {
+                            if (RgbToHsl[0] == 0) {
                                 secondaryMuted = 'gray'
                             } else {
-                                if(secondaryTextColor == 'white') {
+                                if (secondaryTextColor == 'white') {
                                     secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)";
-                                } else if(secondaryTextColor == 'black') {
+                                } else if (secondaryTextColor == 'black') {
                                     secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 20%)";
                                 }
                             }
@@ -1530,14 +1424,14 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
                             }
                             let splitRGBValues = splitRGB(e.path[0].parentElement.style.backgroundColor);
-                            let RgbToHex = rgbToHex(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
-                            let RgbToHsl = RGBToHSL(splitRGBValues[0],splitRGBValues[1],splitRGBValues[2]);
+                            let RgbToHex = rgbToHex(splitRGBValues[0], splitRGBValues[1], splitRGBValues[2]);
+                            let RgbToHsl = RGBToHSL(splitRGBValues[0], splitRGBValues[1], splitRGBValues[2]);
                             secondaryAlt = shadeColor(RgbToHex, secondaryToSecondaryAltContrast);
                             backgroundSecondary = e.path[0].value;
                             document.querySelector(".colorwayPreview-channels").style = "background: var(--secondary-gradient,var(--secondary)); --secondary: " + backgroundSecondary + ";";
@@ -1546,12 +1440,12 @@ class ColorwayCreator {
                                 (parseInt(splitRGBValues[1]) * 587) +
                                 (parseInt(splitRGBValues[2]) * 114)) / 1000);
                             secondaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
-                            if(RgbToHsl[0] == 0) {
+                            if (RgbToHsl[0] == 0) {
                                 secondaryMuted = 'gray'
                             } else {
-                                if(secondaryTextColor == 'white') {
+                                if (secondaryTextColor == 'white') {
                                     secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 90%)";
-                                } else if(secondaryTextColor == 'black') {
+                                } else if (secondaryTextColor == 'black') {
                                     secondaryMuted = "hsl(" + RgbToHsl[0] + ", 100%, 20%)";
                                 }
                             }
@@ -1559,16 +1453,16 @@ class ColorwayCreator {
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
-                    createElement("span",{},"Secondary")
+                    createElement("span", {}, "Secondary")
                 ),
-                createElement("div",{
+                createElement("div", {
                     className: "colorwayCreator-colorPreview",
                     onclick: (e) => {
-                        try{e.path[0].querySelector("input").click();}catch(e){}
+                        try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: #1e1f22;"
                 },
-                    createElement("input",{
+                    createElement("input", {
                         type: "color",
                         value: "#1e1f22",
                         id: "colorwayCreatorColorpicker_tertiary",
@@ -1576,7 +1470,7 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
@@ -1597,7 +1491,7 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
@@ -1615,16 +1509,16 @@ class ColorwayCreator {
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
-                    createElement("span",{},"Tertiary")
+                    createElement("span", {}, "Tertiary")
                 ),
-                createElement("div",{
+                createElement("div", {
                     className: "colorwayCreator-colorPreview",
                     onclick: (e) => {
-                        try{e.path[0].querySelector("input").click();}catch(e){}
+                        try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: hsl(235 85.6% 64.7%);"
                 },
-                    createElement("input",{
+                    createElement("input", {
                         type: "color",
                         value: "#5865f2",
                         id: "colorwayCreatorColorpicker_accent",
@@ -1632,7 +1526,7 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
@@ -1653,7 +1547,7 @@ class ColorwayCreator {
                             e.path[0].parentElement.style = "background-color: " + e.path[0].value + ";";
                             let splitRGB = (color) => {
                                 if (color.indexOf('rgba') === -1)
-                                color += ',1';
+                                    color += ',1';
                                 return color.match(/[\.\d]+/g).map(function (a) {
                                     return +a
                                 });
@@ -1671,136 +1565,122 @@ class ColorwayCreator {
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
-                    createElement("span",{},"Accent")
+                    createElement("span", {}, "Accent")
                 )
             )
         )
 
-        let bulkRemoveAttribute = (el, attr) => {
-            if(attr.isArray) {
-                attr.forEach(attra => {
-                    el.removeAttribute(attra);
-                })
-            } else {
-                el.removeAttribute(attr);
-            }
-        }
-
-        let stageTwo = createElement("div", {
-            className: "colorwayCreatorWrapperStage"
-        });
-
-        stageOne.append(modalHeader("Name:"),textInput("Give your Colorway a name","discordColorwayCreator_name"),modalHeader("Colors:"),creationPanel,createElement("div", {
+        stageOne.append(modalHeader("Name:"), textInput("Give your Colorway a name", "discordColorwayCreator_name"), modalHeader("Colors:"), creationPanel, createElement("div", {
             class: "settingRow"
         },
-        "Gradient",createElement("div",{
-            class: "choiceContainer"
-        },
-        createElement("div",{
-            class:"choice",
-            onclick: (e) => {
-                if(!e.path[0].classList.contains("active")) {
-                    e.path[0].parentElement.querySelector(".active").classList.remove("active");
-                    e.path[0].classList.add("active");
-                    useGradient = true;
-                }
-            }
-        },"On"),
-        createElement("div",{
-            class:"choice active",
-            onclick: (e) => {
-                if(!e.path[0].classList.contains("active")) {
-                    e.path[0].parentElement.querySelector(".active").classList.remove("active");
-                    e.path[0].classList.add("active");
-                    useGradient = false;
-                }
-            }
-        },"Off"))),modalHeader("Preview:"),
-        createElement("div",{
-            class: "colorwayPreview-background",
-            style: "background: " + backgroundTertiary + ";"
-        },
-        createElement("div",{
-            class: "colorwayPreview-chat",
-            style: "background: " + backgroundPrimary + ";"
-        },
-        createElement("div",{
-            class: "colorwayPreview-channels",
-            style: "background: " + backgroundSecondary + ";"
-        },
-        createElement("div",{
-            class: "colorwayPreview-userArea",
-            style: "background: " + secondaryAlt + ";"
-        })
-        ),
-        createElement("div",{
-            class: "colorwayPreview-chatbox",
-            style: "background: var(--lighter-gradient,--lighter); --lighter: " + primaryLighter + ";"
-        })
-        ),
-        createElement("div",{
-            class: "colorwayPreview-guildsWrapper"
-        },
-        createElement("div",{
-            class: "colorwayPreview-guildsIcon colorwayPreview-homeIcon",
-            style: "background-color: " + backgroundPrimary + "; --background-hover: #5865f2;"
-        },
-        createElement("div",{
-            class: "colorways-discordIcon"
-        })
-        ),
-        createElement("div",{
-            class: "colorwayPreview-guildsSeparator"
-        }),
-        createElement("div",{
-            class: "colorwayPreview-guildsIcon",
-            style: "background-color: " + backgroundPrimary + "; --background-hover: #5865f2;"
-        })
-        )
-        ),createElement("div",{class: "colorwayModalFooter"},
-            modalBtnGray("Cancel",{
-                onclick: (e) => {
-                    try {
-                        e.path[6].lastChild.querySelector('button[type="button"]').click();
-                    } catch(e) {
-
+            "Gradient", createElement("div", {
+                class: "choiceContainer"
+            },
+                createElement("div", {
+                    class: "choice",
+                    onclick: (e) => {
+                        if (!e.path[0].classList.contains("active")) {
+                            e.path[0].parentElement.querySelector(".active").classList.remove("active");
+                            e.path[0].classList.add("active");
+                            useGradient = true;
+                        }
                     }
-                }
-            }),
-            modalBtnGray("Enter Colorway ID",{
-                onclick: (e) => {
-                    BdApi.showConfirmationModal("Enter Colorway ID:",BdApi.React.createElement("div", {
-                        class: "colorwayInfoModalDetails"
-                    },[
-                        React.createElement("input", {
-                            type: "text",
-                            class: "inputDefault-Ciwd-S input-3O04eu",
-                            placeholder: "Enter Colorway ID"
-                        }),
-                        React.createElement("div",{class: "colorwayModalFooter"},[
-                            React.createElement("button",{
-                                class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
-                                onClick: (e) => {
-                                    try {
-                                        e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                    } catch(e) {
-    
+                }, "On"),
+                createElement("div", {
+                    class: "choice active",
+                    onclick: (e) => {
+                        if (!e.path[0].classList.contains("active")) {
+                            e.path[0].parentElement.querySelector(".active").classList.remove("active");
+                            e.path[0].classList.add("active");
+                            useGradient = false;
+                        }
+                    }
+                }, "Off"))), modalHeader("Preview:"),
+            createElement("div", {
+                class: "colorwayPreview-background",
+                style: "background: " + backgroundTertiary + ";"
+            },
+                createElement("div", {
+                    class: "colorwayPreview-chat",
+                    style: "background: " + backgroundPrimary + ";"
+                },
+                    createElement("div", {
+                        class: "colorwayPreview-channels",
+                        style: "background: " + backgroundSecondary + ";"
+                    },
+                        createElement("div", {
+                            class: "colorwayPreview-userArea",
+                            style: "background: " + secondaryAlt + ";"
+                        })
+                    ),
+                    createElement("div", {
+                        class: "colorwayPreview-chatbox",
+                        style: "background: var(--lighter-gradient,--lighter); --lighter: " + primaryLighter + ";"
+                    })
+                ),
+                createElement("div", {
+                    class: "colorwayPreview-guildsWrapper"
+                },
+                    createElement("div", {
+                        class: "colorwayPreview-guildsIcon colorwayPreview-homeIcon",
+                        style: "background-color: " + backgroundPrimary + "; --background-hover: #5865f2;"
+                    },
+                        createElement("div", {
+                            class: "colorways-discordIcon"
+                        })
+                    ),
+                    createElement("div", {
+                        class: "colorwayPreview-guildsSeparator"
+                    }),
+                    createElement("div", {
+                        class: "colorwayPreview-guildsIcon",
+                        style: "background-color: " + backgroundPrimary + "; --background-hover: #5865f2;"
+                    })
+                )
+            ), createElement("div", { class: "colorwayModalFooter" },
+                modalBtnGray("Cancel", {
+                    onclick: (e) => {
+                        try {
+                            e.path[6].lastChild.querySelector('button[type="button"]').click();
+                        } catch (e) {
+
+                        }
+                    }
+                }),
+                modalBtnGray("Enter Colorway ID", {
+                    onclick: (e) => {
+                        BdApi.showConfirmationModal("Enter Colorway ID:", BdApi.React.createElement("div", {
+                            class: "colorwayInfoModalDetails"
+                        }, [
+                            React.createElement("input", {
+                                type: "text",
+                                class: "inputDefault-Ciwd-S input-3O04eu",
+                                placeholder: "Enter Colorway ID"
+                            }),
+                            React.createElement("div", { class: "colorwayModalFooter" }, [
+                                React.createElement("button", {
+                                    class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                    onClick: (e) => {
+                                        try {
+                                            e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                        } catch (e) {
+
+                                        }
                                     }
-                                }
-                            },"Cancel"),
-                            React.createElement("button",{
-                                class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
-                                onClick: (e) => {
-                                    if(!e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
-                                        e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "Invalid Colorway ID";
-                                    } else {
-                                        if(e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.length < 63) {
-                                            let colorwayValueArray = e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.split(/(\w\w)/g).filter(p => !!p).map(c => String.fromCharCode(parseInt(c, 16))).join("").split(",");
-                                            try {
-                                                e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                            } catch(e) {
-            
-                                            }
+                                }, "Cancel"),
+                                React.createElement("button", {
+                                    class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
+                                    onClick: (e) => {
+                                        if (!e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value) {
+                                            e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "Invalid Colorway ID";
+                                        } else {
+                                            if (e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.length < 63) {
+                                                let colorwayValueArray = e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.split(/(\w\w)/g).filter(p => !!p).map(c => String.fromCharCode(parseInt(c, 16))).join("").split(",");
+                                                try {
+                                                    e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
+                                                } catch (e) {
+
+                                                }
                                                 let changeColors = new UIEvent("change", {
                                                     "view": window,
                                                     "bubbles": true,
@@ -1811,175 +1691,172 @@ class ColorwayCreator {
                                                     document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[1];
                                                     document.getElementById("colorwayCreatorColorpicker_tertiary").value = colorwayValueArray[2];
                                                     document.getElementById("colorwayCreatorColorpicker_accent").value = colorwayValueArray[3];
-                
+
                                                     document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
                                                     document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
                                                     document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
                                                     document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
-                                                } catch(e) {
-                
+                                                } catch (e) {
+
                                                 }
-                                        } else {
-                                            e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value = '';
-                                            e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "Invalid Colorway ID";
+                                            } else {
+                                                e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value = '';
+                                                e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "Invalid Colorway ID";
+                                            }
                                         }
                                     }
+                                }, "Finish")
+                            ])
+                        ]));
+                    }
+                }),
+                modalBtnGray("Copy Current Colors", {
+                    onclick: (e) => {
+                        let checkColorType = (color) => {
+                            if (color.includes("#")) {
+                                return "hex";
+                            }
+                            if (color.includes("hsl")) {
+                                return "hsl";
+                            }
+                            if (color.includes("rgb")) {
+                                return "rgb";
+                            }
+                        }
+                        let HSLToHex = (h, s, l) => {
+                            s /= 100;
+                            l /= 100;
+
+                            let c = (1 - Math.abs(2 * l - 1)) * s,
+                                x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+                                m = l - c / 2,
+                                r = 0,
+                                g = 0,
+                                b = 0;
+
+                            if (0 <= h && h < 60) {
+                                r = c; g = x; b = 0;
+                            } else if (60 <= h && h < 120) {
+                                r = x; g = c; b = 0;
+                            } else if (120 <= h && h < 180) {
+                                r = 0; g = c; b = x;
+                            } else if (180 <= h && h < 240) {
+                                r = 0; g = x; b = c;
+                            } else if (240 <= h && h < 300) {
+                                r = x; g = 0; b = c;
+                            } else if (300 <= h && h < 360) {
+                                r = c; g = 0; b = x;
+                            }
+                            // Having obtained RGB, convert channels to hex
+                            r = Math.round((r + m) * 255).toString(16);
+                            g = Math.round((g + m) * 255).toString(16);
+                            b = Math.round((b + m) * 255).toString(16);
+
+                            // Prepend 0s, if necessary
+                            if (r.length == 1)
+                                r = "0" + r;
+                            if (g.length == 1)
+                                g = "0" + g;
+                            if (b.length == 1)
+                                b = "0" + b;
+
+                            return "#" + r + g + b;
+                        }
+                        let changeColors = new UIEvent("change", {
+                            "view": window,
+                            "bubbles": true,
+                            "cancelable": true
+                        });
+                        try {
+                            if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "hex") {
+                                if (getComputedStyle(document.body).getPropertyValue('--background-primary').includes(" ")) {
+                                    document.getElementById("colorwayCreatorColorpicker_primary").value = getComputedStyle(document.body).getPropertyValue('--background-primary').replace(" ", "").replace(" ", "").replace(" ", "");
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_primary").value = getComputedStyle(document.body).getPropertyValue('--background-primary');
                                 }
-                            },"Finish")
-                        ])
-                    ]));
-                }
-            }),
-            modalBtnGray("Copy Current Colors",{
-                onclick: (e) => {
-                    let checkColorType = (color) => {
-                        if(color.includes("#")) {
-                            return "hex";
-                        }
-                        if(color.includes("hsl")) {
-                            return "hsl";
-                        }
-                        if(color.includes("rgb")) {
-                            return "rgb";
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "rgb") {
+                                document.getElementById("colorwayCreatorColorpicker_primary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-primary'));
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "hsl") {
+                                if (getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_primary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[0].split("(")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("%")[0])));
+                                } else if (getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_primary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[4].split("%")[0])));
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_primary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1], getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].split("%")[0], getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("/")[0].split("%")[0]);
+                                }
+                            }
+
+                            if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "hex") {
+                                if (getComputedStyle(document.body).getPropertyValue('--background-secondary').includes(" ")) {
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = getComputedStyle(document.body).getPropertyValue('--background-secondary').replace(" ", "").replace(" ", "").replace(" ", "");
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = getComputedStyle(document.body).getPropertyValue('--background-secondary');
+                                }
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "rgb") {
+                                document.getElementById("colorwayCreatorColorpicker_secondary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-secondary'));
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "hsl") {
+                                if (getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[0].split("(")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("%")[0])));
+                                } else if (getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[4].split("%")[0])));
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1], getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].split("%")[0], getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("/")[0].split("%")[0]);
+                                }
+                            }
+
+                            if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "hex") {
+                                if (getComputedStyle(document.body).getPropertyValue('--background-tertiary').includes(" ")) {
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = getComputedStyle(document.body).getPropertyValue('--background-tertiary').replace(" ", "").replace(" ", "").replace(" ", "");
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = getComputedStyle(document.body).getPropertyValue('--background-tertiary');
+                                }
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "rgb") {
+                                document.getElementById("colorwayCreatorColorpicker_tertiary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-tertiary'));
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "hsl") {
+                                if (getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[0].split("(")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("%")[0])));
+                                } else if (getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[4].split("%")[0])));
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1], getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].split("%")[0], getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("/")[0].split("%")[0]);
+                                }
+                            }
+
+                            if (checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "hex") {
+                                if (getComputedStyle(document.body).getPropertyValue('--brand-experiment').includes(" ")) {
+                                    document.getElementById("colorwayCreatorColorpicker_accent").value = getComputedStyle(document.body).getPropertyValue('--brand-experiment').replace(" ", "").replace(" ", "").replace(" ", "");
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_accent").value = getComputedStyle(document.body).getPropertyValue('--brand-experiment');
+                                }
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "rgb") {
+                                document.getElementById("colorwayCreatorColorpicker_accent").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--brand-experiment'));
+                            } else if (checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "hsl") {
+                                if (getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_accent").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[0].split("(")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("%")[0])));
+                                } else if (getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].includes("calc")) {
+                                    document.getElementById("colorwayCreatorColorpicker_accent").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("%")[0].split("*")[1]), parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[4].split("%")[0])));
+                                } else {
+                                    document.getElementById("colorwayCreatorColorpicker_accent").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1], getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].split("%")[0], getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("/")[0].split("%")[0]);
+                                }
+                            }
+
+                            document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
+                            document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
+                            document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
+                            document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
+                        } catch (e) {
+
                         }
                     }
-                    let HSLToHex = (h,s,l) => {
-                        s /= 100;
-                        l /= 100;
-                      
-                        let c = (1 - Math.abs(2 * l - 1)) * s,
-                            x = c * (1 - Math.abs((h / 60) % 2 - 1)),
-                            m = l - c/2,
-                            r = 0,
-                            g = 0, 
-                            b = 0; 
-                      
-                        if (0 <= h && h < 60) {
-                          r = c; g = x; b = 0;
-                        } else if (60 <= h && h < 120) {
-                          r = x; g = c; b = 0;
-                        } else if (120 <= h && h < 180) {
-                          r = 0; g = c; b = x;
-                        } else if (180 <= h && h < 240) {
-                          r = 0; g = x; b = c;
-                        } else if (240 <= h && h < 300) {
-                          r = x; g = 0; b = c;
-                        } else if (300 <= h && h < 360) {
-                          r = c; g = 0; b = x;
+                }),
+                modalBtn("Finish", {
+                    onclick: (e) => {
+                        let gradientCSS = ``;
+                        if (!document.getElementById("discordColorwayCreator_name").value) {
+                            document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
                         }
-                        // Having obtained RGB, convert channels to hex
-                        r = Math.round((r + m) * 255).toString(16);
-                        g = Math.round((g + m) * 255).toString(16);
-                        b = Math.round((b + m) * 255).toString(16);
-                      
-                        // Prepend 0s, if necessary
-                        if (r.length == 1)
-                          r = "0" + r;
-                        if (g.length == 1)
-                          g = "0" + g;
-                        if (b.length == 1)
-                          b = "0" + b;
-                      
-                        return "#" + r + g + b;
-                    }
-                    let changeColors = new UIEvent("change", {
-                        "view": window,
-                        "bubbles": true,
-                        "cancelable": true
-                    });
-                    let calc = (str) => {
-                        return Function(`'use strict'; return (${str})`)()
-                    }
-                    try {
-                        if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "hex") {
-                            if(getComputedStyle(document.body).getPropertyValue('--background-primary').includes(" ")) {
-                                document.getElementById("colorwayCreatorColorpicker_primary").value = getComputedStyle(document.body).getPropertyValue('--background-primary').replace(" ","").replace(" ","").replace(" ","");
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_primary").value = getComputedStyle(document.body).getPropertyValue('--background-primary');
-                            }
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "rgb") {
-                            document.getElementById("colorwayCreatorColorpicker_primary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-primary'));
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-primary')) == "hsl") {
-                            if(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_primary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("%")[0])));
-                            } else if(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_primary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[4].split("%")[0])));
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_primary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--background-primary').split(" ")[3].split("/")[0].split("%")[0]);
-                            }
-                        }
-
-                        if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "hex") {
-                            if(getComputedStyle(document.body).getPropertyValue('--background-secondary').includes(" ")) {
-                                document.getElementById("colorwayCreatorColorpicker_secondary").value = getComputedStyle(document.body).getPropertyValue('--background-secondary').replace(" ","").replace(" ","").replace(" ","");
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_secondary").value = getComputedStyle(document.body).getPropertyValue('--background-secondary');
-                            }
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "rgb") {
-                            document.getElementById("colorwayCreatorColorpicker_secondary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-secondary'));
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-secondary')) == "hsl") {
-                            if(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_secondary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("%")[0])));
-                            } else if(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_secondary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[4].split("%")[0])));
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_secondary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--background-secondary').split(" ")[3].split("/")[0].split("%")[0]);
-                            }
-                        }
-
-                        if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "hex") {
-                            if(getComputedStyle(document.body).getPropertyValue('--background-tertiary').includes(" ")) {
-                                document.getElementById("colorwayCreatorColorpicker_tertiary").value = getComputedStyle(document.body).getPropertyValue('--background-tertiary').replace(" ","").replace(" ","").replace(" ","");
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_tertiary").value = getComputedStyle(document.body).getPropertyValue('--background-tertiary');
-                            }
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "rgb") {
-                            document.getElementById("colorwayCreatorColorpicker_tertiary").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--background-tertiary'));
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--background-tertiary')) == "hsl") {
-                            if(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_tertiary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("%")[0])));
-                            } else if(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_tertiary").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[4].split("%")[0])));
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_tertiary").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--background-tertiary').split(" ")[3].split("/")[0].split("%")[0]);
-                            }
-                        }
-
-                        if(checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "hex") {
-                            if(getComputedStyle(document.body).getPropertyValue('--brand-experiment').includes(" ")) {
-                                document.getElementById("colorwayCreatorColorpicker_accent").value = getComputedStyle(document.body).getPropertyValue('--brand-experiment').replace(" ","").replace(" ","").replace(" ","");
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_accent").value = getComputedStyle(document.body).getPropertyValue('--brand-experiment');
-                            }
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "rgb") {
-                            document.getElementById("colorwayCreatorColorpicker_accent").value = rgbToHex(getComputedStyle(document.body).getPropertyValue('--brand-experiment'));
-                        } else if(checkColorType(getComputedStyle(document.body).getPropertyValue('--brand-experiment')) == "hsl") {
-                            if(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_accent").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[0].split("(")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("%")[0])));
-                            } else if(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].includes("calc")) {
-                                document.getElementById("colorwayCreatorColorpicker_accent").value = String(HSLToHex(parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("%")[0].split("*")[1]),parseFloat(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[4].split("%")[0])));
-                            } else {
-                                document.getElementById("colorwayCreatorColorpicker_accent").value = HSLToHex(getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[1],getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[2].split("%")[0],getComputedStyle(document.body).getPropertyValue('--brand-experiment').split(" ")[3].split("/")[0].split("%")[0]);
-                            }
-                        }
-
-                        document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
-                        document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
-                        document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
-                        document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
-                    } catch(e) {
-
-                    }
-                }
-            }),
-            modalBtn("Finish",{
-                onclick: (e) => {
-                    let gradientCSS = ``;
-                    if(!document.getElementById("discordColorwayCreator_name").value) {
-                        document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
-                    }
-                    if(useGradient == true) {
-                        gradientCSS = `:root {
+                        if (useGradient == true) {
+                            gradientCSS = `:root {
 --bg-overlay-color: 0 0 0;
 --bg-overlay-color-inverse: 255 255 255;
 --bg-overlay-opacity-1: 0.2;
@@ -2022,35 +1899,35 @@ background: var(--bg-overlay-1,--background-secondary);
 .contentRegionScroller-2_GT_N {
 background: var(--bg-overlay-chat,--background-primary);
 }`
-                    }
-                    let customColorwayCSS = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion}*/
+                        }
+                        let customColorwayCSS = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion}*/
 :root {
---brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*13)}%;
---brand-140-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*12)}%;
---brand-160-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*11)}%;
---brand-200-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*10)}%;
---brand-230-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*9)}%;
---brand-260-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*8)}%;
---brand-300-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*7)}%;
---brand-330-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*6)}%;
---brand-345-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*5)}%;
---brand-360-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*4)}%;
---brand-400-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*3)}%;
---brand-430-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6*2)}%;
+--brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 13)}%;
+--brand-140-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 12)}%;
+--brand-160-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 11)}%;
+--brand-200-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 10)}%;
+--brand-230-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 9)}%;
+--brand-260-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 8)}%;
+--brand-300-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 7)}%;
+--brand-330-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 6)}%;
+--brand-345-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 5)}%;
+--brand-360-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 4)}%;
+--brand-400-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 3)}%;
+--brand-430-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 2)}%;
 --brand-460-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + 3.6}%;
 --brand-500-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2]}%;
 --brand-530-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - 3.6}%;
---brand-560-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*2)}%;
---brand-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*3)}%;
---brand-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*4)}%;
---brand-660-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*5)}%;
---brand-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*6)}%;
---brand-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*7)}%;
---brand-760-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*8)}%;
---brand-800-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*9)}%;
---brand-830-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*10)}%;
---brand-860-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*11)}%;
---brand-900-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6*12)}%;
+--brand-560-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 2)}%;
+--brand-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 3)}%;
+--brand-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 4)}%;
+--brand-660-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 5)}%;
+--brand-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 6)}%;
+--brand-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 7)}%;
+--brand-760-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 8)}%;
+--brand-800-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 9)}%;
+--brand-830-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 10)}%;
+--brand-860-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 11)}%;
+--brand-900-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 12)}%;
 --primary-460: gray;
 --mention-foreground: ${accentTextColor} !important;
 --primary-800-hsl: ${backgroundFloating[0]} ${backgroundFloating[1]}% ${backgroundFloating[2]}%;
@@ -2178,71 +2055,71 @@ background-color: ${accentTextColor} !important;
 }
 ${gradientCSS}
 `
-                    customColorway = [
-                        {
-                        name: document.getElementById("discordColorwayCreator_name").value,
-                        primary: {
-                            background: document.getElementById("colorwayCreatorColorpicker_primary").value,
-                            foreground: primaryTextColor
-                        },
-                        secondary: {
-                            background: document.getElementById("colorwayCreatorColorpicker_secondary").value,
-                            foreground: secondaryTextColor
-                        },
-                        secondaryAlt: {
-                            background: secondaryAlt,
-                            foreground: secondaryTextColor
-                        },
-                        tertiary: {
-                            background: document.getElementById("colorwayCreatorColorpicker_tertiary").value,
-                            foreground: tertiaryTextColor
-                        },
-                        accent: {
-                            background: document.getElementById("colorwayCreatorColorpicker_accent").value,
-                            foreground: accentTextColor
-                        },
-                        isGradient: useGradient,
-                        import: customColorwayCSS,
-                        author: currentUserProps.username,
-                        authorID: currentUserProps.id,
-                        creatorVersion: config.info.creatorVersion
-                    }];
-                    
-                    let customColorwayArray = [];
-                    customColorwayArray.push(customColorway[0]);
-                    if(!BdApi.loadData("DiscordColorways", "custom_colorways") || BdApi.loadData("DiscordColorways", "custom_colorways") == []) {
-                        
-                    } else {
-                        BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
-                            if(el.name != document.getElementById("discordColorwayCreator_name").value) {
-                                customColorwayArray.push(el);
-                            }
-                        })
-                    }
-                    BdApi.saveData("DiscordColorways", "custom_colorways", customColorwayArray);
-                    customColorwayArray = [];
-                    try {
-                        e.path[6].lastChild.querySelector('button[type="button"]').click();
-                    } catch(e) {
+                        customColorway = [
+                            {
+                                name: document.getElementById("discordColorwayCreator_name").value,
+                                primary: {
+                                    background: document.getElementById("colorwayCreatorColorpicker_primary").value,
+                                    foreground: primaryTextColor
+                                },
+                                secondary: {
+                                    background: document.getElementById("colorwayCreatorColorpicker_secondary").value,
+                                    foreground: secondaryTextColor
+                                },
+                                secondaryAlt: {
+                                    background: secondaryAlt,
+                                    foreground: secondaryTextColor
+                                },
+                                tertiary: {
+                                    background: document.getElementById("colorwayCreatorColorpicker_tertiary").value,
+                                    foreground: tertiaryTextColor
+                                },
+                                accent: {
+                                    background: document.getElementById("colorwayCreatorColorpicker_accent").value,
+                                    foreground: accentTextColor
+                                },
+                                isGradient: useGradient,
+                                import: customColorwayCSS,
+                                author: currentUserProps.username,
+                                authorID: currentUserProps.id,
+                                creatorVersion: config.info.creatorVersion
+                            }];
 
-                    }
-                    const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
-                    if (elements.length) {
-                        for (const el of elements) {
-                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                            new ColorwaySelector(el).mount();
+                        let customColorwayArray = [];
+                        customColorwayArray.push(customColorway[0]);
+                        if (!BdApi.loadData("DiscordColorways", "custom_colorways") || BdApi.loadData("DiscordColorways", "custom_colorways") == []) {
+
+                        } else {
+                            BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
+                                if (el.name != document.getElementById("discordColorwayCreator_name").value) {
+                                    customColorwayArray.push(el);
+                                }
+                            })
+                        }
+                        BdApi.saveData("DiscordColorways", "custom_colorways", customColorwayArray);
+                        customColorwayArray = [];
+                        try {
+                            e.path[6].lastChild.querySelector('button[type="button"]').click();
+                        } catch (e) {
+
+                        }
+                        const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
+                        if (elements.length) {
+                            for (const el of elements) {
+                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                                new ColorwaySelector(el).mount();
+                            }
+                        }
+                        const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
+                        if (elements2.length) {
+                            for (const el of elements2) {
+                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                                new ColorwaySelector(el).mount();
+                            }
                         }
                     }
-                    const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
-                    if (elements2.length) {
-                        for (const el of elements2) {
-                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                            new ColorwaySelector(el).mount();
-                        }
-                    }
-                }
-            })
-        ));
+                })
+            ));
 
         container.append(stageOne);
 
@@ -2276,7 +2153,7 @@ const ElementInjections = {
         for (const el of elements) {
             if (el.getElementsByClassName("ColorwaySelectorWrapper").length || el._patched) continue;
 
-            if(BdApi.loadData("DiscordColorways", "settings").showInGuildBar == true) {
+            if (BdApi.loadData("DiscordColorways", "settings").showInGuildBar == true) {
                 new BelowHomeColorwaySelector(el).mount();
             }
         }
@@ -2879,12 +2756,12 @@ module.exports = class DiscordColorways {
         float: left;
     }
     `;
-    load() {}
+    load() { }
     start() {
         colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => colorwayList = colors.colorways);
         document.head.append(createElement("style", { id: "DiscordColorways" }, this.css));
 
-        if(BdApi.loadData("DiscordColorways","settings").showCustomColorways == true) {
+        if (BdApi.loadData("DiscordColorways", "settings").showCustomColorways == true) {
             document.head.append(createElement("style", { id: "visibleCustomColorways" }, `
                                 .customColorwaySelector {display: flex !important;}
                                                         `));
@@ -2898,27 +2775,39 @@ module.exports = class DiscordColorways {
             }
         }
         document.querySelectorAll("code.inline").forEach(el => {
-            if(el.innerText.includes("colorway:")) {
-                el.parentElement.innerHTML = el.parentElement.innerHTML + `<button class="inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg" type="button" onclick="BdApi.showConfirmationModal('Create Colorway', BdApi.React.createElement('div', {class:'colorwayCreationModal data-colorway-id data-colorway-id-${el.innerText.split(":")[1]}'}))">Add This Colorway</button>`;
+            if (el.innerText.includes("colorway:")) {
+                el.parentElement.append(createElement("button",{
+                    class: "inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg",
+                    type: "button",
+                    onclick: () => {
+                        BdApi.showConfirmationModal('Create Colorway', BdApi.React.createElement('div', {class:'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1]}))
+                    }
+                },"Add This Colorway"))
             }
         })
         try {
-            if(document.getElementById("activeColorway")) {
+            if (document.getElementById("activeColorway")) {
                 document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
             } else {
                 document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
             }
-        } catch(e) {
+        } catch (e) {
             console.log("No active colorway, moving on");
         }
     }
-    observer({addedNodes}) {
+    observer({ addedNodes }) {
         for (const added of addedNodes) {
             if (added.nodeType === Node.TEXT_NODE) continue;
-            if(added.outerHTML.includes(`<code class="inline">`)) {
+            if (added.outerHTML.includes(`<code class="inline">`)) {
                 added.querySelectorAll("code.inline").forEach(el => {
-                    if(el.innerText.includes("colorway:")) {
-                        el.parentElement.innerHTML = el.parentElement.innerHTML + `<button class="inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg" type="button" onclick="BdApi.showConfirmationModal('Create Colorway', BdApi.React.createElement('div', {class:'colorwayCreationModal data-colorway-id data-colorway-id-${el.innerText.split(":")[1]}'}))">Add This Colorway</button>`;
+                    if (el.innerText.includes("colorway:")) {
+                        el.parentElement.append(createElement("button",{
+                            class: "inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg",
+                            type: "button",
+                            onclick: () => {
+                                BdApi.showConfirmationModal('Create Colorway', BdApi.React.createElement('div', {class:'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1]}))
+                            }
+                        },"Add This Colorway"))
                     }
                 })
             }
@@ -2944,11 +2833,11 @@ module.exports = class DiscordColorways {
         });
     }
     getSettingsPanel() {
-        let _container = createElement("div",{className: "colorwaySettingsContainer"});
+        let _container = createElement("div", { className: "colorwaySettingsContainer" });
 
-        _container.append(createElement("div", {class: "colorwaySelectorModal"}));
+        _container.append(createElement("div", { class: "colorwaySelectorModal" }));
 
-        let settingsWrapper = createElement("div",{
+        let settingsWrapper = createElement("div", {
             className: "colorwaySettingsContainer"
         });
 
