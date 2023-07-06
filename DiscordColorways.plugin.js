@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 2.1.0
+* @version 2.1.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -400,7 +400,6 @@ class ColorwaySelector {
                     className: "discordColorway themeSelection-2u4ce0",
                     id: "colorway-" + colorway.name,
                     onclick: (el) => {
-                        console.log(el);
                         if(!el.srcElement.classList.contains("active")) {
                             userSettings = {
                                 activeColorway: colorway.import,
@@ -613,7 +612,7 @@ class ColorwaySelector {
                     className: "discordColorway themeSelection-2u4ce0",
                     id: "colorway-" + colorway.name,
                     onclick: (el) => {
-                        if(!el.path[1].classList.contains("active")) {
+                        if(!el.srcElement.classList.contains("active")) {
                             userSettings = {
                                 activeColorway: colorway.import,
                                 activeColorwayID: colorway.name,
@@ -633,7 +632,7 @@ class ColorwaySelector {
                             } catch(e) {
                                 console.warn("Uncaught Exception: " + e);
                             }
-                            el.path[1].classList.add("active");
+                            el.srcElement.classList.add("active");
                         }
 
                         nativeToast(React.createElement("div",{class:"discordColorwayOnToast"},[React.createElement("div",{
