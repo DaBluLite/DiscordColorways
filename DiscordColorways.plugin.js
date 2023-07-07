@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 2.2.0
+* @version 3.0.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -37,19 +37,23 @@ let completeSettings = Object.assign(userSettings, defaultSettings, BdApi.loadDa
 BdApi.saveData("DiscordColorways", "settings", completeSettings);
 let config = { info: { creatorVersion: "1.10" } };
 
-const { Webpack, Webpack: { Filters }, React, DOM } = BdApi;
+const { Webpack, Webpack: { Filters }, React, DOM, Patcher } = BdApi;
 const [ThemeEditor, HomeIcon, Toast, TextBadge, InputDefault] = Webpack.getBulk.apply(null, [ Filters.byProps("themeEditor"), Filters.byProps("homeIcon"), Filters.byProps("createToast"), Filters.byProps("textBadge"), Filters.byProps("inputDefault") ].map(fn => ({ filter: fn })));
+//const Flux = Object.assign({}, Webpack.getByKeys("Store", "connectStores"), Webpack.getByKeys("useStateFromStores"));
+//const UserStore = Webpack.getByKeys("getCurrentUser");
 const H5 = Webpack.getByKeys("h5")['h5'];
 const TextBadgeClassName = TextBadge['textBadge']+" "+TextBadge['baseShapeRound'];
-const ButtonBrandClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorBrand'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow']
-const ButtonPrimaryClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorPrimary'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow']
+const ButtonBrandClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorBrand'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow'];
+const ButtonPrimaryClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorPrimary'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow'];
+const Swatch = Webpack.getByKeys("editPencilIcon")['swatch'];
+
 
 let nativeToast = (e,t) => Toast.showToast(Toast.createToast(e,t));
 let textInput = (e,t) => { let n = { type: "text", class: InputDefault['inputDefault'] }; if (e) n['placeholder'] = e; if (t) n['id'] = t; return createElement("input", n); };
 let modalBtn = (e,t) => { if(!t) t = {}; t['class'] = ButtonBrandClass + " colorwayModalBtn"; return createElement("button", t, e); }
 let modalBtnGray = (e,t) => { if(!t) t = {}; t['class'] = ButtonPrimaryClass + " colorwayModalBtn"; return createElement("button",t,e); }
 let modalHeader = (e) => createElement("h2", { class: H5 },e);
-//let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
+let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
 //let alphaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, "Alpha");
 let versionBadge = (e,t) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, `${e} V${t}`);
 //let primaryBadge = (e) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" },e);
@@ -65,16 +69,14 @@ const createElement = (type, props, ...children) => {
         if (key.indexOf("on") === 0) node.addEventListener(key.slice(2).toLowerCase(), props[key]);
         else if (key === "children") {
             node.append(...(Array.isArray(props[key]) ? props[key] : [].concat(props[key])));
+        } else if (key === "view-box") {
+            node.setAttribute(key.replace("-b","B"), props[key]);
         } else {
             node.setAttribute(key === "className" ? "class" : key, props[key]);
         }
     }
 
     if (children.length) node.append(...children);
-
-    node.getElementByClass = (clss) => {
-        return node.getElementsByClassName(clss)[0];
-    }
 
     return node;
 };
@@ -904,30 +906,7 @@ class ColorwaySelector {
                 onclick: () => {
                     BdApi.showConfirmationModal("DiscordColorway Settings", [BdApi.React.createElement("div", { className: "colorwaySettingsContainer" })]);
                 }
-            })),
-            createElement("button", {
-                className: "button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg",
-                type: "button",
-                onclick: () => {
-                    colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
-                        colorwayList = colors.colorways;
-                        const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
-                        if (elements.length) {
-                            for (const el of elements) {
-                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                                new ColorwaySelector(el).mount();
-                            }
-                        }
-                        const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
-                        if (elements2.length) {
-                            for (const el of elements2) {
-                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                                new ColorwaySelector(el).mount();
-                            }
-                        }
-                    });
-                }
-            }, "Refresh Colorway List")
+            }))
         );
 
         this.customColorwayHeaderContainer = createElement("div", {
@@ -938,7 +917,29 @@ class ColorwaySelector {
             }, "Custom Colorways", versionBadge("ColorwayCreator", config.info.creatorVersion)));
 
 
-        container.append(this.colorwayHeaderContainer, wrapper, this.customColorwayHeaderContainer, customwrapper);
+        container.append(this.colorwayHeaderContainer, wrapper, this.customColorwayHeaderContainer, customwrapper,createElement("div", { class: "colorwayModalFooter" },
+        modalBtn("Refresh Colorway List", {
+            onclick: () => {
+                colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
+                    colorwayList = colors.colorways;
+                    const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
+                    if (elements.length) {
+                        for (const el of elements) {
+                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                            new ColorwaySelector(el).mount();
+                        }
+                    }
+                    const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
+                    if (elements2.length) {
+                        for (const el of elements2) {
+                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                            new ColorwaySelector(el).mount();
+                        }
+                    }
+                });
+            }
+        })
+        ));
 
         colorwayArray.forEach(elem => {
             wrapper.append(elem);
@@ -1247,6 +1248,43 @@ class ColorwayCreator {
 
         let useGradient = false;
 
+
+        const themePresetsArray = [
+            {
+                name: "Default",
+                default: true
+            },
+            {
+                name: "Cyan",
+                developer: "DaBluLite",
+                import: `:root {\n    --cyan-accent-color: {{brand-500}};\n    --cyan-background-primary: hsl({{primary-600-hsl}}/40%);\n    --cyan-background-secondary: {{primary-800}};\n}`
+            },
+            // Commented out unless the Developer allows use of name/code
+            /*{
+                name: "Virtual Boy",
+                developer: "Riddim_GLiTCH",
+                import: `:root {\n    --VBaccent: {{brand-500-hsl}};\n    --VBaccent-muted: {{brand-700-hsl}};\n    --VBaccent-dimmest: {{brand-800-hsl}};\n}`
+            }*/
+        ]
+
+        let themePresets = createElement("div",{
+            class: "colorwayPresetContainer collapsed"
+        },
+        createElement("div",{class: "colorwayPresetContainerHeader colorwayPresetContainerItem",onclick:(e)=>e.srcElement.parentElement.classList.toggle("collapsed")},modalHeader("Theme Presets "),betaBadge(), new DOMParser().parseFromString(`<svg style="margin-left: auto;" class="expand-3Nh1P5 transition-30IQBn directionDown-2w0MZz" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" role="img"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path></svg>`,'text/html').body.children[0])
+        );
+
+        themePresetsArray.forEach(e => {
+            themePresets.append(createElement("div",{
+                class: e.default ? `colorwayPreset colorwayPresetContainerItem selected` : `colorwayPreset colorwayPresetContainerItem`,
+                onclick: (e)=>{
+                    e.srcElement.parentElement.querySelector(".colorwayPreset.selected").classList.remove("selected");
+                    e.srcElement.classList.add("selected");
+                }
+            },
+            new DOMParser().parseFromString(`<svg aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"></path><circle cx="12" cy="12" r="5" class="radioIconForeground-3wH3aU" fill="currentColor"></circle></svg>`,'text/html').body.children[0],
+            e.name));
+        })
+
         function componentToHex(c) {
             var hex = c.toString(16);
             return hex.length == 1 ? "0" + hex : hex;
@@ -1288,14 +1326,14 @@ class ColorwayCreator {
             createElement("div", {
                 className: "colorwayCreator-colorPreviews"
             },
-
                 createElement("div", {
-                    className: "colorwayCreator-colorPreview",
+                    className: Swatch,
                     onclick: (e) => {
                         try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: #313338;"
                 },
+                new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
                         type: "color",
                         value: "#313338",
@@ -1335,6 +1373,7 @@ class ColorwayCreator {
                             primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
                             primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'white';
                             e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + primaryTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         },
                         onchange: (e) => {
@@ -1372,18 +1411,20 @@ class ColorwayCreator {
                             primaryTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'hsl(210 9.1% 87.1%)';
                             primaryLighterTextColor = (RGBLuminanceCalcLighter > 125) ? 'black' : 'hsl(210 9.1% 87.1%)';
                             e.path[0].parentElement.querySelector("span").style = "color: " + primaryTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + primaryTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
                     createElement("span", {}, "Primary")
                 ),
                 createElement("div", {
-                    className: "colorwayCreator-colorPreview",
+                    className: Swatch,
                     onclick: (e) => {
                         try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: #2b2d31;"
                 },
+                new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
                         type: "color",
                         value: "#2b2d31",
@@ -1418,6 +1459,7 @@ class ColorwayCreator {
                                 }
                             }
                             e.path[0].parentElement.querySelector("span").style = "color: " + secondaryTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + secondaryTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         },
                         onchange: (e) => {
@@ -1450,18 +1492,20 @@ class ColorwayCreator {
                                 }
                             }
                             e.path[0].parentElement.querySelector("span").style = "color: " + secondaryTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + secondaryTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
                     createElement("span", {}, "Secondary")
                 ),
                 createElement("div", {
-                    className: "colorwayCreator-colorPreview",
+                    className: Swatch,
                     onclick: (e) => {
                         try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: #1e1f22;"
                 },
+                new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
                         type: "color",
                         value: "#1e1f22",
@@ -1485,6 +1529,7 @@ class ColorwayCreator {
                             backgroundFloating = HexToHSL(backgroundFloatingBefore);
                             document.querySelector(".colorwayPreview-background").style = "background: var(--tertiary-gradient,var(--tertiary)); --tertiary: " + backgroundTertiary + ";";
                             e.path[0].parentElement.querySelector("span").style = "color: " + tertiaryTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + tertiaryTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         },
                         onchange: (e) => {
@@ -1506,18 +1551,20 @@ class ColorwayCreator {
                             backgroundFloating = HexToHSL(backgroundFloatingBefore);
                             document.querySelector(".colorwayPreview-background").style = "background: var(--tertiary-gradient,var(--tertiary)); --tertiary: " + backgroundTertiary + ";";
                             e.path[0].parentElement.querySelector("span").style = "color: " + tertiaryTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + tertiaryTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
                     createElement("span", {}, "Tertiary")
                 ),
                 createElement("div", {
-                    className: "colorwayCreator-colorPreview",
+                    className: Swatch,
                     onclick: (e) => {
                         try { e.path[0].querySelector("input").click(); } catch (e) { }
                     },
                     style: "background-color: hsl(235 85.6% 64.7%);"
                 },
+                new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
                         type: "color",
                         value: "#5865f2",
@@ -1541,6 +1588,7 @@ class ColorwayCreator {
                                 (parseInt(splitRGBValues[2]) * 114)) / 1000);
                             accentTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
                             e.path[0].parentElement.querySelector("span").style = "color: " + accentTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + accentTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         },
                         onchange: (e) => {
@@ -1562,6 +1610,7 @@ class ColorwayCreator {
                                 (parseInt(splitRGBValues[2]) * 114)) / 1000);
                             accentTextColor = (RGBLuminanceCalc > 125) ? 'black' : 'white';
                             e.path[0].parentElement.querySelector("span").style = "color: " + accentTextColor + ";";
+                            e.path[0].parentElement.querySelector("svg").style = "color: " + accentTextColor + ";";
                             stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
                         }
                     }),
@@ -1570,10 +1619,10 @@ class ColorwayCreator {
             )
         )
 
-        stageOne.append(modalHeader("Name:"), textInput("Give your Colorway a name", "discordColorwayCreator_name"), modalHeader("Colors:"), creationPanel, createElement("div", {
+        stageOne.append(modalHeader("Name:"), textInput("Give your Colorway a name", "discordColorwayCreator_name"), modalHeader("Colors:"), creationPanel, themePresets, createElement("div", {
             class: "settingRow"
         },
-            "Gradient", createElement("div", {
+            modalHeader("Gradient:"), createElement("div", {
                 class: "choiceContainer"
             },
                 createElement("div", {
@@ -1595,11 +1644,12 @@ class ColorwayCreator {
                             useGradient = false;
                         }
                     }
-                }, "Off"))), modalHeader("Preview:"),
+                }, "Off"))),
+                modalHeader("Preview:"),
             createElement("div", {
                 class: "colorwayPreview-background",
                 style: "background: " + backgroundTertiary + ";"
-            },
+                },
                 createElement("div", {
                     class: "colorwayPreview-chat",
                     style: "background: " + backgroundPrimary + ";"
@@ -1637,7 +1687,8 @@ class ColorwayCreator {
                         style: "background-color: " + backgroundPrimary + "; --background-hover: #5865f2;"
                     })
                 )
-            ), createElement("div", { class: "colorwayModalFooter" },
+            ),
+            createElement("div", { class: "colorwayModalFooter" },
                 modalBtnGray("Cancel", {
                     onclick: (e) => {
                         try {
@@ -1687,10 +1738,10 @@ class ColorwayCreator {
                                                     "cancelable": true
                                                 });
                                                 try {
-                                                    document.getElementById("colorwayCreatorColorpicker_primary").value = colorwayValueArray[0];
-                                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[1];
-                                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = colorwayValueArray[2];
-                                                    document.getElementById("colorwayCreatorColorpicker_accent").value = colorwayValueArray[3];
+                                                    document.getElementById("colorwayCreatorColorpicker_primary").value = colorwayValueArray[1];
+                                                    document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[2];
+                                                    document.getElementById("colorwayCreatorColorpicker_tertiary").value = colorwayValueArray[3];
+                                                    document.getElementById("colorwayCreatorColorpicker_accent").value = colorwayValueArray[0];
 
                                                     document.getElementById("colorwayCreatorColorpicker_primary").dispatchEvent(changeColors);
                                                     document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
@@ -1903,7 +1954,7 @@ background: var(--bg-overlay-chat,--background-primary);
                         let customColorwayCSS = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion}*/
 :root {
 --brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 13)}%;
---brand-140-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 12)}%;
+--brand-130-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 12)}%;
 --brand-160-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 11)}%;
 --brand-200-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 10)}%;
 --brand-230-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 9)}%;
@@ -2086,15 +2137,185 @@ ${gradientCSS}
                             }];
 
                         let customColorwayArray = [];
-                        customColorwayArray.push(customColorway[0]);
-                        if (!BdApi.loadData("DiscordColorways", "custom_colorways") || BdApi.loadData("DiscordColorways", "custom_colorways") == []) {
+                        function replaceAll(str, find, replace) {
+                            return str.replace(new RegExp(find, 'g'), replace);
+                        }
+                        function arrayContains(needle, arrhaystack)
+                        {
+                            return arrhaystack.indexOf(needle);
+                        }
+                        const colorVariables = [
+                            "brand-100",
+                            "brand-130",
+                            "brand-160",
+                            "brand-200",
+                            "brand-230",
+                            "brand-260",
+                            "brand-300",
+                            "brand-330",
+                            "brand-345",
+                            "brand-360",
+                            "brand-400",
+                            "brand-430",
+                            "brand-460",
+                            "brand-500",
+                            "brand-530",
+                            "brand-560",
+                            "brand-600",
+                            "brand-630",
+                            "brand-660",
+                            "brand-700",
+                            "brand-730",
+                            "brand-760",
+                            "brand-800",
+                            "brand-830",
+                            "brand-860",
+                            "brand-900",
+                            "primary-800",
+                            "primary-730",
+                            "primary-700",
+                            "primary-660",
+                            "primary-645",
+                            "primary-630",
+                            "primary-600",
+                            "primary-560",
+                            "primary-530",
+                            "primary-500",
+                            "primary-430",
+                            "primary-400",
+                            "primary-460",
+                            "primary-800",
+                            "primary-730",
+                            "primary-700",
+                            "primary-660",
+                            "primary-645",
+                            "primary-630",
+                            "primary-600",
+                            "primary-560",
+                            "primary-530",
+                            "primary-500",
+                            "primary-430",
+                            "primary-400",
+                            "brand-100-hsl",
+                            "brand-130-hsl",
+                            "brand-160-hsl",
+                            "brand-200-hsl",
+                            "brand-230-hsl",
+                            "brand-260-hsl",
+                            "brand-300-hsl",
+                            "brand-330-hsl",
+                            "brand-345-hsl",
+                            "brand-360-hsl",
+                            "brand-400-hsl",
+                            "brand-430-hsl",
+                            "brand-460-hsl",
+                            "brand-500-hsl",
+                            "brand-530-hsl",
+                            "brand-560-hsl",
+                            "brand-600-hsl",
+                            "brand-630-hsl",
+                            "brand-660-hsl",
+                            "brand-700-hsl",
+                            "brand-730-hsl",
+                            "brand-760-hsl",
+                            "brand-800-hsl",
+                            "brand-830-hsl",
+                            "brand-860-hsl",
+                            "brand-900-hsl",
+                            "primary-800-hsl",
+                            "primary-730-hsl",
+                            "primary-700-hsl",
+                            "primary-660-hsl",
+                            "primary-645-hsl",
+                            "primary-630-hsl",
+                            "primary-600-hsl",
+                            "primary-560-hsl",
+                            "primary-530-hsl",
+                            "primary-500-hsl",
+                            "primary-430-hsl",
+                            "primary-400-hsl",
+                            "primary-460-hsl",
+                            "primary-800-hsl",
+                            "primary-730-hsl",
+                            "primary-700-hsl",
+                            "primary-660-hsl",
+                            "primary-645-hsl",
+                            "primary-630-hsl",
+                            "primary-600-hsl",
+                            "primary-560-hsl",
+                            "primary-530-hsl",
+                            "primary-500-hsl",
+                            "primary-430-hsl",
+                            "primary-400-hsl"
+                        ]
+                        if(e.srcElement.parentElement.parentElement.querySelector(".colorwayPreset.selected").innerText != "Default") {
+                            themePresetsArray.forEach(e=>{
+                                if(e.name == document.querySelector(".colorwayPreset.selected").innerText) {
+                                    let preseImport = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion} - Preset: ${e.name}*/\n`;
+                                    e.import.split("\n").forEach(ln => {
+                                        if(ln.includes("{{")) {
+                                            if(arrayContains(ln.split("{{")[1].split("}}")[0],colorVariables) != -1) {
+                                                preseImport += ln.replace("{{"+ln.split("{{")[1].split("}}")[0]+"}}",ln.split("{{")[1].split("}}")[0].includes("-hsl") ? customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0]+"-hsl") + ": ")[1].split(";")[0] : "hsl("+customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0]+"-hsl") + ": ")[1].split(";")[0]+")")+"\n";
+                                            } else {
+                                                preseImport += ln+"\n";
+                                            }
+                                        } else {
+                                            preseImport += ln+"\n";
+                                        }
+                                    })
+                                    console.log(preseImport);
+                                    let presetCustomColorway = [
+                                        {
+                                            name: document.getElementById("discordColorwayCreator_name").value + ": Made for "+e.name,
+                                            primary: {
+                                                background: document.getElementById("colorwayCreatorColorpicker_primary").value,
+                                                foreground: primaryTextColor
+                                            },
+                                            secondary: {
+                                                background: document.getElementById("colorwayCreatorColorpicker_secondary").value,
+                                                foreground: secondaryTextColor
+                                            },
+                                            secondaryAlt: {
+                                                background: secondaryAlt,
+                                                foreground: secondaryTextColor
+                                            },
+                                            tertiary: {
+                                                background: document.getElementById("colorwayCreatorColorpicker_tertiary").value,
+                                                foreground: tertiaryTextColor
+                                            },
+                                            accent: {
+                                                background: document.getElementById("colorwayCreatorColorpicker_accent").value,
+                                                foreground: accentTextColor
+                                            },
+                                            isGradient: useGradient,
+                                            import: preseImport,
+                                            author: currentUserProps.username,
+                                            authorID: currentUserProps.id,
+                                            creatorVersion: config.info.creatorVersion
+                                        }];
+                                        customColorwayArray.push(presetCustomColorway[0]);
+                                        if (!BdApi.loadData("DiscordColorways", "custom_colorways") || BdApi.loadData("DiscordColorways", "custom_colorways") == []) {
 
-                        } else {
-                            BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
-                                if (el.name != document.getElementById("discordColorwayCreator_name").value) {
-                                    customColorwayArray.push(el);
+                                        } else {
+                                            BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
+                                                if (el.name != document.getElementById("discordColorwayCreator_name").value + ": Made for "+e.name) {
+                                                    customColorwayArray.push(el);
+                                                }
+                                            })
+                                        }
                                 }
                             })
+                        } else {
+                            customColorwayArray.push(customColorway[0]);
+                            if (!BdApi.loadData("DiscordColorways", "custom_colorways") || BdApi.loadData("DiscordColorways", "custom_colorways") == []) {
+
+                            } else {
+                                BdApi.loadData("DiscordColorways", "custom_colorways").forEach(el => {
+                                    if (el.name != document.getElementById("discordColorwayCreator_name").value) {
+                                        customColorwayArray.push(el);
+                                    }
+                                })
+                            }
                         }
                         BdApi.saveData("DiscordColorways", "custom_colorways", customColorwayArray);
                         customColorwayArray = [];
@@ -2184,10 +2405,10 @@ module.exports = class DiscordColorways {
     .choiceContainer {
         display: flex;
         flex-direction: row;
-        border-radius: 8px;
+        border-radius: 4px;
         background-color: var(--background-primary);
         box-shadow: 0 0 0 1px var(--background-secondary-alt);
-        height: 40px;
+        height: 30px;
         overflow: hidden;
         width: fit-content;
     }
@@ -2215,6 +2436,14 @@ module.exports = class DiscordColorways {
         justify-content: space-between;
         color: var(--header-primary);
         line-height: 36px;
+        align-items: center;
+        border-radius: 4px;
+        background-color: var(--background-secondary);
+        box-sizing: border-box;
+        padding: 10px 18px;
+    }
+    .settingRow > h2 {
+        height: fit-content;
     }
     .colorwayPreview-chatbox {
         position: absolute;
@@ -2475,7 +2704,7 @@ module.exports = class DiscordColorways {
         width: 100%;
     }
     .colorwayHeaderContainer {
-        height: 32px;
+        height: 38px;
         width: 100%;
         display: flex;
         flex-direction: row;
@@ -2511,14 +2740,13 @@ module.exports = class DiscordColorways {
         color: var(--header-primary);
         display: flex;
         flex-direction: column;
-        border-radius: 8px;
-        background-color: var(--background-floating);
-        padding: 12px;
     }
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) {
         width: fit-content;
         min-width: 620px;
         max-width: 915px;
+        height: fit-content;
+        max-height: unset;
     }
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) .footer-IubaaS {
         display: none;
@@ -2530,9 +2758,6 @@ module.exports = class DiscordColorways {
         display: none;
     }
     .colorwaySelectorModal {
-        padding: 12px;
-        border-radius: 8px;
-        background-color: var(--background-floating);
         max-width: 564px;
     }
     .colorwayColors {
@@ -2683,11 +2908,6 @@ module.exports = class DiscordColorways {
     .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
         background-color: var(--white-500);
     }
-    .colorwaySettingsWrapper, .colorwayCreatorWrapper {
-        border-radius: 8px;
-        background-color: var(--background-floating);
-        padding: 12px;
-    }
     .colorwayCreatorWrapper, .colorwayCreatorWrapperStage {
         display: flex;
         flex-direction: column;
@@ -2708,29 +2928,28 @@ module.exports = class DiscordColorways {
     }
     .colorwayCreator-colorPreviews {
         width: 100%;
-        height: 46px;
-        border-radius: 8px;
-        background-color: #000;
+        height: fit-content;
         display: flex;
         flex-direction: row;
-        overflow: hidden;
-    }
-    .colorwayCreator-colorPreview {
-        display: flex;
-        width: calc(100%/4);
-        justify-content: center;
-        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         position: relative;
     }
-    .colorwayCreator-colorPreview > input[type="color"] {
+    .colorwayCreator-colorPreviews > div {
+        border: none;
+        width: 100%;
+        position: relative;
+        color: #fff;
+    }
+    .colorwayCreator-colorPreviews input[type="color"] {
         width: 1px;
         height: 1px;
         opacity: 0;
         position: absolute;
         pointer-events: none;
     }
-    .colorwayCreator-colorPreview > span {
-        color: #fff;
+    .colorwayCreator-colorPreviews span {
+        color: currentColor;
         pointer-events: none;
     }
     .colorwayCreatorWrapper > h2 {
@@ -2745,6 +2964,12 @@ module.exports = class DiscordColorways {
         justify-content: end;
         gap: 8px;
         margin-top: 4px;
+        margin-bottom: -20px;
+        margin-left: -16px;
+        margin-right: -16px;
+        padding: 16px;
+        background-color: var(--modal-footer-background);
+        border-radius: 0 0 4px 4px;
     }
     .customColorwaySelector {
         display: none;
@@ -2754,6 +2979,78 @@ module.exports = class DiscordColorways {
         background-color: transparent;
         width: fit-content;
         float: left;
+    }
+    .colorwayPresetContainer {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        gap: 5px;
+        border-radius: 4px;
+        background-color: var(--background-secondary);
+        box-sizing: border-box;
+        color: var(--header-secondary);
+    }
+    .colorwayPreset * {
+        pointer-events: none;
+    }
+    .collapsed > .colorwayPreset {
+        display: none;
+    }
+    .colorwayPreset:not(.selected) circle {
+        display: none;
+    }
+    .colorwayPresetContainerItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        padding: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        box-sizing: border-box;
+        padding: 8px;
+    }
+    .colorwayPreset {
+        justify-content: start;
+        gap: 5px;
+    }
+    .colorwayPresetContainerHeader {
+        justify-content: start;
+        gap: 5px;
+    }
+    .colorwayPresetContainerHeader * {
+        pointer-events: none;
+    }
+    .colorwayPresetContainer:not(.collapsed) svg {
+        transform: rotate3d(0,0,-1,180deg);
+    }
+    .colorwayPresetContainerItem:hover {
+        background-color: var(--background-modifier-hover);
+    }
+    div:has(>.colorwayCreationModal,>.colorwayInfoModalDetails,>.colorwaySelectorModal) {
+        overflow: visible !important;
+        padding-right: 16px !important;
+        width: 100%;
+        max-width: 620px;
+    }
+    .root-1CAIjD:has(.colorwaySelectorModal) {
+        max-width: unset;
+    }
+    .colorwaySelectorModal .colorwayModalFooter {
+        margin-left: -16px;
+        margin-right: -16px;
+        margin-bottom: -20px;
+    }
+    .basicThemeSelectors-2wNKs6 .colorwayModalFooter {
+        margin: 0;
+        border-radius: 0;
+        background-color: transparent;
+        order: -1;
+        padding: 0;
+        margin-bottom: -46px;
+    }
+    input[type="text"] + .colorwayModalFooter {
+        margin-top: 34px;
     }
     `;
     load() { }
