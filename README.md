@@ -1,5 +1,5 @@
 # Discord Colorways
-A growing list of Colorways for Discord and most themes
+A growing list of Colorways for Discord and select themes
 
 * [Download The DiscordColorways Plugin](https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js) (Credits to Strencher, since the source of the plugin is based on his PlatformIndicators plugin)
 * Use the available `@import` lines for the different Colorways 
