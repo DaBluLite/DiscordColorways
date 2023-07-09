@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.1.0
+* @version 3.2.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -47,6 +47,8 @@ const ButtonBrandClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpa
 const ButtonPrimaryClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorPrimary'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow'];
 const ButtonRedClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack.getByKeys("colorBrand")['lookFilled'] + " " + Webpack.getByKeys("colorBrand")['colorRed'] + " " + Webpack.getByKeys("colorBrand")['sizeMedium'] + " " + Webpack.getByKeys("colorBrand")['grow'];
 const Swatch = Webpack.getByKeys("colorSwatch")['swatch'];
+const GuildsListItem = Webpack.getAllByKeys("listItem")[1].listItem;
+const GuildsListItemWrapper = Webpack.getAllByKeys("listItemWrapper")[1].listItemWrapper;
 
 let nativeToast = (e, t) => Toast.showToast(Toast.createToast(e, t));
 let textInput = (e, t) => { let n = { type: "text", class: InputDefault['inputDefault'] }; if (e) n['placeholder'] = e; if (t) n['id'] = t; return createElement("input", n); };
@@ -496,7 +498,7 @@ class ColorwaySelector {
                                     }
                                 })]),
                                 React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, [modalHeaderReact("CSS: "), React.createElement("span", { class: "colorwayCodeblock" }, codeblockLines)]),
-                                React.createElement("div", { class: "colorwayModalFooter" }, [
+                                React.createElement("div", { class: "colorwayModalFooter footer-IubaaS" }, [
                                     modalBtnGrayReact("Close", {
                                         onClick: (e) => {
                                             try {
@@ -521,7 +523,7 @@ class ColorwaySelector {
                                                     class: "inputDefault-Ciwd-S input-3O04eu",
                                                     placeholder: "Give your colorway a new name"
                                                 }),
-                                                React.createElement("div", { class: "colorwayModalFooter" }, [
+                                                React.createElement("div", { class: "colorwayModalFooter footer-IubaaS" }, [
                                                     React.createElement("button", {
                                                         class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                                         onClick: (e) => {
@@ -761,7 +763,7 @@ class ColorwaySelector {
             }, "Custom Colorways", versionBadge("ColorwayCreator", config.info.creatorVersion)));
 
 
-        container.append(this.colorwayHeaderContainer, wrapper, this.customColorwayHeaderContainer, customwrapper, createElement("div", { class: "colorwayModalFooter" },
+        container.append(this.colorwayHeaderContainer, wrapper, this.customColorwayHeaderContainer, customwrapper, createElement("div", { class: "colorwayModalFooter footer-IubaaS" },
             modalBtn("Refresh Colorway List", {
                 onclick: () => {
                     colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
@@ -822,7 +824,7 @@ class BelowHomeColorwaySelector {
         target._patched = true;
 
         this.container = createElement("div", {
-            className: "ColorwaySelectorBtnContainer",
+            className: GuildsListItem+" ColorwaySelectorBtnContainer",
         },);
 
         DOM.onRemoved(target, () => this.unmount());
@@ -869,7 +871,7 @@ class BelowHomeColorwaySelector {
         container._unmount = this.unmount.bind(this);
 
         let ColorwaySelectorBtn = createElement("div", {
-            className: "ColorwaySelectorBtn",
+            className: GuildsListItemWrapper + " ColorwaySelectorBtn",
             onclick: () => {
                 BdApi.showConfirmationModal("Select Colorway:", React.createElement("div", { class: "colorwaySelectorModal" }));
             }
@@ -881,7 +883,9 @@ class BelowHomeColorwaySelector {
             side: "right"
         });
 
-        container.append(ColorwaySelectorBtn);
+        container.append(createElement("div",{
+            class:"pill-L_aLMQ wrapper-z5ab_q colorwaysBtnPill"
+        },createElement("span",{})),ColorwaySelectorBtn);
 
         return container;
     }
@@ -1507,7 +1511,7 @@ class ColorwayCreator {
                         })
                     )
                 )),
-            createElement("div", { class: "colorwayModalFooter" },
+            createElement("div", { class: "colorwayModalFooter footer-IubaaS" },
                 modalBtnGray("Cancel", {
                     onclick: (e) => {
                         try {
@@ -1527,7 +1531,7 @@ class ColorwayCreator {
                                 class: "inputDefault-Ciwd-S input-3O04eu",
                                 placeholder: "Enter Colorway ID"
                             }),
-                            React.createElement("div", { class: "colorwayModalFooter" }, [
+                            React.createElement("div", { class: "colorwayModalFooter footer-IubaaS" }, [
                                 React.createElement("button", {
                                     class: "button-ejjZWC lookFilled-1H2Jvj colorPrimary-2-Lusz sizeMedium-2oH5mg grow-2T4nbg colorwayModalBtn",
                                     onClick: (e) => {
@@ -1983,9 +1987,6 @@ class ColorwayCreator {
                             }];
 
                         let customColorwayArray = [];
-                        function replaceAll(str, find, replace) {
-                            return str.replace(new RegExp(find, 'g'), replace);
-                        }
                         function arrayContains(needle, arrhaystack) {
                             return arrhaystack.indexOf(needle);
                         }
@@ -2602,13 +2603,13 @@ module.exports = class DiscordColorways {
         height: fit-content;
         max-height: unset;
     }
-    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) .footer-IubaaS {
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) > .footer-IubaaS {
         display: none;
     }
     .root-1CAIjD:has(.colorwaySelectorModal) {
         width: fit-content;
     }
-    .root-1CAIjD:has(.colorwaySelectorModal) .footer-IubaaS {
+    .root-1CAIjD:has(.colorwaySelectorModal) > .footer-IubaaS {
         display: none;
     }
     .colorwaySelectorModal {
@@ -2625,6 +2626,23 @@ module.exports = class DiscordColorways {
     .colorwayColors > div {
         border: none;
         width: 100%;
+        cursor: pointer;
+        position: relative;
+    }
+    .colorwayColors > div::before {
+        content: "Copy Color";
+        background-color: rgb(0,0,0,.4);
+        color: #fff;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: .1s ease;
+    }
+    .colorwayColors > div:hover::before {
+        opacity: 1;
     }
     .colorwayCodeblock {
         font-size: 0.875rem;
@@ -2728,18 +2746,6 @@ module.exports = class DiscordColorways {
         -webkit-mask-repeat: no-repeat;
         -webkit-mask-position: center;
     }
-    .ColorwaySelectorBtnContainer {
-        position: relative;
-        margin: 0 0 8px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        width: 72px;
-        height: 48px;
-    }
     .ColorwaySelectorBtn {
         height: 48px;
         width: 48px;
@@ -2818,7 +2824,6 @@ module.exports = class DiscordColorways {
         margin-left: -16px;
         margin-right: -16px;
         padding: 16px;
-        background-color: var(--modal-footer-background);
         border-radius: 0 0 4px 4px;
     }
     .customColorwaySelector {
@@ -2915,7 +2920,7 @@ module.exports = class DiscordColorways {
         gap: 8px;
     }
     .colorwayCreatorPreviewPanel > h2 {
-        width: 100%;
+        align-self: start;
     }
     .colorwaySettingsContainer .colorwayModalFooter {
         margin: 0;
@@ -2924,6 +2929,40 @@ module.exports = class DiscordColorways {
         order: -1;
         padding: 0;
         margin-bottom: -46px;
+    }
+    .colorwaysBtnPill > span {
+        position: absolute;
+        display: block;
+        width: 8px;
+        border-radius: 0 4px 4px 0;
+        margin-left: -4px;
+        background-color: var(--header-primary);
+        opacity: 0;
+        transition: .5s ease;
+    }
+    .colorwaysBtnPill:has(+.ColorwaySelectorBtn:hover) > span {
+        height: 20px;
+        opacity: 1;
+    }
+    .bd-tooltip-content {
+        max-width: 196px;
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 600;
+        word-wrap: break-word;
+    }
+    @keyframes animateBdTooltip {
+        from {
+            opacity: 0;
+            scale: .95;
+        }
+        to {
+            opacity: 1;
+            scale: 1;
+        }
+    }
+    .bd-tooltip {
+        animation: animateBdTooltip .1s ease;
     }
     `;
     load() { }
