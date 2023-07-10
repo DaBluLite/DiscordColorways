@@ -1,11 +1,11 @@
 /**
 * @name DiscordColorways
 * @displayName DiscordColorways
-* @description The Definitive way of styling Discord. Create (This code is partially based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))
+* @description The Definitive way of styling Discord. Create, use and share the colors that fit you. (This code is partially based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.3.0
+* @version 3.4.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -49,6 +49,7 @@ const ButtonRedClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack
 const Swatch = Webpack.getByKeys("colorSwatch")['swatch'];
 const GuildsListItem = Webpack.getAllByKeys("listItem")[1].listItem;
 const GuildsListItemWrapper = Webpack.getAllByKeys("listItemWrapper")[1].listItemWrapper;
+const HeadingSemibold = Webpack.getAllByKeys("heading-lg/semibold")[2]['heading-lg/semibold'];
 
 let nativeToast = (e, t) => Toast.showToast(Toast.createToast(e, t));
 let textInput = (e, t) => { let n = { type: "text", class: InputDefault['inputDefault'] }; if (e) n['placeholder'] = e; if (t) n['id'] = t; return createElement("input", n); };
@@ -59,6 +60,7 @@ let modalBtnReact = (e, t) => { if (!t) t = {}; t['class'] = ButtonBrandClass + 
 let modalBtnGrayReact = (e, t) => { if (!t) t = {}; t['class'] = ButtonPrimaryClass + " colorwayModalBtn"; return React.createElement("button", t, e); }
 let modalBtnRedReact = (e, t) => { if (!t) t = {}; t['class'] = ButtonRedClass + " colorwayModalBtn"; return React.createElement("button", t, e); }
 let modalHeader = (e) => createElement("h2", { class: H5 }, e);
+let modalHeading = (e) => createElement("h1", { class: HeadingSemibold+" customModalHeading" }, e);
 let modalHeaderReact = (e) => React.createElement("h2", { class: H5 }, e);
 let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
 //let alphaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, "Alpha");
@@ -130,6 +132,8 @@ class ColorwaySelector {
         this._destroyed = false;
 
         target._patched = true;
+
+        console.log(target.parentElement)
 
         this.container = createElement("div", {
             className: "ColorwaySelectorWrapperContainer",
@@ -235,6 +239,18 @@ class ColorwaySelector {
         );
         BdApi.UI.createTooltip(addColorwayBtn, "Create Colorway...", {});
         colorwayArray.push(addColorwayBtn);
+        
+        let settingsBtn = createElement("div", {
+            className: "discordColorway themeSelection-2u4ce0",
+            id: "colorway-settings",
+            onclick: (el) => {
+                BdApi.showConfirmationModal("DiscordColorway Settings", [React.createElement("div", { className: "colorwaySettingsContainer" })]);
+            }
+        }, createElement("div", {
+            className: "colorwaySettingsIcon"
+        }));
+        BdApi.UI.createTooltip(settingsBtn, "Settings", {});
+        colorwayArray.push(settingsBtn);
 
         try {
             colorwayList.forEach((colorway, ind) => {
@@ -793,7 +809,7 @@ class ColorwaySelector {
                 }
 
                 BdApi.UI.createTooltip(colorwayElem, colorway.name, {});
-                colorwayArray.push(colorwayElem);
+                customcolorwayArray.push(colorwayElem);
             });
         } catch (e) {
             console.warn("Unexpected error: " + e);
@@ -806,20 +822,7 @@ class ColorwaySelector {
 
         container._unmount = this.unmount.bind(this);
 
-        this.colorwayHeaderContainer = createElement("div", {
-            className: "colorwayHeaderContainer"
-        },
-            createElement("div", {
-                className: "colorwayHeaderTitle"
-            }, "Colorways", createElement("div", {
-                className: "colorwaySettingsIcon",
-                onclick: () => {
-                    BdApi.showConfirmationModal("DiscordColorway Settings", [React.createElement("div", { className: "colorwaySettingsContainer" })]);
-                }
-            }))
-        );
-
-        container.append(this.colorwayHeaderContainer, wrapper);
+        container.append(modalHeader("Colorways"),wrapper,modalHeader("Custom Colorways"),customwrapper);
 
         colorwayArray.forEach(elem => {
             wrapper.append(elem);
@@ -2493,20 +2496,10 @@ module.exports = class DiscordColorways {
         background-color: var(--background-secondary);
         padding: 8px 12px;
     }
-    #colorway-disablecolorway > .colorwayDisableIcon {
-        height: 60px;
-        width: 60px;
-        background-color: var(--header-primary);
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' aria-hidden='true' role='img' class='closeIcon-pSJDFz' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z'%3E%3C/path%3E%3C/svg%3E");
-        -webkit-mask-size: 24px;
-        -webkit-mask-repeat: no-repeat;
-        -webkit-mask-position: center;
-        pointer-events: none;
-    }
     #colorway-refreshcolorway > .colorwayRefreshIcon {
         height: 60px;
         width: 60px;
-        background-color: var(--header-primary);
+        background-color: var(--modal-background);
         -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='24' height='24' viewBox='0 0 24 24' fill='var(--white-500)'%3E%3Cg id='Frame_-_24px'%3E%3Crect y='0' fill='none' width='24' height='24'%3E%3C/rect%3E%3C/g%3E%3Cg id='Filled_Icons'%3E%3Cg%3E%3Cpath fill='var(--white-500)' d='M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z'%3E%3C/path%3E%3Cpath fill='var(--white-500)' d='M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         -webkit-mask-size: 24px;
         -webkit-mask-repeat: no-repeat;
@@ -2525,10 +2518,15 @@ module.exports = class DiscordColorways {
         background-color: var(--background-secondary);
         padding: 8px 12px;
     }
+    #colorway-refreshcolorway,
+    #colorway-createcolorway,
+    #colorway-settings {
+        background-color: var(--interactive-normal);
+    }
     #colorway-createcolorway > .colorwayCreateIcon {
         height: 60px;
         width: 60px;
-        background-color: var(--header-primary);
+        background-color: var(--modal-background);
         -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='circleIcon-3489FI' aria-hidden='true' role='img' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z'%3E%3C/path%3E%3C/svg%3E");
         -webkit-mask-size: 24px;
         -webkit-mask-repeat: no-repeat;
@@ -2608,7 +2606,7 @@ module.exports = class DiscordColorways {
     .ColorwaySelectorWrapperContainer {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 16px;
         width: 100%;
     }
     .colorwayHeaderContainer {
@@ -2763,28 +2761,14 @@ module.exports = class DiscordColorways {
         gap: 4px;
     }
     .colorwaySettingsIcon {
-        height: 20px;
-        width: 20px;
-        background-color: var(--header-secondary);
+        height: 100%;
+        width: 100%;
+        background-color: var(--modal-background);
         -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' aria-hidden='true' role='img' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' fill-rule='evenodd' clip-rule='evenodd' d='M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z'%3E%3C/path%3E%3C/svg%3E");
-        -webkit-mask-size: 18px;
+        -webkit-mask-size: 24px;
         -webkit-mask-repeat: no-repeat;
         -webkit-mask-position: center;
         cursor: pointer;
-    }
-    .colorwaySettingsIcon:hover {
-        background-color: var(--header-primary);
-    }
-    .colorwayShareIcon {
-        height: 24px;
-        width: 24px;
-        background-color: var(--header-secondary);
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-share-fill' viewBox='0 0 16 16'%3E%3Cpath d='M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z'/%3E%3C/svg%3E");
-        -webkit-mask-size: 16px;
-        -webkit-mask-repeat: no-repeat;
-        -webkit-mask-position: center 6px;
-        cursor: pointer;
-        float: left;
     }
     .colorwayShareIcon:hover {
         background-color: var(--header-primary);
@@ -3061,14 +3045,20 @@ module.exports = class DiscordColorways {
     div[data-last-official="true"] {
         position: relative;
     }
-    div[data-last-official="true"]::after {
+    #colorway-settings::after {
         content: "";
         position: absolute;
         height: 32px;
         width: 1px;
         background-color: var(--interactive-normal);
-        top: 14px;
+        bottom: 14px;
         right: -12px;
+    }
+    .customModalHeading {
+        color: var(--header-primary);
+    }
+    div:not(.basicThemeSelectors-2wNKs6) > .ColorwaySelectorWrapperContainer > h2:first-child {
+        display: none;
     }
     `;
     load() { }
