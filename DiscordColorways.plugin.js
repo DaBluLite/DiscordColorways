@@ -1,11 +1,11 @@
 /**
 * @name DiscordColorways
 * @displayName DiscordColorways
-* @description A set of Color-Only themes for Discord, as well as a creator for said colorways. (This code is heavily based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))
+* @description The Definitive way of styling Discord. Create (This code is partially based on [Platformindicators](https://github.com/Strencher/BetterDiscordStuff/tree/master/PlatformIndicators))
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.2.0
+* @version 3.3.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -185,46 +185,36 @@ class ColorwaySelector {
             className: "ColorwaySelectorWrapper customColorwaySelector",
         });
 
-        let disableColorwayBtn = createElement("div", {
+        let refreshColorwayBtn = createElement("div", {
             className: "discordColorway themeSelection-2u4ce0",
-            id: "colorway-disablecolorway",
-            onclick: (el) => {
-                if (!el.srcElement.classList.contains("active")) {
-                    userSettings = {
-                        activeColorway: "",
-                        activeColorwayID: "disablecolorway",
-                        showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar
-                    }
-                    BdApi.saveData("DiscordColorways", "settings", userSettings);
-                    if (document.getElementById("activeColorway")) {
-                        document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
-                    } else {
-                        document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
-                    }
-                    try {
-                        if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
-                            document.querySelector(".discordColorway.active").classList.remove("active");
+            id: "colorway-refreshcolorway",
+            onclick: (e) => {
+                e.srcElement.parentElement.previousElementSibling.append("span",{id:"colorwayRefreshStatus"},"Refreshing...")
+                colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
+                    colorwayList = colors.colorways;
+                    const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
+                    if (elements.length) {
+                        for (const el of elements) {
+                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                            new ColorwaySelector(el).mount();
                         }
-                    } catch (e) {
-                        console.warn("Uncaught Exception: " + e);
                     }
-                    el.srcElement.classList.add("active");
-                }
-                nativeToast("Disabled Colorway Successfully", 1);
+                    const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
+                    if (elements2.length) {
+                        for (const el of elements2) {
+                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
+                            new ColorwaySelector(el).mount();
+                        }
+                    }
+                    document.getElementById("colorwayRefreshStatus").remove();
+                });
             }
         }, createElement("div", {
-            className: "colorwayDisableIcon"
-        }),
-            createElement("div", {
-                className: "colorwayCheckIconContainer"
-            },
-                createElement("div", {
-                    className: "colorwayCheckIcon"
-                }))
-        );
-        BdApi.UI.createTooltip(disableColorwayBtn, "Disable Colorway", {});
-        colorwayArray.push(disableColorwayBtn);
+            className: "colorwayRefreshIcon"
+        }));
 
+        BdApi.UI.createTooltip(refreshColorwayBtn, "Refresh Colorways", {});
+        colorwayArray.push(refreshColorwayBtn);
 
 
         let addColorwayBtn = createElement("div", {
@@ -243,16 +233,15 @@ class ColorwaySelector {
                     className: "colorwayCheckIcon"
                 }))
         );
-        BdApi.UI.createTooltip(addColorwayBtn, "Create Colorway", {});
-        customcolorwayArray.push(addColorwayBtn);
-
-
+        BdApi.UI.createTooltip(addColorwayBtn, "Create Colorway...", {});
+        colorwayArray.push(addColorwayBtn);
 
         try {
-            colorwayList.forEach((colorway) => {
+            colorwayList.forEach((colorway, ind) => {
                 let colorwayElem = createElement("div", {
                     className: "discordColorway themeSelection-2u4ce0",
                     id: "colorway-" + colorway.name,
+                    "data-last-official": ind+1 == colorwayList.length ? true:false,
                     onclick: (el) => {
                         if (!el.srcElement.classList.contains("active")) {
                             userSettings = {
@@ -274,29 +263,49 @@ class ColorwaySelector {
                                 console.warn("Uncaught Exception: " + e);
                             }
                             el.srcElement.classList.add("active");
+                            nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
+                                class: "discordColorway themeSelection-2u4ce0"
+                            }, React.createElement("div", {
+                                class: "discordColorwayPreviewColorContainer"
+                            }, [
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.accent }
+                                }),
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.primary }
+                                }),
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.secondary }
+                                }),
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.tertiary }
+                                })
+                            ])), "Applied Colorway Successfully"]), 0);
+                        } else {
+                            userSettings = {
+                                activeColorway: "",
+                                activeColorwayID: "disablecolorway",
+                                showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar
+                            }
+                            BdApi.saveData("DiscordColorways", "settings", userSettings);
+                            if (document.getElementById("activeColorway")) {
+                                document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
+                            } else {
+                                document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
+                            }
+                            try {
+                                if (document.querySelector(".discordColorway.active")) {
+                                    document.querySelector(".discordColorway.active").classList.remove("active");
+                                }
+                            } catch (e) {
+                                console.warn("Uncaught Exception: " + e);
+                            }
+                            nativeToast("Disabled Colorway Successfully", 1);
                         }
-                        nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
-                            class: "discordColorway themeSelection-2u4ce0"
-                        }, React.createElement("div", {
-                            class: "discordColorwayPreviewColorContainer"
-                        }, [
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.accent }
-                            }),
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.primary }
-                            }),
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.secondary }
-                            }),
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.tertiary }
-                            })
-                        ])), "Applied Colorway Successfully"]), 0);
                     }
                 },
                     createElement("div", {
@@ -351,9 +360,27 @@ class ColorwaySelector {
                                 ]),
                                 React.createElement("span", { class: "colorwayAuthor" }, [modalHeaderReact("Author: "), modalBtnGrayReact(colorway.author, {
                                     class: "colorwayAuthorLink", onClick: (e) => {
-                                        setTimeout(() => {
-                                            //Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),Webpack.getModule(Filters.byProps("getCurrentUser", "getUser")).getUser(colorway.authorID),{position:"right"});
-                                        }, 10);
+                                        (async (userId) => {
+                                            const find = BdApi.Webpack.getModule;
+                                            const findByCode = (...codes) => find(BdApi.Webpack.Filters.byStrings(...codes), {searchExports: true});
+                                            const findStore = name => find(m => m.constructor?.displayName === name)
+                                            
+                                            const getUser = findByCode("USER(");
+                                            const openProfile = findByCode("friendToken", "USER_PROFILE_MODAL_OPEN");
+                                            const guildId = findStore("SelectedGuildStore").getGuildId()
+                                            const channelId = findStore("SelectedChannelStore").getChannelId()
+                                            
+                                            const user = await getUser(userId);
+                                            openProfile({
+                                                userId,
+                                                guildId,
+                                                channelId,
+                                                analyticsLocation: {
+                                                    page: guildId ? "Guild Channel" : "DM Channel",
+                                                    section: "Profile Popout"
+                                                }
+                                            })
+                                        })(colorway.authorID)
                                     }
                                 })]),
                                 React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, [modalHeaderReact("Import: "), React.createElement("span", { class: "colorwayCodeblock" }, colorway.import)])
@@ -423,30 +450,49 @@ class ColorwaySelector {
                                 console.warn("Uncaught Exception: " + e);
                             }
                             el.srcElement.classList.add("active");
+                            nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
+                                class: "discordColorway themeSelection-2u4ce0"
+                            }, React.createElement("div", {
+                                class: "discordColorwayPreviewColorContainer"
+                            }, [
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.accent.background }
+                                }),
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.primary.background }
+                                }),
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.secondary.background }
+                                }),
+                                React.createElement("div", {
+                                    className: "discordColorwayPreviewColor",
+                                    style: { backgroundColor: colorway.tertiary.background }
+                                })
+                            ])), "Applied Custom Colorway Successfully"]), 0);
+                        } else {
+                            userSettings = {
+                                activeColorway: "",
+                                activeColorwayID: "disablecolorway",
+                                showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar
+                            }
+                            BdApi.saveData("DiscordColorways", "settings", userSettings);
+                            if (document.getElementById("activeColorway")) {
+                                document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
+                            } else {
+                                document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
+                            }
+                            try {
+                                if (document.querySelector(".discordColorway.active")) {
+                                    document.querySelector(".discordColorway.active").classList.remove("active");
+                                }
+                            } catch (e) {
+                                console.warn("Uncaught Exception: " + e);
+                            }
+                            nativeToast("Disabled Colorway Successfully", 1);
                         }
-
-                        nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
-                            class: "discordColorway themeSelection-2u4ce0"
-                        }, React.createElement("div", {
-                            class: "discordColorwayPreviewColorContainer"
-                        }, [
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.accent.background }
-                            }),
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.primary.background }
-                            }),
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.secondary.background }
-                            }),
-                            React.createElement("div", {
-                                className: "discordColorwayPreviewColor",
-                                style: { backgroundColor: colorway.tertiary.background }
-                            })
-                        ])), "Applied Custom Colorway Successfully"]), 0);
                     }
                 },
                     createElement("div", {
@@ -492,9 +538,27 @@ class ColorwaySelector {
                                 ]),
                                 React.createElement("span", { class: "colorwayAuthor" }, [modalHeaderReact("Author: "), modalBtnGrayReact(colorway.author, {
                                     class: "colorwayAuthorLink", onClick: (e) => {
-                                        setTimeout(() => {
-                                            //Popouts.showUserPopout(document.querySelector(".colorwayAuthorLink"),Webpack.getModule(Filters.byProps("getCurrentUser", "getUser")).getUser(colorway.authorID),{position:"right"});
-                                        }, 10);
+                                        (async (userId) => {
+                                            const find = BdApi.Webpack.getModule;
+                                            const findByCode = (...codes) => find(BdApi.Webpack.Filters.byStrings(...codes), {searchExports: true});
+                                            const findStore = name => find(m => m.constructor?.displayName === name)
+                                            
+                                            const getUser = findByCode("USER(");
+                                            const openProfile = findByCode("friendToken", "USER_PROFILE_MODAL_OPEN");
+                                            const guildId = findStore("SelectedGuildStore").getGuildId()
+                                            const channelId = findStore("SelectedChannelStore").getChannelId()
+                                            
+                                            const user = await getUser(userId);
+                                            openProfile({
+                                                userId,
+                                                guildId,
+                                                channelId,
+                                                analyticsLocation: {
+                                                    page: guildId ? "Guild Channel" : "DM Channel",
+                                                    section: "Profile Popout"
+                                                }
+                                            })
+                                        })(colorway.authorID)
                                     }
                                 })]),
                                 React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, [modalHeaderReact("CSS: "), React.createElement("span", { class: "colorwayCodeblock" }, codeblockLines)]),
@@ -729,7 +793,7 @@ class ColorwaySelector {
                 }
 
                 BdApi.UI.createTooltip(colorwayElem, colorway.name, {});
-                customcolorwayArray.push(colorwayElem);
+                colorwayArray.push(colorwayElem);
             });
         } catch (e) {
             console.warn("Unexpected error: " + e);
@@ -755,37 +819,7 @@ class ColorwaySelector {
             }))
         );
 
-        this.customColorwayHeaderContainer = createElement("div", {
-            className: "colorwayHeaderContainer customColorwaySelector"
-        },
-            createElement("div", {
-                className: "colorwayHeaderTitle"
-            }, "Custom Colorways", versionBadge("ColorwayCreator", config.info.creatorVersion)));
-
-
-        container.append(this.colorwayHeaderContainer, wrapper, this.customColorwayHeaderContainer, customwrapper, createElement("div", { class: "colorwayModalFooter footer-IubaaS" },
-            modalBtn("Refresh Colorway List", {
-                onclick: () => {
-                    colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
-                        colorwayList = colors.colorways;
-                        const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
-                        if (elements.length) {
-                            for (const el of elements) {
-                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                                new ColorwaySelector(el).mount();
-                            }
-                        }
-                        const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
-                        if (elements2.length) {
-                            for (const el of elements2) {
-                                document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                                new ColorwaySelector(el).mount();
-                            }
-                        }
-                    });
-                }
-            })
-        ));
+        container.append(this.colorwayHeaderContainer, wrapper);
 
         colorwayArray.forEach(elem => {
             wrapper.append(elem);
@@ -874,6 +908,15 @@ class BelowHomeColorwaySelector {
             className: GuildsListItemWrapper + " ColorwaySelectorBtn",
             onclick: () => {
                 BdApi.showConfirmationModal("Select Colorway:", React.createElement("div", { class: "colorwaySelectorModal" }));
+            },
+            onmouseenter: (e) => {
+                e.srcElement.previousElementSibling.append(createElement("span",{class:"item-2LIpTv"}))
+            },
+            onmouseleave: (e) => {
+                e.srcElement.previousElementSibling.children[0].style = "animation: colorwayPillLeave .3s;"
+                setTimeout(() => {
+                    e.srcElement.previousElementSibling.children[0].remove();
+                },300)
             }
         }, createElement("div", {
             className: "colorwaySelectorIcon"
@@ -884,8 +927,8 @@ class BelowHomeColorwaySelector {
         });
 
         container.append(createElement("div",{
-            class:"pill-L_aLMQ wrapper-z5ab_q colorwaysBtnPill"
-        },createElement("span",{})),ColorwaySelectorBtn);
+            class: HomeIcon?.pill + " colorwaysBtnPill"
+        }),ColorwaySelectorBtn);
 
         return container;
     }
@@ -1078,14 +1121,15 @@ class ColorwayCreator {
             {
                 name: "Cyan",
                 developer: "DaBluLite",
+                developerID: "582170007505731594",
                 import: `:root {\n    --cyan-accent-color: {{brand-500}};\n    --cyan-background-primary: hsl({{primary-600-hsl}}/40%);\n    --cyan-background-secondary: {{primary-800}};\n}`
             },
-            // Commented out unless the Developer allows use of name/code
-            /*{
+            {
                 name: "Virtual Boy",
                 developer: "Riddim_GLiTCH",
+                developerID: "801089753038061669",
                 import: `:root {\n    --VBaccent: {{brand-500-hsl}};\n    --VBaccent-muted: {{brand-700-hsl}};\n    --VBaccent-dimmest: {{brand-800-hsl}};\n}`
-            }*/
+            }
         ]
 
         let themePresets = createElement("div", {
@@ -2109,7 +2153,6 @@ class ColorwayCreator {
                                             preseImport += ln + "\n";
                                         }
                                     })
-                                    console.log(preseImport);
                                     let presetCustomColorway = [
                                         {
                                             name: document.getElementById("discordColorwayCreator_name").value + ": Made for " + e.name,
@@ -2135,8 +2178,8 @@ class ColorwayCreator {
                                             },
                                             isGradient: useGradient,
                                             import: preseImport,
-                                            author: currentUserProps.username,
-                                            authorID: currentUserProps.id,
+                                            author: e.developer,
+                                            authorID: e.developerID,
                                             creatorVersion: config.info.creatorVersion
                                         }];
                                     customColorwayArray.push(presetCustomColorway[0]);
@@ -2460,6 +2503,16 @@ module.exports = class DiscordColorways {
         -webkit-mask-position: center;
         pointer-events: none;
     }
+    #colorway-refreshcolorway > .colorwayRefreshIcon {
+        height: 60px;
+        width: 60px;
+        background-color: var(--header-primary);
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='24' height='24' viewBox='0 0 24 24' fill='var(--white-500)'%3E%3Cg id='Frame_-_24px'%3E%3Crect y='0' fill='none' width='24' height='24'%3E%3C/rect%3E%3C/g%3E%3Cg id='Filled_Icons'%3E%3Cg%3E%3Cpath fill='var(--white-500)' d='M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z'%3E%3C/path%3E%3Cpath fill='var(--white-500)' d='M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        -webkit-mask-size: 24px;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        pointer-events: none;
+    }
     #colorway-createcolorway {
         box-shadow: inset 0 0 0 1px var(--interactive-normal);
     }
@@ -2605,6 +2658,11 @@ module.exports = class DiscordColorways {
     }
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) > .footer-IubaaS {
         display: none;
+    }
+    .root-1CAIjD:has(.colorwaySettingsWrapper),
+    .root-1CAIjD:has(.colorwaySettingsWrapper) > .content-1OG56Q {
+        height: fit-content;
+        min-height: unset;
     }
     .root-1CAIjD:has(.colorwaySelectorModal) {
         width: fit-content;
@@ -2930,19 +2988,55 @@ module.exports = class DiscordColorways {
         padding: 0;
         margin-bottom: -46px;
     }
+    @keyframes colorwayPill {
+        from {
+            height: 8px;
+            opacity: 0;
+            width: 4px;
+        }
+        to {
+            width: 8px;
+            height: 20px;
+            opacity: 1;
+        }
+    }
+    @keyframes colorwayPillLeave {
+        from {
+            width: 8px;
+            height: 20px;
+            opacity: 1;
+        }
+        to {
+            height: 8px;
+            opacity: 0;
+            width: 4px;
+        }
+    }
+    .colorwaysBtnPill {
+        overflow: hidden;
+        width: 8px;
+        height: 48px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        contain: layout size;
+    }
     .colorwaysBtnPill > span {
         position: absolute;
         display: block;
         width: 8px;
         border-radius: 0 4px 4px 0;
         margin-left: -4px;
-        background-color: var(--header-primary);
-        opacity: 0;
-        transition: .5s ease;
-    }
-    .colorwaysBtnPill:has(+.ColorwaySelectorBtn:hover) > span {
         height: 20px;
         opacity: 1;
+        animation: colorwayPill .3s;
+        transition: .3s;
     }
     .bd-tooltip-content {
         max-width: 196px;
@@ -2963,6 +3057,18 @@ module.exports = class DiscordColorways {
     }
     .bd-tooltip {
         animation: animateBdTooltip .1s ease;
+    }
+    div[data-last-official="true"] {
+        position: relative;
+    }
+    div[data-last-official="true"]::after {
+        content: "";
+        position: absolute;
+        height: 32px;
+        width: 1px;
+        background-color: var(--interactive-normal);
+        top: 14px;
+        right: -12px;
     }
     `;
     load() { }
