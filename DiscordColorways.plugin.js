@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.5.0
+* @version 3.5.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -920,7 +920,7 @@ class BelowHomeColorwaySelector {
         let ColorwaySelectorBtn = createElement("div", {
             className: GuildsListItemWrapper + " ColorwaySelectorBtn",
             onclick: () => {
-                BdApi.showConfirmationModal(modalHeaderReact("Colorways"), React.createElement("div", { class: "colorwaySelectorModal" }));
+                BdApi.showConfirmationModal(React.createElement("div",{class:"colorways-hideHeader"}), React.createElement("div", { class: "colorwaySelectorModal" }));
             },
             onmouseenter: (e) => {
                 e.srcElement.previousElementSibling.append(createElement("span",{class:"item-2LIpTv"}))
@@ -3161,9 +3161,6 @@ module.exports = class DiscordColorways {
     .customModalHeading {
         color: var(--header-primary);
     }
-    div:not(.basicThemeSelectors-2wNKs6) > .ColorwaySelectorWrapperContainer > h2:first-child {
-        display: none;
-    }
     .ColorwaySelectorWrapper {
         position: relative
     }
@@ -3177,6 +3174,16 @@ module.exports = class DiscordColorways {
         left: 0;
         /*transform: translateX(-50%);*/
         border-radius: 4px;
+    }
+    .themeEditor-1Ebyfp .ColorwaySelectorWrapper::before,
+    .basicThemeSelectors-2wNKs6 .ColorwaySelectorWrapper::before {
+        content: none;
+    }
+    .header-1ffhsl:has(>h1>.colorways-hideHeader) {
+        display: none;
+    }
+    .root-1CAIjD:has(.colorwaySelectorModal) > .content-131fQL {
+        padding-top: 16px;
     }
     `;
     load() { }
