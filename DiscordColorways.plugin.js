@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.5.1
+* @version 3.5.2
 */
 /*@cc_on
 @if (@_jscript)
@@ -1185,7 +1185,7 @@ class ColorwayCreator {
                 }
             },
                 new DOMParser().parseFromString(`<svg aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"></path><circle cx="12" cy="12" r="5" class="radioIconForeground-3wH3aU" fill="currentColor"></circle></svg>`, 'text/html').body.children[0],
-                e.name,primaryBadge("by " + e.developer)));
+                createElement("span",{class:"presetName"},e.name),e.name!="Default" ? primaryBadge("by " + e.developer) : ''));
         })
 
         function componentToHex(c) {
@@ -1811,6 +1811,7 @@ class ColorwayCreator {
                 }),
                 modalBtn("Finish", {
                     onclick: (e) => {
+                        console.log("hi")
                         let gradientCSS = ``;
                         if (!document.getElementById("discordColorwayCreator_name").value) {
                             document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
@@ -2182,7 +2183,7 @@ class ColorwayCreator {
                         ]
                         if (e.srcElement.parentElement.parentElement.querySelector(".colorwayPreset.selected").innerText != "Default") {
                             themePresetsArray.forEach(e => {
-                                if (e.name == document.querySelector(".colorwayPreset.selected").innerText) {
+                                if (e.name == document.querySelector(".colorwayPreset.selected .presetName").innerText) {
                                     let preseImport = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion} - Preset: ${e.name}*/\n`;
                                     e.import.split("\n").forEach(ln => {
                                         if (ln.includes("{{")) {
@@ -3265,6 +3266,13 @@ module.exports = class DiscordColorways {
         new SettingsRenderer(settingsWrapper).mount();
 
         return _container;
+    }
+    // Public API
+    spawnColorwayCreator(e) {
+        BdApi.showConfirmationModal('Create Colorway', React.createElement('div', { class: e ? 'colorwayCreationModal data-colorway-id data-colorway-id-' + e : 'colorwayCreationModal' }));
+    }
+    spawnColorwaySelector() {
+        BdApi.showConfirmationModal(React.createElement("div",{class:"colorways-hideHeader"}), React.createElement('div', { class: 'colorwaySelectorModal' }));
     }
 };
 /*@end@*/
