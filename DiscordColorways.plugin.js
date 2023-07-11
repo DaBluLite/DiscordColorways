@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.4.0
+* @version 3.5.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -65,7 +65,7 @@ let modalHeaderReact = (e) => React.createElement("h2", { class: H5 }, e);
 let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
 //let alphaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, "Alpha");
 let versionBadge = (e, t) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, `${e} V${t}`);
-//let primaryBadge = (e) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" },e);
+let primaryBadge = (e) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" },e);
 //let unstableBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--red-430);" }, "Unstable");
 const bdSwitch = (e, t) => { t['class'] = "bd-switch"; this.switch = createElement("div", t, new DOMParser().parseFromString('<input type="checkbox" ' + (() => { if (e == true) return "checked" })() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[0], new DOMParser().parseFromString('<input type="checkbox" ' + (() => { if (e == true) return "checked" })() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[1]); return this.switch; }
 
@@ -132,8 +132,6 @@ class ColorwaySelector {
         this._destroyed = false;
 
         target._patched = true;
-
-        console.log(target.parentElement)
 
         this.container = createElement("div", {
             className: "ColorwaySelectorWrapperContainer",
@@ -653,6 +651,7 @@ class ColorwaySelector {
                                                                         import: colorway.import,
                                                                         author: colorway.author,
                                                                         authorID: colorway.authorID,
+                                                                        colors: colorway.colors || ["accent", "primary", "secondary", "tertiary"],
                                                                         creatorVersion: config.info.creatorVersion
                                                                     }
                                                                 ];
@@ -757,7 +756,8 @@ class ColorwaySelector {
                                                         } catch (e) {
                                                             console.warn("Uncaught Exception: " + e);
                                                         }
-                                                        document.getElementById("colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID).classList.add("active");
+                                                        if(BdApi.loadData("DiscordColorways", "settings").activeColorwayID != "disablecolorway")
+                                                            document.getElementById("colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID).classList.add("active");
                                                     }
                                                 }
                                             });
@@ -799,13 +799,23 @@ class ColorwaySelector {
                 if (colorway.isGradient == true) {
                     colorwayElem.append(createElement("div", { className: "discordColorwayPreviewGradient", style: "background: linear-gradient(-45deg, " + colorway.primary.background + " 0%, " + colorway.tertiary.background + " 100%);" }), colorwayElem.children[0]);
                 } else {
-                    colorwayElem.append(createElement("div", {
-                        class: "discordColorwayPreviewColorContainer"
-                    },
-                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.accent.background }),
-                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.primary.background }),
-                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.secondary.background }),
-                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.tertiary.background })))
+                    if(!colorway.colors) {
+                        colorwayElem.append(createElement("div", {
+                            class: "discordColorwayPreviewColorContainer"
+                        },
+                            createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.accent.background }),
+                            createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.primary.background }),
+                            createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.secondary.background }),
+                            createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.tertiary.background })))
+                    } else {
+                        let PreviewElem = createElement("div", {
+                            class: "discordColorwayPreviewColorContainer"
+                        })
+                        colorway.colors.forEach(color => {
+                            PreviewElem.append(createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway[color].background }))
+                        })
+                        colorwayElem.append(PreviewElem);
+                    }
                 }
 
                 BdApi.UI.createTooltip(colorwayElem, colorway.name, {});
@@ -910,7 +920,7 @@ class BelowHomeColorwaySelector {
         let ColorwaySelectorBtn = createElement("div", {
             className: GuildsListItemWrapper + " ColorwaySelectorBtn",
             onclick: () => {
-                BdApi.showConfirmationModal("Select Colorway:", React.createElement("div", { class: "colorwaySelectorModal" }));
+                BdApi.showConfirmationModal(modalHeaderReact("Colorways"), React.createElement("div", { class: "colorwaySelectorModal" }));
             },
             onmouseenter: (e) => {
                 e.srcElement.previousElementSibling.append(createElement("span",{class:"item-2LIpTv"}))
@@ -1117,22 +1127,47 @@ class ColorwayCreator {
 
 
         const themePresetsArray = [
+            /**
+             * @name {string} The name of the theme
+             * @developer {string} The name of the developer
+             * @developerID {int as string} The Discord user ID of the developer
+             * @colors {array} An array of up to 4 colors to be previewed (accent, primary, secondary, tertiary)
+             * @import {template string} The base config of the colorway, with lines being separated with "\n", use variable names from list in line 2079, with format {{variable}}, {{variable-hsl}} or {{variable-hsl:0}}
+            */
             {
                 name: "Default",
+                developer: "Discord",
                 default: true
             },
             {
                 name: "Cyan",
                 developer: "DaBluLite",
                 developerID: "582170007505731594",
+                colors: ["accent", "primary", "tertiary"],
                 import: `:root {\n    --cyan-accent-color: {{brand-500}};\n    --cyan-background-primary: hsl({{primary-600-hsl}}/40%);\n    --cyan-background-secondary: {{primary-800}};\n}`
             },
             {
                 name: "Virtual Boy",
                 developer: "Riddim_GLiTCH",
                 developerID: "801089753038061669",
+                colors: ["accent"],
                 import: `:root {\n    --VBaccent: {{brand-500-hsl}};\n    --VBaccent-muted: {{brand-700-hsl}};\n    --VBaccent-dimmest: {{brand-800-hsl}};\n}`
-            }
+            },
+            {
+                name: "Modular",
+                developer: "aoithesceneryhoarder",
+                developerID: "518795791318384647",
+                colors: ["accent"],
+                import: `:root:root {\n    --h1: {{brand-500-hsl:0}};\n    --s1: {{brand-500-hsl:1}};\n    --l1: {{brand-500-hsl:2}};\n    --h2: {{brand-700-hsl:0}};\n    --s2: {{brand-700-hsl:1}};\n    --l2: {{brand-700-hsl:2}};\n}`
+            },
+            // Preset Disabled until further notice
+            /*{
+                name: "Solana",
+                developer: "maenDisease",
+                developerID: "678469587444170762",
+                colors: ["accent", "primary"],
+                import: `:root {\n    --accent-hue: {{brand-500-hsl:0}};\n    --accent-saturation: {{brand-500-hsl:1}};\n    --accent-brightness: {{brand-500-hsl:2}};\n    --background-accent-hue: {{primary-600-hsl:0}};\n    --background-accent-saturation: {{primary-600-hsl:1}};\n    --background-accent-brightness: {{primary-600-hsl:2}};\n    --background-overlay-opacity: 0%;\n}`
+            }*/
         ]
 
         let themePresets = createElement("div", {
@@ -1150,7 +1185,7 @@ class ColorwayCreator {
                 }
             },
                 new DOMParser().parseFromString(`<svg aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"></path><circle cx="12" cy="12" r="5" class="radioIconForeground-3wH3aU" fill="currentColor"></circle></svg>`, 'text/html').body.children[0],
-                e.name));
+                e.name,primaryBadge("by " + e.developer)));
         })
 
         function componentToHex(c) {
@@ -1514,8 +1549,12 @@ class ColorwayCreator {
                     }
                 }, "Off"))),
             createElement("div", {
-                class: "colorwayCreatorPreviewPanel"
-            }, modalHeader("Preview:"),
+                class: "colorwayCreatorPreviewPanel collapsed"
+            }, modalHeader(createElement("div",{
+                onclick: (e) => {
+                    e.srcElement.parentElement.parentElement.classList.toggle("collapsed");
+                }
+            },"Preview",new DOMParser().parseFromString(`<svg style="margin-left: auto;" class="expand-3Nh1P5 transition-30IQBn directionDown-2w0MZz" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" role="img"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path></svg>`, 'text/html').body.children[0])),
                 createElement("div", {
                     class: "colorwayPreview-background",
                     style: "background: " + backgroundTertiary + ";"
@@ -2147,8 +2186,18 @@ class ColorwayCreator {
                                     let preseImport = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion} - Preset: ${e.name}*/\n`;
                                     e.import.split("\n").forEach(ln => {
                                         if (ln.includes("{{")) {
-                                            if (arrayContains(ln.split("{{")[1].split("}}")[0], colorVariables) != -1) {
-                                                preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", ln.split("{{")[1].split("}}")[0].includes("-hsl") ? customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] : "hsl(" + customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] + ")") + "\n";
+                                            if(ln.split("{{")[1].split("}}")[0].includes(":")) {
+                                                if (arrayContains(ln.split("{{")[1].split("}}")[0].split(":")[0], colorVariables) != -1) {
+                                                    preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", ln.split("{{")[1].split("}}")[0].split(":")[1] == 2 ? customColorwayCSS.split(ln.split("{{")[1].split("}}")[0].split(":")[0]+": ")[1].split(" ")[ln.split("{{")[1].split("}}")[0].split(":")[1]].split(";")[0]:customColorwayCSS.split(ln.split("{{")[1].split("}}")[0].split(":")[0]+": ")[1].split(" ")[ln.split("{{")[1].split("}}")[0].split(":")[1]]) + "\n";
+                                                } else {
+                                                    preseImport += ln + "\n";
+                                                }
+                                            } else if(ln.split("{{")[1].split("}}")[0].includes(":") == false) {
+                                                if (arrayContains(ln.split("{{")[1].split("}}")[0], colorVariables) != -1) {
+                                                    preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", ln.split("{{")[1].split("}}")[0].includes("-hsl") ? customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] : "hsl(" + customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] + ")") + "\n";
+                                                } else {
+                                                    preseImport += ln + "\n";
+                                                }
                                             } else {
                                                 preseImport += ln + "\n";
                                             }
@@ -2183,6 +2232,7 @@ class ColorwayCreator {
                                             import: preseImport,
                                             author: e.developer,
                                             authorID: e.developerID,
+                                            colors: e.colors,
                                             creatorVersion: config.info.creatorVersion
                                         }];
                                     customColorwayArray.push(presetCustomColorway[0]);
@@ -2461,12 +2511,18 @@ module.exports = class DiscordColorways {
         height: 60px;
         width: 60px;
         border-radius: 50%;
-        box-shadow: inset 0 0 0 1px var(--interactive-normal);
         cursor: pointer;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         position: relative;
+        align-items: center;
+        justify-content: center;
+        transition: .1s;
+        box-shadow: inset 0 0 0 1px var(--interactive-normal);
+    }
+    .discordColorway:hover {
+        box-shadow: inset 0 0 0 1px var(--interactive-active);
     }
     .discordColorwayPreviewColorContainer {
         display: flex;
@@ -2474,13 +2530,26 @@ module.exports = class DiscordColorways {
         flex-wrap: wrap;
         overflow: hidden;
         border-radius: 50%;
-        height: 56px;
         width: 56px;
-        margin: 2px;
+        height: 56px;
         pointer-events: none;
     }
     .discordColorway.active {
         box-shadow: inset 0 0 0 2px var(--brand-500),inset 0 0 0 4px var(--background-primary);
+    }
+    .discordColorway.active .discordColorwayPreviewColorContainer {
+        width: 52px;
+        height: 52px;
+    }
+    .discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(4))) > .discordColorwayPreviewColor:nth-child(3) {
+        width: 100%;
+    }
+    .discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3))) > .discordColorwayPreviewColor {
+        height: 100%;
+    }
+    .discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(2))) > .discordColorwayPreviewColor {
+        height: 100%;
+        width: 100%;
     }
     .colorwayAuthor {
         font-weight: 400;
@@ -2522,6 +2591,13 @@ module.exports = class DiscordColorways {
     #colorway-createcolorway,
     #colorway-settings {
         background-color: var(--interactive-normal);
+        box-shadow: none;
+        transition: .1s;
+    }
+    #colorway-refreshcolorway:hover,
+    #colorway-createcolorway:hover,
+    #colorway-settings:hover {
+        background-color: var(--interactive-hover);
     }
     #colorway-createcolorway > .colorwayCreateIcon {
         height: 60px;
@@ -2582,14 +2658,15 @@ module.exports = class DiscordColorways {
         -webkit-mask-position: center;
     }
     .discordColorwayPreviewColor {
-        width: 28px;
-        height: 28px;
+        width: 50%;
+        height: 50%;
     }
     .discordColorwayPreviewGradient {
         width: 54px;
         height: 54px;
         margin: 3px;
         border-radius: 50%;
+        pointer-events: none;
     }
 
     .discordColorway.active > .discordColorwayPreviewColor {
@@ -2608,6 +2685,7 @@ module.exports = class DiscordColorways {
         flex-direction: column;
         gap: 16px;
         width: 100%;
+        padding-top: 16px;
     }
     .colorwayHeaderContainer {
         height: 38px;
@@ -2653,6 +2731,7 @@ module.exports = class DiscordColorways {
         max-width: 915px;
         height: fit-content;
         max-height: unset;
+        overflow: overlay;
     }
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal) > .footer-IubaaS {
         display: none;
@@ -2726,35 +2805,40 @@ module.exports = class DiscordColorways {
         font-size: 14px;
         line-height: 16px;
     }
-
-    .colorwayCodeblock::-webkit-scrollbar {
+    .colorwayCodeblock::-webkit-scrollbar,
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar {
         width: 16px;
         height: 16px;
     }
-    .colorwayCodeblock::-webkit-scrollbar-corner {
+    .colorwayCodeblock::-webkit-scrollbar-corner,
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-corner {
         background-color: transparent;
     }
-    .colorwayCodeblock::-webkit-scrollbar-thumb {
+    .colorwayCodeblock::-webkit-scrollbar-thumb,
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-thumb {
         background-color: var(--scrollbar-auto-thumb);
         min-height: 40px;
     }
-    .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track {
+    .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track,
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-thumb {
         border: 4px solid transparent;
         background-clip: padding-box;
         border-radius: 8px;
     }
-    .scroller-kQBbkU::-webkit-scrollbar-track {
+    .scroller-kQBbkU::-webkit-scrollbar-track,
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-track {
         margin-bottom: 8px;
     }
-    .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track {
+    .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track,
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-track {
         border: 4px solid transparent;
         background-clip: padding-box;
         border-radius: 8px;
     }
-    .colorwayCodeblock::-webkit-scrollbar-track {
+    .colorwayCodeblock::-webkit-scrollbar-track,
+    .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-track {
         background-color: var(--scrollbar-auto-track);
     }
-
     .colorwayCodeblockWrapper {
         display: flex;
         flex-direction: column;
@@ -2890,7 +2974,8 @@ module.exports = class DiscordColorways {
     .colorwayPreset * {
         pointer-events: none;
     }
-    .collapsed > .colorwayPreset {
+    .collapsed > .colorwayPreset,
+    .collapsed > .colorwayPreview-background {
         display: none;
     }
     .colorwayPreset:not(.selected) circle {
@@ -2918,10 +3003,12 @@ module.exports = class DiscordColorways {
     .colorwayPresetContainerHeader * {
         pointer-events: none;
     }
-    .colorwayPresetContainer:not(.collapsed) svg {
+    .colorwayPresetContainer:not(.collapsed) svg,
+    .colorwayCreatorPreviewPanel:not(.collapsed) svg {
         transform: rotate3d(0,0,-1,180deg);
     }
-    .colorwayPresetContainerItem:hover {
+    .colorwayPresetContainerItem:hover,
+    .colorwayCreatorPreviewPanel > h2 > div:hover {
         background-color: var(--background-modifier-hover);
     }
     div:has(>.colorwayCreationModal,>.colorwayInfoModalDetails,>.colorwaySelectorModal) {
@@ -2929,6 +3016,9 @@ module.exports = class DiscordColorways {
         padding-right: 16px !important;
         width: 100%;
         max-width: 620px;
+    }
+    .colorwayCreatorPreviewPanel > h2 > div * {
+        pointer-events: none;
     }
     div:has(>.colorwayInfoModalDetails .colorwayImport) {
         max-width: 750px;
@@ -2940,6 +3030,9 @@ module.exports = class DiscordColorways {
         margin-left: -16px;
         margin-right: -16px;
         margin-bottom: -20px;
+    }
+    .colorwaySelectorModal > .ColorwaySelectorWrapperContainer {
+        padding-top: 0;
     }
     .basicThemeSelectors-2wNKs6 .colorwayModalFooter {
         margin: 0;
@@ -2956,13 +3049,24 @@ module.exports = class DiscordColorways {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 10px 18px;
+        padding: 10px;
         border-radius: 4px;
         background-color: var(--background-secondary);
         gap: 8px;
     }
     .colorwayCreatorPreviewPanel > h2 {
         align-self: start;
+        width: 100%;
+    }
+    .colorwayCreatorPreviewPanel > h2 > div {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 4px;
+        cursor: pointer;
+        box-sizing: border-box;
+        padding: 8px;
     }
     .colorwaySettingsContainer .colorwayModalFooter {
         margin: 0;
@@ -3060,6 +3164,20 @@ module.exports = class DiscordColorways {
     div:not(.basicThemeSelectors-2wNKs6) > .ColorwaySelectorWrapperContainer > h2:first-child {
         display: none;
     }
+    .ColorwaySelectorWrapper {
+        position: relative
+    }
+    .ColorwaySelectorWrapper::before {
+        content: "";
+        position: absolute;
+        top: -9px;
+        width: 100%;
+        height: 1px;
+        background-color: var(--interactive-muted);
+        left: 0;
+        /*transform: translateX(-50%);*/
+        border-radius: 4px;
+    }
     `;
     load() { }
     start() {
@@ -3075,13 +3193,11 @@ module.exports = class DiscordColorways {
         }
         document.querySelectorAll("code.inline").forEach(el => {
             if (el.innerText.includes("colorway:")) {
-                el.parentElement.append(createElement("button", {
-                    class: "inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg",
-                    type: "button",
+                el.parentElement.append(modalBtnGray("Add This Colorway", {
                     onclick: () => {
                         BdApi.showConfirmationModal('Create Colorway', React.createElement('div', { class: 'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1] }))
                     }
-                }, "Add This Colorway"))
+                }))
             }
         })
         try {
@@ -3100,13 +3216,11 @@ module.exports = class DiscordColorways {
             if (added.outerHTML.includes(`<code class="inline">`)) {
                 added.querySelectorAll("code.inline").forEach(el => {
                     if (el.innerText.includes("colorway:")) {
-                        el.parentElement.append(createElement("button", {
-                            class: "inlineCreateColorwayBtn button-ejjZWC lookFilled-1H2Jvj colorBrand-2M3O3N sizeSmall-3R2P2p grow-2T4nbg",
-                            type: "button",
+                        el.parentElement.append(modalBtnGray("Add This Colorway", {
                             onclick: () => {
                                 BdApi.showConfirmationModal('Create Colorway', React.createElement('div', { class: 'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1] }))
                             }
-                        }, "Add This Colorway"))
+                        }))
                     }
                 })
             }
