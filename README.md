@@ -18,6 +18,7 @@ The Definitive way of styling Discord and select themes
 * [AMOLED (Original Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Amoled)
 * [Zorin](https://github.com/DaBluLite/DiscordColorways/tree/master/Zorin)
 * [Desaturated](https://github.com/DaBluLite/DiscordColorways/tree/master/Desaturated)
+* [Crimson by Riddim_GLiTCH](https://github.com/DaBluLite/DiscordColorways/tree/master/Crimson)
 
 ### Currently Supported themes:
 * Discord Default
