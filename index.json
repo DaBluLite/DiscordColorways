@@ -142,6 +142,17 @@
       "import": "@import url(//dablulite.github.io/DiscordColorways/Desaturated/import.css);",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
+    },
+    {
+      "name": "Crimson",
+      "original": false,
+      "accent": "hsl(0, 100%, 50%)",
+      "primary": "#050000",
+      "secondary": "#0a0000",
+      "tertiary": "#0f0000",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Crimson/import.css);",
+      "author": "Riddim_GLiTCH",
+      "authorID": "801089753038061669"
     }
   ],
   "layouts": [
