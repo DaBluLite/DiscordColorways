@@ -153,6 +153,19 @@
       "import": "@import url(//dablulite.github.io/DiscordColorways/Crimson/import.css);",
       "author": "Riddim_GLiTCH",
       "authorID": "801089753038061669"
+    },
+    {
+      "name": "Jupiter",
+      "original": false,
+      "accent": "#ffd89b",
+      "primary": "#ffd89b",
+      "secondary": "#19547b",
+      "tertiary": "#1e1f22",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Jupiter/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594",
+      "isGradient": true,
+      "colors": ["accent","primary","secondary"]
     }
   ],
   "layouts": [
