@@ -19,6 +19,7 @@ The Definitive way of styling Discord and select themes
 * [Zorin](https://github.com/DaBluLite/DiscordColorways/tree/master/Zorin)
 * [Desaturated](https://github.com/DaBluLite/DiscordColorways/tree/master/Desaturated)
 * [Crimson by Riddim_GLiTCH](https://github.com/DaBluLite/DiscordColorways/tree/master/Crimson)
+* [Jupiter (Original Gradient Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Jupiter)
 
 ### Currently Supported themes:
 * Discord Default
