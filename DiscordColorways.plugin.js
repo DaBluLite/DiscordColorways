@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.6.0
+* @version 3.7.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -133,10 +133,7 @@ class ColorwaySelector {
 
         target._patched = true;
 
-        this.container = createElement("div", {
-            className: "ColorwaySelectorWrapperContainer",
-        });
-
+        this.container = createElement("div", { className: "ColorwaySelectorWrapperContainer" });
 
         DOM.onRemoved(target, () => this.unmount());
     }
@@ -153,12 +150,7 @@ class ColorwaySelector {
         const res = this.render();
         if (!res) this.ref?.remove();
         else {
-            if (this.ref) {
-
-            } else {
-                this.target.appendChild(res);
-            }
-
+            if (!this.ref) this.target.appendChild(res);
             this.ref = res;
         }
     }
@@ -179,81 +171,46 @@ class ColorwaySelector {
         let colorwayArray = [];
         let customcolorwayArray = [];
 
-        let wrapper = createElement("div", {
-            className: "ColorwaySelectorWrapper",
-        });
-
-        let customwrapper = createElement("div", {
-            className: "ColorwaySelectorWrapper customColorwaySelector",
-        });
+        let wrapper = createElement("div", { className: "ColorwaySelectorWrapper" });
+        let customwrapper = createElement("div", { className: "ColorwaySelectorWrapper customColorwaySelector" });
 
         let refreshColorwayBtn = createElement("div", {
             className: "discordColorway themeSelection-2u4ce0",
             id: "colorway-refreshcolorway",
             onclick: (e) => {
-                e.srcElement.parentElement.previousElementSibling.append("span",{id:"colorwayRefreshStatus"},"Refreshing...")
+                e.srcElement.parentElement.previousElementSibling.append(createElement("span",{id:"colorwayRefreshStatus"}," Refreshing..."))
                 colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => {
                     colorwayList = colors.colorways;
-                    const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
-                    if (elements.length) {
-                        for (const el of elements) {
-                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                            new ColorwaySelector(el).mount();
-                        }
-                    }
-                    const elements2 = Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"));
-                    if (elements2.length) {
-                        for (const el of elements2) {
-                            document.querySelector(".ColorwaySelectorWrapperContainer").remove();
-                            new ColorwaySelector(el).mount();
-                        }
-                    }
+                    if (Array.from(document.body.getElementsByClassName("colorwaySelectorModal")).length) for (const el of Array.from(document.body.getElementsByClassName("colorwaySelectorModal"))) {document.querySelector(".ColorwaySelectorWrapperContainer").remove(); new ColorwaySelector(el).mount();}
+                    if (Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6")).length) for (const el of Array.from(document.body.getElementsByClassName("basicThemeSelectors-2wNKs6"))) {document.querySelector(".ColorwaySelectorWrapperContainer").remove(); new ColorwaySelector(el).mount();}
                     document.getElementById("colorwayRefreshStatus").remove();
                 });
             }
-        }, createElement("div", {
-            className: "colorwayRefreshIcon"
-        }));
+        }, createElement("div", { className: "colorwayRefreshIcon" }));
 
         BdApi.UI.createTooltip(refreshColorwayBtn, "Refresh Colorways", {});
         colorwayArray.push(refreshColorwayBtn);
 
-
         let addColorwayBtn = createElement("div", {
             className: "discordColorway themeSelection-2u4ce0",
             id: "colorway-createcolorway",
-            onclick: (el) => {
-                BdApi.showConfirmationModal("Create Colorway", React.createElement("div", { class: "colorwayCreationModal" }))
-            }
-        }, createElement("div", {
-            className: "colorwayCreateIcon"
-        }),
-            createElement("div", {
-                className: "colorwayCheckIconContainer"
-            },
-                createElement("div", {
-                    className: "colorwayCheckIcon"
-                }))
-        );
+            onclick: () => BdApi.showConfirmationModal("Create Colorway", React.createElement("div", { class: "colorwayCreationModal" }))
+        }, createElement("div", { className: "colorwayCreateIcon" }), createElement("div", { className: "colorwayCheckIconContainer" }, createElement("div", { className: "colorwayCheckIcon" })));
         BdApi.UI.createTooltip(addColorwayBtn, "Create Colorway...", {});
         colorwayArray.push(addColorwayBtn);
         
         let settingsBtn = createElement("div", {
             className: "discordColorway themeSelection-2u4ce0",
             id: "colorway-settings",
-            onclick: (el) => {
-                BdApi.showConfirmationModal("DiscordColorway Settings", [React.createElement("div", { className: "colorwaySettingsContainer" })]);
-            }
-        }, createElement("div", {
-            className: "colorwaySettingsIcon"
-        }));
+            onclick: () => BdApi.showConfirmationModal("DiscordColorway Settings", [React.createElement("div", { className: "colorwaySettingsContainer" })])
+        }, createElement("div", { className: "colorwaySettingsIcon" }));
         BdApi.UI.createTooltip(settingsBtn, "Settings", {});
         colorwayArray.push(settingsBtn);
 
         try {
             colorwayList.forEach((colorway, ind) => {
                 let colorwayElem = createElement("div", {
-                    className: "discordColorway themeSelection-2u4ce0",
+                    className: "discordColorway themeSelection-2u4ce0" + (colorway.isGradient && colorway.isGradient == true ? " gradient" : ""),
                     id: "colorway-" + colorway.name,
                     "data-last-official": ind+1 == colorwayList.length ? true:false,
                     onclick: (el) => {
@@ -264,41 +221,11 @@ class ColorwaySelector {
                                 showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar
                             }
                             BdApi.saveData("DiscordColorways", "settings", userSettings);
-                            if (document.getElementById("activeColorway")) {
-                                document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
-                            } else {
-                                document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
-                            }
-                            try {
-                                if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
-                                    document.querySelector(".discordColorway.active").classList.remove("active");
-                                }
-                            } catch (e) {
-                                console.warn("Uncaught Exception: " + e);
-                            }
+                            if (document.getElementById("activeColorway")) document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway
+                            else document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway))
+                            try {if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) document.querySelector(".discordColorway.active").classList.remove("active")} catch (e) {console.warn("Uncaught Exception: " + e)}
                             el.srcElement.classList.add("active");
-                            nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
-                                class: "discordColorway themeSelection-2u4ce0"
-                            }, React.createElement("div", {
-                                class: "discordColorwayPreviewColorContainer"
-                            }, [
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.accent }
-                                }),
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.primary }
-                                }),
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.secondary }
-                                }),
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.tertiary }
-                                })
-                            ])), "Applied Colorway Successfully"]), 0);
+                            nativeToast("Applied Colorway Successfully",1);
                         } else {
                             userSettings = {
                                 activeColorway: "",
@@ -306,41 +233,13 @@ class ColorwaySelector {
                                 showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar
                             }
                             BdApi.saveData("DiscordColorways", "settings", userSettings);
-                            if (document.getElementById("activeColorway")) {
-                                document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
-                            } else {
-                                document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
-                            }
-                            try {
-                                if (document.querySelector(".discordColorway.active")) {
-                                    document.querySelector(".discordColorway.active").classList.remove("active");
-                                }
-                            } catch (e) {
-                                console.warn("Uncaught Exception: " + e);
-                            }
+                            if (document.getElementById("activeColorway")) document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway
+                            else document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway))
+                            try {if (document.querySelector(".discordColorway.active")) document.querySelector(".discordColorway.active").classList.remove("active")} catch (e) {console.warn("Uncaught Exception: " + e)}
                             nativeToast("Disabled Colorway Successfully", 1);
                         }
                     }
                 },
-                    createElement("div", {
-                        class: "discordColorwayPreviewColorContainer"
-                    },
-                        createElement("div", {
-                            className: "discordColorwayPreviewColor",
-                            style: "background-color: " + colorway.accent
-                        }),
-                        createElement("div", {
-                            className: "discordColorwayPreviewColor",
-                            style: "background-color: " + colorway.primary
-                        }),
-                        createElement("div", {
-                            className: "discordColorwayPreviewColor",
-                            style: "background-color: " + colorway.secondary
-                        }),
-                        createElement("div", {
-                            className: "discordColorwayPreviewColor",
-                            style: "background-color: " + colorway.tertiary
-                        })),
                     createElement("div", {
                         className: "colorwayCheckIconContainer"
                     },
@@ -429,19 +328,27 @@ class ColorwaySelector {
                             className: "colorwayInfoIcon"
                         }))
                 );
+
+                if(!colorway.colors) {
+                    colorwayElem.append(createElement("div", { class: "discordColorwayPreviewColorContainer" },
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.accent }),
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.primary }),
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.secondary }),
+                        createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.tertiary })))
+                } else {
+                    let PreviewElem = createElement("div", { class: "discordColorwayPreviewColorContainer" })
+                    colorway.colors.forEach(color => {PreviewElem.append(createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway[color] }))})
+                    colorwayElem.append(PreviewElem);
+                }
+
                 BdApi.UI.createTooltip(colorwayElem, colorway.name, {});
                 colorwayArray.push(colorwayElem);
             });
-        } catch (e) {
-            console.warn("Unexpected error: " + e);
-        }
-
-
+        } catch (e) {console.warn("Unexpected error: " + e)}
         try {
             BdApi.loadData("DiscordColorways", "custom_colorways").forEach((colorway) => {
-
                 let colorwayElem = createElement("div", {
-                    className: "discordColorway themeSelection-2u4ce0",
+                    className: "discordColorway themeSelection-2u4ce0" + (colorway.isGradient && colorway.isGradient == true ? " gradient" : ""),
                     id: "colorway-" + colorway.name,
                     onclick: (el) => {
                         if (!el.srcElement.classList.contains("active")) {
@@ -451,41 +358,11 @@ class ColorwaySelector {
                                 showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar
                             }
                             BdApi.saveData("DiscordColorways", "settings", userSettings);
-                            if (document.getElementById("activeColorway")) {
-                                document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
-                            } else {
-                                document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
-                            }
-                            try {
-                                if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) {
-                                    document.querySelector(".discordColorway.active").classList.remove("active");
-                                }
-                            } catch (e) {
-                                console.warn("Uncaught Exception: " + e);
-                            }
+                            if (document.getElementById("activeColorway")) document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway
+                            else document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway))
+                            try {if (document.querySelector(".discordColorway.active") != "colorway-" + BdApi.loadData("DiscordColorways", "settings").activeColorwayID) document.querySelector(".discordColorway.active").classList.remove("active")} catch (e) {console.warn("Uncaught Exception: " + e)}
                             el.srcElement.classList.add("active");
-                            nativeToast(React.createElement("div", { class: "discordColorwayOnToast" }, [React.createElement("div", {
-                                class: "discordColorway themeSelection-2u4ce0"
-                            }, React.createElement("div", {
-                                class: "discordColorwayPreviewColorContainer"
-                            }, [
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.accent.background }
-                                }),
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.primary.background }
-                                }),
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.secondary.background }
-                                }),
-                                React.createElement("div", {
-                                    className: "discordColorwayPreviewColor",
-                                    style: { backgroundColor: colorway.tertiary.background }
-                                })
-                            ])), "Applied Custom Colorway Successfully"]), 0);
+                            nativeToast("Applied Custom Colorway Successfully",1);
                         } else {
                             userSettings = {
                                 activeColorway: "",
@@ -493,35 +370,19 @@ class ColorwaySelector {
                                 showInGuildBar: BdApi.loadData("DiscordColorways", "settings").showInGuildBar
                             }
                             BdApi.saveData("DiscordColorways", "settings", userSettings);
-                            if (document.getElementById("activeColorway")) {
-                                document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
-                            } else {
-                                document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
-                            }
-                            try {
-                                if (document.querySelector(".discordColorway.active")) {
-                                    document.querySelector(".discordColorway.active").classList.remove("active");
-                                }
-                            } catch (e) {
-                                console.warn("Uncaught Exception: " + e);
-                            }
+                            if (document.getElementById("activeColorway")) document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway
+                            else document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway))
+                            try {if (document.querySelector(".discordColorway.active")) document.querySelector(".discordColorway.active").classList.remove("active")} catch (e) {console.warn("Uncaught Exception: " + e)}
                             nativeToast("Disabled Colorway Successfully", 1);
                         }
                     }
                 },
-                    createElement("div", {
-                        className: "colorwayCheckIconContainer"
-                    },
-                        createElement("div", {
-                            className: "colorwayCheckIcon"
-                        })),
+                    createElement("div", { className: "colorwayCheckIconContainer" }, createElement("div", { className: "colorwayCheckIcon" })),
                     createElement("div", {
                         className: "colorwayInfoIconContainer",
                         onclick: (el) => {
                             el.stopPropagation();
-                            function lines(text) {
-                                return text.split('\n')
-                            }
+                            const lines = (text) => text.split('\n')
                             let colorwayIDArray = `${colorway.accent.background},${colorway.primary.background},${colorway.secondary.background},${colorway.tertiary.background}`;
                             let colorwayID = Buffer(colorwayIDArray).toString('hex');
                             let codeblockLines = [];
@@ -624,43 +485,38 @@ class ColorwaySelector {
                                                                         customColorwayArray.push(el);
                                                                     }
                                                                 })
-                                                                let customColorway = [
-                                                                    {
-                                                                        name: e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value,
-                                                                        primary: {
-                                                                            background: colorway.primary.background,
-                                                                            foreground: colorway.primary.foreground
-                                                                        },
-                                                                        secondary: {
-                                                                            background: colorway.secondary.background,
-                                                                            foreground: colorway.secondary.foreground
-                                                                        },
-                                                                        secondaryAlt: {
-                                                                            background: colorway.secondaryAlt.background,
-                                                                            foreground: colorway.secondaryAlt.foreground
-                                                                        },
-                                                                        tertiary: {
-                                                                            background: colorway.tertiary.background,
-                                                                            foreground: colorway.tertiary.foreground
-                                                                        },
-                                                                        accent: {
-                                                                            background: colorway.accent.background,
-                                                                            foreground: colorway.accent.foreground
-                                                                        },
-                                                                        import: colorway.import,
-                                                                        author: colorway.author,
-                                                                        authorID: colorway.authorID,
-                                                                        colors: colorway.colors || ["accent", "primary", "secondary", "tertiary"],
-                                                                        creatorVersion: config.info.creatorVersion
-                                                                    }
-                                                                ];
-                                                                customColorwayArray.push(customColorway[0]);
+                                                                let customColorway = {
+                                                                    name: e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value,
+                                                                    primary: {
+                                                                        background: colorway.primary.background,
+                                                                        foreground: colorway.primary.foreground
+                                                                    },
+                                                                    secondary: {
+                                                                        background: colorway.secondary.background,
+                                                                        foreground: colorway.secondary.foreground
+                                                                    },
+                                                                    secondaryAlt: {
+                                                                        background: colorway.secondaryAlt.background,
+                                                                        foreground: colorway.secondaryAlt.foreground
+                                                                    },
+                                                                    tertiary: {
+                                                                        background: colorway.tertiary.background,
+                                                                        foreground: colorway.tertiary.foreground
+                                                                    },
+                                                                    accent: {
+                                                                        background: colorway.accent.background,
+                                                                        foreground: colorway.accent.foreground
+                                                                    },
+                                                                    import: colorway.import,
+                                                                    author: colorway.author,
+                                                                    authorID: colorway.authorID,
+                                                                    isGradient: colorway.isGradient || false,
+                                                                    colors: colorway.colors || ["accent", "primary", "secondary", "tertiary"],
+                                                                    creatorVersion: config.info.creatorVersion
+                                                                };
+                                                                customColorwayArray.push(customColorway);
                                                                 BdApi.saveData("DiscordColorways", "custom_colorways", customColorwayArray);
-                                                                try {
-                                                                    e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                                                } catch (e) {
-
-                                                                }
+                                                                try {e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click()} catch (e) {}
                                                                 const elements = Array.from(document.body.getElementsByClassName("colorwaySelectorModal"));
                                                                 if (elements.length) {
                                                                     for (const el of elements) {
@@ -789,27 +645,18 @@ class ColorwaySelector {
                                 }
                             });
                         }
-                    },
-                        createElement("div", {
-                            className: "colorwayInfoIcon"
-                        }))
+                    },createElement("div", { className: "colorwayInfoIcon" }))
                 );
 
                 if(!colorway.colors) {
-                    colorwayElem.append(createElement("div", {
-                        class: "discordColorwayPreviewColorContainer"
-                    },
+                    colorwayElem.append(createElement("div", { class: "discordColorwayPreviewColorContainer" },
                         createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.accent.background }),
                         createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.primary.background }),
                         createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.secondary.background }),
                         createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway.tertiary.background })))
                 } else {
-                    let PreviewElem = createElement("div", {
-                        class: "discordColorwayPreviewColorContainer"
-                    })
-                    colorway.colors.forEach(color => {
-                        PreviewElem.append(createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway[color].background }))
-                    })
+                    let PreviewElem = createElement("div", { class: "discordColorwayPreviewColorContainer" })
+                    colorway.colors.forEach(color => {PreviewElem.append(createElement("div", { className: "discordColorwayPreviewColor", style: "background-color: " + colorway[color].background }))})
                     colorwayElem.append(PreviewElem);
                 }
 
@@ -1302,7 +1149,7 @@ class ColorwayCreator {
 }`
             },
             {
-                name: "Gradient Type: Aurora",
+                name: "Gradient Type 1",
                 developer: "DaBluLite",
                 developerID: "582170007505731594",
                 colors: ["accent","primary","secondary","tertiary"],
@@ -1316,14 +1163,23 @@ class ColorwayCreator {
         {{primary-660}} 64.98%,
         {{primary-600}} 92.5%);
 }`
+            },
+            {
+                name: "Gradient Type 2",
+                developer: "DaBluLite",
+                developerID: "582170007505731594",
+                colors: ["accent","primary","secondary"],
+                isGradient: true,
+                import: `${gradientBase}
+:root {
+    --custom-theme-background: linear-gradient(48.17deg,
+        {{primary-600}} 11.21%,
+        {{primary-630}} 61.92%);
+}`
             }
         ]
 
-        let themePresets = createElement("div", {
-            class: "colorwayPresetContainer collapsed"
-        },
-            createElement("div", { class: "colorwayPresetContainerHeader colorwayPresetContainerItem", onclick: (e) => e.srcElement.parentElement.classList.toggle("collapsed") }, modalHeader("Theme Presets "), betaBadge(), new DOMParser().parseFromString(`<svg style="margin-left: auto;" class="expand-3Nh1P5 transition-30IQBn directionDown-2w0MZz" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" role="img"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path></svg>`, 'text/html').body.children[0])
-        );
+        let themePresets = createElement("div", { class: "colorwayPresetContainer collapsed" }, createElement("div", { class: "colorwayPresetContainerHeader colorwayPresetContainerItem", onclick: (e) => e.srcElement.parentElement.classList.toggle("collapsed") }, modalHeader("Theme Presets "), betaBadge(), new DOMParser().parseFromString(`<svg style="margin-left: auto;" class="expand-3Nh1P5 transition-30IQBn directionDown-2w0MZz" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" role="img"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path></svg>`, 'text/html').body.children[0]) );
 
         themePresetsArray.forEach(e => {
             themePresets.append(createElement("div", {
@@ -1928,13 +1784,12 @@ class ColorwayCreator {
                             import: customColorwayCSS,
                             author: currentUserProps.username,
                             authorID: currentUserProps.id,
+                            isGradient: false,
                             creatorVersion: config.info.creatorVersion
                         }
 
                         let customColorwayArray = [];
-                        function arrayContains(needle, arrhaystack) {
-                            return arrhaystack.indexOf(needle);
-                        }
+                        const arrayContains = (needle, arrhaystack) => arrhaystack.indexOf(needle)
                         const colorVariables = [
                             "brand-100",
                             "brand-130",
@@ -2089,6 +1944,7 @@ class ColorwayCreator {
                                         import: preseImport,
                                         author: e.developer,
                                         authorID: e.developerID,
+                                        isGradient: e.isGradient,
                                         colors: e.colors,
                                         creatorVersion: config.info.creatorVersion
                                     }
@@ -2440,6 +2296,7 @@ module.exports = class DiscordColorways {
         right: 0;
         border-radius: 50%;
         opacity: 0;
+        z-index: +1;
     }
     .discordColorway.active .colorwayCheckIconContainer {
         opacity: 1;
