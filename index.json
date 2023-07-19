@@ -156,7 +156,7 @@
     },
     {
       "name": "Jupiter",
-      "original": false,
+      "original": true,
       "accent": "#ffd89b",
       "primary": "#ffd89b",
       "secondary": "#19547b",
@@ -166,6 +166,19 @@
       "authorID": "582170007505731594",
       "isGradient": true,
       "colors": ["accent","primary","secondary"]
+    },
+    {
+      "name": "Neon Candy",
+      "original": true,
+      "accent": "#FC00FF",
+      "primary": "#00DBDE",
+      "secondary": "#00DBDE",
+      "tertiary": "#00DBDE",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/NeonCandy/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594",
+      "isGradient": true,
+      "colors": ["accent","primary"]
     }
   ],
   "layouts": [
