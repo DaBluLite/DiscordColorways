@@ -1,45 +1,45 @@
-/*Automatically Generated - Colorway Creator V1.9.2*/
+/*Automatically Generated - Colorway Creator V1.12*/
 :root {
-    --brand-100-hsl: 141 76.2% 94.6%;
-    --brand-140-hsl: 141 76.2% 91%;
-    --brand-160-hsl: 141 76.2% 87.4%;
-    --brand-200-hsl: 141 76.2% 83.8%;
-    --brand-230-hsl: 141 76.2% 80.19999999999999%;
-    --brand-260-hsl: 141 76.2% 76.6%;
-    --brand-300-hsl: 141 76.2% 73%;
-    --brand-330-hsl: 141 76.2% 69.4%;
-    --brand-345-hsl: 141 76.2% 65.8%;
-    --brand-360-hsl: 141 76.2% 62.199999999999996%;
-    --brand-400-hsl: 141 76.2% 58.599999999999994%;
-    --brand-430-hsl: 141 76.2% 55%;
-    --brand-460-hsl: 141 76.2% 51.4%;
-    --brand-500-hsl: 141 76.2% 47.8%;
-    --brand-530-hsl: 141 76.2% 44.199999999999996%;
-    --brand-560-hsl: 141 76.2% 40.599999999999994%;
-    --brand-600-hsl: 141 76.2% 37%;
-    --brand-630-hsl: 141 76.2% 33.4%;
-    --brand-660-hsl: 141 76.2% 29.799999999999997%;
-    --brand-700-hsl: 141 76.2% 26.199999999999996%;
-    --brand-730-hsl: 141 76.2% 22.599999999999998%;
-    --brand-760-hsl: 141 76.2% 18.999999999999996%;
-    --brand-800-hsl: 141 76.2% 15.399999999999999%;
-    --brand-830-hsl: 141 76.2% 11.799999999999997%;
-    --brand-860-hsl: 141 76.2% 8.199999999999996%;
-    --brand-900-hsl: 141 76.2% 4.599999999999994%;
-    --primary-460: gray;
+    --brand-100-hsl: 141 calc(var(--saturation-factor, 1)*76%) 95%;
+    --brand-130-hsl: 141 calc(var(--saturation-factor, 1)*76%) 91%;
+    --brand-160-hsl: 141 calc(var(--saturation-factor, 1)*76%) 88%;
+    --brand-200-hsl: 141 calc(var(--saturation-factor, 1)*76%) 84%;
+    --brand-230-hsl: 141 calc(var(--saturation-factor, 1)*76%) 80%;
+    --brand-260-hsl: 141 calc(var(--saturation-factor, 1)*76%) 77%;
+    --brand-300-hsl: 141 calc(var(--saturation-factor, 1)*76%) 73%;
+    --brand-330-hsl: 141 calc(var(--saturation-factor, 1)*76%) 70%;
+    --brand-345-hsl: 141 calc(var(--saturation-factor, 1)*76%) 66%;
+    --brand-360-hsl: 141 calc(var(--saturation-factor, 1)*76%) 62%;
+    --brand-400-hsl: 141 calc(var(--saturation-factor, 1)*76%) 59%;
+    --brand-430-hsl: 141 calc(var(--saturation-factor, 1)*76%) 55%;
+    --brand-460-hsl: 141 calc(var(--saturation-factor, 1)*76%) 52%;
+    --brand-500-hsl: 141 calc(var(--saturation-factor, 1)*76%) 48%;
+    --brand-530-hsl: 141 calc(var(--saturation-factor, 1)*76%) 44%;
+    --brand-560-hsl: 141 calc(var(--saturation-factor, 1)*76%) 41%;
+    --brand-600-hsl: 141 calc(var(--saturation-factor, 1)*76%) 37%;
+    --brand-630-hsl: 141 calc(var(--saturation-factor, 1)*76%) 34%;
+    --brand-660-hsl: 141 calc(var(--saturation-factor, 1)*76%) 30%;
+    --brand-700-hsl: 141 calc(var(--saturation-factor, 1)*76%) 26%;
+    --brand-730-hsl: 141 calc(var(--saturation-factor, 1)*76%) 23%;
+    --brand-760-hsl: 141 calc(var(--saturation-factor, 1)*76%) 19%;
+    --brand-800-hsl: 141 calc(var(--saturation-factor, 1)*76%) 16%;
+    --brand-830-hsl: 141 calc(var(--saturation-factor, 1)*76%) 12%;
+    --brand-860-hsl: 141 calc(var(--saturation-factor, 1)*76%) 8%;
+    --brand-900-hsl: 141 calc(var(--saturation-factor, 1)*76%) 5%;
     --mention-foreground: black !important;
-    --primary-800-hsl: 0 0% 2.4%;
-    --primary-730-hsl: 0 0% 3.5%;
-    --primary-700-hsl: 0 0% 3.5%;
-    --primary-660-hsl: 0 0% 2.7%;
-    --primary-645-hsl: 0 0% 2.0999999999999996%;
-    --primary-630-hsl: 0 0% 3.5%;
-    --primary-600-hsl: 0 0% 7.1%;
-    --primary-560-hsl: 0 0% 8.2%;
-    --primary-530-hsl: 0 0% 8.2%;
-    --primary-500-hsl: 0 0% 8.2%;
-    --primary-430-hsl: 0 0% 0.9999999999999991%;
-    --primary-400-hsl: 0 0% -2.6000000000000014%;
+    --primary-800-hsl: 0 calc(var(--saturation-factor, 1)*0%) 2%;
+    --primary-730-hsl: 0 calc(var(--saturation-factor, 1)*0%) 4%;
+    --primary-700-hsl: 0 calc(var(--saturation-factor, 1)*0%) 4%;
+    --primary-660-hsl: 0 calc(var(--saturation-factor, 1)*0%) 3%;
+    --primary-645-hsl: 0 calc(var(--saturation-factor, 1)*0%) 2%;
+    --primary-630-hsl: 0 calc(var(--saturation-factor, 1)*0%) 4%;
+    --primary-600-hsl: 0 calc(var(--saturation-factor, 1)*0%) 7%;
+    --primary-560-hsl: 0 calc(var(--saturation-factor, 1)*0%) 8%;
+    --primary-530-hsl: 0 calc(var(--saturation-factor, 1)*0%) 8%;
+    --primary-500-hsl: 0 calc(var(--saturation-factor, 1)*0%) 8%;
+    --primary-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50%;
+    --primary-430-hsl: 0 calc(var(--saturation-factor, 1)*0%) 1%;
+    --primary-400-hsl: 0 calc(var(--saturation-factor, 1)*0%) 0%;
 }
 
 /*Primary*/
@@ -53,38 +53,48 @@
 .theme-dark .children-3xh0VB *,
 .theme-dark .buttonContainer-1502pf *,
 .theme-dark .listItem-3SmSlK * {
-    --white-500: hsl(210 9.1% 87.1%) !important;
-    --text-normal: hsl(210 9.1% 87.1%) !important;
-    --header-primary: hsl(210 9.1% 87.1%) !important;
+    --white-500: white !important;
+    --text-normal: white !important;
+    --header-primary: white !important;
 }
+
 .theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
-    --white-500: hsl(210 9.1% 87.1%) !important;
+    --white-500: white !important;
 }
+
 .theme-dark .container-1um7CU,
 .theme-dark .container-2IKOsH,
 .theme-dark .header-3xB4vB {
     background: transparent;
 }
+
 .theme-dark .header-3xB4vB *,
 .theme-dark .title-31SJ6t * {
-    --channel-icon: hsl(210 9.1% 87.1%);
+    --channel-icon: white;
 }
+
 .theme-dark .callContainer-HtHELf * {
     --white-500: white !important;
 }
+
 .theme-dark .channelTextArea-1FufC0 * {
-    --text-normal: hsl(210 9.1% 87.1%);
+    --text-normal: white;
 }
+
 .theme-dark .placeholder-1rCBhr {
-    --channel-text-area-placeholder: hsl(210 9.1% 87.1%);
+    --channel-text-area-placeholder: white;
     opacity: .6;
 }
+
 .theme-dark .colorwaySelectorIcon {
-    background-color: hsl(210 9.1% 87.1%);
+    background-color: white;
 }
+
 .theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
-    color: hsl(210 9.1% 87.1%);
+    color: white;
 }
+/*End Primary*/
+
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
 .theme-dark .sidebar-1tnWFu *:not(.hasBanner-2IrYih *),
@@ -99,26 +109,34 @@
     --interactive-hover: var(--white-500);
     --interactive-active: var(--white-500);
 }
+
 .theme-dark .channelRow-4X_3fi {
     background-color: var(--background-secondary);
 }
+
 .theme-dark .channelRow-4X_3fi * {
     --channel-icon: white;
 }
+
 .theme-dark #app-mount .activity-2EQDZv,
 .theme-dark #app-mount .activity-2EQDZv * {
     --channels-default: var(--white-500) !important;
 }
+
 .theme-dark .nameTag-sc-gpq {
     --header-primary: white !important;
     --header-secondary: gray !important;
 }
+
 .theme-dark .bannerVisible-Vkyg1I .headerContent-2SNbie {
     color: #fff;
 }
+
 .theme-dark .embedFull-1HGV2S {
     --text-normal: white;
 }
+/*End Secondary*/
+
 /*Tertiary*/
 .theme-dark .winButton-3UMjdg,
 .theme-dark .searchBar-2aylmZ *,
@@ -127,20 +145,25 @@
 .theme-dark .searchBarComponent-3N7dCG {
     --white-500: white !important;
 }
+
 .theme-dark [style="background-color: var(--background-secondary);"] {
     color: white;
 }
+
 .theme-dark .popout-TdhJ6Z > *,
 .theme-dark .colorwayHeaderTitle {
     --interactive-normal: white !important;
     --header-secondary: white !important;
 }
+
 .theme-dark .tooltip-33Jwqe {
     --text-normal: white !important;
 }
+/*End Tertiary*/
+
 /*Accent*/
-#app-mount .selected-2r1Hvo *,
-#app-mount .selected-1Drb7Z *,
+.selected-2r1Hvo *,
+.selected-1Drb7Z *,
 #app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N:not(.buttonColor-3bP3fX),
 .colorDefault-2_rLdz.focused-3LIdPu,
 .row-1qtctT:hover,
@@ -148,8 +171,8 @@
 .colorwayCheckIcon {
     --white-500: black !important;
 }
+
 .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
     background-color: black !important;
 }
-.children-3xh0VB:after, #app-mount .form-3gdLxP:before{display: none !important;}
-
+/*End Accent*/
