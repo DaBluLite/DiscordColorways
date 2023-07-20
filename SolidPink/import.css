@@ -1,52 +1,47 @@
-/*Automatically Generated - Colorway Creator V1.7*/
+/*Automatically Generated - Colorway Creator V1.12*/
 :root {
-    --brand-100-hsl: 340 55.2% 9.499999999999993%;
-    --brand-140-hsl: 340 55.2% 13.099999999999994%;
-    --brand-160-hsl: 340 55.2% 16.699999999999996%;
-    --brand-200-hsl: 340 55.2% 20.299999999999997%;
-    --brand-230-hsl: 340 55.2% 23.9%;
-    --brand-260-hsl: 340 55.2% 27.499999999999996%;
-    --brand-300-hsl: 340 55.2% 31.099999999999998%;
-    --brand-330-hsl: 340 55.2% 34.699999999999996%;
-    --brand-345-hsl: 340 55.2% 38.3%;
-    --brand-360-hsl: 340 55.2% 41.9%;
-    --brand-400-hsl: 340 55.2% 45.5%;
-    --brand-430-hsl: 340 55.2% 49.099999999999994%;
-    --brand-460-hsl: 340 55.2% 52.699999999999996%;
-    --brand-500-hsl: 340 55.2% 56.3%;
-    --brand-530-hsl: 340 55.2% 59.9%;
-    --brand-560-hsl: 340 55.2% 63.5%;
-    --brand-600-hsl: 340 55.2% 67.1%;
-    --brand-630-hsl: 340 55.2% 70.7%;
-    --brand-660-hsl: 340 55.2% 74.3%;
-    --brand-700-hsl: 340 55.2% 77.9%;
-    --brand-730-hsl: 340 55.2% 81.5%;
-    --brand-760-hsl: 340 55.2% 85.1%;
-    --brand-800-hsl: 340 55.2% 88.69999999999999%;
-    --brand-830-hsl: 340 55.2% 92.3%;
-    --brand-860-hsl: 340 55.2% 95.9%;
-    --brand-900-hsl: 340 55.2% 99.5%;
-    --primary-460: gray;
+    --brand-100-hsl: 340 calc(var(--saturation-factor, 1)*55%) 103%;
+    --brand-130-hsl: 340 calc(var(--saturation-factor, 1)*55%) 99%;
+    --brand-160-hsl: 340 calc(var(--saturation-factor, 1)*55%) 96%;
+    --brand-200-hsl: 340 calc(var(--saturation-factor, 1)*55%) 92%;
+    --brand-230-hsl: 340 calc(var(--saturation-factor, 1)*55%) 88%;
+    --brand-260-hsl: 340 calc(var(--saturation-factor, 1)*55%) 85%;
+    --brand-300-hsl: 340 calc(var(--saturation-factor, 1)*55%) 81%;
+    --brand-330-hsl: 340 calc(var(--saturation-factor, 1)*55%) 78%;
+    --brand-345-hsl: 340 calc(var(--saturation-factor, 1)*55%) 74%;
+    --brand-360-hsl: 340 calc(var(--saturation-factor, 1)*55%) 70%;
+    --brand-400-hsl: 340 calc(var(--saturation-factor, 1)*55%) 67%;
+    --brand-430-hsl: 340 calc(var(--saturation-factor, 1)*55%) 63%;
+    --brand-460-hsl: 340 calc(var(--saturation-factor, 1)*55%) 60%;
+    --brand-500-hsl: 340 calc(var(--saturation-factor, 1)*55%) 56%;
+    --brand-530-hsl: 340 calc(var(--saturation-factor, 1)*55%) 52%;
+    --brand-560-hsl: 340 calc(var(--saturation-factor, 1)*55%) 49%;
+    --brand-600-hsl: 340 calc(var(--saturation-factor, 1)*55%) 45%;
+    --brand-630-hsl: 340 calc(var(--saturation-factor, 1)*55%) 42%;
+    --brand-660-hsl: 340 calc(var(--saturation-factor, 1)*55%) 38%;
+    --brand-700-hsl: 340 calc(var(--saturation-factor, 1)*55%) 34%;
+    --brand-730-hsl: 340 calc(var(--saturation-factor, 1)*55%) 31%;
+    --brand-760-hsl: 340 calc(var(--saturation-factor, 1)*55%) 27%;
+    --brand-800-hsl: 340 calc(var(--saturation-factor, 1)*55%) 24%;
+    --brand-830-hsl: 340 calc(var(--saturation-factor, 1)*55%) 20%;
+    --brand-860-hsl: 340 calc(var(--saturation-factor, 1)*55%) 16%;
+    --brand-900-hsl: 340 calc(var(--saturation-factor, 1)*55%) 13%;
     --mention-foreground: white !important;
-    --primary-800-hsl: 309 14.3% 9.6%;
-    --primary-730-hsl: 311 15.5% 13.9%;
-    --primary-700-hsl: 311 15.5% 13.9%;
-    --primary-660-hsl: 317 15.6% 8.8%;
-    --primary-645-hsl: 313 17.6% 5%;
-    --primary-630-hsl: 313 15.8% 11.2%;
-    --primary-600-hsl: 313 17.6% 10%;
-    --primary-560-hsl: 316 18% 12%;
-    --primary-530-hsl: 316 18% 12%;
-    --primary-500-hsl: 316 18% 12%;
-    --primary-430-hsl: 316 18% 4.8%;
-    --primary-400-hsl: 316 18% 1.1999999999999993%;
+    --primary-800-hsl: 309 calc(var(--saturation-factor, 1)*14%) 10%;
+    --primary-730-hsl: 311 calc(var(--saturation-factor, 1)*16%) 14%;
+    --primary-700-hsl: 311 calc(var(--saturation-factor, 1)*16%) 14%;
+    --primary-660-hsl: 317 calc(var(--saturation-factor, 1)*16%) 9%;
+    --primary-645-hsl: 313 calc(var(--saturation-factor, 1)*18%) 5%;
+    --primary-630-hsl: 313 calc(var(--saturation-factor, 1)*16%) 11%;
+    --primary-600-hsl: 313 calc(var(--saturation-factor, 1)*18%) 10%;
+    --primary-560-hsl: 316 calc(var(--saturation-factor, 1)*18%) 12%;
+    --primary-530-hsl: 316 calc(var(--saturation-factor, 1)*18%) 12%;
+    --primary-500-hsl: 316 calc(var(--saturation-factor, 1)*18%) 12%;
+    --primary-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50%;
+    --primary-430-hsl: 316 calc(var(--saturation-factor, 1)*18%) 4.8%;
+    --primary-400-hsl: 316 calc(var(--saturation-factor, 1)*18%) 1.1999999999999993%;
 }
-.theme-dark .container-2IKOsH, .theme-dark .header-3xB4vB, .theme-dark .container-1um7CU {
-    background: var(--primary-645) !important;
-}
-.innerHeader-1cC3Fp:after {
-    content: none;
-}
+
 /*Primary*/
 .theme-dark .container-2cd8Mz *,
 .theme-dark .body-16rSsp *,
@@ -62,28 +57,44 @@
     --text-normal: white !important;
     --header-primary: white !important;
 }
+
 .theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
     --white-500: white !important;
 }
+
+.theme-dark .container-1um7CU,
+.theme-dark .container-2IKOsH,
+.theme-dark .header-3xB4vB {
+    background: transparent;
+}
+
+.theme-dark .header-3xB4vB *,
+.theme-dark .title-31SJ6t * {
+    --channel-icon: white;
+}
+
 .theme-dark .callContainer-HtHELf * {
     --white-500: white !important;
 }
+
 .theme-dark .channelTextArea-1FufC0 * {
     --text-normal: white;
 }
+
 .theme-dark .placeholder-1rCBhr {
     --channel-text-area-placeholder: white;
     opacity: .6;
 }
+
 .theme-dark .colorwaySelectorIcon {
     background-color: white;
 }
+
 .theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
     color: white;
 }
-.theme-dark .chat-2ZfjoI * {
-    --channel-icon: white !important;
-}
+/*End Primary*/
+
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
 .theme-dark .sidebar-1tnWFu *:not(.hasBanner-2IrYih *),
@@ -92,31 +103,40 @@
 .theme-dark .header-1XpmZs,
 .theme-dark .lookFilled-1H2Jvj.colorPrimary-2-Lusz {
     --white-500: white !important;
-    --channels-default: hsl(313.33333333333337, 100%, 90%) !important;
-    --channel-icon: hsl(313.33333333333337, 100%, 90%) !important;
+    --channels-default: hsl(313.33333333333337, calc(var(--saturation-factor, 1)*100%), 90%) !important;
+    --channel-icon: hsl(313.33333333333337, calc(var(--saturation-factor, 1)*100%), 90%) !important;
     --interactive-normal: var(--white-500);
+    --interactive-hover: var(--white-500);
     --interactive-active: var(--white-500);
 }
+
+.theme-dark .channelRow-4X_3fi {
+    background-color: var(--background-secondary);
+}
+
+.theme-dark .channelRow-4X_3fi * {
+    --channel-icon: white;
+}
+
 .theme-dark #app-mount .activity-2EQDZv,
 .theme-dark #app-mount .activity-2EQDZv * {
     --channels-default: var(--white-500) !important;
 }
+
 .theme-dark .nameTag-sc-gpq {
     --header-primary: white !important;
-    --header-secondary: hsl(313.33333333333337, 100%, 90%) !important;
+    --header-secondary: hsl(313.33333333333337, calc(var(--saturation-factor, 1)*100%), 90%) !important;
 }
-.theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
-.theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
-    --channel-icon: var(--interactive-active) !important;
-}
+
 .theme-dark .bannerVisible-Vkyg1I .headerContent-2SNbie {
     color: #fff;
 }
+
 .theme-dark .embedFull-1HGV2S {
     --text-normal: white;
 }
+/*End Secondary*/
+
 /*Tertiary*/
 .theme-dark .winButton-3UMjdg,
 .theme-dark .searchBar-2aylmZ *,
@@ -125,27 +145,34 @@
 .theme-dark .searchBarComponent-3N7dCG {
     --white-500: white !important;
 }
+
 .theme-dark [style="background-color: var(--background-secondary);"] {
     color: white;
 }
+
 .theme-dark .popout-TdhJ6Z > *,
 .theme-dark .colorwayHeaderTitle {
     --interactive-normal: white !important;
     --header-secondary: white !important;
 }
+
 .theme-dark .tooltip-33Jwqe {
     --text-normal: white !important;
 }
+/*End Tertiary*/
+
 /*Accent*/
 .selected-2r1Hvo *,
 .selected-1Drb7Z *,
-#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N,
+#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N:not(.buttonColor-3bP3fX),
 .colorDefault-2_rLdz.focused-3LIdPu,
 .row-1qtctT:hover,
 .colorwayInfoIcon,
 .colorwayCheckIcon {
     --white-500: white !important;
 }
+
 .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
     background-color: white !important;
 }
+/*End Accent*/
