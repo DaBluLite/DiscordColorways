@@ -1,33 +1,33 @@
-/*Automatically Generated - Colorway Creator V1.11 - Preset: Gradient Type 2*/
+/*Automatically Generated - Colorway Creator V1.12 - Preset: Gradient Type 2*/
 @import url(//dablulite.github.io/css-snippets/NoLightInDark/import.css);
 @import url(//dablulite.github.io/css-snippets/NitroThemesFix/import.css);
 :root {
-    --brand-100-hsl: 37 100% 127.20000000000002%;
-    --brand-130-hsl: 37 100% 123.60000000000001%;
-    --brand-160-hsl: 37 100% 120%;
-    --brand-200-hsl: 37 100% 116.4%;
-    --brand-230-hsl: 37 100% 112.80000000000001%;
-    --brand-260-hsl: 37 100% 109.2%;
-    --brand-300-hsl: 37 100% 105.60000000000001%;
-    --brand-330-hsl: 37 100% 102%;
-    --brand-345-hsl: 37 100% 98.4%;
-    --brand-360-hsl: 37 100% 94.80000000000001%;
-    --brand-400-hsl: 37 100% 91.2%;
-    --brand-430-hsl: 37 100% 87.60000000000001%;
-    --brand-460-hsl: 37 100% 84%;
-    --brand-500-hsl: 37 100% 80.4%;
-    --brand-530-hsl: 37 100% 76.80000000000001%;
-    --brand-560-hsl: 37 100% 73.2%;
-    --brand-600-hsl: 37 100% 69.60000000000001%;
-    --brand-630-hsl: 37 100% 66%;
-    --brand-660-hsl: 37 100% 62.400000000000006%;
-    --brand-700-hsl: 37 100% 58.800000000000004%;
-    --brand-730-hsl: 37 100% 55.2%;
-    --brand-760-hsl: 37 100% 51.60000000000001%;
-    --brand-800-hsl: 37 100% 48.00000000000001%;
-    --brand-830-hsl: 37 100% 44.400000000000006%;
-    --brand-860-hsl: 37 100% 40.800000000000004%;
-    --brand-900-hsl: 37 100% 37.2%;
+    --brand-100-hsl: 37 calc(var(--saturation-factor, 1)*100%) 127%;
+    --brand-130-hsl: 37 calc(var(--saturation-factor, 1)*100%) 123%;
+    --brand-160-hsl: 37 calc(var(--saturation-factor, 1)*100%) 120%;
+    --brand-200-hsl: 37 calc(var(--saturation-factor, 1)*100%) 116%;
+    --brand-230-hsl: 37 calc(var(--saturation-factor, 1)*100%) 112%;
+    --brand-260-hsl: 37 calc(var(--saturation-factor, 1)*100%) 109%;
+    --brand-300-hsl: 37 calc(var(--saturation-factor, 1)*100%) 105%;
+    --brand-330-hsl: 37 calc(var(--saturation-factor, 1)*100%) 102%;
+    --brand-345-hsl: 37 calc(var(--saturation-factor, 1)*100%) 98%;
+    --brand-360-hsl: 37 calc(var(--saturation-factor, 1)*100%) 94%;
+    --brand-400-hsl: 37 calc(var(--saturation-factor, 1)*100%) 91%;
+    --brand-430-hsl: 37 calc(var(--saturation-factor, 1)*100%) 87%;
+    --brand-460-hsl: 37 calc(var(--saturation-factor, 1)*100%) 84%;
+    --brand-500-hsl: 37 calc(var(--saturation-factor, 1)*100%) 80%;
+    --brand-530-hsl: 37 calc(var(--saturation-factor, 1)*100%) 76%;
+    --brand-560-hsl: 37 calc(var(--saturation-factor, 1)*100%) 73%;
+    --brand-600-hsl: 37 calc(var(--saturation-factor, 1)*100%) 69%;
+    --brand-630-hsl: 37 calc(var(--saturation-factor, 1)*100%) 66%;
+    --brand-660-hsl: 37 calc(var(--saturation-factor, 1)*100%) 62%;
+    --brand-700-hsl: 37 calc(var(--saturation-factor, 1)*100%) 58%;
+    --brand-730-hsl: 37 calc(var(--saturation-factor, 1)*100%) 55%;
+    --brand-760-hsl: 37 calc(var(--saturation-factor, 1)*100%) 51%;
+    --brand-800-hsl: 37 calc(var(--saturation-factor, 1)*100%) 48%;
+    --brand-830-hsl: 37 calc(var(--saturation-factor, 1)*100%) 44%;
+    --brand-860-hsl: 37 calc(var(--saturation-factor, 1)*100%) 40%;
+    --brand-900-hsl: 37 calc(var(--saturation-factor, 1)*100%) 37%;
 }
 :root {
     --bg-overlay-1: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-1)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-1))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
@@ -115,6 +115,6 @@
 }
 :root {
     --custom-theme-background: linear-gradient(48.17deg,
-        hsl(37 100% 80.4%) 11.21%,
-        hsl(204 66.2% 29%) 61.92%);
+        hsl(37 calc(var(--saturation-factor, 1)*100%) 80%) 11.21%,
+        hsl(204 calc(var(--saturation-factor, 1)*66%) 29%) 61.92%);
 }
