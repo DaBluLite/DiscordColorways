@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.7.0
+* @version 3.8.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -35,9 +35,9 @@ let defaultSettings = { activeColorway: "", activeColorwayID: "disablecolorway",
 let userSettings = {};
 let completeSettings = Object.assign(userSettings, defaultSettings, BdApi.loadData("DiscordColorways", "settings"));
 BdApi.saveData("DiscordColorways", "settings", completeSettings);
-let config = { info: { creatorVersion: "1.11" } };
+let config = { info: { creatorVersion: "1.12" } };
 
-const { Webpack, Webpack: { Filters }, React, DOM, Patcher } = BdApi;
+const { Webpack, Webpack: { Filters }, React, DOM } = BdApi;
 const [ThemeEditor, HomeIcon, Toast, TextBadge, InputDefault] = Webpack.getBulk.apply(null, [Filters.byProps("themeEditor"), Filters.byProps("homeIcon"), Filters.byProps("createToast"), Filters.byProps("textBadge"), Filters.byProps("inputDefault")].map(fn => ({ filter: fn })));
 //const Flux = Object.assign({}, Webpack.getByKeys("Store", "connectStores"), Webpack.getByKeys("useStateFromStores"));
 //const UserStore = Webpack.getByKeys("getCurrentUser");
@@ -49,22 +49,23 @@ const ButtonRedClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack
 const Swatch = Webpack.getByKeys("colorSwatch")['swatch'];
 const GuildsListItem = Webpack.getAllByKeys("listItem")[1].listItem;
 const GuildsListItemWrapper = Webpack.getAllByKeys("listItemWrapper")[1].listItemWrapper;
-const HeadingSemibold = Webpack.getAllByKeys("heading-lg/semibold")[2]['heading-lg/semibold'];
+//const HeadingSemibold = Webpack.getAllByKeys("heading-lg/semibold")[2]['heading-lg/semibold'];
 
 let nativeToast = (e, t) => Toast.showToast(Toast.createToast(e, t));
 let textInput = (e, t) => { let n = { type: "text", class: InputDefault['inputDefault'] }; if (e) n['placeholder'] = e; if (t) n['id'] = t; return createElement("input", n); };
 let modalBtn = (e, t) => { if (!t) t = {}; t['class'] = ButtonBrandClass + " colorwayModalBtn"; return createElement("button", t, e); }
 let modalBtnGray = (e, t) => { if (!t) t = {}; t['class'] = ButtonPrimaryClass + " colorwayModalBtn"; return createElement("button", t, e); }
-let modalBtnRed = (e, t) => { if (!t) t = {}; t['class'] = ButtonRedClass + " colorwayModalBtn"; return createElement("button", t, e); }
+let addColorwayAccesoryBtn = (e, t) => { if (!t) t = {}; t['class'] = ButtonPrimaryClass + " colorwayModalBtn addColorwayAccessory"; return createElement("button", t, e); }
+//let modalBtnRed = (e, t) => { if (!t) t = {}; t['class'] = ButtonRedClass + " colorwayModalBtn"; return createElement("button", t, e); }
 let modalBtnReact = (e, t) => { if (!t) t = {}; t['class'] = ButtonBrandClass + " colorwayModalBtn"; return React.createElement("button", t, e); }
 let modalBtnGrayReact = (e, t) => { if (!t) t = {}; t['class'] = ButtonPrimaryClass + " colorwayModalBtn"; return React.createElement("button", t, e); }
 let modalBtnRedReact = (e, t) => { if (!t) t = {}; t['class'] = ButtonRedClass + " colorwayModalBtn"; return React.createElement("button", t, e); }
 let modalHeader = (e) => createElement("h2", { class: H5 }, e);
-let modalHeading = (e) => createElement("h1", { class: HeadingSemibold+" customModalHeading" }, e);
+//let modalHeading = (e) => createElement("h1", { class: HeadingSemibold+" customModalHeading" }, e);
 let modalHeaderReact = (e) => React.createElement("h2", { class: H5 }, e);
-let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
+//let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
 //let alphaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, "Alpha");
-let versionBadge = (e, t) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, `${e} V${t}`);
+//let versionBadge = (e, t) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, `${e} V${t}`);
 let primaryBadge = (e) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" },e);
 //let unstableBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--red-430);" }, "Unstable");
 const bdSwitch = (e, t) => { t['class'] = "bd-switch"; this.switch = createElement("div", t, new DOMParser().parseFromString('<input type="checkbox" ' + (() => { if (e == true) return "checked" })() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[0], new DOMParser().parseFromString('<input type="checkbox" ' + (() => { if (e == true) return "checked" })() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[1]); return this.switch; }
@@ -72,7 +73,7 @@ const bdSwitch = (e, t) => { t['class'] = "bd-switch"; this.switch = createEleme
 const createElement = (type, props, ...children) => {
     if (typeof type === "function") return type({ ...props, children: [].concat() })
 
-    const node = document.createElement(type);
+    const node = document.createElement(type || "div");
 
     for (const key of Object.keys(props)) {
         if (key.indexOf("on") === 0) node.addEventListener(key.slice(2).toLowerCase(), props[key]);
@@ -120,7 +121,7 @@ function HexToHSL(H) {
     s = +(s * 100).toFixed(1);
     l = +(l * 100).toFixed(1);
 
-    return [h, s, l];
+    return [Math.round(h), Math.round(s), Math.round(l)];
 }
 
 const RGBToHSL = (r, g, b) => { r /= 255; g /= 255; b /= 255; const l = Math.max(r, g, b); const s = l - Math.min(r, g, b); const h = s ? l === r ? (g - b) / s : l === g ? 2 + (b - r) / s : 4 + (r - g) / s : 0; let finalH = 60 * h < 0 ? 60 * h + 360 : 60 * h; let finalS = 100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0); let finalL = (100 * (2 * l - s)) / 2; return [finalH, finalS, finalL]; };
@@ -202,7 +203,7 @@ class ColorwaySelector {
         let settingsBtn = createElement("div", {
             className: "discordColorway themeSelection-2u4ce0",
             id: "colorway-settings",
-            onclick: () => BdApi.showConfirmationModal("DiscordColorway Settings", [React.createElement("div", { className: "colorwaySettingsContainer" })])
+            onclick: () => BdApi.showConfirmationModal("DiscordColorways Settings", [React.createElement("div", { className: "colorwaySettingsContainer" })])
         }, createElement("div", { className: "colorwaySettingsIcon" }));
         BdApi.UI.createTooltip(settingsBtn, "Settings", {});
         colorwayArray.push(settingsBtn);
@@ -1176,10 +1177,116 @@ class ColorwayCreator {
         {{primary-600}} 11.21%,
         {{primary-630}} 61.92%);
 }`
+            },
+            {
+                name: "Hue Rotation",
+                developer: "DaBluLite",
+                developerID: "582170007505731594",
+                colors: ["accent","primary","secondary","tertiary"],
+                isGradient: false,
+                import: `:root {
+    --brand-100-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 112%;
+    --brand-130-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 108%;
+    --brand-160-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 105%;
+    --brand-200-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 101%;
+    --brand-230-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 97%;
+    --brand-260-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 94%;
+    --brand-300-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 90%;
+    --brand-330-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 87%;
+    --brand-345-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 83%;
+    --brand-360-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 79%;
+    --brand-400-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 76%;
+    --brand-430-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 72%;
+    --brand-460-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 69%;
+    --brand-500-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 65%;
+    --brand-530-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 61%;
+    --brand-560-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 58%;
+    --brand-600-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 54%;
+    --brand-630-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 51%;
+    --brand-660-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 47%;
+    --brand-700-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 43%;
+    --brand-730-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 40%;
+    --brand-760-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 36%;
+    --brand-800-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 33%;
+    --brand-830-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 29%;
+    --brand-860-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 25%;
+    --brand-900-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor,
+        1)*{{brand-500-hsl:1}}) 22%;
+    --primary-800-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*12%) 7%;
+    --primary-730-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*10%) 13%;
+    --primary-700-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*10%) 13%;
+    --primary-660-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*11%) 15%;
+    --primary-645-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*11%) 16%;
+    --primary-630-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*11%) 18%;
+    --primary-600-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*11%) 21%;
+    --primary-560-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*11%) 24%;
+    --primary-530-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*11%) 24%;
+    --primary-500-hsl: {{brand-500-hsl:0}} calc(var(--saturation-factor, 1)*11%) 24%;
+}`
+            },
+            {
+                name: "Accent Swap",
+                developer: "DaBluLite",
+                developerID: "582170007505731594",
+                colors: ["accent"],
+                isGradient: false,
+                import: `:root {
+    --brand-100-hsl: {{brand-100-hsl}};
+    --brand-130-hsl: {{brand-130-hsl}};
+    --brand-160-hsl: {{brand-160-hsl}};
+    --brand-200-hsl: {{brand-200-hsl}};
+    --brand-230-hsl: {{brand-230-hsl}};
+    --brand-260-hsl: {{brand-260-hsl}};
+    --brand-300-hsl: {{brand-300-hsl}};
+    --brand-330-hsl: {{brand-330-hsl}};
+    --brand-345-hsl: {{brand-345-hsl}};
+    --brand-360-hsl: {{brand-360-hsl}};
+    --brand-400-hsl: {{brand-400-hsl}};
+    --brand-430-hsl: {{brand-430-hsl}};
+    --brand-460-hsl: {{brand-460-hsl}};
+    --brand-500-hsl: {{brand-500-hsl}};
+    --brand-530-hsl: {{brand-530-hsl}};
+    --brand-560-hsl: {{brand-560-hsl}};
+    --brand-600-hsl: {{brand-600-hsl}};
+    --brand-630-hsl: {{brand-630-hsl}};
+    --brand-660-hsl: {{brand-660-hsl}};
+    --brand-700-hsl: {{brand-700-hsl}};
+    --brand-730-hsl: {{brand-730-hsl}};
+    --brand-760-hsl: {{brand-760-hsl}};
+    --brand-800-hsl: {{brand-800-hsl}};
+    --brand-830-hsl: {{brand-830-hsl}};
+    --brand-860-hsl: {{brand-860-hsl}};
+    --brand-900-hsl: {{brand-900-hsl}};
+}`
             }
         ]
 
-        let themePresets = createElement("div", { class: "colorwayPresetContainer collapsed" }, createElement("div", { class: "colorwayPresetContainerHeader colorwayPresetContainerItem", onclick: (e) => e.srcElement.parentElement.classList.toggle("collapsed") }, modalHeader("Theme Presets "), betaBadge(), new DOMParser().parseFromString(`<svg style="margin-left: auto;" class="expand-3Nh1P5 transition-30IQBn directionDown-2w0MZz" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" role="img"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path></svg>`, 'text/html').body.children[0]) );
+        let themePresets = createElement("div", { class: "colorwayPresetContainer collapsed" }, createElement("div", { class: "colorwayPresetContainerHeader colorwayPresetContainerItem", onclick: (e) => e.srcElement.parentElement.classList.toggle("collapsed") }, modalHeader("Theme Presets "), new DOMParser().parseFromString(`<svg style="margin-left: auto;" class="expand-3Nh1P5 transition-30IQBn directionDown-2w0MZz" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" role="img"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path></svg>`, 'text/html').body.children[0]) );
 
         themePresetsArray.forEach(e => {
             themePresets.append(createElement("div", {
@@ -1224,7 +1331,7 @@ class ColorwayCreator {
                 document.querySelector(".colorwayPreview-channels").style = "background: var(--secondary); --secondary: " + backgroundSecondary + ";";
                 document.querySelector(".colorwayPreview-userArea").style = "background: var(--secondaryalt); --secondaryalt: " + secondaryAlt + ";";
                 secondaryTextColor = (Math.round(((parseInt(splitRGB(e.path[0].parentElement.style.backgroundColor)[0]) * 299) + (parseInt(splitRGB(e.path[0].parentElement.style.backgroundColor)[1]) * 587) + (parseInt(splitRGB(e.path[0].parentElement.style.backgroundColor)[2]) * 114)) / 1000) > 125) ? 'black' : 'white';
-                RGBToHSL(splitRGB(e.path[0].parentElement.style.backgroundColor)[0], splitRGB(e.path[0].parentElement.style.backgroundColor)[1], splitRGB(e.path[0].parentElement.style.backgroundColor)[2])[0] == 0 ? secondaryMuted = 'gray' : (secondaryTextColor == 'white' ? secondaryMuted = "hsl(" + RGBToHSL(splitRGB(e.path[0].parentElement.style.backgroundColor)[0], splitRGB(e.path[0].parentElement.style.backgroundColor)[1], splitRGB(e.path[0].parentElement.style.backgroundColor)[2])[0] + ", 100%, 90%)" : secondaryMuted = "hsl(" + RGBToHSL(splitRGB(e.path[0].parentElement.style.backgroundColor)[0], splitRGB(e.path[0].parentElement.style.backgroundColor)[1], splitRGB(e.path[0].parentElement.style.backgroundColor)[2])[0] + ", 100%, 20%)")
+                RGBToHSL(splitRGB(e.path[0].parentElement.style.backgroundColor)[0], splitRGB(e.path[0].parentElement.style.backgroundColor)[1], splitRGB(e.path[0].parentElement.style.backgroundColor)[2])[0] == 0 ? secondaryMuted = 'gray' : (secondaryTextColor == 'white' ? secondaryMuted = "hsl(" + RGBToHSL(splitRGB(e.path[0].parentElement.style.backgroundColor)[0], splitRGB(e.path[0].parentElement.style.backgroundColor)[1], splitRGB(e.path[0].parentElement.style.backgroundColor)[2])[0] + ", calc(var(--saturation-factor, 1)*100%), 90%)" : secondaryMuted = "hsl(" + RGBToHSL(splitRGB(e.path[0].parentElement.style.backgroundColor)[0], splitRGB(e.path[0].parentElement.style.backgroundColor)[1], splitRGB(e.path[0].parentElement.style.backgroundColor)[2])[0] + ", calc(var(--saturation-factor, 1)*100%), 20%)")
                 e.path[0].parentElement.querySelector("span").style = "color: " + secondaryTextColor + ";";
                 e.path[0].parentElement.querySelector("svg").style = "color: " + secondaryTextColor + ";";
                 stageOne.style = "--colorway-foreground-primary: " + primaryTextColor + "; --colorway-foreground-secondary: " + secondaryTextColor + "; --colorway-foreground-tertiary: " + tertiaryTextColor + "; --colorway-foreground-accent: " + accentTextColor + ";"
@@ -1336,21 +1443,7 @@ class ColorwayCreator {
                     createElement("div", {
                         class: "colorwayPreview-chat",
                         style: "background: " + backgroundPrimary + ";"
-                    },
-                        createElement("div", {
-                            class: "colorwayPreview-channels",
-                            style: "background: " + backgroundSecondary + ";"
-                        },
-                            createElement("div", {
-                                class: "colorwayPreview-userArea",
-                                style: "background: " + secondaryAlt + ";"
-                            })
-                        ),
-                        createElement("div", {
-                            class: "colorwayPreview-chatbox",
-                            style: "background: var(--lighter-gradient,--lighter); --lighter: " + primaryLighter + ";"
-                        })
-                    ),
+                    }, createElement("div", { class: "colorwayPreview-channels", style: "background: " + backgroundSecondary + ";" }, createElement("div", { class: "colorwayPreview-userArea", style: "background: " + secondaryAlt + ";" }) ), createElement("div", { class: "colorwayPreview-chatbox", style: "background: var(--lighter-gradient,--lighter); --lighter: " + primaryLighter + ";" }) ),
                     createElement("div", {
                         class: "colorwayPreview-guildsWrapper"
                     },
@@ -1372,15 +1465,7 @@ class ColorwayCreator {
                     )
                 )),
             createElement("div", { class: "colorwayModalFooter footer-IubaaS" },
-                modalBtnGray("Cancel", {
-                    onclick: (e) => {
-                        try {
-                            e.path[6].lastChild.querySelector('button[type="button"]').click();
-                        } catch (e) {
-
-                        }
-                    }
-                }),
+                modalBtnGray("Cancel", {onclick: (e) => {try {e.path[6].lastChild.querySelector('button[type="button"]').click()} catch (e) {}}}),
                 modalBtnGray("Enter Colorway ID", {
                     onclick: (e) => {
                         BdApi.showConfirmationModal("Enter Colorway ID:", React.createElement("div", {
@@ -1410,16 +1495,8 @@ class ColorwayCreator {
                                         } else {
                                             if (e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.length < 63) {
                                                 let colorwayValueArray = e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value.split(/(\w\w)/g).filter(p => !!p).map(c => String.fromCharCode(parseInt(c, 16))).join("").split(",");
-                                                try {
-                                                    e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click();
-                                                } catch (e) {
-
-                                                }
-                                                let changeColors = new UIEvent("change", {
-                                                    "view": window,
-                                                    "bubbles": true,
-                                                    "cancelable": true
-                                                });
+                                                try {e.target.parentElement.parentElement.parentElement.parentElement.lastChild.querySelector('button[type="button"]').click()} catch (e) {}
+                                                let changeColors = new UIEvent("change", { "view": window, "bubbles": true, "cancelable": true });
                                                 try {
                                                     document.getElementById("colorwayCreatorColorpicker_primary").value = colorwayValueArray[1];
                                                     document.getElementById("colorwayCreatorColorpicker_secondary").value = colorwayValueArray[2];
@@ -1430,9 +1507,7 @@ class ColorwayCreator {
                                                     document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
                                                     document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
                                                     document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
-                                                } catch (e) {
-
-                                                }
+                                                } catch (e) {}
                                             } else {
                                                 e.target.parentElement.parentElement.querySelector(`input[type="text"]`).value = '';
                                                 e.target.parentElement.parentElement.querySelector(`input[type="text"]`).placeholder = "Invalid Colorway ID";
@@ -1445,7 +1520,7 @@ class ColorwayCreator {
                     }
                 }),
                 modalBtnGray("Copy Current Colors", {
-                    onclick: (e) => {
+                    onclick: () => {
                         let checkColorType = (color) => {
                             if (color.includes("#"))
                                 return "hex";
@@ -1478,20 +1553,10 @@ class ColorwayCreator {
                             } else if (300 <= h && h < 360) {
                                 r = c; g = 0; b = x;
                             }
-                            // Having obtained RGB, convert channels to hex
                             r = Math.round((r + m) * 255).toString(16);
                             g = Math.round((g + m) * 255).toString(16);
                             b = Math.round((b + m) * 255).toString(16);
-
-                            // Prepend 0s, if necessary
-                            if (r.length == 1)
-                                r = "0" + r;
-                            if (g.length == 1)
-                                g = "0" + g;
-                            if (b.length == 1)
-                                b = "0" + b;
-
-                            return "#" + r + g + b;
+                            return "#" + (r.length == 1 ? r = "0" + r : r) + (g.length == 1 ? g = "0" + g : g) + (b.length == 1 ? b = "0" + b : b);
                         }
                         const changeColors = new UIEvent("change", { "view": window, "bubbles": true, "cancelable": true });
                         try {
@@ -1571,58 +1636,53 @@ class ColorwayCreator {
                             document.getElementById("colorwayCreatorColorpicker_secondary").dispatchEvent(changeColors);
                             document.getElementById("colorwayCreatorColorpicker_tertiary").dispatchEvent(changeColors);
                             document.getElementById("colorwayCreatorColorpicker_accent").dispatchEvent(changeColors);
-                        } catch (e) {
-
-                        }
+                        } catch (e) {}
                     }
                 }),
                 modalBtn("Finish", {
                     onclick: (e) => {
-                        if (!document.getElementById("discordColorwayCreator_name").value) {
-                            document.getElementById("discordColorwayCreator_name").value = "defaultColorwayName";
-                        }
                         let customColorwayCSS = `/*Automatically Generated - Colorway Creator V${config.info.creatorVersion}*/
 :root {
-    --brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 13)}%;
-    --brand-130-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 12)}%;
-    --brand-160-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 11)}%;
-    --brand-200-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 10)}%;
-    --brand-230-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 9)}%;
-    --brand-260-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 8)}%;
-    --brand-300-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 7)}%;
-    --brand-330-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 6)}%;
-    --brand-345-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 5)}%;
-    --brand-360-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 4)}%;
-    --brand-400-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 3)}%;
-    --brand-430-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 2)}%;
-    --brand-460-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + 3.6}%;
-    --brand-500-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2]}%;
-    --brand-530-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - 3.6}%;
-    --brand-560-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 2)}%;
-    --brand-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 3)}%;
-    --brand-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 4)}%;
-    --brand-660-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 5)}%;
-    --brand-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 6)}%;
-    --brand-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 7)}%;
-    --brand-760-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 8)}%;
-    --brand-800-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 9)}%;
-    --brand-830-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 10)}%;
-    --brand-860-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 11)}%;
-    --brand-900-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 12)}%;
+    --brand-100-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 13))}%;
+    --brand-130-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 12))}%;
+    --brand-160-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 11))}%;
+    --brand-200-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 10))}%;
+    --brand-230-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 9))}%;
+    --brand-260-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 8))}%;
+    --brand-300-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 7))}%;
+    --brand-330-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 6))}%;
+    --brand-345-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 5))}%;
+    --brand-360-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 4))}%;
+    --brand-400-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 3))}%;
+    --brand-430-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + (3.6 * 2))}%;
+    --brand-460-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] + 3.6)}%;
+    --brand-500-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2]}%;
+    --brand-530-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - 3.6)}%;
+    --brand-560-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 2))}%;
+    --brand-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 3))}%;
+    --brand-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 4))}%;
+    --brand-660-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 5))}%;
+    --brand-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 6))}%;
+    --brand-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 7))}%;
+    --brand-760-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 8))}%;
+    --brand-800-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 9))}%;
+    --brand-830-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 10))}%;
+    --brand-860-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 11))}%;
+    --brand-900-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[1]}%) ${Math.round(HexToHSL(document.getElementById("colorwayCreatorColorpicker_accent").value)[2] - (3.6 * 12))}%;
     --mention-foreground: ${accentTextColor} !important;
-    --primary-800-hsl: ${backgroundFloating[0]} ${backgroundFloating[1]}% ${backgroundFloating[2]}%;
-    --primary-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
-    --primary-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
-    --primary-660-hsl: ${HexToHSL(secondaryAlt)[0]} ${HexToHSL(secondaryAlt)[1]}% ${HexToHSL(secondaryAlt)[2]}%;
-    --primary-645-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2] - 5}%;
-    --primary-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[2]}%;
-    --primary-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}% ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2]}%;
-    --primary-560-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
-    --primary-530-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
-    --primary-500-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2]}%;
-    --primary-460: gray;
-    --primary-430-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 7.2}%;
-    --primary-400-hsl: ${HexToHSL(primaryLighter)[0]} ${HexToHSL(primaryLighter)[1]}% ${HexToHSL(primaryLighter)[2] - 10.8}%;
+    --primary-800-hsl: ${backgroundFloating[0]} calc(var(--saturation-factor, 1)*${backgroundFloating[1]}%) ${backgroundFloating[2]}%;
+    --primary-730-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}%) ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
+    --primary-700-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[1]}%) ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_tertiary").value)[2]}%;
+    --primary-660-hsl: ${HexToHSL(secondaryAlt)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(secondaryAlt)[1]}%) ${HexToHSL(secondaryAlt)[2]}%;
+    --primary-645-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}%) ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2] - 5}%;
+    --primary-630-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[1]}%) ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_secondary").value)[2]}%;
+    --primary-600-hsl: ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[1]}%) ${HexToHSL(document.getElementById("colorwayCreatorColorpicker_primary").value)[2]}%;
+    --primary-560-hsl: ${HexToHSL(primaryLighter)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(primaryLighter)[1]}%) ${HexToHSL(primaryLighter)[2]}%;
+    --primary-530-hsl: ${HexToHSL(primaryLighter)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(primaryLighter)[1]}%) ${HexToHSL(primaryLighter)[2]}%;
+    --primary-500-hsl: ${HexToHSL(primaryLighter)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(primaryLighter)[1]}%) ${HexToHSL(primaryLighter)[2]}%;
+    --primary-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50%;
+    --primary-430-hsl: ${HexToHSL(primaryLighter)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(primaryLighter)[1]}%) ${HexToHSL(primaryLighter)[2] - 7.2}%;
+    --primary-400-hsl: ${HexToHSL(primaryLighter)[0]} calc(var(--saturation-factor, 1)*${HexToHSL(primaryLighter)[1]}%) ${HexToHSL(primaryLighter)[2] - 10.8}%;
 }
 
 /*Primary*/
@@ -1760,7 +1820,7 @@ class ColorwayCreator {
 }
 /*End Accent*/`
                         customColorway = {
-                            name: document.getElementById("discordColorwayCreator_name").value,
+                            name: document.getElementById("discordColorwayCreator_name").value || "Colorway",
                             primary: {
                                 background: document.getElementById("colorwayCreatorColorpicker_primary").value,
                                 foreground: primaryTextColor
@@ -1901,26 +1961,24 @@ class ColorwayCreator {
                                     e.import.split("\n").forEach(ln => {
                                         if (ln.includes("{{")) {
                                             if(ln.split("{{")[1].split("}}")[0].includes(":")) {
-                                                if (arrayContains(ln.split("{{")[1].split("}}")[0].split(":")[0], colorVariables) != -1) {
-                                                    preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", ln.split("{{")[1].split("}}")[0].split(":")[1] == 2 ? customColorwayCSS.split(ln.split("{{")[1].split("}}")[0].split(":")[0]+": ")[1].split(" ")[ln.split("{{")[1].split("}}")[0].split(":")[1]].split(";")[0]:customColorwayCSS.split(ln.split("{{")[1].split("}}")[0].split(":")[0]+": ")[1].split(" ")[ln.split("{{")[1].split("}}")[0].split(":")[1]]) + "\n";
+                                                if(ln.split("{{")[1].split("}}")[0].split(":")[1] == "1") {
+                                                    arrayContains(ln.split("{{")[1].split("}}")[0].split(":")[0], colorVariables) != -1 ?
+                                                    preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", customColorwayCSS.split(ln.split("{{")[1].split("}}")[0].split(":")[0]+": ")[1].split(" ")[2].split("*")[1].split(")")[0]) + "\n":
+                                                    preseImport += ln + "\n"
                                                 } else {
-                                                    preseImport += ln + "\n";
+                                                    arrayContains(ln.split("{{")[1].split("}}")[0].split(":")[0], colorVariables) != -1 ?
+                                                    preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", ln.split("{{")[1].split("}}")[0].split(":")[1] == 2 ?
+                                                        customColorwayCSS.split(ln.split("{{")[1].split("}}")[0].split(":")[0]+": ")[1].split(" ")[3].split(";")[0]:
+                                                        customColorwayCSS.split(ln.split("{{")[1].split("}}")[0].split(":")[0]+": ")[1].split(" ")[ln.split("{{")[1].split("}}")[0].split(":")[1]]) + "\n":
+                                                    preseImport += ln + "\n"
                                                 }
-                                            } else if(ln.split("{{")[1].split("}}")[0].includes(":") == false) {
-                                                if (arrayContains(ln.split("{{")[1].split("}}")[0], colorVariables) != -1) {
-                                                    preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", ln.split("{{")[1].split("}}")[0].includes("-hsl") ? customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] : "hsl(" + customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] + ")") + "\n";
-                                                } else {
-                                                    preseImport += ln + "\n";
-                                                }
-                                            } else {
-                                                preseImport += ln + "\n";
                                             }
-                                        } else {
-                                            preseImport += ln + "\n";
-                                        }
+                                            else if(ln.split("{{")[1].split("}}")[0].includes(":") == false) arrayContains(ln.split("{{")[1].split("}}")[0], colorVariables) != -1 ? preseImport += ln.replace("{{" + ln.split("{{")[1].split("}}")[0] + "}}", ln.split("{{")[1].split("}}")[0].includes("-hsl") ? customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] : "hsl(" + customColorwayCSS.split((ln.split("{{")[1].split("}}")[0].includes("-hsl") ? ln.split("{{")[1].split("}}")[0] : ln.split("{{")[1].split("}}")[0] + "-hsl") + ": ")[1].split(";")[0] + ")") + "\n" : preseImport += ln + "\n";
+                                            else preseImport += ln + "\n";
+                                        } else preseImport += ln + "\n";
                                     })
                                     let presetCustomColorway = {
-                                        name: e.isGradient==true ? document.getElementById("discordColorwayCreator_name").value + " (" + e.name + ")" : document.getElementById("discordColorwayCreator_name").value + ": Made for " + e.name,
+                                        name: e.isGradient==true ? (document.getElementById("discordColorwayCreator_name").value || "Colorway") + " (" + e.name + ")" : (document.getElementById("discordColorwayCreator_name").value || "Colorway") + ": Made for " + e.name,
                                         primary: {
                                             background: document.getElementById("colorwayCreatorColorpicker_primary").value,
                                             foreground: primaryTextColor
@@ -2020,9 +2078,6 @@ module.exports = class DiscordColorways {
         this._config = config;
     }
     css = `
-    .sparkles-32w-Af {
-        z-index: 50;
-    }
     .choiceContainer {
         display: flex;
         flex-direction: row;
@@ -2478,36 +2533,44 @@ module.exports = class DiscordColorways {
         line-height: 16px;
     }
     .colorwayCodeblock::-webkit-scrollbar,
+    .colorwayPresetContainer::-webkit-scrollbar,
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar {
-        width: 16px;
-        height: 16px;
+        width: 8px;
+        height: 8px;
     }
     .colorwayCodeblock::-webkit-scrollbar-corner,
+    .colorwayPresetContainer::-webkit-scrollbar-corner,
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-corner {
         background-color: transparent;
     }
     .colorwayCodeblock::-webkit-scrollbar-thumb,
+    .colorwayPresetContainer::-webkit-scrollbar-thumb,
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-thumb {
         background-color: var(--scrollbar-auto-thumb);
         min-height: 40px;
     }
     .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track,
+    .colorwayPresetContainer::-webkit-scrollbar-track,
+    .colorwayPresetContainer::-webkit-scrollbar-thumb,
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-thumb {
-        border: 4px solid transparent;
+        border: 2px solid transparent;
         background-clip: padding-box;
         border-radius: 8px;
     }
     .scroller-kQBbkU::-webkit-scrollbar-track,
+    .colorwayPresetContainer::-webkit-scrollbar-track,
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-track {
         margin-bottom: 8px;
     }
     .colorwayCodeblock::-webkit-scrollbar-thumb, .colorwayCodeblock::-webkit-scrollbar-track,
+    .colorwayPresetContainer::-webkit-scrollbar-track,
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-track {
-        border: 4px solid transparent;
+        border: 2px solid transparent;
         background-clip: padding-box;
         border-radius: 8px;
     }
     .colorwayCodeblock::-webkit-scrollbar-track,
+    .colorwayPresetContainer::-webkit-scrollbar-track,
     .root-1CAIjD:has(.colorwayInfoModalDetails, .colorwaySettingsWrapper, .colorwayCreationModal)::-webkit-scrollbar-track {
         background-color: var(--scrollbar-auto-track);
     }
@@ -2642,6 +2705,8 @@ module.exports = class DiscordColorways {
         background-color: var(--background-secondary);
         box-sizing: border-box;
         color: var(--header-secondary);
+        max-height: 250px;
+        overflow: hidden overlay;
     }
     .colorwayPreset * {
         pointer-events: none;
@@ -2857,60 +2922,23 @@ module.exports = class DiscordColorways {
     .root-1CAIjD:has(.colorwaySelectorModal) > .content-131fQL {
         padding-top: 16px;
     }
+    .addColorwayAccessory {
+        margin: 2px 0;
+    }
     `;
     load() { }
     start() {
         colorwayList = fetch("https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/index.json").then(res => res.json()).then(colors => colorwayList = colors.colorways);
         document.head.append(createElement("style", { id: "DiscordColorways" }, this.css));
-
-        for (const className in ElementInjections) {
-            const elements = Array.from(document.body.getElementsByClassName(className));
-
-            if (elements.length) {
-                ElementInjections[className](elements);
-            }
-        }
-        document.querySelectorAll("code.inline").forEach(el => {
-            if (el.innerText.includes("colorway:")) {
-                el.parentElement.append(modalBtnGray("Add This Colorway", {
-                    onclick: () => {
-                        BdApi.showConfirmationModal('Create Colorway', React.createElement('div', { class: 'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1] }))
-                    }
-                }))
-            }
-        })
-        try {
-            if (document.getElementById("activeColorway")) {
-                document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway;
-            } else {
-                document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway));
-            }
-        } catch (e) {
-            console.log("No active colorway, moving on");
-        }
+        for (const className in ElementInjections) {if (Array.from(document.body.getElementsByClassName(className)).length) ElementInjections[className](Array.from(document.body.getElementsByClassName(className)))}
+        document.querySelectorAll("code.inline").forEach(el => {if (el.innerText.includes("colorway:") && el.innerText.length == 71 && !el.parentElement.querySelector(".addColorwayAccessory")) el.parentElement.append(addColorwayAccesoryBtn("Add this Colorway", {onclick: () => BdApi.showConfirmationModal('Create Colorway', React.createElement('div', { class: 'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1] }))}))})
+        try {document.getElementById("activeColorway") ? document.getElementById("activeColorway").innerHTML = BdApi.loadData("DiscordColorways", "settings").activeColorway : document.head.append(createElement("style", { id: "activeColorway" }, BdApi.loadData("DiscordColorways", "settings").activeColorway))} catch (e) {console.log("No active colorway, moving on")}
     }
     observer({ addedNodes }) {
         for (const added of addedNodes) {
             if (added.nodeType === Node.TEXT_NODE) continue;
-            if (added.outerHTML.includes(`<code class="inline">`)) {
-                added.querySelectorAll("code.inline").forEach(el => {
-                    if (el.innerText.includes("colorway:")) {
-                        el.parentElement.append(modalBtnGray("Add This Colorway", {
-                            onclick: () => {
-                                BdApi.showConfirmationModal('Create Colorway', React.createElement('div', { class: 'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1] }))
-                            }
-                        }))
-                    }
-                })
-            }
-
-            for (const className in ElementInjections) {
-                const elements = Array.from(added.getElementsByClassName(className));
-
-                if (elements.length) {
-                    ElementInjections[className](elements);
-                }
-            }
+            if (added.outerHTML.includes(`<code class="inline">`)) added.querySelectorAll("code.inline").forEach(el => {if (el.innerText.includes("colorway:") && el.innerText.length == 71 && !el.parentElement.querySelector(".addColorwayAccessory")) el.parentElement.append(addColorwayAccesoryBtn("Add this Colorway", {onclick: () => BdApi.showConfirmationModal('Create Colorway', React.createElement('div', { class: 'colorwayCreationModal data-colorway-id data-colorway-id-' + el.innerText.split(":")[1] }))}))})
+            for (const className in ElementInjections) {if (Array.from(added.getElementsByClassName(className)).length) ElementInjections[className](Array.from(added.getElementsByClassName(className)))}
         }
     }
     stop() {
