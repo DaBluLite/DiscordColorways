@@ -1,52 +1,47 @@
-/*Automatically Generated - Colorway Creator V1.7*/
+/*Automatically Generated - Colorway Creator V1.12*/
 :root {
-    --brand-100-hsl: 235 85.6% 17.9%;
-    --brand-140-hsl: 235 85.6% 21.5%;
-    --brand-160-hsl: 235 85.6% 25.1%;
-    --brand-200-hsl: 235 85.6% 28.700000000000003%;
-    --brand-230-hsl: 235 85.6% 32.300000000000004%;
-    --brand-260-hsl: 235 85.6% 35.900000000000006%;
-    --brand-300-hsl: 235 85.6% 39.5%;
-    --brand-330-hsl: 235 85.6% 43.1%;
-    --brand-345-hsl: 235 85.6% 46.7%;
-    --brand-360-hsl: 235 85.6% 50.300000000000004%;
-    --brand-400-hsl: 235 85.6% 53.900000000000006%;
-    --brand-430-hsl: 235 85.6% 57.5%;
-    --brand-460-hsl: 235 85.6% 61.1%;
-    --brand-500-hsl: 235 85.6% 64.7%;
-    --brand-530-hsl: 235 85.6% 68.3%;
-    --brand-560-hsl: 235 85.6% 71.9%;
-    --brand-600-hsl: 235 85.6% 75.5%;
-    --brand-630-hsl: 235 85.6% 79.10000000000001%;
-    --brand-660-hsl: 235 85.6% 82.7%;
-    --brand-700-hsl: 235 85.6% 86.30000000000001%;
-    --brand-730-hsl: 235 85.6% 89.9%;
-    --brand-760-hsl: 235 85.6% 93.5%;
-    --brand-800-hsl: 235 85.6% 97.1%;
-    --brand-830-hsl: 235 85.6% 100.7%;
-    --brand-860-hsl: 235 85.6% 104.30000000000001%;
-    --brand-900-hsl: 235 85.6% 107.9%;
-    --primary-460: gray;
+    --brand-100-hsl: 235 calc(var(--saturation-factor, 1)*86%) 112%;
+    --brand-130-hsl: 235 calc(var(--saturation-factor, 1)*86%) 108%;
+    --brand-160-hsl: 235 calc(var(--saturation-factor, 1)*86%) 105%;
+    --brand-200-hsl: 235 calc(var(--saturation-factor, 1)*86%) 101%;
+    --brand-230-hsl: 235 calc(var(--saturation-factor, 1)*86%) 97%;
+    --brand-260-hsl: 235 calc(var(--saturation-factor, 1)*86%) 94%;
+    --brand-300-hsl: 235 calc(var(--saturation-factor, 1)*86%) 90%;
+    --brand-330-hsl: 235 calc(var(--saturation-factor, 1)*86%) 87%;
+    --brand-345-hsl: 235 calc(var(--saturation-factor, 1)*86%) 83%;
+    --brand-360-hsl: 235 calc(var(--saturation-factor, 1)*86%) 79%;
+    --brand-400-hsl: 235 calc(var(--saturation-factor, 1)*86%) 76%;
+    --brand-430-hsl: 235 calc(var(--saturation-factor, 1)*86%) 72%;
+    --brand-460-hsl: 235 calc(var(--saturation-factor, 1)*86%) 69%;
+    --brand-500-hsl: 235 calc(var(--saturation-factor, 1)*86%) 65%;
+    --brand-530-hsl: 235 calc(var(--saturation-factor, 1)*86%) 61%;
+    --brand-560-hsl: 235 calc(var(--saturation-factor, 1)*86%) 58%;
+    --brand-600-hsl: 235 calc(var(--saturation-factor, 1)*86%) 54%;
+    --brand-630-hsl: 235 calc(var(--saturation-factor, 1)*86%) 51%;
+    --brand-660-hsl: 235 calc(var(--saturation-factor, 1)*86%) 47%;
+    --brand-700-hsl: 235 calc(var(--saturation-factor, 1)*86%) 43%;
+    --brand-730-hsl: 235 calc(var(--saturation-factor, 1)*86%) 40%;
+    --brand-760-hsl: 235 calc(var(--saturation-factor, 1)*86%) 36%;
+    --brand-800-hsl: 235 calc(var(--saturation-factor, 1)*86%) 33%;
+    --brand-830-hsl: 235 calc(var(--saturation-factor, 1)*86%) 29%;
+    --brand-860-hsl: 235 calc(var(--saturation-factor, 1)*86%) 25%;
+    --brand-900-hsl: 235 calc(var(--saturation-factor, 1)*86%) 22%;
     --mention-foreground: white !important;
-    --primary-800-hsl: 224 60% 4.9%;
-    --primary-730-hsl: 226 56.8% 7.3%;
-    --primary-700-hsl: 226 56.8% 7.3%;
-    --primary-660-hsl: 237 44.3% 15.5%;
-    --primary-645-hsl: 238 43.3% 18.5%;
-    --primary-630-hsl: 236 44% 19.6%;
-    --primary-600-hsl: 238 43.3% 23.5%;
-    --primary-560-hsl: 237 44.1% 28%;
-    --primary-530-hsl: 237 44.1% 28%;
-    --primary-500-hsl: 237 44.1% 28%;
-    --primary-430-hsl: 237 44.1% 20.8%;
-    --primary-400-hsl: 237 44.1% 17.2%;
+    --primary-800-hsl: 224 calc(var(--saturation-factor, 1)*60%) 5%;
+    --primary-730-hsl: 226 calc(var(--saturation-factor, 1)*57%) 7%;
+    --primary-700-hsl: 226 calc(var(--saturation-factor, 1)*57%) 7%;
+    --primary-660-hsl: 237 calc(var(--saturation-factor, 1)*44%) 16%;
+    --primary-645-hsl: 238 calc(var(--saturation-factor, 1)*43%) 19%;
+    --primary-630-hsl: 236 calc(var(--saturation-factor, 1)*44%) 20%;
+    --primary-600-hsl: 238 calc(var(--saturation-factor, 1)*43%) 24%;
+    --primary-560-hsl: 237 calc(var(--saturation-factor, 1)*44%) 28%;
+    --primary-530-hsl: 237 calc(var(--saturation-factor, 1)*44%) 28%;
+    --primary-500-hsl: 237 calc(var(--saturation-factor, 1)*44%) 28%;
+    --primary-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50%;
+    --primary-430-hsl: 237 calc(var(--saturation-factor, 1)*44%) 20.8%;
+    --primary-400-hsl: 237 calc(var(--saturation-factor, 1)*44%) 17.2%;
 }
-.theme-dark .container-2IKOsH, .theme-dark .header-3xB4vB, .theme-dark .container-1um7CU {
-    background: var(--primary-645) !important;
-}
-.innerHeader-1cC3Fp:after {
-    content: none;
-}
+
 /*Primary*/
 .theme-dark .container-2cd8Mz *,
 .theme-dark .body-16rSsp *,
@@ -62,28 +57,44 @@
     --text-normal: white !important;
     --header-primary: white !important;
 }
+
 .theme-dark .contentRegionScroller-2_GT_N *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
     --white-500: white !important;
 }
+
+.theme-dark .container-1um7CU,
+.theme-dark .container-2IKOsH,
+.theme-dark .header-3xB4vB {
+    background: transparent;
+}
+
+.theme-dark .header-3xB4vB *,
+.theme-dark .title-31SJ6t * {
+    --channel-icon: white;
+}
+
 .theme-dark .callContainer-HtHELf * {
     --white-500: white !important;
 }
+
 .theme-dark .channelTextArea-1FufC0 * {
     --text-normal: white;
 }
+
 .theme-dark .placeholder-1rCBhr {
     --channel-text-area-placeholder: white;
     opacity: .6;
 }
+
 .theme-dark .colorwaySelectorIcon {
     background-color: white;
 }
+
 .theme-dark .root-1CAIjD > .header-1ffhsl > h1 {
     color: white;
 }
-.theme-dark .chat-2ZfjoI * {
-    --channel-icon: white !important;
-}
+/*End Primary*/
+
 /*Secondary*/
 .theme-dark .wrapper-2RrXDg *,
 .theme-dark .sidebar-1tnWFu *:not(.hasBanner-2IrYih *),
@@ -92,31 +103,40 @@
 .theme-dark .header-1XpmZs,
 .theme-dark .lookFilled-1H2Jvj.colorPrimary-2-Lusz {
     --white-500: white !important;
-    --channels-default: hsl(235.9090909090909, 100%, 90%) !important;
-    --channel-icon: hsl(235.9090909090909, 100%, 90%) !important;
+    --channels-default: hsl(235.9090909090909, calc(var(--saturation-factor, 1)*100%), 90%) !important;
+    --channel-icon: hsl(235.9090909090909, calc(var(--saturation-factor, 1)*100%), 90%) !important;
     --interactive-normal: var(--white-500);
+    --interactive-hover: var(--white-500);
     --interactive-active: var(--white-500);
 }
+
+.theme-dark .channelRow-4X_3fi {
+    background-color: var(--background-secondary);
+}
+
+.theme-dark .channelRow-4X_3fi * {
+    --channel-icon: white;
+}
+
 .theme-dark #app-mount .activity-2EQDZv,
 .theme-dark #app-mount .activity-2EQDZv * {
     --channels-default: var(--white-500) !important;
 }
+
 .theme-dark .nameTag-sc-gpq {
     --header-primary: white !important;
-    --header-secondary: hsl(235.9090909090909, 100%, 90%) !important;
+    --header-secondary: hsl(235.9090909090909, calc(var(--saturation-factor, 1)*100%), 90%) !important;
 }
-.theme-dark #app-mount .modeSelected-3DmyhH .icon-2W8DHg,
-.theme-dark #app-mount .modeSelected-3DmyhH:hover .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe .icon-2W8DHg,
-.theme-dark #app-mount .modeUnread-3Cxepe:hover .icon-2W8DHg {
-    --channel-icon: var(--interactive-active) !important;
-}
+
 .theme-dark .bannerVisible-Vkyg1I .headerContent-2SNbie {
     color: #fff;
 }
+
 .theme-dark .embedFull-1HGV2S {
     --text-normal: white;
 }
+/*End Secondary*/
+
 /*Tertiary*/
 .theme-dark .winButton-3UMjdg,
 .theme-dark .searchBar-2aylmZ *,
@@ -125,27 +145,34 @@
 .theme-dark .searchBarComponent-3N7dCG {
     --white-500: white !important;
 }
+
 .theme-dark [style="background-color: var(--background-secondary);"] {
     color: white;
 }
+
 .theme-dark .popout-TdhJ6Z > *,
 .theme-dark .colorwayHeaderTitle {
     --interactive-normal: white !important;
     --header-secondary: white !important;
 }
+
 .theme-dark .tooltip-33Jwqe {
     --text-normal: white !important;
 }
+/*End Tertiary*/
+
 /*Accent*/
 .selected-2r1Hvo *,
 .selected-1Drb7Z *,
-#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N,
+#app-mount .lookFilled-1H2Jvj.colorBrand-2M3O3N:not(.buttonColor-3bP3fX),
 .colorDefault-2_rLdz.focused-3LIdPu,
 .row-1qtctT:hover,
 .colorwayInfoIcon,
 .colorwayCheckIcon {
     --white-500: white !important;
 }
+
 .ColorwaySelectorBtn:hover .colorwaySelectorIcon {
     background-color: white !important;
 }
+/*End Accent*/
