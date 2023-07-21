@@ -20,6 +20,9 @@ The Definitive way of styling Discord and select themes
 * [Desaturated](https://github.com/DaBluLite/DiscordColorways/tree/master/Desaturated)
 * [Crimson by Riddim_GLiTCH](https://github.com/DaBluLite/DiscordColorways/tree/master/Crimson)
 * [Jupiter (Original Gradient Colorway)](https://github.com/DaBluLite/DiscordColorways/tree/master/Jupiter)
+* [Wildberry](https://github.com/DaBluLite/DiscordColorways/tree/master/Wildberry)
+* [Facebook](https://github.com/DaBluLite/DiscordColorways/tree/master/Facebook)
+* [Material You](https://github.com/DaBluLite/DiscordColorways/tree/master/MaterialYou)
 
 ### Currently Supported themes:
 * Discord Default
