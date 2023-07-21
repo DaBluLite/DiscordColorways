@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.8.0
+* @version 3.8.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -2924,6 +2924,10 @@ module.exports = class DiscordColorways {
     }
     .addColorwayAccessory {
         margin: 2px 0;
+    }
+    h2:has(+.customColorwaySelector:empty),
+    .customColorwaySelector:empty {
+        display: none;
     }
     `;
     load() { }
