@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 3.8.1
+* @version 3.9.0
 */
 /*@cc_on
 @if (@_jscript)
@@ -63,12 +63,15 @@ let modalBtnRedReact = (e, t) => { if (!t) t = {}; t['class'] = ButtonRedClass +
 let modalHeader = (e) => createElement("h2", { class: H5 }, e);
 //let modalHeading = (e) => createElement("h1", { class: HeadingSemibold+" customModalHeading" }, e);
 let modalHeaderReact = (e) => React.createElement("h2", { class: H5 }, e);
-//let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
+let betaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--brand-500);" }, "Beta");
 //let alphaBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, "Alpha");
 //let versionBadge = (e, t) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" }, `${e} V${t}`);
 let primaryBadge = (e) => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--background-secondary);" },e);
 //let unstableBadge = () => createElement("div", { class: TextBadgeClassName, style: "background-color: var(--red-430);" }, "Unstable");
 const bdSwitch = (e, t) => { t['class'] = "bd-switch"; this.switch = createElement("div", t, new DOMParser().parseFromString('<input type="checkbox" ' + (() => { if (e == true) return "checked" })() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[0], new DOMParser().parseFromString('<input type="checkbox" ' + (() => { if (e == true) return "checked" })() + '><div class="bd-switch-body"><svg class="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet"><rect class="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect><svg class="bd-switch-symbol" viewBox="0 0 20 20" fill="none"><path></path><path></path></svg></svg></div>', 'text/html').body.children[1]); return this.switch; }
+let parseHTML = (e) => new DOMParser().parseFromString(e,"text/html").body.children[0];
+const AppAsidePanelWrapper = BdApi.Webpack.getByKeys("appAsidePanelWrapper").appAsidePanelWrapper;
+
 
 const createElement = (type, props, ...children) => {
     if (typeof type === "function") return type({ ...props, children: [].concat() })
@@ -297,7 +300,38 @@ class ColorwaySelector {
                                         })(colorway.authorID)
                                     }
                                 })]),
-                                React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, [modalHeaderReact("Import: "), React.createElement("span", { class: "colorwayCodeblock" }, colorway.import)])
+                                React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, [modalHeaderReact("Import: "), React.createElement("span", { class: "colorwayCodeblock" }, colorway.import)]),
+                                React.createElement("div", {
+                                    class: "colorwayCreatorPreviewPanel colorwayCreatorPreviewPanelInfo"
+                                }, modalHeaderReact("Preview:"),
+                                React.createElement("div", {
+                                        class: "colorwayPreview-background",
+                                        style: {backgroundColor: colorway.tertiary}
+                                    },
+                                    React.createElement("div", {
+                                            class: "colorwayPreview-chat",
+                                            style: {backgroundColor: colorway.primary}
+                                        }, React.createElement("div", { class: "colorwayPreview-channels", style: {backgroundColor: colorway.secondary} }, React.createElement("div", { class: "colorwayPreview-userArea", style: {backgroundColor: colorway.secondary} }) ), React.createElement("div", { class: "colorwayPreview-chatbox", style: {backgroundColor: colorway.primary} }) ),
+                                        React.createElement("div", {
+                                            class: "colorwayPreview-guildsWrapper"
+                                        },
+                                        React.createElement("div", {
+                                                class: "colorwayPreview-guildsIcon colorwayPreview-homeIcon",
+                                                style: {backgroundColor: colorway.accent}
+                                            },
+                                            React.createElement("div", {
+                                                    class: "colorways-discordIcon"
+                                                })
+                                            ),
+                                            React.createElement("div", {
+                                                class: "colorwayPreview-guildsSeparator"
+                                            }),
+                                            React.createElement("div", {
+                                                class: "colorwayPreview-guildsIcon",
+                                                style: {backgroundColor: colorway.primary}
+                                            })
+                                        )
+                                    ))
                             ]), {
                                 confirmText: "Set Theme",
                                 onConfirm: () => {
@@ -438,6 +472,37 @@ class ColorwaySelector {
                                     }
                                 })]),
                                 React.createElement("span", { class: "colorwayImport colorwayCodeblockWrapper" }, [modalHeaderReact("CSS: "), React.createElement("span", { class: "colorwayCodeblock" }, codeblockLines)]),
+                                React.createElement("div", {
+                                    class: "colorwayCreatorPreviewPanel colorwayCreatorPreviewPanelInfo"
+                                }, modalHeaderReact("Preview:"),
+                                React.createElement("div", {
+                                        class: "colorwayPreview-background",
+                                        style: {backgroundColor: colorway.tertiary.background}
+                                    },
+                                    React.createElement("div", {
+                                            class: "colorwayPreview-chat",
+                                            style: {backgroundColor: colorway.primary.background}
+                                        }, React.createElement("div", { class: "colorwayPreview-channels", style: {backgroundColor: colorway.secondary.background} }, React.createElement("div", { class: "colorwayPreview-userArea", style: {backgroundColor: colorway.secondary.background} }) ), React.createElement("div", { class: "colorwayPreview-chatbox", style: {backgroundColor: colorway.primary.background} }) ),
+                                        React.createElement("div", {
+                                            class: "colorwayPreview-guildsWrapper"
+                                        },
+                                        React.createElement("div", {
+                                                class: "colorwayPreview-guildsIcon colorwayPreview-homeIcon",
+                                                style: {backgroundColor: colorway.accent.background}
+                                            },
+                                            React.createElement("div", {
+                                                    class: "colorways-discordIcon"
+                                                })
+                                            ),
+                                            React.createElement("div", {
+                                                class: "colorwayPreview-guildsSeparator"
+                                            }),
+                                            React.createElement("div", {
+                                                class: "colorwayPreview-guildsIcon",
+                                                style: {backgroundColor: colorway.primary.background}
+                                            })
+                                        )
+                                    )),
                                 React.createElement("div", { class: "colorwayModalFooter footer-IubaaS" }, [
                                     modalBtnGrayReact("Close", {
                                         onClick: (e) => {
@@ -763,7 +828,16 @@ class BelowHomeColorwaySelector {
         let ColorwaySelectorBtn = createElement("div", {
             className: GuildsListItemWrapper + " ColorwaySelectorBtn",
             onclick: () => {
-                BdApi.showConfirmationModal(React.createElement("div",{class:"colorways-hideHeader"}), React.createElement("div", { class: "colorwaySelectorModal" }));
+                if(!BdApi.Data.load("DiscordColorways", "settings").useNewSidebar || BdApi.Data.load("DiscordColorways", "settings").useNewSidebar == false) {
+                    BdApi.showConfirmationModal(React.createElement("div",{class:"colorways-hideHeader"}), React.createElement("div", { class: "colorwaySelectorModal" }));
+                } else {
+                    if(!document.querySelector(".BETA-colorwaysSidebar")) {
+                        document.getElementsByClassName(AppAsidePanelWrapper)[0].append(createElement("div",{class:"BETA-colorwaysSidebar"},createElement("div",{
+                            class: "BETA-colorwaysSidebarCloseBtn",
+                            onclick: (e) => e.srcElement.parentElement.remove()
+                        },parseHTML(`<svg class="closeCircle-3Z0F6p" aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 14 14" style="pointer-events: none;" fill="currentColor"><path d="M7.02799 0.333252C3.346 0.333252 0.361328 3.31792 0.361328 6.99992C0.361328 10.6819 3.346 13.6666 7.02799 13.6666C10.71 13.6666 13.6947 10.6819 13.6947 6.99992C13.6947 3.31792 10.7093 0.333252 7.02799 0.333252ZM10.166 9.19525L9.22333 10.1379L7.02799 7.94325L4.83266 10.1379L3.89 9.19525L6.08466 6.99992L3.88933 4.80459L4.832 3.86259L7.02733 6.05792L9.22266 3.86259L10.1653 4.80459L7.97066 6.99992L10.166 9.19525Z"></path></svg>`)),createElement("div", { class: "colorwaySelectorModal" })))
+                    }
+                }
             },
             onmouseenter: (e) => {
                 e.srcElement.previousElementSibling.append(createElement("span",{class:"item-2LIpTv"}))
@@ -848,12 +922,8 @@ class SettingsRenderer {
 
         container.append(createElement("span", { className: "colorwaySetting", id: "showInGuildBar" }, "Show In Guild bar", bdSwitch(BdApi.loadData("DiscordColorways", "settings").showInGuildBar, {
             onclick: (e) => {
-                userSettings = {
-                    activeColorway: BdApi.loadData("DiscordColorways", "settings").activeColorway,
-                    activeColorwayID: BdApi.loadData("DiscordColorways", "settings").activeColorwayID,
-                    showInGuildBar: e.path[1].querySelector("input").checked
-                }
-                BdApi.saveData("DiscordColorways", "settings", userSettings);
+                BdApi.Data.load("DiscordColorways", "settings").showInGuildBar = e.path[1].querySelector("input").checked
+                BdApi.saveData("DiscordColorways", "settings", BdApi.Data.load("DiscordColorways", "settings"));
                 const className = HomeIcon?.tutorialContainer;
                 const elements = Array.from(document.getElementsByClassName(className));
 
@@ -864,6 +934,12 @@ class SettingsRenderer {
                         document.querySelector(".ColorwaySelectorBtnContainer").remove();
                     }
                 }
+            }
+        })));
+        container.append(createElement("span", { className: "colorwaySetting", id: "useNewSidebar" }, createElement("span",{style:"display:flex;gap:8px;"},"Use New Sidebar",betaBadge()), bdSwitch(BdApi.loadData("DiscordColorways", "settings").useNewSidebar, {
+            onclick: (e) => {
+                BdApi.Data.load("DiscordColorways", "settings").useNewSidebar = e.path[1].querySelector("input").checked
+                BdApi.saveData("DiscordColorways", "settings", BdApi.Data.load("DiscordColorways", "settings"));
             }
         })));
 
@@ -1092,12 +1168,15 @@ class ColorwayCreator {
             {
                 name: "Default",
                 developer: "Discord",
+                usedColors: ["accent","primary","secondary","tertiary"],
+                colors: ["accent", "primary", "secondary", "tertiary"],
                 default: true
             },
             {
                 name: "Cyan",
                 developer: "DaBluLite",
                 developerID: "582170007505731594",
+                usedColors: ["accent","primary","tertiary"],
                 colors: ["accent", "primary", "tertiary"],
                 isGradient: false,
                 import: `:root {
@@ -1110,6 +1189,7 @@ class ColorwayCreator {
                 name: "Virtual Boy",
                 developer: "Riddim_GLiTCH",
                 developerID: "801089753038061669",
+                usedColors: ["accent"],
                 colors: ["accent"],
                 isGradient: false,
                 import: `:root {
@@ -1122,6 +1202,7 @@ class ColorwayCreator {
                 name: "Modular",
                 developer: "aoithesceneryhoarder",
                 developerID: "518795791318384647",
+                usedColors: ["accent"],
                 colors: ["accent"],
                 isGradient: false,
                 import: `:root:root {
@@ -1137,6 +1218,7 @@ class ColorwayCreator {
                 name: "Solana",
                 developer: "maenDisease",
                 developerID: "678469587444170762",
+                usedColors: ["accent","primary"],
                 colors: ["accent", "primary"],
                 isGradient: false,
                 import: `:root {
@@ -1153,6 +1235,7 @@ class ColorwayCreator {
                 name: "Gradient Type 1",
                 developer: "DaBluLite",
                 developerID: "582170007505731594",
+                usedColors: ["primary","secondary","tertiary"],
                 colors: ["accent","primary","secondary","tertiary"],
                 isGradient: true,
                 import: `${gradientBase}
@@ -1169,6 +1252,7 @@ class ColorwayCreator {
                 name: "Gradient Type 2",
                 developer: "DaBluLite",
                 developerID: "582170007505731594",
+                usedColors: ["primary","secondary"],
                 colors: ["accent","primary","secondary"],
                 isGradient: true,
                 import: `${gradientBase}
@@ -1182,6 +1266,7 @@ class ColorwayCreator {
                 name: "Hue Rotation",
                 developer: "DaBluLite",
                 developerID: "582170007505731594",
+                usedColors: ["accent"],
                 colors: ["accent","primary","secondary","tertiary"],
                 isGradient: false,
                 import: `:root {
@@ -1253,6 +1338,7 @@ class ColorwayCreator {
                 name: "Accent Swap",
                 developer: "DaBluLite",
                 developerID: "582170007505731594",
+                usedColors: ["accent"],
                 colors: ["accent"],
                 isGradient: false,
                 import: `:root {
@@ -1288,16 +1374,24 @@ class ColorwayCreator {
 
         let themePresets = createElement("div", { class: "colorwayPresetContainer collapsed" }, createElement("div", { class: "colorwayPresetContainerHeader colorwayPresetContainerItem", onclick: (e) => e.srcElement.parentElement.classList.toggle("collapsed") }, modalHeader("Theme Presets "), new DOMParser().parseFromString(`<svg style="margin-left: auto;" class="expand-3Nh1P5 transition-30IQBn directionDown-2w0MZz" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" role="img"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path></svg>`, 'text/html').body.children[0]) );
 
-        themePresetsArray.forEach(e => {
+        themePresetsArray.forEach(en => {
             themePresets.append(createElement("div", {
-                class: e.default ? `colorwayPreset colorwayPresetContainerItem selected` : `colorwayPreset colorwayPresetContainerItem`,
+                class: en.default ? `colorwayPreset colorwayPresetContainerItem selected` : `colorwayPreset colorwayPresetContainerItem`,
                 onclick: (e) => {
                     e.srcElement.parentElement.querySelector(".colorwayPreset.selected").classList.remove("selected");
                     e.srcElement.classList.add("selected");
+                    document.querySelectorAll(".colorwayCreator-colorPreviews > div[aria-color]").forEach(el => {
+                        if(en.usedColors.includes(el.getAttribute("aria-color"))) {
+                            el.classList.contains("visible") == false ? el.classList.add("visible") : () => {};
+                        } else {
+                            el.classList.contains("visible") ? el.classList.remove("visible") : () => {};
+                        }
+                    })
                 }
             },
                 new DOMParser().parseFromString(`<svg aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"></path><circle cx="12" cy="12" r="5" class="radioIconForeground-3wH3aU" fill="currentColor"></circle></svg>`, 'text/html').body.children[0],
-                createElement("span",{class:"presetName"},e.name),e.name!="Default" ? primaryBadge("by " + e.developer) : ''));
+                createElement("span",{class:"presetName"},en.name),en.name!="Default" ? primaryBadge("by " + en.developer) : '')
+            );
         })
 
         let componentToHex = (c) => c.toString(16).length == 1 ? "0" + c.toString(16) : c.toString(16);
@@ -1359,14 +1453,36 @@ class ColorwayCreator {
 
         const switchColors = new SwitchColors();
 
+
+
+
+
+        const colorPicker = (e,t) => {
+            let hue = e;
+            if(document.querySelector(".colorways-color-picker-wrapper")) {
+                document.querySelectorAll(".colorways-color-picker-wrapper").forEach(e => e.remove());
+            }
+            t.append();
+        }
+
+
+
+
+
+
         let creationPanel = (
             createElement("div", {
                 className: "colorwayCreator-colorPreviews"
             },
                 createElement("div", {
-                    className: Swatch,
-                    onclick: (e) => {try {e.path[0].querySelector("input").click()}catch(e){}},
-                    style: "background-color: #313338;"
+                    className: Swatch + " visible",
+                    onclick: (e) => {
+                        try {e.path[0].querySelector("input").click()}catch(e){}
+                        //document.querySelector(".colorways-color-picker-wrapper").classList.toggle("visible");
+                    },
+                    style: "background-color: #313338;",
+                    "aria-color": "primary",
+                    "aria-hex": "#313338"
                 },
                     new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
@@ -1378,11 +1494,14 @@ class ColorwayCreator {
                     }),createElement("span", {}, "Primary")
                 ),
                 createElement("div", {
-                    className: Swatch,
+                    className: Swatch + " visible",
                     onclick: (e) => {
-                        try { e.path[0].querySelector("input").click(); } catch (e) { }
+                        try {e.path[0].querySelector("input").click()}catch(e){}
+                        //document.querySelector(".colorways-color-picker-wrapper").classList.toggle("visible");
                     },
-                    style: "background-color: #2b2d31;"
+                    style: "background-color: #2b2d31;",
+                    "aria-color": "secondary",
+                    "aria-hex": "#2b2d31"
                 },
                     new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
@@ -1394,11 +1513,14 @@ class ColorwayCreator {
                     }),createElement("span", {}, "Secondary")
                 ),
                 createElement("div", {
-                    className: Swatch,
+                    className: Swatch + " visible",
                     onclick: (e) => {
-                        try { e.path[0].querySelector("input").click(); } catch (e) { }
+                        try {e.path[0].querySelector("input").click()}catch(e){}
+                        //document.querySelector(".colorways-color-picker-wrapper").classList.toggle("visible");
                     },
-                    style: "background-color: #1e1f22;"
+                    style: "background-color: #1e1f22;",
+                    "aria-color": "tertiary",
+                    "aria-hex": "#1e1f22"
                 },
                     new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
@@ -1410,11 +1532,14 @@ class ColorwayCreator {
                     }),createElement("span", {}, "Tertiary")
                 ),
                 createElement("div", {
-                    className: Swatch,
+                    className: Swatch + " visible",
                     onclick: (e) => {
-                        try { e.path[0].querySelector("input").click(); } catch (e) { }
+                        try {e.path[0].querySelector("input").click()}catch(e){}
+                        //document.querySelector(".colorways-color-picker-wrapper").classList.toggle("visible");
                     },
-                    style: "background-color: hsl(235 85.6% 64.7%);"
+                    style: "background-color: #5865f2",
+                    "aria-color": "accent",
+                    "aria-hex": "#5865f2"
                 },
                     new DOMParser().parseFromString(`<svg class="editPencilIcon-22tRaH" aria-hidden="true" role="img" width="14" height="14" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>`, 'text/html').body.children[0],
                     createElement("input", {
@@ -1428,7 +1553,44 @@ class ColorwayCreator {
             )
         )
 
-        stageOne.append(modalHeader("Name:"), textInput("Give your Colorway a name", "discordColorwayCreator_name"), modalHeader("Colors:"), creationPanel, themePresets,
+        stageOne.append(modalHeader("Name:"), textInput("Give your Colorway a name", "discordColorwayCreator_name"), modalHeader("Colors:"), creationPanel,
+        createElement("div", {
+            class: "colorways-color-picker-wrapper"
+        },
+        createElement("div",{
+            style: "width: auto; display: flex; flex-direction: column; gap: 8px;"
+        },
+        createElement("div",{
+            class: "saturation"
+        },
+        createElement("div",{
+            style: "position: absolute; inset: 0px; background: #5865f2;"
+        },
+        createElement("div",{
+            class: "saturation-white",
+            style: "position: absolute; inset: 0px;"
+        },
+        createElement("div",{
+            class: "saturation-black",
+            style: "position: absolute; inset: 0px;"
+        }),
+        createElement("div",{
+            style: "position: absolute; top: 0%; left: 100%; cursor: default;"
+        },
+        createElement("div",{style:"width: 4px; height: 4px; box-shadow: rgb(255, 255, 255) 0px 0px 0px 1.5px, rgba(0, 0, 0, 0.3) 0px 0px 1px 1px inset, rgba(0, 0, 0, 0.4) 0px 0px 1px 2px; border-radius: 50%; transform: translate(-2px, -2px);"})
+        )))),
+        createElement("div",{
+            class: "hue"
+        },
+        createElement("input",{
+            class: "hue-horizontal",
+            style: "padding: 0px 2px; position: relative; height: 100%;",
+            type: "range",
+            min: "0",
+            max: "360",
+            value: 180
+        })))),
+        themePresets,
             createElement("div", {
                 class: "colorwayCreatorPreviewPanel collapsed"
             }, modalHeader(createElement("div",{
@@ -2444,6 +2606,16 @@ module.exports = class DiscordColorways {
     .editorBody-1rnOXH > .ColorwaySelectorWrapperContainer {
         width: 228px;
     }
+    .BETA-colorwaysSidebar .ColorwaySelectorWrapperContainer {
+        width: 228px;
+    }
+    .BETA-colorwaysSidebar > .colorwaySelectorModal {
+        width: fit-content;
+        padding: 0 16px;
+    }
+    .BETA-colorwaysSidebar #colorway-settings::after {
+        content: none;
+    }
     .editorBody-1rnOXH .colorwayHeaderContainer button {
         display: none;
     }
@@ -2602,7 +2774,7 @@ module.exports = class DiscordColorways {
         height: 24px;
         width: 24px;
         background-color: var(--text-normal);
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-palette-fill' viewBox='0 0 16 16'%3E%3Cpath d='M12.433 10.07C14.133 10.585 16 11.15 16 8a8 8 0 1 0-8 8c1.996 0 1.826-1.504 1.649-3.08-.124-1.101-.252-2.237.351-2.92.465-.527 1.42-.237 2.433.07zM8 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4.5 3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'/%3E%3C/svg%3E");
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-palette' viewBox='0 0 16 16'%3E%3Cpath d='M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z'/%3E%3Cpath d='M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8zm-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7z'/%3E%3C/svg%3E");
         -webkit-mask-size: 24px;
         -webkit-mask-repeat: no-repeat;
         -webkit-mask-position: center;
@@ -2748,11 +2920,12 @@ module.exports = class DiscordColorways {
     .colorwayCreatorPreviewPanel > h2 > div:hover {
         background-color: var(--background-modifier-hover);
     }
-    div:has(>.colorwayCreationModal,>.colorwayInfoModalDetails,>.colorwaySelectorModal) {
+    .root-1CAIjD:not(:has(.imageWrapper-oMkQl4)) div:has(>.colorwayCreationModal,>.colorwayInfoModalDetails,>.colorwaySelectorModal) {
         overflow: visible !important;
         padding-right: 16px !important;
         width: 100%;
         max-width: 620px;
+        padding: 20px 16px !important;
     }
     .colorwayCreatorPreviewPanel > h2 > div * {
         pointer-events: none;
@@ -2928,6 +3101,138 @@ module.exports = class DiscordColorways {
     h2:has(+.customColorwaySelector:empty),
     .customColorwaySelector:empty {
         display: none;
+    }
+    .colorwayCreatorPreviewPanelInfo {
+        padding: 12px;
+    }
+    .colorwayCreator-colorPreviews > div:not(.visible) {
+        display: none;
+    }
+    .colorways-color-picker-wrapper {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: 16px;
+        gap: 16px;
+        box-sizing: border-box;
+    }
+    .colorways-color-picker-wrapper.visible {
+        display: flex;
+    }
+    .colorwayCreator-colorPreviews > div:last-child .colorways-color-picker-wrapper {
+        left: unset;
+        right: 0;
+    }
+    .colorways-color-picker-wrapper .hue-horizontal {
+        position: relative;
+        width: 100%;
+        height: 8px;
+        z-index: 1;
+        appearance: none;
+        border-radius: 0;
+        background-color: rgba(0, 0, 0, 0);
+        display: block;
+        outline: none;
+        transition: .5s cubic-bezier(.17, .76, .58, .99);
+        box-sizing: border-box;
+        margin: 0;
+    }
+    .colorways-color-picker-wrapper .hue-horizontal::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 8px;
+        z-index: -1;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+        border-radius: 8px;
+        background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+        background: -webkit-linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+    }
+    .colorways-color-picker-wrapper .hue-horizontal::-webkit-slider-thumb {
+        height: 24px;
+        width: 10px;
+        border-radius: 3px;
+        appearance: none;
+        background: #fff;
+        cursor: pointer;
+        cursor: move;
+        cursor: grab;
+        cursor: -webkit-grab;
+        transition: .5s cubic-bezier(.17, .76, .58, .99);
+        box-shadow: 0 3px 1px 0 hsl(0 0% 0%/.05), 0 2px 2px 0 hsl(0 0% 0%/.1), 0 3px 3px 0 hsl(0 0% 0%/.05);
+    }
+    .colorways-color-picker-wrapper .hue-vertical {
+        background: linear-gradient(to top, #f00 0%, #ff0 17%, #0f0 33%,
+                #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+        background: -webkit-linear-gradient(to top, #f00 0%, #ff0 17%,
+                #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+    }
+    .colorways-color-picker-wrapper .saturation-white {
+        background: -webkit-linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+        background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+    }
+    .colorways-color-picker-wrapper .saturation-black {
+        background: -webkit-linear-gradient(to top, #000, rgba(0, 0, 0, 0));
+        background: linear-gradient(to top, #000, rgba(0, 0, 0, 0));
+    }
+    .colorways-color-picker-wrapper .saturation {
+        position: relative;
+        width: auto;
+        height: 150px;
+        cursor: crosshair;
+    }
+    @keyframes revealSidebar {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0px);
+        }
+    }
+    .BETA-colorwaysSidebar {
+        position: relative;
+        background: var(--background-primary);
+        -webkit-box-flex: 0;
+        -ms-flex-positive: 0;
+        flex-grow: 0;
+        padding: 16px 0;
+        right: 0;
+        z-index: 1;
+        height: 100%;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        border-left: 5px solid var(--background-secondary);
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        animation: revealSidebar .4s ease;
+    }
+    .BETA-colorwaysSidebar .ColorwaySelectorWrapper::before {
+        content: none;
+    }
+    .BETA-colorwaysSidebarCloseBtn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        cursor: pointer;
+        height: 20px;
+    }
+    .BETA-colorwaysSidebarCloseBtn > svg {
+        color: var(--interactive-normal);
+    }
+    .BETA-colorwaysSidebarCloseBtn:hover > svg {
+        color: var(--interactive-hover);
+    }
+    .BETA-colorwaysSidebarCloseBtn:active > svg {
+        color: var(--interactive-active);
     }
     `;
     load() { }
