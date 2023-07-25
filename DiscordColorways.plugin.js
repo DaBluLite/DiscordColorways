@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 4.0.0
+* @version 4.0.1
 */
 /*@cc_on
 @if (@_jscript)
@@ -47,6 +47,7 @@ const ButtonRedClass = Webpack.getByKeys("colorBrand")['button'] + " " + Webpack
 const Swatch = Webpack.getByKeys("colorSwatch")['swatch'];
 const GuildsListItem = Webpack.getAllByKeys("listItem")[1].listItem;
 const GuildsListItemWrapper = Webpack.getAllByKeys("listItemWrapper")[1].listItemWrapper;
+const dispatcher = BdApi.Webpack.getModule(m => m.dispatch && m.subscribe);
 //const HeadingSemibold = Webpack.getAllByKeys("heading-lg/semibold")[2]['heading-lg/semibold'];
 
 let nativeToast = (e, t) => Toast.showToast(Toast.createToast(e, t));
@@ -780,12 +781,7 @@ class BelowHomeColorwaySelector {
                 if(!BdApi.Data.load("DiscordColorways", "settings").useNewSidebar || BdApi.Data.load("DiscordColorways", "settings").useNewSidebar == false) {
                     BdApi.showConfirmationModal(React.createElement("div",{class:"colorways-hideHeader"}), React.createElement("div", { class: "colorwaySelectorModal" }));
                 } else {
-                    if(!document.querySelector(".BETA-colorwaysSidebar")) {
-                        document.getElementsByClassName(AppAsidePanelWrapper)[0].append(createElement("div",{class:"BETA-colorwaysSidebar"},createElement("div",{
-                            class: "BETA-colorwaysSidebarCloseBtn",
-                            onclick: (e) => e.srcElement.parentElement.remove()
-                        },parseHTML(`<svg class="closeCircle-3Z0F6p" aria-hidden="true" role="img" width="24" height="24" viewBox="0 0 14 14" style="pointer-events: none;" fill="currentColor"><path d="M7.02799 0.333252C3.346 0.333252 0.361328 3.31792 0.361328 6.99992C0.361328 10.6819 3.346 13.6666 7.02799 13.6666C10.71 13.6666 13.6947 10.6819 13.6947 6.99992C13.6947 3.31792 10.7093 0.333252 7.02799 0.333252ZM10.166 9.19525L9.22333 10.1379L7.02799 7.94325L4.83266 10.1379L3.89 9.19525L6.08466 6.99992L3.88933 4.80459L4.832 3.86259L7.02733 6.05792L9.22266 3.86259L10.1653 4.80459L7.97066 6.99992L10.166 9.19525Z"></path></svg>`)),createElement("div", { class: "colorwaySelectorModal" })))
-                    }
+                    dispatcher.dispatch({ type: "CLIENT_THEMES_EDITOR_OPEN" });
                 }
             },
             onmouseenter: (e) => {
@@ -2522,16 +2518,6 @@ module.exports = class DiscordColorways {
     .editorBody-1rnOXH > .ColorwaySelectorWrapperContainer {
         width: 228px;
     }
-    .BETA-colorwaysSidebar .ColorwaySelectorWrapperContainer {
-        width: 228px;
-    }
-    .BETA-colorwaysSidebar > .colorwaySelectorModal {
-        width: fit-content;
-        padding: 0 16px;
-    }
-    .BETA-colorwaysSidebar #colorway-settings::after {
-        content: none;
-    }
     .editorBody-1rnOXH .colorwayHeaderContainer button {
         display: none;
     }
@@ -3109,57 +3095,6 @@ module.exports = class DiscordColorways {
         width: auto;
         height: 150px;
         cursor: crosshair;
-    }
-    @keyframes revealSidebar {
-        from {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0px);
-        }
-    }
-    .BETA-colorwaysSidebar {
-        position: relative;
-        background: var(--background-primary);
-        -webkit-box-flex: 0;
-        -ms-flex-positive: 0;
-        flex-grow: 0;
-        padding: 16px 0;
-        right: 0;
-        z-index: 1;
-        height: 100%;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        border-left: 5px solid var(--background-secondary);
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        animation: revealSidebar .4s ease;
-    }
-    .BETA-colorwaysSidebar .ColorwaySelectorWrapper::before {
-        content: none;
-    }
-    .BETA-colorwaysSidebarCloseBtn {
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        cursor: pointer;
-        height: 20px;
-    }
-    .BETA-colorwaysSidebarCloseBtn > svg {
-        color: var(--interactive-normal);
-    }
-    .BETA-colorwaysSidebarCloseBtn:hover > svg {
-        color: var(--interactive-hover);
-    }
-    .BETA-colorwaysSidebarCloseBtn:active > svg {
-        color: var(--interactive-active);
     }
     `;
     load() { }
