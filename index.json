@@ -212,6 +212,18 @@
       "import": "@import url(//dablulite.github.io/DiscordColorways/MaterialYou/import.css);",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
+    },
+    {
+      "name": "Discord Teal",
+      "original": false,
+      "accent": "#175f6d",
+      "primary": "#175f6d",
+      "secondary": "#175f6d",
+      "tertiary": "#175f6d",
+      "import": "@import url(//dablulite.github.io/css-snippets/DiscordTeal/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594",
+      "colors": ["accent"]
     }
   ]
 }
