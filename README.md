@@ -24,6 +24,7 @@ The Definitive way of styling Discord and select themes
 * [Wildberry](https://github.com/DaBluLite/DiscordColorways/tree/master/Wildberry)
 * [Facebook](https://github.com/DaBluLite/DiscordColorways/tree/master/Facebook)
 * [Material You](https://github.com/DaBluLite/DiscordColorways/tree/master/MaterialYou)
+* [Discord Teal](https://github.com/DaBluLite/css-snippets/tree/master/DiscordTeal)
 
 ### Currently Supported themes:
 * Discord Default
