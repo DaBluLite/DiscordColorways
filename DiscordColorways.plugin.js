@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 4.0.2
+* @version 4.0.3
 */
 /*@cc_on
 @if (@_jscript)
@@ -1111,8 +1111,12 @@ class ColorwayCreator {
                 isGradient: false,
                 import: `:root {
     --VBaccent: {{brand-500-hsl}};
-    --VBaccent-muted: {{brand-700-hsl}};
-    --VBaccent-dimmest: {{brand-800-hsl}};
+    --VBaccent-muted: {{brand-700-hsl:0}}
+    {{brand-700-hsl:1}}
+    calc({{brand-700-hsl:2}} - 10%);
+    --VBaccent-dimmest: {{brand-900-hsl:0}}
+    {{brand-900-hsl:1}}
+    calc({{brand-900-hsl:2}} - 3%);
 }`
             },
             {
