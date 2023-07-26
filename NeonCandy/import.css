@@ -98,7 +98,7 @@
 .wrapper-3kah-n:not(:hover):not(.selected-1Drb7Z) .childWrapper-1j_1ub {
     background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
-.folder-241Joy {
+.folder-241Joy:has(.expandedFolderIconWrapper-3RwQpD) {
     background: var(--bg-overlay-6,var(--background-secondary));
 }
 .circleIconButton-1VxDrg:not(.selected-2r1Hvo) {
