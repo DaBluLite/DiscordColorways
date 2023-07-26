@@ -5,7 +5,7 @@
 * @author DaBluLite
 * @authorId 582170007505731594
 * @invite ZfPH6SDkMW
-* @version 4.0.1
+* @version 4.0.2
 */
 /*@cc_on
 @if (@_jscript)
@@ -990,8 +990,6 @@ class ColorwayCreator {
     --brand-830-hsl: {{brand-830-hsl}};
     --brand-860-hsl: {{brand-860-hsl}};
     --brand-900-hsl: {{brand-900-hsl}};
-}
-:root {
     --bg-overlay-1: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-1)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-1))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
     --bg-overlay-2: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-2)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-2))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
     --bg-overlay-3: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-3)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-3))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
@@ -1058,7 +1056,7 @@ class ColorwayCreator {
 .wrapper-3kah-n:not(:hover):not(.selected-1Drb7Z) .childWrapper-1j_1ub {
     background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
-.folder-241Joy {
+.folder-241Joy:has(.expandedFolderIconWrapper-3RwQpD) {
     background: var(--bg-overlay-6,var(--background-secondary));
 }
 .circleIconButton-1VxDrg:not(.selected-2r1Hvo) {
@@ -1124,13 +1122,10 @@ class ColorwayCreator {
                 usedColors: ["accent"],
                 colors: ["accent"],
                 isGradient: false,
-                import: `:root:root {
-    --h1: {{brand-500-hsl:0}};
-    --s1: {{brand-500-hsl:1}};
-    --l1: {{brand-500-hsl:2}};
-    --h2: {{brand-700-hsl:0}};
-    --s2: {{brand-700-hsl:1}};
-    --l2: {{brand-700-hsl:2}};
+                import: `:root {
+    --modular-hue: {{brand-500-hsl:0}};
+    --modular-saturation: calc(var(--saturation-factor, 1){{brand-500-hsl:1}});
+    --modular-lightness: {{brand-500-hsl:2}};
 }`
             },
             {
@@ -1142,10 +1137,10 @@ class ColorwayCreator {
                 isGradient: false,
                 import: `:root {
     --accent-hue: {{brand-500-hsl:0}};
-    --accent-saturation: {{brand-500-hsl:1}};
+    --accent-saturation: calc(var(--saturation-factor, 1){{brand-500-hsl:1}});
     --accent-brightness: {{brand-500-hsl:2}};
     --background-accent-hue: {{primary-600-hsl:0}};
-    --background-accent-saturation: {{primary-600-hsl:1}};
+    --background-accent-saturation: calc(var(--saturation-factor, 1){{primary-600-hsl:1}});
     --background-accent-brightness: {{primary-600-hsl:2}};
     --background-overlay-opacity: 0%;
 }`
