@@ -5,7 +5,7 @@ The Definitive way of styling Discord and select themes
 * Use the available `@import` lines for the different Colorways 
 
 ### Currently Available are:
-* [Keyboard Purple](https://github.com/DaBluLite/DiscordColorways/tree/master/KeyboardPurple)
+* [<img src="https://github.com/DaBluLite/DiscordColorways/assets/73998678/5afa0c8c-cdd8-43cd-a61a-ff3f1e298da9">](https://github.com/DaBluLite/DiscordColorways/tree/master/KeyboardPurple)
 * [Eclipse](https://github.com/DaBluLite/DiscordColorways/tree/master/Eclipse)
 * [Cyan](https://github.com/DaBluLite/DiscordColorways/tree/master/Cyan)
 * [Spotify](https://github.com/DaBluLite/DiscordColorways/tree/master/Spotify)
