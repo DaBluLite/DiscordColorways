@@ -1,8 +1,9 @@
 # Discord Colorways
-The Definitive way of styling Discord and select themes
+### The Definitive way of styling Discord and select themes
 
 * [Download The DiscordColorways Plugin](https://github.com/DaBluLite/DiscordColorways/raw/master/DiscordColorways.plugin.js) (Credits to Strencher, since the source of the plugin is based on his PlatformIndicators plugin)
-* Use the available `@import` lines for the different Colorways 
+* Use the available `@import` lines for the different Colorways
+* **NEW** [Try the Vencord port](https://github.com/DaBluLite/Vencord)
 
 ### Currently Available are:
 * ![image](https://github.com/DaBluLite/DiscordColorways/assets/73998678/151b8e71-b07a-41fe-b395-8714eb29e6cd)<br>[Keyboard Purple](https://github.com/DaBluLite/DiscordColorways/tree/master/KeyboardPurple)
