@@ -1,0 +1,706 @@
+/* stylelint-disable selector-class-pattern */
+.colorwaySelectorIcon {
+    height: 24px;
+    width: 24px;
+    background-color: currentcolor;
+    clip-path: path('M 12 7.5 C 13.242188 7.5 14.25 6.492188 14.25 5.25 C 14.25 4.007812 13.242188 3 12 3 C 10.757812 3 9.75 4.007812 9.75 5.25 C 9.75 6.492188 10.757812 7.5 12 7.5 Z M 18 12 C 19.242188 12 20.25 10.992188 20.25 9.75 C 20.25 8.507812 19.242188 7.5 18 7.5 C 16.757812 7.5 15.75 8.507812 15.75 9.75 C 15.75 10.992188 16.757812 12 18 12 Z M 8.25 10.5 C 8.25 11.742188 7.242188 12.75 6 12.75 C 4.757812 12.75 3.75 11.742188 3.75 10.5 C 3.75 9.257812 4.757812 8.25 6 8.25 C 7.242188 8.25 8.25 9.257812 8.25 10.5 Z M 9 19.5 C 10.242188 19.5 11.25 18.492188 11.25 17.25 C 11.25 16.007812 10.242188 15 9 15 C 7.757812 15 6.75 16.007812 6.75 17.25 C 6.75 18.492188 7.757812 19.5 9 19.5 Z M 9 19.5 M 24 12 C 24 16.726562 21.199219 15.878906 18.648438 15.105469 C 17.128906 14.644531 15.699219 14.210938 15 15 C 14.09375 16.023438 14.289062 17.726562 14.472656 19.378906 C 14.738281 21.742188 14.992188 24 12 24 C 5.371094 24 0 18.628906 0 12 C 0 5.371094 5.371094 0 12 0 C 18.628906 0 24 5.371094 24 12 Z M 12 22.5 C 12.917969 22.5 12.980469 22.242188 12.984375 22.234375 C 13.097656 22.015625 13.167969 21.539062 13.085938 20.558594 C 13.066406 20.304688 13.03125 20.003906 12.996094 19.671875 C 12.917969 18.976562 12.828125 18.164062 12.820312 17.476562 C 12.804688 16.417969 12.945312 15.0625 13.875 14.007812 C 14.429688 13.382812 15.140625 13.140625 15.78125 13.078125 C 16.390625 13.023438 17 13.117188 17.523438 13.234375 C 18.039062 13.351562 18.574219 13.515625 19.058594 13.660156 L 19.101562 13.675781 C 19.621094 13.832031 20.089844 13.972656 20.53125 14.074219 C 21.511719 14.296875 21.886719 14.199219 22.019531 14.109375 C 22.074219 14.070312 22.5 13.742188 22.5 12 C 22.5 6.199219 17.800781 1.5 12 1.5 C 6.199219 1.5 1.5 6.199219 1.5 12 C 1.5 17.800781 6.199219 22.5 12 22.5 Z M 12 22.5 ');
+}
+
+.ColorwaySelectorBtn {
+    height: 48px;
+    width: 48px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .15s ease-out;
+    background-color: var(--background-primary);
+    cursor: pointer;
+    color: var(--text-normal);
+}
+
+.ColorwaySelectorBtn:hover {
+    background-color: var(--brand-experiment);
+    border-radius: 16px;
+}
+
+.discordColorway {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    flex-flow: wrap;
+    flex-direction: row;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    transition: .1s;
+    box-shadow: inset 0 0 0 1px var(--interactive-normal);
+}
+
+.discordColorway:hover {
+    box-shadow: inset 0 0 0 1px var(--interactive-active);
+}
+
+.discordColorwayPreviewColorContainer {
+    display: flex;
+    flex-flow: wrap;
+    flex-direction: row;
+    overflow: hidden;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+}
+
+.discordColorway.active {
+    box-shadow: inset 0 0 0 2px var(--brand-500), inset 0 0 0 4px var(--background-primary);
+}
+
+.discordColorway.active .discordColorwayPreviewColorContainer {
+    width: 52px;
+    height: 52px;
+}
+
+.discordColorwayPreviewColor {
+    width: 50%;
+    height: 50%;
+}
+
+.discordColorway.active>.discordColorwayPreviewColor {
+    width: 30px;
+    height: 30px;
+}
+
+.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(2)))>.discordColorwayPreviewColor {
+    height: 100%;
+    width: 100%;
+}
+
+.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor {
+    height: 100%;
+}
+
+.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(4)))>.discordColorwayPreviewColor:nth-child(3) {
+    width: 100%;
+}
+
+.ColorwaySelectorWrapper {
+    position: relative;
+    display: flex;
+    gap: 16px 24px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.colorwaySelectorModal {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--background-tertiary);
+    box-shadow: var(--dark-elevation-high) !important;
+}
+
+.colorwaySelectorModalContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 596px;
+    overflow: visible !important;
+    padding: 16px !important;
+    padding-right: 16px !important;
+}
+
+.ColorwaySelectorBtnContainer {
+    position: relative;
+    margin: 0 0 8px;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 72px;
+}
+
+.colorwayCheckIconContainer {
+    height: 20px;
+    width: 20px;
+    background-color: var(--brand-500);
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: +1;
+}
+
+.discordColorway.active .colorwayCheckIconContainer {
+    opacity: 1;
+}
+
+.colorwayCheckIcon {
+    height: 20px;
+    width: 20px;
+    color: var(--white-500);
+}
+
+.colorwayInfoIconContainer {
+    height: 20px;
+    width: 20px;
+    background-color: var(--brand-500);
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    opacity: 0;
+    z-index: +1;
+}
+
+.colorwayInfoIconContainer:hover {
+    background-color: var(--brand-700);
+}
+
+.discordColorway:hover .colorwayInfoIconContainer {
+    opacity: 1;
+    transition: .15s;
+}
+
+.colorwayInfoIcon {
+    height: 20px;
+    width: 20px;
+    color: var(--white-500);
+    padding: 2px;
+}
+
+.colorwayCreator-swatch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: none;
+    width: 100%;
+    position: relative;
+    color: #fff;
+}
+
+.colorwayCreator-swatchName {
+    color: currentcolor;
+    pointer-events: none;
+}
+
+.colorwayCreator-colorPreviews {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+    position: relative;
+}
+
+.colorwayCreator-colorInput {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.colorwayCreator-menuWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 16px !important;
+    overflow: visible !important;
+}
+
+.colorwayCreator-modal {
+    width: 620px;
+    max-width: 620px;
+    max-height: unset !important;
+}
+
+.colorways-creator-module-warning~.colorways-creator-module-warning {
+    display: none;
+}
+
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG,
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG>.swatch-efj8wq {
+    width: 100%;
+    border: none;
+    position: relative;
+}
+
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG::before {
+    content: "";
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: +1;
+    color: var(--white-500);
+    pointer-events: none;
+}
+
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:nth-child(1)::before {
+    content: "Primary";
+}
+
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:nth-child(2)::before {
+    content: "Secondary";
+}
+
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:nth-child(3)::before {
+    content: "Tertiary";
+}
+
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:nth-child(4)::before {
+    content: "Accent";
+}
+
+.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:has(.editPencilIcon-22tRaH>path[fill="var(--primary-530)"])::before {
+    color: var(--primary-530);
+}
+
+.colorwaySelector-noDisplay {
+    display: none;
+}
+
+.colorwayInfo-wrapper {
+    display: flex;
+    flex-direction: column;
+    color: var(--header-primary);
+}
+
+.colorwayInfo-colorSwatches {
+    width: 100%;
+    height: 46px;
+    display: flex;
+    flex-direction: row;
+    margin: 12px 0;
+    gap: 8px;
+}
+
+.colorwayInfo-colorSwatch {
+    display: flex;
+    width: 100%;
+    height: 46px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+.colorwayInfo-row {
+    font-weight: 400;
+    font-size: 20px;
+    color: var(--header-secondary);
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+    padding: 8px 12px;
+}
+
+.colorwayInfo-css {
+    flex-direction: column;
+    align-items: start;
+}
+
+.colorwayInfo-cssCodeblock {
+    border-radius: 4px;
+    border: 1px solid var(--background-accent);
+    padding: 3px 6px;
+    white-space: pre;
+    max-height: 400px;
+    overflow: auto;
+    font-size: 0.875rem;
+    line-height: 1.125rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.colorwayInfo-cssCodeblock::-webkit-scrollbar,
+.colorwayToolbox-itemList::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner,
+.colorwayToolbox-itemList::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,
+.colorwayToolbox-itemList::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-auto-thumb);
+    min-height: 40px;
+}
+
+.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,
+.colorwayInfo-cssCodeblock::-webkit-scrollbar-track,
+.colorwayToolbox-itemList::-webkit-scrollbar-thumb,
+.colorwayToolbox-itemList::-webkit-scrollbar-track {
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 8px;
+}
+
+.colorwayInfo-cssCodeblock::-webkit-scrollbar-track,
+.colorwayToolbox-itemList::-webkit-scrollbar-track {
+    margin-bottom: 8px;
+}
+
+.colorwaysCreator-settingCat {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 5px;
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+    box-sizing: border-box;
+    color: var(--header-secondary);
+    max-height: 250px;
+    overflow: hidden overlay;
+}
+
+.colorwaysCreator-settingItm {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    border-radius: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 8px;
+    justify-content: space-between;
+}
+
+.colorwaysCreator-settingItm:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.colorwaysCreator-settingCat-collapsed>.colorwaysCreator-settingItm:not(.colorwaysCreator-settingHeader) {
+    display: none;
+}
+
+.colorwaysCreator-noHeader {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.colorwaysCreator-noMinHeight {
+    min-height: unset;
+    height: fit-content;
+}
+
+.colorwaysPreview-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 270px;
+    flex: 1 0 auto;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.colorwaysPreview-modal {
+    max-width: unset !important;
+    max-height: unset !important;
+    width: fit-content;
+    height: fit-content;
+}
+
+.colorwaysPreview-titlebar {
+    height: 22px;
+    width: 100%;
+    display: flex;
+    flex: 1 0 auto;
+}
+
+.colorwaysPreview-body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.colorwayPreview-guilds {
+    width: 72px;
+    height: 100%;
+    display: flex;
+    flex: 1 0 auto;
+    padding-top: 4px;
+    flex-direction: column;
+}
+
+.colorwayPreview-channels {
+    width: 140px;
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    border-top-left-radius: 8px;
+    flex: 1 0 auto;
+}
+
+.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {
+    width: 240px;
+}
+
+.colorwayPreview-chat {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column-reverse;
+}
+
+.colorwayPreview-userArea {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    flex: 1 0 auto;
+}
+
+.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {
+    height: 52px;
+}
+
+.colorwaysPreview {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 5px;
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+    box-sizing: border-box;
+    color: var(--header-secondary);
+    overflow: hidden overlay;
+    margin-bottom: 4px;
+}
+
+.colorwaysPreview-collapsed .colorwaysPreview-container {
+    display: none;
+}
+
+.colorwayInfo-lastCat,
+.colorwaysCreator-lastCat {
+    margin-bottom: 12px;
+}
+
+.colorwayPreview-guild {
+    width: 100%;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.colorwayPreview-guildItem {
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    border-radius: 50px;
+    transition: .2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.colorwayPreview-guildItem:hover {
+    border-radius: 16px;
+}
+
+.colorwayPreview-guildSeparator {
+    width: 32px;
+    height: 2px;
+    opacity: .48;
+    border-radius: 1px;
+}
+
+.colorwayToolbox-listItem {
+    align-items: center;
+    display: flex;
+    border-radius: 4px;
+    color: var(--interactive-normal);
+    padding: 8px;
+    margin: 0 -4px;
+}
+
+.colorwayToolbox-listItem:hover {
+    background-color: var(--brand-experiment);
+    color: var(--white-500);
+    cursor: pointer;
+}
+
+.colorwayToolbox-title {
+    align-items: center;
+    display: flex;
+    text-transform: uppercase;
+    margin-top: 2px;
+    padding-bottom: 8px;
+    margin-bottom: 0;
+}
+
+.colorwayToolbox-list {
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.colorwayToolbox-itemList {
+    overflow: hidden auto;
+    height: 100%;
+    padding: 12px;
+    padding-top: 0;
+}
+
+.colorwayToolbox-search {
+    margin: 12px;
+    margin-bottom: 0;
+}
+
+.colorwayToolbox-itemList::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.colorwayPreview-chatBox {
+    height: 32px;
+    border-radius: 6px;
+    margin: 8px;
+    margin-bottom: 12px;
+    margin-top: 0;
+    flex: 1 0 auto;
+}
+
+.colorwayPreview-filler {
+    width: 100%;
+    height: 100%;
+}
+
+.colorwayPreview-topShadow {
+    box-shadow: 0 1px 0 hsl(var(--primary-900-hsl)/20%), 0 1.5px 0 hsl(var(--primary-860-hsl)/5%), 0 2px 0 hsl(var(--primary-900-hsl)/5%);
+    width: 100%;
+    height: 32px;
+    flex: 1 0 auto;
+    transition: background-color .1s linear;
+    font-family: var(--font-display);
+    font-weight: 500;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    align-items: center;
+    display: flex;
+}
+
+.colorwayPreview-channels>.colorwayPreview-topShadow {
+    border-top-left-radius: 8px;
+}
+
+.colorwayPreview-channels>.colorwayPreview-topShadow:hover {
+    background-color: hsl(var(--primary-500-hsl)/30%);
+}
+
+.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {
+    height: 48px;
+}
+
+.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {
+    height: 44px;
+    border-radius: 8px;
+    margin: 16px;
+    margin-bottom: 24px;
+}
+
+.colorwaysBtn-tooltipContent {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.colorwaySelector-headerIcon {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    transition: transform .1s ease-out, opacity .1s ease-out;
+    color: var(--interactive-normal);
+}
+
+.colorwaySelector-header {
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 0;
+    box-shadow: none !important;
+}
+
+.colorwaySelector-search {
+    width: 100%;
+    height: 32px;
+}
+
+.colorwaySelector-searchInput {
+    height: 32px;
+    border-radius: 50px;
+    border: 1px solid transparent;
+    transition: .15s ease;
+    padding: 0 12px;
+}
+
+.colorwaySelector-searchInput:hover {
+    border-color: transparent;
+}
+
+.colorwaySelector-headerBtn {
+    position: absolute;
+    top: 64px;
+    right: 20px;
+}
+
+.colorwaySelector-pill {
+    border-radius: 20px;
+    background-color: var(--background-tertiary);
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    overflow: hidden;
+    color: var(--text-normal);
+    cursor: pointer;
+    transition: .15s ease
+}
+
+.colorwaySelector-pillWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.colorwaySelector-doublePillBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.theme-light .colorwaySelector-pill_selected,
+.theme-light .colorwaySelector-pill:hover,
+.theme-light .colorwaySelector-searchInput:focus {
+    border-color: var(--brand-500);
+    background-color: var(--brand-experiment-160);
+}
+
+.theme-dark .colorwaySelector-pill_selected,
+.theme-dark .colorwaySelector-pill:hover,
+.theme-dark .colorwaySelector-searchInput:focus {
+    border-color: var(--brand-500);
+    background-color: var(--brand-experiment-15a);
+}
