@@ -1539,7 +1539,7 @@ const ctxMenuPatch: NavContextMenuPatchCallback = (children, props) => () => {
 const DiscordColorways = definePlugin({
     name: "DiscordColorways",
     description: "The definitive way to style Discord.",
-    authors: [Devs.DaBluLite],
+    authors: [{ name: "DaBluLite", id: 582170007505731594n }],
     dependencies: ["ServerListAPI"],
     creatorVersion: "1.14",
     toolboxActions: {
