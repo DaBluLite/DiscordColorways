@@ -1,4 +1,4 @@
-# Keyboard Purple
+# Cyan
 A Colorway based on Cyan's color pallete
 
 ### Importing:
