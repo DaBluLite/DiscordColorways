@@ -1,0 +1,49 @@
+/*Automatically Generated - Colorway Creator V1.14.1*/
+:root {
+    --brand-100-hsl: 293 calc(var(--saturation-factor, 1)*100%) 97%;
+    --brand-130-hsl: 293 calc(var(--saturation-factor, 1)*100%) 93%;
+    --brand-160-hsl: 293 calc(var(--saturation-factor, 1)*100%) 90%;
+    --brand-200-hsl: 293 calc(var(--saturation-factor, 1)*100%) 86%;
+    --brand-230-hsl: 293 calc(var(--saturation-factor, 1)*100%) 82%;
+    --brand-260-hsl: 293 calc(var(--saturation-factor, 1)*100%) 79%;
+    --brand-300-hsl: 293 calc(var(--saturation-factor, 1)*100%) 75%;
+    --brand-330-hsl: 293 calc(var(--saturation-factor, 1)*100%) 72%;
+    --brand-345-hsl: 293 calc(var(--saturation-factor, 1)*100%) 68%;
+    --brand-360-hsl: 293 calc(var(--saturation-factor, 1)*100%) 64%;
+    --brand-400-hsl: 293 calc(var(--saturation-factor, 1)*100%) 61%;
+    --brand-430-hsl: 293 calc(var(--saturation-factor, 1)*100%) 57%;
+    --brand-460-hsl: 293 calc(var(--saturation-factor, 1)*100%) 54%;
+    --brand-500-hsl: 293 calc(var(--saturation-factor, 1)*100%) 50%;
+    --brand-530-hsl: 293 calc(var(--saturation-factor, 1)*100%) 46%;
+    --brand-560-hsl: 293 calc(var(--saturation-factor, 1)*100%) 43%;
+    --brand-600-hsl: 293 calc(var(--saturation-factor, 1)*100%) 39%;
+    --brand-630-hsl: 293 calc(var(--saturation-factor, 1)*100%) 36%;
+    --brand-660-hsl: 293 calc(var(--saturation-factor, 1)*100%) 32%;
+    --brand-700-hsl: 293 calc(var(--saturation-factor, 1)*100%) 28%;
+    --brand-730-hsl: 293 calc(var(--saturation-factor, 1)*100%) 25%;
+    --brand-760-hsl: 293 calc(var(--saturation-factor, 1)*100%) 21%;
+    --brand-800-hsl: 293 calc(var(--saturation-factor, 1)*100%) 18%;
+    --brand-830-hsl: 293 calc(var(--saturation-factor, 1)*100%) 14%;
+    --brand-860-hsl: 293 calc(var(--saturation-factor, 1)*100%) 10%;
+    --brand-900-hsl: 293 calc(var(--saturation-factor, 1)*100%) 7%;
+    --primary-800-hsl: 270 calc(var(--saturation-factor, 1)*100%) 20.2%;
+    --primary-730-hsl: 270 calc(var(--saturation-factor, 1)*100%) 16.6%;
+    --primary-700-hsl: 270 calc(var(--saturation-factor, 1)*100%) 13%;
+    --primary-660-hsl: 258 calc(var(--saturation-factor, 1)*100%) 10.6%;
+    --primary-645-hsl: 264 calc(var(--saturation-factor, 1)*100%) 0%;
+    --primary-630-hsl: 258 calc(var(--saturation-factor, 1)*100%) 7%;
+    --primary-600-hsl: 264 calc(var(--saturation-factor, 1)*100%) 2%;
+    --primary-560-hsl: 264 calc(var(--saturation-factor, 1)*100%) 5.6%;
+    --primary-530-hsl: 264 calc(var(--saturation-factor, 1)*100%) 9.2%;
+    --primary-500-hsl: 264 calc(var(--saturation-factor, 1)*100%) 12.8%;
+    --primary-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50%;
+    --primary-430: hsl(258, calc(var(--saturation-factor, 1)*100%), 90%);
+    --primary-400: hsl(258, calc(var(--saturation-factor, 1)*100%), 90%);
+    --primary-360: hsl(258, calc(var(--saturation-factor, 1)*100%), 90%);
+}
+.emptyPage-2TGR7j,
+.scrollerContainer-y16Rs9,
+.container-2IKOsH,
+.header-3xB4vB {
+    background-color: unset !important;
+}
