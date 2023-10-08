@@ -224,6 +224,39 @@
       "author": "DaBluLite",
       "authorID": "582170007505731594",
       "colors": ["accent"]
+    },
+    {
+      "name": "黄昏の花 (Twilight Blossom)",
+      "original": true,
+      "accent": "#e100ff",
+      "primary": "#04000a",
+      "secondary": "#0b0024",
+      "tertiary": "#210042",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/TwilightBlossom/import.css);",
+      "author": "Riddim_GLiTCH",
+      "authorID": "801089753038061669"
+    },
+    {
+      "name": "Chai",
+      "original": true,
+      "accent": "#59cd51",
+      "primary": "#1c1e15",
+      "secondary": "#1e2118",
+      "tertiary": "#24291e",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/Chai/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
+    },
+    {
+      "name": "CS1.6",
+      "original": false,
+      "accent": "#929a8d",
+      "primary": "#3f4738",
+      "secondary": "#5b6c51",
+      "tertiary": "#4d5945",
+      "import": "@import url(//dablulite.github.io/DiscordColorways/CS16/import.css);",
+      "author": "DaBluLite",
+      "authorID": "582170007505731594"
     }
   ]
 }
