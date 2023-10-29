@@ -1,57 +1,31 @@
 /*Automatically Generated - Colorway Creator V1.12 - Preset: Hue Rotation*/
-:root {
-    --brand-100-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 112%;
-    --brand-130-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 108%;
-    --brand-160-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 105%;
-    --brand-200-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 101%;
-    --brand-230-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 97%;
-    --brand-260-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 94%;
-    --brand-300-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 90%;
-    --brand-330-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 87%;
-    --brand-345-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 83%;
-    --brand-360-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 79%;
-    --brand-400-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 76%;
-    --brand-430-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 72%;
-    --brand-460-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 69%;
-    --brand-500-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 65%;
-    --brand-530-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 61%;
-    --brand-560-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 58%;
-    --brand-600-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 54%;
-    --brand-630-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 51%;
-    --brand-660-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 47%;
-    --brand-700-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 43%;
-    --brand-730-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 40%;
-    --brand-760-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 36%;
-    --brand-800-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 33%;
-    --brand-830-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 29%;
-    --brand-860-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 25%;
-    --brand-900-hsl: 227 calc(var(--saturation-factor,
-        1)*58%) 22%;
+:root:root {
+    --brand-100-hsl: 227 calc(var(--saturation-factor, 1)*58%) 112%;
+    --brand-130-hsl: 227 calc(var(--saturation-factor, 1)*58%) 108%;
+    --brand-160-hsl: 227 calc(var(--saturation-factor, 1)*58%) 105%;
+    --brand-200-hsl: 227 calc(var(--saturation-factor, 1)*58%) 101%;
+    --brand-230-hsl: 227 calc(var(--saturation-factor, 1)*58%) 97%;
+    --brand-260-hsl: 227 calc(var(--saturation-factor, 1)*58%) 94%;
+    --brand-300-hsl: 227 calc(var(--saturation-factor, 1)*58%) 90%;
+    --brand-330-hsl: 227 calc(var(--saturation-factor, 1)*58%) 87%;
+    --brand-345-hsl: 227 calc(var(--saturation-factor, 1)*58%) 83%;
+    --brand-360-hsl: 227 calc(var(--saturation-factor, 1)*58%) 79%;
+    --brand-400-hsl: 227 calc(var(--saturation-factor, 1)*58%) 76%;
+    --brand-430-hsl: 227 calc(var(--saturation-factor, 1)*58%) 72%;
+    --brand-460-hsl: 227 calc(var(--saturation-factor, 1)*58%) 69%;
+    --brand-500-hsl: 227 calc(var(--saturation-factor, 1)*58%) 65%;
+    --brand-530-hsl: 227 calc(var(--saturation-factor, 1)*58%) 61%;
+    --brand-560-hsl: 227 calc(var(--saturation-factor, 1)*58%) 58%;
+    --brand-600-hsl: 227 calc(var(--saturation-factor, 1)*58%) 54%;
+    --brand-630-hsl: 227 calc(var(--saturation-factor, 1)*58%) 51%;
+    --brand-660-hsl: 227 calc(var(--saturation-factor, 1)*58%) 47%;
+    --brand-700-hsl: 227 calc(var(--saturation-factor, 1)*58%) 43%;
+    --brand-730-hsl: 227 calc(var(--saturation-factor, 1)*58%) 40%;
+    --brand-760-hsl: 227 calc(var(--saturation-factor, 1)*58%) 36%;
+    --brand-800-hsl: 227 calc(var(--saturation-factor, 1)*58%) 33%;
+    --brand-830-hsl: 227 calc(var(--saturation-factor, 1)*58%) 29%;
+    --brand-860-hsl: 227 calc(var(--saturation-factor, 1)*58%) 25%;
+    --brand-900-hsl: 227 calc(var(--saturation-factor, 1)*58%) 22%;
     --primary-800-hsl: 227 calc(var(--saturation-factor, 1)*12%) 7%;
     --primary-730-hsl: 227 calc(var(--saturation-factor, 1)*10%) 13%;
     --primary-700-hsl: 227 calc(var(--saturation-factor, 1)*10%) 13%;
