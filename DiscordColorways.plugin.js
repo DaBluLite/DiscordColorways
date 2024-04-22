@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description The Definitive way of styling Discord. Create, use and share the colors that fits you.
- * @version 5.6.0
+ * @version 5.6.1
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -806,7 +806,7 @@ const knownThemeVars = {
 const name = "DiscordColorways";
 const author = "DaBluLite";
 const description = "The Definitive way of styling Discord. Create, use and share the colors that fits you.";
-const version = "5.6.0";
+const version = "5.6.1";
 const authorId = "582170007505731594";
 const invite = "ZfPH6SDkMW";
 const creatorVersion = "1.18";
@@ -1417,6 +1417,13 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 		--cyan-background-secondary: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${Math.min(HexToHSL("#" + tertiaryColor)[2] + 3.6 * 2, 100)}%);
 }`;
 	}
+	function cyan2(discordSaturation = false) {
+		return `:root:root {
+		--cyan-accent-color: ${"#" + accentColor};
+		--cyan-background-primary: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%/40%);
+		--cyan-second-layer: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${Math.min(HexToHSL("#" + tertiaryColor)[2] + 3.6 * 2, 100)}%);
+}`;
+	}
 	function virtualBoy(discordSaturation = false) {
 		return `:root:root {
 		--VBaccent: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + accentColor)[1]}%) ${HexToHSL("#" + accentColor)[2]}%;
@@ -1527,6 +1534,12 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 			name: "Cyan",
 			preset: cyan,
 			id: "cyan",
+			colors: ["primary", "secondary", "accent"]
+		},
+		cyan2: {
+			name: "Cyan 2",
+			preset: cyan2,
+			id: "cyan2",
 			colors: ["primary", "secondary", "accent"]
 		},
 		virtualBoy: {
@@ -4107,9 +4120,7 @@ const forceFullRerender = (fiber) => new Promise((resolve) => {
 const triggerRerender = async () => {
 	const node = document.getElementsByClassName(guildStyles.guilds)?.[0];
 	const fiber = getFiber(node);
-	if (await forceFullRerender(fiber)) {
-		console.log("Rerendered guilds");
-	} else {
+	if (await forceFullRerender(fiber)) ; else {
 		console.warn("Unable to rerender guilds");
 	}
 };
@@ -4153,44 +4164,45 @@ class DiscordColorways {
 			});
 		}, { name: "GuildsNav", once: true, silent: true });
 		CustomPatcher.after(Webpack.getByStrings("Messages.ACTIVITY_SETTINGS", { defaultExport: false }), "default", (cancel, result, ...args) => {
-			args[2].indexOf(args[2].filter((e) => e.label === Webpack.getByKeys("APP_SETTINGS").APP_SETTINGS));
-			function makeSettingsCategories() {
-				return [
-					{
-						section: "HEADER",
-						label: "DiscordColorways",
-						className: "vc-settings-header"
-					},
-					{
-						section: "ColorwaysSelector",
-						label: "Colorways",
-						element: SelectorPage,
-						className: "dc-colorway-selector"
-					},
-					{
-						section: "ColorwaysSettings",
-						label: "Settings",
-						element: SettingsPage,
-						className: "dc-colorway-settings"
-					},
-					{
-						section: "ColorwaysOnDemand",
-						label: "On-Demand",
-						element: OnDemandPage,
-						className: "dc-colorway-ondemand"
-					},
-					{
-						section: "ColorwaysManagement",
-						label: "Manage...",
-						element: ManageColorwaysPage,
-						className: "dc-colorway-management"
-					},
-					{
-						section: "DIVIDER"
-					}
-				].filter(Boolean);
-			}
-			return [...makeSettingsCategories(), ...args[2]];
+			const injectionIndex = args[2].indexOf(args[2].filter((e) => e.label === Webpack.getByKeys("APP_SETTINGS").APP_SETTINGS)[0]);
+			const newArr = args[2];
+			[
+				{
+					section: "HEADER",
+					label: "DiscordColorways",
+					className: "vc-settings-header"
+				},
+				{
+					section: "ColorwaysSelector",
+					label: "Colorways",
+					element: SelectorPage,
+					className: "dc-colorway-selector"
+				},
+				{
+					section: "ColorwaysSettings",
+					label: "Settings",
+					element: SettingsPage,
+					className: "dc-colorway-settings"
+				},
+				{
+					section: "ColorwaysOnDemand",
+					label: "On-Demand",
+					element: OnDemandPage,
+					className: "dc-colorway-ondemand"
+				},
+				{
+					section: "ColorwaysManagement",
+					label: "Manage...",
+					element: ManageColorwaysPage,
+					className: "dc-colorway-management"
+				},
+				{
+					section: "DIVIDER"
+				}
+			].filter(Boolean).forEach((elem, i) => {
+				newArr.splice(injectionIndex + i, 0, elem);
+			});
+			return newArr;
 		}, { name: "Settings", once: false, silent: true });
 		betterdiscord.DOM.addStyle(css);
 		triggerRerender();
