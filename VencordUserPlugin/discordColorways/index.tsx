@@ -94,8 +94,13 @@ export const ColorwayCSS = {
     remove: () => document.getElementById("activeColorwayCSS")!.remove(),
 };
 
+export const versionData = {
+    pluginVersion: "5.6.1",
+    creatorVersion: "1.18",
+};
+
 export default definePlugin({
-    name: "DiscordColorways (3rd-Party)",
+    name: "DiscordColorways",
     description:
         "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways",
     authors: [{
@@ -103,8 +108,8 @@ export default definePlugin({
         id: 582170007505731594n
     }, Devs.ImLvna],
     dependencies: ["ServerListAPI", "MessageAccessoriesAPI"],
-    pluginVersion: "5.6.0",
-    creatorVersion: "1.18",
+    pluginVersion: versionData.pluginVersion,
+    creatorVersion: versionData.creatorVersion,
     toolboxActions: {
         "Change Colorway": () => openModal(props => <SelectorModal modalProps={props} />),
         "Open Colorway Creator": () => openModal(props => <CreatorModal modalProps={props} />),

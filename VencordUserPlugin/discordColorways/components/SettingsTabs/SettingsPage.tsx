@@ -23,7 +23,7 @@ import {
     useState
 } from "@webpack/common";
 import { FluxEvents } from "@webpack/types";
-import { Plugins } from "Vencord";
+import { versionData } from "userplugins/discordColorways";
 
 import { defaultColorwaySource, fallbackColorways, knownColorwaySources } from "../../constants";
 import { Colorway } from "../../types";
@@ -258,7 +258,7 @@ export default function () {
                         marginBottom: "8px"
                     }}
                 >
-                    {(Plugins.plugins.DiscordColorways as any).pluginVersion}
+                    {versionData.pluginVersion}
                 </Text>
                 <Forms.FormTitle style={{ marginBottom: 0 }}>
                     Creator Version:
@@ -272,7 +272,7 @@ export default function () {
                         marginBottom: "8px"
                     }}
                 >
-                    {(Plugins.plugins.DiscordColorways as any).creatorVersion}{" "}
+                    {versionData.creatorVersion}{" "}
                     (Stable)
                 </Text>
                 <Forms.FormTitle style={{ marginBottom: 0 }}>
