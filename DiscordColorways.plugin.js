@@ -1,8 +1,8 @@
 /**
  * @name DiscordColorways
  * @author DaBluLite
- * @description The Definitive way of styling Discord. Create, use and share the colors that fits you.
- * @version 5.6.1
+ * @description The Definitive way of styling Discord. Create, use and share the colors that fit you.
+ * @version 5.6.2
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -37,99 +37,35 @@ const betterdiscord = new BdApi("DiscordColorways");
 const React = BdApi.React;
 const ReactDOM = BdApi.ReactDOM;
 
-// /home/dablulite/Discord-Colorways-BD/common.ts
-function customPatcher(defaultPatcher) {
-	return {
-		before: (object, method, callback, options) => {
-			const original = object?.[method];
-			if (!(original instanceof Function)) {
-				throw TypeError(`patch target ${original} is not a function`);
+// /home/dablulite/BD-Plugins/common.ts
+const Filters = {
+	...betterdiscord.Webpack.Filters,
+	byName: (name) => {
+		return (target) => (target?.displayName ?? target?.constructor?.displayName) === name;
+	},
+	byKeys: (...keys) => {
+		return (target) => target instanceof Object && keys.every((key) => key in target);
+	},
+	byProtos: (...protos) => {
+		return (target) => target instanceof Object && target.prototype instanceof Object && protos.every((proto) => proto in target.prototype);
+	},
+	bySource: (...fragments) => {
+		return (target) => {
+			while (target instanceof Object && "$$typeof" in target) {
+				target = target.render ?? target.type;
 			}
-			const cancel = defaultPatcher.before(object, method, options.once ? (...args) => {
-				const result = callback(cancel, original, ...args);
-				cancel();
-				return result;
-			} : (...args) => callback(cancel, original, ...args));
-			if (!options.silent) {
-				console.log(`Patched ${options.name ?? String(method)}`);
+			if (target instanceof Function) {
+				const source = target.toString();
+				const renderSource = target.prototype?.render?.toString();
+				return fragments.every((fragment) => typeof fragment === "string" ? source.includes(fragment) || renderSource?.includes(fragment) : fragment(source) || renderSource && fragment(renderSource));
+			} else {
+				return false;
 			}
-			return cancel;
-		},
-		after: (object, method, callback, options) => {
-			const original = object?.[method];
-			if (!(original instanceof Function)) {
-				throw TypeError(`patch target ${original} is not a function`);
-			}
-			const cancel = defaultPatcher.after(object, method, options.once ? (...args) => {
-				const result = callback(cancel, original, ...args);
-				cancel();
-				return result;
-			} : (...args) => callback(cancel, original, ...args));
-			if (!options.silent) {
-				console.log(`Patched ${options.name ?? String(method)}`);
-			}
-			return cancel;
-		},
-		instead: (object, method, callback, options) => {
-			const original = object?.[method];
-			if (!(original instanceof Function)) {
-				throw TypeError(`patch target ${original} is not a function`);
-			}
-			const cancel = defaultPatcher.instead(object, method, options.once ? (...args) => {
-				const result = callback(cancel, original, ...args);
-				cancel();
-				return result;
-			} : (...args) => callback(cancel, original, ...args));
-			if (!options.silent) {
-				console.log(`Patched ${options.name ?? String(method)}`);
-			}
-			return cancel;
-		}
-	};
-}
-function getFilters(defaultFilters) {
-	return {
-		...defaultFilters,
-		byName: (name) => {
-			return (target) => (target?.displayName ?? target?.constructor?.displayName) === name;
-		},
-		byKeys: (...keys) => {
-			return (target) => target instanceof Object && keys.every((key) => key in target);
-		},
-		byProtos: (...protos) => {
-			return (target) => target instanceof Object && target.prototype instanceof Object && protos.every((proto) => proto in target.prototype);
-		},
-		bySource: (...fragments) => {
-			return (target) => {
-				while (target instanceof Object && "$$typeof" in target) {
-					target = target.render ?? target.type;
-				}
-				if (target instanceof Function) {
-					const source = target.toString();
-					const renderSource = target.prototype?.render?.toString();
-					return fragments.every((fragment) => typeof fragment === "string" ? source.includes(fragment) || renderSource?.includes(fragment) : fragment(source) || renderSource && fragment(renderSource));
-				} else {
-					return false;
-				}
-			};
-		}
-	};
-}
-function getWebpack(defaultWebpack, defaultFilters) {
-	return {
-		...defaultWebpack,
-		find: (filter, { resolve = true, entries = false } = {}) => defaultWebpack.getModule(filter, {
-			defaultExport: resolve,
-			searchExports: entries
-		}),
-		waitForStore: (storeName, callback) => {
-			defaultWebpack.waitForModule(defaultFilters.byStoreName(storeName)).then((e) => callback(e));
-		}
-	};
-}
+		};
+	}
+};
 const ReactDOMInternals = ReactDOM?.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED?.Events ?? [];
 const [getInstanceFromNode, getNodeFromInstance, getFiberCurrentPropsFromNode, enqueueStateRestore, restoreStateIfNeeded, batchedUpdates] = ReactDOMInternals;
-const tooltip = (webpack) => webpack.getByKeys("FormItem").Tooltip;
 const FCHook = ({ children: { type, props }, callback }) => {
 	const result = type(props);
 	return callback(result, props) ?? result;
@@ -193,8 +129,6 @@ const queryFiber = (fiber, predicate, direction = "up", depth = 30) => {
 const findOwner = (fiber, depth = 50) => {
 	return queryFiber(fiber, (node) => node?.stateNode instanceof React.Component, "up", depth);
 };
-const getGuildStyles = (webpack, filters) => webpack.find(filters.byKeys("guilds", "base"));
-const getTreeStyles = (webpack, filters) => webpack.find(filters.byKeys("tree", "scroller"));
 const ColorwayCSS = {
 	get: () => document.getElementById("activeColorwayCSS")?.textContent || "",
 	set: (e) => {
@@ -208,6 +142,7 @@ const ColorwayCSS = {
 	},
 	remove: () => document.getElementById("activeColorwayCSS").remove()
 };
+var DiscordNative = window.DiscordNative;
 
 // utils.ts
 function HexToHSL(H) {
@@ -377,7 +312,7 @@ function proxyLazy(factory, attempts = 5, isChild = false) {
 	});
 }
 function waitForStore(storeName, callback) {
-	Webpack.waitForModule(Filters.byStoreName(storeName)).then((e) => callback(e));
+	betterdiscord.Webpack.waitForModule(Filters.byStoreName(storeName)).then((e) => callback(e));
 }
 
 // components/Spinner.tsx
@@ -386,34 +321,41 @@ function Spinner({ className }) {
 }
 
 // common.tsx
-const Webpack = getWebpack(betterdiscord.Webpack, betterdiscord.Webpack.Filters);
-const Filters = getFilters(Webpack.Filters);
-const CustomPatcher = customPatcher(betterdiscord.Patcher);
-const Tooltip = tooltip(Webpack);
-const ScrollerThin = Webpack.getByKeys("FormItem", "Button").ScrollerThin;
-const Button = Webpack.getByKeys("FormItem", "Button").Button;
-const Select = Webpack.getByKeys("FormItem", "Button").Select;
-const TextInput = Webpack.getByKeys("FormItem", "Button").TextInput;
-const Popout = Webpack.getByKeys("FormItem", "Button").Popout;
-const Switch = Webpack.getByKeys("FormItem", "Button").FormSwitch;
-const Card = Webpack.getByKeys("FormItem", "Button").Card;
 let Clipboard;
-const Text = Webpack.getByKeys("FormItem", "Button").Text;
-const Forms = {
-	FormTitle: Webpack.getByKeys("FormTitle").FormTitle,
-	FormText: Webpack.getByKeys("FormText").FormText,
-	FormDivider: Webpack.getByKeys("FormDivider").FormDivider,
-	FormSection: Webpack.getByKeys("FormSection").FormSection
-};
-const SettingsRouter = Webpack.getByKeys("open", "init");
+let Forms = {};
+let Card;
+let Button;
+let Switch;
+let Tooltip;
+let TextInput;
+let TextArea;
+let Text;
+let Select;
+let SearchableSelect;
+let Slider;
+let ButtonLooks;
+let Popout;
+let Dialog;
+let TabBar;
+let Paginator;
+let ScrollerThin;
+let Clickable;
+let Avatar;
+let FocusLock;
+let useToken;
+const SettingsRouter = betterdiscord.Webpack.getByKeys("open", "init");
 const Menu = {
-	Menu: Webpack.getByKeys("Menu").Menu,
-	MenuItem: Webpack.getByKeys("Menu").MenuItem
+	Menu: betterdiscord.Webpack.getByKeys("Menu").Menu,
+	MenuItem: betterdiscord.Webpack.getByKeys("Menu").MenuItem
 };
 let ColorPicker = () => {
 	return BdApi.React.createElement(Spinner, { className: "colorways-creator-module-warning" });
 };
-Webpack.waitForModule(Filters.byStrings("showEyeDropper")).then((e) => ColorPicker = e);
+betterdiscord.Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
+	({ useToken, Card, Button, FormSwitch: Switch, Tooltip, TextInput, TextArea, Text, Select, SearchableSelect, Slider, ButtonLooks, TabBar, Popout, Dialog, Paginator, ScrollerThin, Clickable, Avatar, FocusLock } = m);
+	Forms = m;
+});
+betterdiscord.Webpack.waitForModule(Filters.byStrings("showEyeDropper")).then((e) => ColorPicker = e);
 function Flex(props) {
 	props.style ??= {};
 	props.style.display = "flex";
@@ -425,22 +367,22 @@ function Flex(props) {
 let UserStore;
 let SelectedChannelStore;
 let SelectedGuildStore;
-const UserProfileActions = proxyLazy(() => Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal"));
-const UserUtils = proxyLazy(() => Webpack.getByKeys("getUser", "fetchCurrentUser"));
+const UserProfileActions = proxyLazy(() => betterdiscord.Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal"));
+const UserUtils = proxyLazy(() => betterdiscord.Webpack.getByKeys("getUser", "fetchCurrentUser"));
 const Modals = {
-	openModal: Webpack.getByKeys("openModal", "ModalHeader").openModal,
-	ModalRoot: Webpack.getByKeys("ModalRoot").ModalRoot,
-	ModalHeader: Webpack.getByKeys("ModalRoot").ModalHeader,
-	ModalContent: Webpack.getByKeys("ModalRoot").ModalContent,
-	ModalFooter: Webpack.getByKeys("ModalRoot").ModalFooter
+	openModal: betterdiscord.Webpack.getByKeys("openModal", "ModalHeader").openModal,
+	ModalRoot: betterdiscord.Webpack.getByKeys("ModalRoot").ModalRoot,
+	ModalHeader: betterdiscord.Webpack.getByKeys("ModalRoot").ModalHeader,
+	ModalContent: betterdiscord.Webpack.getByKeys("ModalRoot").ModalContent,
+	ModalFooter: betterdiscord.Webpack.getByKeys("ModalRoot").ModalFooter
 };
 const Toasts = {
-	show: Webpack.getByKeys("showToast")["showToast"],
-	pop: Webpack.getByKeys("popToast")["popToast"],
-	useToastStore: Webpack.getByKeys("useToastStore")["useToastStore"],
-	create: Webpack.getByKeys("createToast")["createToast"]
+	show: betterdiscord.Webpack.getByKeys("showToast")["showToast"],
+	pop: betterdiscord.Webpack.getByKeys("popToast")["popToast"],
+	useToastStore: betterdiscord.Webpack.getByKeys("useToastStore")["useToastStore"],
+	create: betterdiscord.Webpack.getByKeys("createToast")["createToast"]
 };
-const FluxDispatcher = Webpack.getModule((m) => m.dispatch && m.subscribe);
+const FluxDispatcher = betterdiscord.Webpack.getModule((m) => m.dispatch && m.subscribe);
 async function openUserProfile(id) {
 	const user = await UserUtils.getUser(id);
 	if (!user)
@@ -472,7 +414,7 @@ waitForStore("GuildChannelStore", (m) => m);
 waitForStore("MessageStore", (m) => m);
 waitForStore("WindowStore", (m) => m);
 waitForStore("EmojiStore", (m) => m);
-Webpack.waitForModule(Filters.byKeys("SUPPORTS_COPY", "copy")).then((e) => Clipboard = e);
+betterdiscord.Webpack.waitForModule(Filters.byKeys("SUPPORTS_COPY", "copy")).then((e) => Clipboard = e);
 function SettingsTab({ title, children }) {
 	return BdApi.React.createElement(Forms.FormSection, null, BdApi.React.createElement(
 		Text,
@@ -805,8 +747,8 @@ const knownThemeVars = {
 // plugin.json
 const name = "DiscordColorways";
 const author = "DaBluLite";
-const description = "The Definitive way of styling Discord. Create, use and share the colors that fits you.";
-const version = "5.6.1";
+const description = "The Definitive way of styling Discord. Create, use and share the colors that fit you.";
+const version = "5.6.2";
 const authorId = "582170007505731594";
 const invite = "ZfPH6SDkMW";
 const creatorVersion = "1.18";
@@ -3370,7 +3312,7 @@ function ColorwaysButton({
 }
 
 // style.css
-const css = "@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-experiment);\n  	border-radius: 16px;\n}\n\n.discordColorway {\n  	height: 60px;\n  	width: 60px;\n  	cursor: pointer;\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	position: relative;\n  	align-items: center;\n  	justify-content: center;\n  	transition: 170ms ease;\n}\n\n.discordColorway:hover {\n  	filter: brightness(.8);\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorway::before {\n  	content: \"\";\n  	position: absolute;\n  	top: -2px;\n  	left: -2px;\n  	border-radius: 50%;\n  	width: 64px;\n  	height: 64px;\n  	pointer-events: none;\n  	transition: .15s;\n}\n\n.discordColorway.active::before {\n  	box-shadow: inset 0 0 0 2px var(--brand-500), inset 0 0 0 4px var(--background-primary);\n}\n\n.discordColorwayPreviewColor {\n  	width: calc(50% - 2px);\n  	height: calc(50% - 2px);\n}\n\n.discordColorwayPreviewColor:first-child {\n  	margin-top: 2px;\n  	margin-left: 2px;\n  	border-top-left-radius: 52px;\n}\n\n.discordColorwayPreviewColor:nth-child(2) {\n  	margin-top: 2px;\n  	margin-right: 2px;\n  	border-top-right-radius: 52px;\n}\n\n.discordColorwayPreviewColor:nth-child(3) {\n  	margin-bottom: 2px;\n  	margin-left: 2px;\n  	border-bottom-left-radius: 52px;\n}\n\n.discordColorwayPreviewColor:nth-child(4) {\n  	margin-bottom: 2px;\n  	margin-right: 2px;\n  	border-bottom-right-radius: 52px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(2)))>.discordColorwayPreviewColor {\n  	height: calc(100% - 4px);\n  	width: calc(100% - 4px);\n  	margin: 2px;\n  	border-radius: 52px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor {\n  	height: calc(100% - 4px);\n  	margin-top: 2px;\n  	margin-bottom: 2px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor:nth-child(1) {\n  	border-top-left-radius: 52px;\n  	border-bottom-left-radius: 52px;\n  	margin-left: 2px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor:nth-child(2) {\n  	border-top-right-radius: 52px;\n  	border-bottom-right-radius: 52px;\n  	margin-right: 2px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(4)))>.discordColorwayPreviewColor:nth-child(3) {\n  	width: calc(100% - 4px);\n  	margin-right: 2px;\n  	border-bottom-right-radius: 52px;\n  	border-bottom-left-radius: 52px;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 16px 23px;\n  	width: 100%;\n  	flex-wrap: wrap;\n  	padding: 2px;\n  	scrollbar-width: none !important;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal {\n  	width: 100% !important;\n  	min-width: 596px !important;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	width: 100%;\n  	max-width: 596px;\n  	overflow: visible !important;\n  	padding: 0 16px 16px !important;\n}\n\n.ColorwaySelectorBtnContainer {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayCheckIconContainer {\n  	height: 20px;\n  	width: 20px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: 0;\n  	right: 0;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n}\n\n.discordColorway.active .colorwayCheckIconContainer {\n  	opacity: 1;\n}\n\n.colorwayCheckIcon {\n  	height: 20px;\n  	width: 20px;\n  	color: var(--white-500);\n}\n\n.colorwayInfoIconContainer {\n  	height: 20px;\n  	width: 20px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-700);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: .15s;\n}\n\n.colorwayInfoIcon {\n  	height: 20px;\n  	width: 20px;\n  	color: var(--white-500);\n  	padding: 2px;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	padding: 10px;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorwayCreator-colorPreviews:has(>.colorways-creator-module-warning) {\n  	background-color: transparent;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorways-creator-module-warning~.colorways-creator-module-warning {\n  	display: none;\n}\n\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"]>[class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"])>.colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100%;\n  	height: 46px;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	position: relative;\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: auto;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed>.colorwaysCreator-settingsList,\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-container {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: .2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: .48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow: 0 1px 0 hsl(var(--primary-900-hsl)/20%), 0 1.5px 0 hsl(var(--primary-860-hsl)/5%), 0 2px 0 hsl(var(--primary-900-hsl)/5%);\n  	width: 100%;\n  	height: 32px;\n  	flex: 1 0 auto;\n  	transition: background-color .1s linear;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl)/30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition: transform .1s ease-out, opacity .1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwaySelector-search {\n  	width: 100%;\n}\n\n.colorwaySelector-searchInput {\n  	border-radius: 0 3px 3px 0 !important;\n  	flex: 0 0 auto;\n}\n\n.colorwaySelector-pill.colorwaySelector-pill_select {\n  	border-radius: 3px 0 0 3px !important;\n  	flex: 0 0 auto;\n  	border: none;\n  	height: 40px;\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: .3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1)*9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1)*5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: .15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: .6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1)*87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: .15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: .23s;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n  	background-color: var(--background-secondary);\n}\n\n.colorwaysSettings-colorwaySource:hover {\n  	background-color: var(--background-secondary-alt);\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: .2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: .15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary+.colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary+.colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary+.colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent+.colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwaySelector-searchPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: .625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: var(--brand-experiment);\n  	color: var(--white-500);\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 1px;\n  	border-radius: 4px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all .22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0,-107%,0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.vc-backup-restore-card {\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n}\n\n.vc-settings-card {\n  	padding: 1em;\n  	margin-bottom: 1em;\n}";
+const css = "@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-experiment);\n  	border-radius: 16px;\n}\n\n.discordColorway {\n  	height: 60px;\n  	width: 60px;\n  	cursor: pointer;\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	position: relative;\n  	align-items: center;\n  	justify-content: center;\n  	transition: 170ms ease;\n}\n\n.discordColorway:hover {\n  	filter: brightness(.8);\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorway::before {\n  	content: \"\";\n  	position: absolute;\n  	top: -2px;\n  	left: -2px;\n  	border-radius: 50%;\n  	width: 64px;\n  	height: 64px;\n  	pointer-events: none;\n  	transition: .15s;\n}\n\n.discordColorway.active::before {\n  	box-shadow: inset 0 0 0 2px var(--brand-500), inset 0 0 0 4px var(--background-primary);\n}\n\n.discordColorwayPreviewColor {\n  	width: calc(50% - 2px);\n  	height: calc(50% - 2px);\n}\n\n.discordColorwayPreviewColor:first-child {\n  	margin-top: 2px;\n  	margin-left: 2px;\n  	border-top-left-radius: 52px;\n}\n\n.discordColorwayPreviewColor:nth-child(2) {\n  	margin-top: 2px;\n  	margin-right: 2px;\n  	border-top-right-radius: 52px;\n}\n\n.discordColorwayPreviewColor:nth-child(3) {\n  	margin-bottom: 2px;\n  	margin-left: 2px;\n  	border-bottom-left-radius: 52px;\n}\n\n.discordColorwayPreviewColor:nth-child(4) {\n  	margin-bottom: 2px;\n  	margin-right: 2px;\n  	border-bottom-right-radius: 52px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(2)))>.discordColorwayPreviewColor {\n  	height: calc(100% - 4px);\n  	width: calc(100% - 4px);\n  	margin: 2px;\n  	border-radius: 52px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor {\n  	height: calc(100% - 4px);\n  	margin-top: 2px;\n  	margin-bottom: 2px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor:nth-child(1) {\n  	border-top-left-radius: 52px;\n  	border-bottom-left-radius: 52px;\n  	margin-left: 2px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor:nth-child(2) {\n  	border-top-right-radius: 52px;\n  	border-bottom-right-radius: 52px;\n  	margin-right: 2px;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(4)))>.discordColorwayPreviewColor:nth-child(3) {\n  	width: calc(100% - 4px);\n  	margin-right: 2px;\n  	border-bottom-right-radius: 52px;\n  	border-bottom-left-radius: 52px;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 16px 23px;\n  	width: 100%;\n  	flex-wrap: wrap;\n  	padding: 2px;\n  	scrollbar-width: none !important;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal {\n  	width: 100% !important;\n  	min-width: 596px !important;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	width: 100%;\n  	max-width: 596px;\n  	overflow: visible !important;\n  	padding: 0 16px 16px !important;\n}\n\n.ColorwaySelectorBtnContainer {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayCheckIconContainer {\n  	height: 20px;\n  	width: 20px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: 0;\n  	right: 0;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n}\n\n.discordColorway.active .colorwayCheckIconContainer {\n  	opacity: 1;\n}\n\n.colorwayCheckIcon {\n  	height: 20px;\n  	width: 20px;\n  	color: var(--white-500);\n}\n\n.colorwayInfoIconContainer {\n  	height: 20px;\n  	width: 20px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-700);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: .15s;\n}\n\n.colorwayInfoIcon {\n  	height: 20px;\n  	width: 20px;\n  	color: var(--white-500);\n  	padding: 2px;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	padding: 10px;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorwayCreator-colorPreviews:has(>.colorways-creator-module-warning) {\n  	background-color: transparent;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorways-creator-module-warning~.colorways-creator-module-warning {\n  	display: none;\n}\n\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"]>[class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"])>.colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100%;\n  	height: 46px;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	position: relative;\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: auto;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed>.colorwaysCreator-settingsList,\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-container {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: .2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: .48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow: 0 1px 0 hsl(var(--primary-900-hsl)/20%), 0 1.5px 0 hsl(var(--primary-860-hsl)/5%), 0 2px 0 hsl(var(--primary-900-hsl)/5%);\n  	width: 100%;\n  	height: 32px;\n  	flex: 1 0 auto;\n  	transition: background-color .1s linear;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl)/30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition: transform .1s ease-out, opacity .1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwaySelector-search {\n  	width: 100%;\n}\n\n.colorwaySelector-searchInput {\n  	border-radius: 0 3px 3px 0 !important;\n  	flex: 0 0 auto;\n}\n\n.colorwaySelector-pill.colorwaySelector-pill_select {\n  	border-radius: 3px 0 0 3px !important;\n  	flex: 0 0 auto;\n  	border: none;\n  	height: 40px;\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: .3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1)*9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1)*5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: .15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: .6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1)*87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: .15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: .23s;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n  	background-color: var(--background-secondary);\n}\n\n.colorwaysSettings-colorwaySource:hover {\n  	background-color: var(--background-secondary-alt);\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: .2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: .15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary+.colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary+.colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary+.colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent+.colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwaySelector-searchPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: .625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: var(--brand-experiment);\n  	color: var(--white-500);\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 1px;\n  	border-radius: 4px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all .22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0,-107%,0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.dc-warning-card {\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n  	padding: 1em;\n  	margin-bottom: 1em;\n}";
 
 // components/SettingsTabs/SelectorPage.tsx
 function SelectorPage({
@@ -4025,17 +3967,18 @@ function OnDemandPage() {
 
 // components/SettingsTabs/ManageColorwaysPage.tsx
 function ManageColorwaysPage() {
-	return BdApi.React.createElement(SettingsTab, { title: "Manage Colorways" }, BdApi.React.createElement(Forms.FormSection, { title: "Import/Export" }, BdApi.React.createElement(Card, { className: "vc-settings-card vc-backup-restore-card" }, BdApi.React.createElement(Flex, { flexDirection: "column" }, BdApi.React.createElement("strong", null, "Warning"), BdApi.React.createElement("span", null, "Importing a colorways file will overwrite your current custom colorways."))), BdApi.React.createElement(Text, { variant: "text-md/normal", style: { marginBottom: "8px" } }, "You can import and export your custom colorways as a JSON file. This allows you to easily transfer them to another device/installation."), BdApi.React.createElement(Flex, null, BdApi.React.createElement(
+	return BdApi.React.createElement(SettingsTab, { title: "Manage Colorways" }, BdApi.React.createElement(Forms.FormSection, { title: "Import/Export" }, BdApi.React.createElement(Card, { className: "dc-warning-card" }, BdApi.React.createElement(Flex, { flexDirection: "column" }, BdApi.React.createElement("strong", null, "Warning"), BdApi.React.createElement("span", null, "Importing a colorways file will overwrite your current custom colorways."))), BdApi.React.createElement(Text, { variant: "text-md/normal", style: { marginBottom: "8px" } }, "You can import and export your custom colorways as a JSON file. This allows you to easily transfer them to another device/installation."), BdApi.React.createElement(Flex, null, BdApi.React.createElement(
 		Button,
 		{
 			size: Button.Sizes.SMALL,
 			onClick: async () => {
-				const [file] = await DiscordNative.fileManager.openFiles({
+				const data = await DiscordNative.fileManager.openFiles({
 					filters: [
 						{ name: "Discord Colorways List", extensions: ["json"] },
 						{ name: "all", extensions: ["*"] }
 					]
 				});
+				const file = data.file;
 				if (file) {
 					try {
 						betterdiscord.Data.save("custom_colorways", JSON.parse(new TextDecoder().decode(file.data)));
@@ -4105,13 +4048,28 @@ function ManageColorwaysPage() {
 }
 
 // index.tsx
-const guildStyles = getGuildStyles(Webpack, Filters);
-const treeStyles = getTreeStyles(Webpack, Filters);
+const guildStyles = betterdiscord.Webpack.getModule(Filters.byKeys("guilds", "base"), { searchExports: false, defaultExport: true });
+const treeStyles = betterdiscord.Webpack.getModule(Filters.byKeys("tree", "scroller"), { searchExports: false, defaultExport: true });
+const instead = (object, method, callback, options) => {
+	const original = object?.[method];
+	if (!(original instanceof Function)) {
+		throw TypeError(`patch target ${original} is not a function`);
+	}
+	const cancel = betterdiscord.Patcher.instead(object, method, options.once ? (...args) => {
+		const result = callback(cancel, original, ...args);
+		cancel();
+		return result;
+	} : (...args) => callback(cancel, original, ...args));
+	if (!options.silent) {
+		console.log(`Patched ${options.name ?? String(method)}`);
+	}
+	return cancel;
+};
 const forceFullRerender = (fiber) => new Promise((resolve) => {
 	const owner = findOwner(fiber);
 	if (owner) {
 		const { stateNode } = owner;
-		CustomPatcher.instead(stateNode, "render", () => null, { once: true, silent: true });
+		instead(stateNode, "render", () => null, { once: true, silent: true });
 		stateNode.forceUpdate(() => stateNode.forceUpdate(() => resolve(true)));
 	} else {
 		resolve(false);
@@ -4120,7 +4078,7 @@ const forceFullRerender = (fiber) => new Promise((resolve) => {
 const triggerRerender = async () => {
 	const node = document.getElementsByClassName(guildStyles.guilds)?.[0];
 	const fiber = getFiber(node);
-	if (await forceFullRerender(fiber)) ; else {
+	if (!await forceFullRerender(fiber)) {
 		console.warn("Unable to rerender guilds");
 	}
 };
@@ -4138,17 +4096,49 @@ betterdiscord.Data.save("settings", Object.assign(
 	},
 	betterdiscord.Data.load("settings")
 ));
-betterdiscord.Data.save("custom_colorways", Object.assign(
-	[],
-	betterdiscord.Data.load("custom_colorways")
-));
-const GuildsNav = Webpack.find(Filters.bySource("guildsnav"), { entries: true });
+betterdiscord.Data.save("custom_colorways", Object.assign([], betterdiscord.Data.load("custom_colorways")));
+const GuildsNav = betterdiscord.Webpack.getModule(Filters.bySource("guildsnav"), { searchExports: true, defaultExport: true });
+const SettingsSection = [
+	{
+		section: "HEADER",
+		label: "DiscordColorways",
+		className: "vc-settings-header"
+	},
+	{
+		section: "ColorwaysSelector",
+		label: "Colorways",
+		element: SelectorPage,
+		className: "dc-colorway-selector"
+	},
+	{
+		section: "ColorwaysSettings",
+		label: "Settings",
+		element: SettingsPage,
+		className: "dc-colorway-settings"
+	},
+	{
+		section: "ColorwaysOnDemand",
+		label: "On-Demand",
+		element: OnDemandPage,
+		className: "dc-colorway-ondemand"
+	},
+	{
+		section: "ColorwaysManagement",
+		label: "Manage...",
+		element: ManageColorwaysPage,
+		className: "dc-colorway-management"
+	},
+	{
+		section: "DIVIDER"
+	}
+].filter(Boolean);
+const ModifiedSettingsArr = [];
 class DiscordColorways {
 	load() {
 	}
 	start() {
-		CustomPatcher.after(GuildsNav, "type", (cancel, result, ...args) => {
-			const target = queryTree(args[2], (node) => node?.props?.className?.split(" ").includes(guildStyles.guilds));
+		betterdiscord.Patcher.after(GuildsNav, "type", (cancel, result, ...args) => {
+			const target = queryTree(args[0], (node) => node?.props?.className?.split(" ").includes(guildStyles.guilds));
 			if (!target) {
 				return console.error("Unable to find chain patch target");
 			}
@@ -4162,48 +4152,18 @@ class DiscordColorways {
 				const index = homeButtonIndex > -1 ? homeButtonIndex + 1 : 2;
 				children.splice(index, 0, BdApi.React.createElement(ColorwaysButton, null));
 			});
-		}, { name: "GuildsNav", once: true, silent: true });
-		CustomPatcher.after(Webpack.getByStrings("Messages.ACTIVITY_SETTINGS", { defaultExport: false }), "default", (cancel, result, ...args) => {
-			const injectionIndex = args[2].indexOf(args[2].filter((e) => e.label === Webpack.getByKeys("APP_SETTINGS").APP_SETTINGS)[0]);
-			const newArr = args[2];
-			[
-				{
-					section: "HEADER",
-					label: "DiscordColorways",
-					className: "vc-settings-header"
-				},
-				{
-					section: "ColorwaysSelector",
-					label: "Colorways",
-					element: SelectorPage,
-					className: "dc-colorway-selector"
-				},
-				{
-					section: "ColorwaysSettings",
-					label: "Settings",
-					element: SettingsPage,
-					className: "dc-colorway-settings"
-				},
-				{
-					section: "ColorwaysOnDemand",
-					label: "On-Demand",
-					element: OnDemandPage,
-					className: "dc-colorway-ondemand"
-				},
-				{
-					section: "ColorwaysManagement",
-					label: "Manage...",
-					element: ManageColorwaysPage,
-					className: "dc-colorway-management"
-				},
-				{
-					section: "DIVIDER"
-				}
-			].filter(Boolean).forEach((elem, i) => {
+		});
+		betterdiscord.Patcher.after(betterdiscord.Webpack.getByStrings("Messages.ACTIVITY_SETTINGS", { defaultExport: false }), "default", (cancel, result, ...args) => {
+			const injectionIndex = args[0].indexOf(args[0].filter((e) => e.label === betterdiscord.Webpack.getByKeys("APP_SETTINGS").APP_SETTINGS)[0]);
+			const newArr = args[0];
+			SettingsSection.forEach((elem, i) => {
 				newArr.splice(injectionIndex + i, 0, elem);
 			});
-			return newArr;
-		}, { name: "Settings", once: false, silent: true });
+			if (!ModifiedSettingsArr.length)
+				ModifiedSettingsArr.push(...newArr);
+			if (newArr !== ModifiedSettingsArr)
+				return newArr;
+		});
 		betterdiscord.DOM.addStyle(css);
 		triggerRerender();
 		ColorwayCSS.set(betterdiscord.Data.load("settings").activeColorway);
