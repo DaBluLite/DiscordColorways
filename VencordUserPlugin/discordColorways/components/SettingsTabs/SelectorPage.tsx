@@ -10,6 +10,7 @@ import * as DataStore from "@api/DataStore";
 import { Flex } from "@components/Flex";
 import { SettingsTab } from "@components/VencordSettings/shared";
 import { openModal } from "@utils/modal";
+import { findByPropsLazy } from "@webpack";
 import {
     Button,
     Forms,
@@ -29,6 +30,8 @@ import { Colorway } from "../../types";
 import ColorPickerModal from "../ColorPicker";
 import CreatorModal from "../CreatorModal";
 import ColorwayInfoModal from "../InfoModal";
+
+const { SelectionCircle } = findByPropsLazy("SelectionCircle");
 
 export default function ({
     visibleTabProps = "all",
@@ -321,7 +324,7 @@ export default function ({
                                 {({ onMouseEnter, onMouseLeave }) => {
                                     return (
                                         <div
-                                            className={"discordColorway" + (currentColorway === color.name ? " active" : "")}
+                                            className="discordColorway"
                                             id={"colorway-" + color.name}
                                             data-last-official={
                                                 ind + 1 === colorways.length
@@ -429,6 +432,7 @@ export default function ({
                                                     );
                                                 })}
                                             </div>
+                                            {currentColorway === color.name && <SelectionCircle />}
                                         </div>
                                     );
                                 }}

@@ -125,5 +125,33 @@ export default function () {
                 </Button>
             </Flex>
         </Forms.FormSection>
+        <Forms.FormDivider className={Margins.top8 + " " + Margins.bottom8} />
+        <Forms.FormSection title="Developer Options:">
+            <Button
+                size={Button.Sizes.SMALL}
+                onClick={async () => {
+                    const colorwaySourceFiles = await DataStore.get(
+                        "colorwaySourceFiles"
+                    );
+                    const responses: Response[] = await Promise.all(
+                        colorwaySourceFiles.map((url: string) =>
+                            fetch(url)
+                        )
+                    );
+                    const data = await Promise.all(
+                        responses.map((res: Response) =>
+                            res.json().then(dt => { return { colorways: dt.colorways, url: res.url }; }).catch(() => { return { colorways: [], url: res.url }; })
+                        ));
+                    const colorwaysArr: Colorway[] = data.flatMap(json => json.url === defaultColorwaySource ? json.colorways : []);
+
+                    if (IS_DISCORD_DESKTOP) {
+                        DiscordNative.fileManager.saveWithDialog(JSON.stringify(colorwaysArr.map(({ name: nameOld, "dc-import": oldImport, ...rest }: Colorway) => ({ name: (nameOld + " (Custom)"), "dc-import": generateCss(rest.primary.split("#")[1] || "313338", rest.secondary.split("#")[1] || "2b2d31", rest.tertiary.split("#")[1] || "1e1f22", rest.accent.split("#")[1] || "5865f2", true, true), ...rest }))), "colorways.json");
+                    } else {
+                        saveFile(new File([JSON.stringify(colorwaysArr.map(({ name: nameOld, "dc-import": oldImport, ...rest }: Colorway) => ({ name: (nameOld + " (Custom)"), "dc-import": generateCss(rest.primary.split("#")[1] || "313338", rest.secondary.split("#")[1] || "2b2d31", rest.tertiary.split("#")[1] || "1e1f22", rest.accent.split("#")[1] || "5865f2", true, true), ...rest })))], "colorways.json", { type: "application/json" }));
+                    }
+                }}>
+                Update all official Colorways and export
+            </Button>
+        </Forms.FormSection>
     </SettingsTab>;
 }

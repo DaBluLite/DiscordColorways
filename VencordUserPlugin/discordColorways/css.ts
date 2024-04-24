@@ -6,7 +6,7 @@
 
 import { Plugins } from "Vencord";
 
-import { HexToHSL } from "./utils";
+import { colorToHex, HexToHSL } from "./utils";
 
 export const colorVariables: string[] = [
     "brand-100",
@@ -405,6 +405,10 @@ function gradientBase(accentColor?: string, discordSaturation = false) {
 }
 
 export function generateCss(primaryColor: string, secondaryColor: string, tertiaryColor: string, accentColor: string, tintedText: boolean, discordSaturation: boolean) {
+    primaryColor = colorToHex(primaryColor);
+    secondaryColor = colorToHex(secondaryColor);
+    tertiaryColor = colorToHex(tertiaryColor);
+    accentColor = colorToHex(accentColor);
     const colorwayCss = `/*Automatically Generated - Colorway Creator V${(Plugins.plugins.DiscordColorways as any).creatorVersion}*/
 :root:root {
     --brand-100-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(((HexToHSL("#" + accentColor)[1] / 100) * (100 + BrandSatDiffs[100])) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[100]) * 10) / 10, 0)};
