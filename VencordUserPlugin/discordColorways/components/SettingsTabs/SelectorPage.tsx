@@ -26,7 +26,9 @@ import {
 
 import { ColorwayCSS } from "../..";
 import { defaultColorwaySource, fallbackColorways } from "../../constants";
+import { generateCss } from "../../css";
 import { Colorway } from "../../types";
+import { colorToHex } from "../../utils";
 import ColorPickerModal from "../ColorPicker";
 import CreatorModal from "../CreatorModal";
 import ColorwayInfoModal from "../InfoModal";
@@ -381,43 +383,40 @@ export default function ({
                                             </div>
                                             <div
                                                 className="discordColorwayPreviewColorContainer"
-                                                onClick={() => {
-                                                    if (
-                                                        currentColorway ===
-                                                        color.name
-                                                    ) {
-                                                        DataStore.set(
-                                                            "actveColorwayID",
-                                                            null
-                                                        );
-                                                        DataStore.set(
-                                                            "actveColorway",
-                                                            null
-                                                        );
+                                                onClick={async () => {
+                                                    const [
+                                                        onDemandWays,
+                                                        onDemandWaysTintedText,
+                                                        onDemandWaysDiscordSaturation
+                                                    ] = await DataStore.getMany([
+                                                        "onDemandWays",
+                                                        "onDemandWaysTintedText",
+                                                        "onDemandWaysDiscordSaturation"
+                                                    ]);
+                                                    if (currentColorway === color.name) {
+                                                        DataStore.set("actveColorwayID", null);
+                                                        DataStore.set("actveColorway", null);
                                                         ColorwayCSS.remove();
                                                     } else {
-                                                        DataStore.set(
-                                                            "actveColorwayID",
-                                                            color.name
-                                                        );
-                                                        DataStore.set(
-                                                            "actveColorway",
-                                                            color["dc-import"]
-                                                        );
-                                                        ColorwayCSS.set(
-                                                            color["dc-import"]
-                                                        );
+                                                        DataStore.set("activeColorwayColors", color.colors);
+                                                        DataStore.set("actveColorwayID", color.name);
+                                                        if (onDemandWays) {
+                                                            const demandedColorway = generateCss(
+                                                                colorToHex(color.primary),
+                                                                colorToHex(color.secondary),
+                                                                colorToHex(color.tertiary),
+                                                                colorToHex(color.accent),
+                                                                onDemandWaysTintedText,
+                                                                onDemandWaysDiscordSaturation
+                                                            );
+                                                            DataStore.set("actveColorway", demandedColorway);
+                                                            ColorwayCSS.set(demandedColorway);
+                                                        } else {
+                                                            DataStore.set("actveColorway", color["dc-import"]);
+                                                            ColorwayCSS.set(color["dc-import"]);
+                                                        }
                                                     }
-                                                    DataStore.get(
-                                                        "actveColorwayID"
-                                                    ).then(
-                                                        (
-                                                            actveColorwayID: string
-                                                        ) =>
-                                                            setCurrentColorway(
-                                                                actveColorwayID
-                                                            )
-                                                    );
+                                                    setCurrentColorway(await DataStore.get("actveColorwayID") as string);
                                                 }}
                                             >
                                                 {colors.map((colorItm) => {

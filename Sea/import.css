@@ -1,178 +1,49 @@
-/*Automatically Generated - Colorway Creator V1.12*/
+/*Automatically Generated - Colorway Creator V1.18.1*/
 :root:root {
-    --brand-100-hsl: 184 calc(var(--saturation-factor, 1)*100%) 97%;
-    --brand-130-hsl: 184 calc(var(--saturation-factor, 1)*100%) 93%;
-    --brand-160-hsl: 184 calc(var(--saturation-factor, 1)*100%) 90%;
-    --brand-200-hsl: 184 calc(var(--saturation-factor, 1)*100%) 86%;
-    --brand-230-hsl: 184 calc(var(--saturation-factor, 1)*100%) 82%;
-    --brand-260-hsl: 184 calc(var(--saturation-factor, 1)*100%) 79%;
-    --brand-300-hsl: 184 calc(var(--saturation-factor, 1)*100%) 75%;
-    --brand-330-hsl: 184 calc(var(--saturation-factor, 1)*100%) 72%;
-    --brand-345-hsl: 184 calc(var(--saturation-factor, 1)*100%) 68%;
-    --brand-360-hsl: 184 calc(var(--saturation-factor, 1)*100%) 64%;
-    --brand-400-hsl: 184 calc(var(--saturation-factor, 1)*100%) 61%;
-    --brand-430-hsl: 184 calc(var(--saturation-factor, 1)*100%) 57%;
-    --brand-460-hsl: 184 calc(var(--saturation-factor, 1)*100%) 54%;
-    --brand-500-hsl: 184 calc(var(--saturation-factor, 1)*100%) 50%;
-    --brand-530-hsl: 184 calc(var(--saturation-factor, 1)*100%) 46%;
-    --brand-560-hsl: 184 calc(var(--saturation-factor, 1)*100%) 43%;
-    --brand-600-hsl: 184 calc(var(--saturation-factor, 1)*100%) 39%;
-    --brand-630-hsl: 184 calc(var(--saturation-factor, 1)*100%) 36%;
-    --brand-660-hsl: 184 calc(var(--saturation-factor, 1)*100%) 32%;
-    --brand-700-hsl: 184 calc(var(--saturation-factor, 1)*100%) 28%;
-    --brand-730-hsl: 184 calc(var(--saturation-factor, 1)*100%) 25%;
-    --brand-760-hsl: 184 calc(var(--saturation-factor, 1)*100%) 21%;
-    --brand-800-hsl: 184 calc(var(--saturation-factor, 1)*100%) 18%;
-    --brand-830-hsl: 184 calc(var(--saturation-factor, 1)*100%) 14%;
-    --brand-860-hsl: 184 calc(var(--saturation-factor, 1)*100%) 10%;
-    --brand-900-hsl: 184 calc(var(--saturation-factor, 1)*100%) 7%;
-    --mention-foreground: black !important;
-    --primary-800-hsl: 173 calc(var(--saturation-factor, 1)*63%) 5%;
-    --primary-730-hsl: 173 calc(var(--saturation-factor, 1)*60%) 8%;
+    --brand-100-hsl: 235 calc(var(--saturation-factor, 1)*77.8%) 98.5;
+    --brand-130-hsl: 235 calc(var(--saturation-factor, 1)*87.9%) 97.2%;
+    --brand-160-hsl: 235 calc(var(--saturation-factor, 1)*85%) 95.2%;
+    --brand-200-hsl: 235 calc(var(--saturation-factor, 1)*83.7%) 93.2%;
+    --brand-230-hsl: 235 calc(var(--saturation-factor, 1)*87.4%) 91.3%;
+    --brand-260-hsl: 235 calc(var(--saturation-factor, 1)*86.6%) 88.9%;
+    --brand-300-hsl: 235 calc(var(--saturation-factor, 1)*86.5%) 86.2%;
+    --brand-330-hsl: 235 calc(var(--saturation-factor, 1)*85.5%) 81.9%;
+    --brand-345-hsl: 235 calc(var(--saturation-factor, 1)*85.6%) 79.1%;
+    --brand-360-hsl: 235 calc(var(--saturation-factor, 1)*86.5%) 77.8%;
+    --brand-400-hsl: 235 calc(var(--saturation-factor, 1)*86.5%) 72.1%;
+    --brand-430-hsl: 235 calc(var(--saturation-factor, 1)*86.1%) 70.1%;
+    --brand-460-hsl: 235 calc(var(--saturation-factor, 1)*85.9%) 67.8%;
+    --brand-500-hsl: 235 calc(var(--saturation-factor, 1)*86%) 65%;
+    --brand-530-hsl: 235 calc(var(--saturation-factor, 1)*64.7%) 59.1%;
+    --brand-560-hsl: 235 calc(var(--saturation-factor, 1)*43.1%) 52.7%;
+    --brand-600-hsl: 235 calc(var(--saturation-factor, 1)*35.4%) 44.4%;
+    --brand-630-hsl: 235 calc(var(--saturation-factor, 1)*35.4%) 38.5%;
+    --brand-660-hsl: 235 calc(var(--saturation-factor, 1)*36.1%) 33.6%;
+    --brand-700-hsl: 235 calc(var(--saturation-factor, 1)*35.9%) 26.2%;
+    --brand-730-hsl: 235 calc(var(--saturation-factor, 1)*35.6%) 24.6%;
+    --brand-760-hsl: 235 calc(var(--saturation-factor, 1)*35.8%) 22.5%;
+    --brand-800-hsl: 235 calc(var(--saturation-factor, 1)*36.8%) 19.7%;
+    --brand-830-hsl: 235 calc(var(--saturation-factor, 1)*36.6%) 15.2%;
+    --brand-860-hsl: 235 calc(var(--saturation-factor, 1)*35.8%) 9.9%;
+    --brand-900-hsl: 235 calc(var(--saturation-factor, 1)*40.8%) 3.4%;
+    --primary-800-hsl: 173 calc(var(--saturation-factor, 1)*75%) 0.7999999999999998%;
+    --primary-730-hsl: 173 calc(var(--saturation-factor, 1)*67.2%) 4.4%;
     --primary-700-hsl: 173 calc(var(--saturation-factor, 1)*60%) 8%;
-    --primary-660-hsl: 180 calc(var(--saturation-factor, 1)*81%) 17%;
-    --primary-645-hsl: 187 calc(var(--saturation-factor, 1)*79%) 8%;
+    --primary-660-hsl: 181 calc(var(--saturation-factor, 1)*81.4%) 17.4%;
+    --primary-645-hsl: 181 calc(var(--saturation-factor, 1)*84.9%) 19.9%;
     --primary-630-hsl: 181 calc(var(--saturation-factor, 1)*79%) 21%;
     --primary-600-hsl: 187 calc(var(--saturation-factor, 1)*79%) 13%;
-    --primary-560-hsl: 187 calc(var(--saturation-factor, 1)*80%) 15%;
-    --primary-530-hsl: 187 calc(var(--saturation-factor, 1)*80%) 15%;
-    --primary-500-hsl: 187 calc(var(--saturation-factor, 1)*80%) 15%;
+    --primary-560-hsl: 187 calc(var(--saturation-factor, 1)*79%) 16.6%;
+    --primary-530-hsl: 187 calc(var(--saturation-factor, 1)*76.6%) 20.2%;
+    --primary-500-hsl: 187 calc(var(--saturation-factor, 1)*70.3%) 23.8%;
     --primary-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50%;
-    --primary-430-hsl: 187 calc(var(--saturation-factor, 1)*80%) 7.8%;
-    --primary-400-hsl: 187 calc(var(--saturation-factor, 1)*80%) 4.199999999999999%;
+    --primary-430: hsl(181, calc(var(--saturation-factor, 1)*52.9%), 90%);
+    --primary-400: hsl(181, calc(var(--saturation-factor, 1)*67.6%), 90%);
+    --primary-360: hsl(181, calc(var(--saturation-factor, 1)*93.9%), 90%);
 }
-
-/*Primary*/
-.theme-dark .container__5c7e7 *,
-.theme-dark .body__83069 *,
-.theme-dark .toolbar__88c63 *,
-.theme-dark .container__18bf5 *,
-.theme-dark .messageContent__21e69,
-.theme-dark .attachButtonPlus_bf89ca,
-.theme-dark .username_d30d99:not([style]),
-.theme-dark .children__32014 *,
-.theme-dark .buttonContainer_dd4b62 *,
-.theme-dark .listItem_fa7b36 * {
-    --white-500: white !important;
-    --text-normal: white !important;
-    --header-primary: white !important;
+.emptyPage_feb902,
+.scrollerContainer_dda72c,
+.container__03ec9,
+.header__71942 {
+    background-color: unset !important;
 }
-
-.theme-dark .contentRegionScroller__86c79 *:not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
-    --white-500: white !important;
-}
-
-.theme-dark .container__7590f,
-.theme-dark .container__10dc7,
-.theme-dark .header__60bef {
-    background: transparent;
-}
-
-.theme-dark .header__60bef *,
-.theme-dark .title_b7d661 * {
-    --channel-icon: white;
-}
-
-.theme-dark .callContainer_cbde45 * {
-    --white-500: white !important;
-}
-
-.theme-dark .channelTextArea__2e60f * {
-    --text-normal: white;
-}
-
-.theme-dark .placeholder_e68c63 {
-    --channel-text-area-placeholder: white;
-    opacity: .6;
-}
-
-.theme-dark .colorwaySelectorIcon {
-    background-color: white;
-}
-
-.theme-dark .root_a28985 > .header__6d5ea > h1 {
-    color: white;
-}
-/*End Primary*/
-
-/*Secondary*/
-.theme-dark .wrapper__6e669 *,
-.theme-dark .sidebar_ded4b5 *:not(.hasBanner_e78601 *),
-.theme-dark .members__9f47b *:not([style]),
-.theme-dark .sidebarRegionScroller__1fa7e *,
-.theme-dark .header__9f6dc,
-.theme-dark .lookFilled__19298.colorPrimary__6ed40 {
-    --white-500: white !important;
-    --channels-default: hsl(180.70588235294116, calc(var(--saturation-factor, 1)*100%), 90%) !important;
-    --channel-icon: hsl(180.70588235294116, calc(var(--saturation-factor, 1)*100%), 90%) !important;
-    --interactive-normal: var(--white-500);
-    --interactive-hover: var(--white-500);
-    --interactive-active: var(--white-500);
-}
-
-.theme-dark .channelRow__96673 {
-    background-color: var(--background-secondary);
-}
-
-.theme-dark .channelRow__96673 * {
-    --channel-icon: white;
-}
-
-.theme-dark #app-mount .activity__3cbac,
-.theme-dark #app-mount .activity__3cbac * {
-    --channels-default: var(--white-500) !important;
-}
-
-.theme-dark .nameTag__0e320 {
-    --header-primary: white !important;
-    --header-secondary: hsl(180.70588235294116, calc(var(--saturation-factor, 1)*100%), 90%) !important;
-}
-
-.theme-dark .bannerVisible__191f6 .headerContent_ee8727 {
-    color: #fff;
-}
-
-.theme-dark .embedFull__8dc21 {
-    --text-normal: white;
-}
-/*End Secondary*/
-
-/*Tertiary*/
-.theme-dark .winButton__88672,
-.theme-dark .searchBar_ff8800 *,
-.theme-dark .wordmarkWindows__05c46,
-.theme-dark .searchBar_e0c60b *,
-.theme-dark .searchBarComponent__22760 {
-    --white-500: white !important;
-}
-
-.theme-dark [style="background-color: var(--background-secondary);"] {
-    color: white;
-}
-
-.theme-dark .popout__24e32 > *,
-.theme-dark .colorwayHeaderTitle {
-    --interactive-normal: white !important;
-    --header-secondary: white !important;
-}
-
-.theme-dark .tooltip__01384 {
-    --text-normal: white !important;
-}
-/*End Tertiary*/
-
-/*Accent*/
-.selected__5250e *,
-.selected_f5ec8e *,
-#app-mount .lookFilled__19298.colorBrand_b2253e:not(.buttonColor_a6eb73),
-.colorDefault__0b482.focused__27621,
-.row__4daf2:hover,
-.colorwayInfoIcon,
-.colorwayCheckIcon {
-    --white-500: black !important;
-}
-
-.ColorwaySelectorBtn:hover .colorwaySelectorIcon {
-    background-color: black !important;
-}
-/*End Accent*/
