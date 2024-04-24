@@ -125,35 +125,5 @@ export default function () {
                 </Button>
             </Flex>
         </Forms.FormSection>
-        <Forms.FormDivider className={Margins.top8 + " " + Margins.bottom8} />
-        <Forms.FormSection title="Developer Options:">
-            <Button
-                size={Button.Sizes.SMALL}
-                onClick={async () => {
-                    const colorwaySourceFiles = await DataStore.get(
-                        "colorwaySourceFiles"
-                    );
-                    const responses: Response[] = await Promise.all(
-                        colorwaySourceFiles.map((url: string) =>
-                            fetch(url)
-                        )
-                    );
-                    const data = await Promise.all(
-                        responses.map((res: Response) =>
-                            res.json().then(dt => { return { colorways: dt.colorways, url: res.url }; }).catch(() => { return { colorways: [], url: res.url }; })
-                        ));
-                    const colorwaysArr: Colorway[] = data.flatMap(json => json.url === defaultColorwaySource ? json.colorways : []);
-
-                    colorwaysArr.forEach((color: Colorway) => {
-                        if (IS_DISCORD_DESKTOP) {
-                            DiscordNative.fileManager.saveWithDialog(generateCss(color.primary.split("#")[1] || "313338", color.secondary.split("#")[1] || "2b2d31", color.tertiary.split("#")[1] || "1e1f22", color.accent.split("#")[1] || "5865f2", true, true), `import_${color.name.replaceAll(" ", "-").replaceAll("'", "")}.css`);
-                        } else {
-                            saveFile(new File([generateCss(color.primary.split("#")[1] || "313338", color.secondary.split("#")[1] || "2b2d31", color.tertiary.split("#")[1] || "1e1f22", color.accent.split("#")[1] || "5865f2", true, true)], `import_${color.name.replaceAll(" ", "-").replaceAll("'", "")}.css`, { type: "text/plain;charset=utf-8" }));
-                        }
-                    });
-                }}>
-                Update all official Colorways and export
-            </Button>
-        </Forms.FormSection>
     </SettingsTab>;
 }

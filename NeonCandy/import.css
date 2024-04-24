@@ -1,4 +1,3 @@
-@import url(//dablulite.github.io/css-snippets/NoLightInDark/import.css);
 @import url(//dablulite.github.io/css-snippets/NitroThemesFix/import.css);
 :root:root {
     --brand-100-hsl: 299 calc(var(--saturation-factor, 1)*100%) 97%;
@@ -86,31 +85,32 @@
     --bg-overlay-opacity-home-card: 0.9;
     --bg-overlay-opacity-app-frame: var(--bg-overlay-opacity-5);
 }
-.children__32014:after, .form__13a2c:before {
+.children_cde9af:after, .form_d8a4a1:before {
     content: none;
 }
-.scroller__3d071 {
+.scroller_de945b {
     background: var(--bg-overlay-app-frame,var(--background-tertiary));
 }
-.expandedFolderBackground__1bec6 {
+.expandedFolderBackground_b1385f {
     background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
-.wrapper_d281dd:not(:hover):not(.selected_f5ec8e) .childWrapper__01b9c {
+.wrapper__8436d:not(:hover, .selected_ae80f7) .childWrapper_a6ce15,
+.ColorwaySelectorBtn:not(:hover) {
     background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
-.folder__17546:has(.expandedFolderIconWrapper__458cf) {
+.folder__17546:has(.expandedFolderIconWrapper__324c1) {
     background: var(--bg-overlay-6,var(--background-secondary));
 }
-.circleIconButton_d8df29:not(.selected__5250e) {
+.circleIconButton__05cf2:not(.selected_aded59) {
     background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
-.auto_a48086::-webkit-scrollbar-thumb,
+.auto_a3c0bd::-webkit-scrollbar-thumb,
 .thin_b1c063::-webkit-scrollbar-thumb {
     background-size: 200vh;
     background-image: -webkit-gradient(linear,left top,left bottom,from(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4))),to(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4)))),var(--custom-theme-background);
     background-image: linear-gradient(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4)),rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4))),var(--custom-theme-background);
 }
-.auto_a48086::-webkit-scrollbar-track {
+.auto_a3c0bd::-webkit-scrollbar-track {
     background-size: 200vh;
     background-image: -webkit-gradient(linear,left top,left bottom,from(rgb(var(--bg-overlay-color)/.4)),to(rgb(var(--bg-overlay-color)/.4))),var(--custom-theme-background);
     background-image: linear-gradient(rgb(var(--bg-overlay-color)/.4),rgb(var(--bg-overlay-color)/.4)),var(--custom-theme-background);
