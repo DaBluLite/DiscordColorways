@@ -6,6 +6,7 @@ Colorways are simple color schemes/themes for Discord, meant to expand the funct
 ### The Definitive way of styling Discord and select themes
 
 * [Download the BetterDiscord plugin](https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/DiscordColorways.plugin.js)
+* [Download the Vencord userplugin](https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/VencordUserPlugin/discordColorways)
 * Use the available `@import` lines for the different Colorways
 
 ### Currently Supported themes:
