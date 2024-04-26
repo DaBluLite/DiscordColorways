@@ -19,10 +19,9 @@ import {
 import ColorPickerModal from "./components/ColorPicker";
 import ColorwaysButton from "./components/ColorwaysButton";
 import CreatorModal from "./components/CreatorModal";
-import SelectorModal from "./components/SelectorModal";
+import Selector from "./components/Selector";
 import ManageColorwaysPage from "./components/SettingsTabs/ManageColorwaysPage";
 import OnDemandWaysPage from "./components/SettingsTabs/OnDemandPage";
-import SelectorPage from "./components/SettingsTabs/SelectorPage";
 import SettingsPage from "./components/SettingsTabs/SettingsPage";
 import Spinner from "./components/Spinner";
 import { defaultColorwaySource } from "./constants";
@@ -111,7 +110,7 @@ export default definePlugin({
     pluginVersion: versionData.pluginVersion,
     creatorVersion: versionData.creatorVersion,
     toolboxActions: {
-        "Change Colorway": () => openModal(props => <SelectorModal modalProps={props} />),
+        "Change Colorway": () => openModal(props => <Selector modalProps={props} />),
         "Open Colorway Creator": () => openModal(props => <CreatorModal modalProps={props} />),
         "Open Color Stealer": () => openModal(props => <ColorPickerModal modalProps={props} />),
         "Open Settings": () => SettingsRouter.open("ColorwaysSettings"),
@@ -152,12 +151,12 @@ export default definePlugin({
             }
         }
     ],
+
     set ColorPicker(e) {
         ColorPicker = e;
     },
 
     makeSettingsCategories(SectionTypes: Record<string, unknown>) {
-        console.log(SectionTypes);
         return [
             {
                 section: SectionTypes.HEADER,
@@ -167,7 +166,7 @@ export default definePlugin({
             {
                 section: "ColorwaysSelector",
                 label: "Colorways",
-                element: SelectorPage,
+                element: () => <Selector isSettings modalProps={{ onClose: () => new Promise(() => true), transitionState: 1 }} />,
                 className: "dc-colorway-selector"
             },
             {
@@ -202,22 +201,20 @@ export default definePlugin({
         enableStyle(style);
         ColorwayCSS.set((await DataStore.get("actveColorway")) || "");
 
-        addAccessory("colorways-btn", props => {
-            if (String(props.message.content).match(/colorway:[0-9a-f]{0,71}/))
-                return <Button onClick={() => {
-                    openModal(propss => (
-                        <CreatorModal
-                            modalProps={propss}
-                            colorwayID={String(props.message.content).match(/colorway:[0-9a-f]{0,71}/)![0]}
-                        />
-                    ));
-                }} size={Button.Sizes.SMALL} color={Button.Colors.PRIMARY}>Add this Colorway...</Button>;
-            return null;
-        });
+        addAccessory("colorways-btn", props => String(props.message.content).match(/colorway:[0-9a-f]{0,100}/) ? <Button
+            onClick={() => openModal(modalProps => <CreatorModal
+                modalProps={modalProps}
+                colorwayID={String(props.message.content).match(/colorway:[0-9a-f]{0,100}/)![0]}
+            />)}
+            size={Button.Sizes.SMALL}
+            color={Button.Colors.PRIMARY}
+            look={Button.Looks.OUTLINED}
+        >
+            Add this Colorway...
+        </Button> : null);
     },
     stop() {
         removeServerListElement(ServerListRenderPosition.In, this.ColorwaysButton);
-
         disableStyle(style);
         ColorwayCSS.remove();
         removeAccessory("colorways-btn");

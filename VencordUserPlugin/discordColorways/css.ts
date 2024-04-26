@@ -747,13 +747,17 @@ export function getPreset(primaryColor?: string, secondaryColor?: string, tertia
             name: "Gradient Type 1",
             preset: gradientType1,
             id: "gradientType1",
-            colors: ["primary", "secondary", "tertiary", "accent"]
+            colors: ["primary", "secondary", "tertiary", "accent"],
+            degrees: "239.16deg",
+            amounts: ["10.39%", "26.87%", "48.31%", "64.98%", "92.5%"]
         },
         gradientType2: {
             name: "Gradient Type 2",
             preset: gradientType2,
             id: "gradientType2",
-            colors: ["primary", "secondary", "accent"]
+            colors: ["primary", "secondary", "accent"],
+            degrees: "48.17deg",
+            amounts: ["11.21%", "61.92%"]
         },
         hueRotation: {
             name: "Hue Rotation",
