@@ -27,7 +27,6 @@ import { versionData } from "userplugins/discordColorways";
 
 import { defaultColorwaySource, fallbackColorways, knownColorwaySources } from "../../constants";
 import { Colorway } from "../../types";
-import Divider from "../Divider";
 import { CloseIcon } from "../Icons";
 
 export default function () {
@@ -193,7 +192,7 @@ export default function () {
                 </div>
                 )}
             </Flex>
-            <Divider />
+            <Forms.FormDivider style={{ margin: "20px 0" }} />
             <Forms.FormTitle tag="h5">Quick Switch</Forms.FormTitle>
             <Switch
                 value={colorsButtonVisibility}
