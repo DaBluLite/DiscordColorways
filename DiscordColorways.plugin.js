@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description The Definitive way of styling Discord. Create, use and share the colors that fit you.
- * @version 5.6.4.1
+ * @version 5.6.4.2
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -838,10 +838,10 @@ const mainColors = [
 const name = "DiscordColorways";
 const author = "DaBluLite";
 const description = "The Definitive way of styling Discord. Create, use and share the colors that fit you.";
-const version = "5.6.4.1";
+const version = "5.6.4.2";
 const authorId = "582170007505731594";
 const invite = "ZfPH6SDkMW";
-const creatorVersion = "1.18.2";
+const creatorVersion = "1.18.3";
 const plugin = {
 	name: name,
 	author: author,
@@ -1549,9 +1549,7 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 						:root:root {
 								--custom-theme-background: linear-gradient(239.16deg, #${primaryColor} 10.39%, #${secondaryColor} 26.87%, #${tertiaryColor} 48.31%, hsl(${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + secondaryColor)[1]}%) ${Math.min(HexToHSL("#" + secondaryColor)[2] + 3.6, 100)}%) 64.98%, #${primaryColor} 92.5%);
 						}`,
-			base: `:root:root {
-								--custom-theme-background: linear-gradient(239.16deg, #${primaryColor} 10.39%, #${secondaryColor} 26.87%, #${tertiaryColor} 48.31%, hsl(${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + secondaryColor)[1]}%) ${Math.min(HexToHSL("#" + secondaryColor)[2] + 3.6, 100)}%) 64.98%, #${primaryColor} 92.5%);
-						}`
+			base: `239.16deg, #${primaryColor} 10.39%, #${secondaryColor} 26.87%, #${tertiaryColor} 48.31%, hsl(${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + secondaryColor)[1]}%) ${Math.min(HexToHSL("#" + secondaryColor)[2] + 3.6, 100)}%) 64.98%, #${primaryColor} 92.5%`
 		};
 	}
 	function gradientType2(discordSaturation = false) {
@@ -1560,9 +1558,7 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 				:root:root {
 						--custom-theme-background: linear-gradient(48.17deg, #${primaryColor} 11.21%, #${secondaryColor} 61.92%);
 				}`,
-			base: `:root:root {
-						--custom-theme-background: linear-gradient(48.17deg, #${primaryColor} 11.21%, #${secondaryColor} 61.92%);
-				}`
+			base: `48.17deg, #${primaryColor} 11.21%, #${secondaryColor} 61.92%`
 		};
 	}
 	function hueRotation(discordSaturation = false) {
