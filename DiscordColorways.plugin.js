@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways
- * @version 5.6.5
+ * @version 5.6.5.1
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -301,6 +301,15 @@ function HexToHSL(H) {
 	l = +(l * 100).toFixed(1);
 	return [Math.round(h), Math.round(s), Math.round(l)];
 }
+const stringToHex = (str) => {
+	let hex = "";
+	for (let i = 0; i < str.length; i++) {
+		const charCode = str.charCodeAt(i);
+		const hexValue = charCode.toString(16);
+		hex += hexValue.padStart(2, "0");
+	}
+	return hex;
+};
 const hexToString = (hex) => {
 	let str = "";
 	for (let i = 0; i < hex.length; i += 2) {
@@ -838,7 +847,7 @@ const mainColors = [
 const name = "DiscordColorways";
 const author = "DaBluLite";
 const description = "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways";
-const version = "5.6.5";
+const version = "5.6.5.1";
 const authorId = "582170007505731594";
 const invite = "ZfPH6SDkMW";
 const creatorVersion = "1.19";
@@ -2684,7 +2693,7 @@ function ColorwayInfoModal({
 			color: Button.Colors.PRIMARY,
 			size: Button.Sizes.MEDIUM,
 			look: Button.Looks.OUTLINED,
-			style: { flex: "0 0 auto" },
+			style: { flex: "0 0 auto", maxWidth: "236px" },
 			onClick: () => {
 				openUserProfile(colorwayProps.authorID);
 			}
@@ -2699,15 +2708,6 @@ function ColorwayInfoModal({
 			look: Button.Looks.OUTLINED,
 			style: { flex: "0 0 auto" },
 			onClick: () => {
-				const stringToHex = (str) => {
-					let hex = "";
-					for (let i = 0; i < str.length; i++) {
-						const charCode = str.charCodeAt(i);
-						const hexValue = charCode.toString(16);
-						hex += hexValue.padStart(2, "0");
-					}
-					return hex;
-				};
 				const colorwayIDArray = `${colorwayProps.accent},${colorwayProps.primary},${colorwayProps.secondary},${colorwayProps.tertiary}`;
 				const colorwayID = stringToHex(colorwayIDArray);
 				Clipboard.copy(colorwayID);
@@ -2746,7 +2746,7 @@ function ColorwayInfoModal({
 				});
 			}
 		},
-		"Delete..."
+		"Delete"
 	))), BdApi.React.createElement("div", { className: "colorwayInfo-row colorwayInfo-css" + (collapsedCSS ? " colorwaysCreator-settingCat-collapsed" : "") }, BdApi.React.createElement(Flex, { style: { gap: "10px", width: "100%", alignItems: "center" } }, BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0, width: "100%" } }, "CSS:"), BdApi.React.createElement(
 		Button,
 		{

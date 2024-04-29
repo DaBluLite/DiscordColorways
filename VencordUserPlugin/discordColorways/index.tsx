@@ -85,14 +85,13 @@ export const ColorwayCSS = {
 };
 
 export const versionData = {
-    pluginVersion: "5.6.5",
+    pluginVersion: "5.6.5.1",
     creatorVersion: "1.19",
 };
 
 export default definePlugin({
     name: "DiscordColorways",
-    description:
-        "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways",
+    description: "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways",
     authors: [{
         name: "DaBluLite",
         id: 582170007505731594n
