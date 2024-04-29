@@ -35,7 +35,7 @@ export let ColorPicker: React.FunctionComponent<ColorPickerProps> = () => {
 (async function () {
     const [
         customColorways,
-        colorwaySourcesFiles,
+        colorwaySourceFiles,
         showColorwaysButton,
         onDemandWays,
         onDemandWaysTintedText,
@@ -53,29 +53,20 @@ export let ColorPicker: React.FunctionComponent<ColorPickerProps> = () => {
         "onDemandWaysColorArray"
     ]);
 
-    if (!customColorways)
-        DataStore.set("customColorways", []);
+    const defaults = [
+        { name: "customColorways", checkedValue: customColorways, defaults: [] },
+        { name: "colorwaySourceFiles", checkedValue: colorwaySourceFiles, defaults: [defaultColorwaySource] },
+        { name: "showColorwaysButton", checkedValue: showColorwaysButton, defaults: false },
+        { name: "onDemandWays", checkedValue: onDemandWays, defaults: false },
+        { name: "onDemandWaysTintedText", checkedValue: onDemandWaysTintedText, defaults: true },
+        { name: "useThinMenuButton", checkedValue: useThinMenuButton, defaults: false },
+        { name: "onDemandWaysDiscordSaturation", checkedValue: onDemandWaysDiscordSaturation, defaults: false },
+        { name: "onDemandWaysColorArray", checkedValue: onDemandWaysColorArray, defaults: ["313338", "2b2d31", "1e1f22", "5865f2"] }
+    ];
 
-    if (!colorwaySourcesFiles)
-        DataStore.set("colorwaySourceFiles", [defaultColorwaySource]);
-
-    if (!showColorwaysButton)
-        DataStore.set("showColorwaysButton", false);
-
-    if (!onDemandWays)
-        DataStore.set("onDemandWays", false);
-
-    if (!onDemandWaysTintedText)
-        DataStore.set("onDemandWaysTintedText", true);
-
-    if (!useThinMenuButton)
-        DataStore.set("useThinMenuButton", false);
-
-    if (!onDemandWaysDiscordSaturation)
-        DataStore.set("onDemandWaysDiscordSaturation", false);
-
-    if (!onDemandWaysColorArray)
-        DataStore.set("onDemandWaysColorArray", ["313338", "2b2d31", "1e1f22", "5865f2"]);
+    defaults.forEach(({ name, checkedValue, defaults }) => {
+        if (!checkedValue) DataStore.set(name, defaults);
+    });
 
 })();
 
@@ -94,8 +85,8 @@ export const ColorwayCSS = {
 };
 
 export const versionData = {
-    pluginVersion: "5.6.4.2",
-    creatorVersion: "1.18.3",
+    pluginVersion: "5.6.5",
+    creatorVersion: "1.19",
 };
 
 export default definePlugin({
@@ -160,7 +151,7 @@ export default definePlugin({
         return [
             {
                 section: SectionTypes.HEADER,
-                label: "DiscordColorways",
+                label: "Discord Colorways",
                 className: "vc-settings-header"
             },
             {
