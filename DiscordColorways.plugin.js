@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways
- * @version 5.6.7
+ * @version 5.6.8
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -413,7 +413,7 @@ function waitForStore(storeName, callback) {
 	betterdiscord.Webpack.waitForModule(Filters.byStoreName(storeName)).then((e) => callback(e));
 }
 
-function Spinner({ className, children }) {
+function Spinner({ className }) {
 	return BdApi.React.createElement("div", { className: "colorwaysBtn-spinner" + (className ? " " + className : ""), role: "img", "aria-label": "Loading" }, BdApi.React.createElement("div", { className: "colorwaysBtn-spinnerInner" }, BdApi.React.createElement("svg", { className: "colorwaysBtn-spinnerCircular", viewBox: "25 25 50 50", fill: "currentColor" }, BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam3", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam2", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam", cx: "50", cy: "50", r: "20" }))));
 }
 
@@ -848,10 +848,10 @@ const mainColors = [
 const name = "DiscordColorways";
 const author = "DaBluLite";
 const description = "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways";
-const version = "5.6.7";
+const version = "5.6.8";
 const authorId = "582170007505731594";
 const invite = "ZfPH6SDkMW";
-const creatorVersion = "1.19.5";
+const creatorVersion = "1.19.6";
 const plugin = {
 	name: name,
 	author: author,
@@ -1653,18 +1653,64 @@ function getAutoPresets(accentColor) {
 	};
 }
 function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
-	function cyan(discordSaturation = false) {
+	function cyanLegacy(discordSaturation = false) {
 		return `:root:root {
-		--cyan-accent-color: ${"#" + accentColor};
+		--cyan-accent-color: #${accentColor};
 		--cyan-background-primary: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%/40%);
 		--cyan-background-secondary: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${Math.min(HexToHSL("#" + tertiaryColor)[2] + 3.6 * 2, 100)}%);
 }`;
 	}
-	function cyan2(discordSaturation = false) {
+	function cyan(discordSaturation = false) {
 		return `:root:root {
-		--cyan-accent-color: ${"#" + accentColor};
+		--cyan-accent-color: #${accentColor};
 		--cyan-background-primary: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%/60%);
 		--cyan-second-layer: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${Math.min(HexToHSL("#" + tertiaryColor)[2] + 3.6 * 2, 100)}%/60%);
+}`;
+	}
+	function nexusRemastered(discordSaturation = false) {
+		return `:root:root {
+		--nexus-accent-color: #${accentColor};
+		--nexus-background-secondary: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + tertiaryColor)[1] / 100 * (100 + PrimarySatDiffs[800]) * 10) / 10 : HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 3.6 * 2, 0)}%);
+		--nexus-background-elevated: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + tertiaryColor)[1] / 100 * (100 + PrimarySatDiffs[800]) * 10) / 10 : HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 3.6 * 2, 0)}%);
+		--nexus-background-floating: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + tertiaryColor)[1] / 100 * (100 + PrimarySatDiffs[800]) * 10) / 10 : HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 3.6 * 2, 0)}%);
+		--nexus-background-tertiary: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${HexToHSL("#" + tertiaryColor)[2]}%);
+		--home-background: hsl(${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${HexToHSL("#" + tertiaryColor)[2]}%);
+		--nexus-background-primary: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%);
+		--primary-800-hsl: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + tertiaryColor)[1] / 100 * (100 + PrimarySatDiffs[800]) * 10) / 10 : HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 3.6 * 2, 0)}%;
+		--primary-730-hsl: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + tertiaryColor)[1] / 100 * (100 + PrimarySatDiffs[730]) * 10) / 10 : HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 3.6, 0)}%;
+		--primary-700-hsl: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${HexToHSL("#" + tertiaryColor)[2]}%;
+		--primary-660-hsl: ${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + secondaryColor)[1] / 100 * (100 + PrimarySatDiffs[660]) * 10) / 10 : HexToHSL("#" + secondaryColor)[1]}%) ${Math.max(HexToHSL("#" + secondaryColor)[2] - 3.6, 0)}%;
+		--primary-645-hsl: ${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + secondaryColor)[1] / 100 * (100 + PrimarySatDiffs[645]) * 10) / 10 : HexToHSL("#" + secondaryColor)[1]}%) ${Math.max(HexToHSL("#" + secondaryColor)[2] - 1.1, 0)}%;
+		--primary-630-hsl: ${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + secondaryColor)[1]}%) ${HexToHSL("#" + secondaryColor)[2]}%;
+		--primary-600-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%;
+		--primary-560-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 3.6, 100)}%;
+		--primary-530-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[530]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 3.6 * 2, 100)}%;
+		--primary-500-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[500]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 3.6 * 3, 100)}%;
+		--primary-200: ${HexToHSL("#" + secondaryColor)[0] === 0 ? "gray" : HexToHSL("#" + secondaryColor)[2] < 80 ? "hsl(" + HexToHSL("#" + secondaryColor)[0] + `, calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[200]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%), 90%)` : "hsl(" + HexToHSL("#" + secondaryColor)[0] + ", calc(var(--saturation-factor, 1)*100%), 20%)"}
+}
+.theme-dark {
+		--background-tertiary: var(--primary-700) !important;
+}
+.theme-light {
+		--background-tertiary: var(--primary-200) !important;
+}`;
+	}
+	function modular(discordSaturation = false) {
+		return `:root:root {
+		--brand-experiment: #${accentColor};
+		--primary-800-hsl: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + tertiaryColor)[1] / 100 * (100 + PrimarySatDiffs[800]) * 10) / 10 : HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 3.6 * 2, 0)}%;
+		--primary-730-hsl: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + tertiaryColor)[1] / 100 * (100 + PrimarySatDiffs[730]) * 10) / 10 : HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 3.6, 0)}%;
+		--primary-700-hsl: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${HexToHSL("#" + tertiaryColor)[2]}%;
+		--primary-660-hsl: ${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + secondaryColor)[1] / 100 * (100 + PrimarySatDiffs[660]) * 10) / 10 : HexToHSL("#" + secondaryColor)[1]}%) ${Math.max(HexToHSL("#" + secondaryColor)[2] - 3.6, 0)}%;
+		--primary-645-hsl: ${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + secondaryColor)[1] / 100 * (100 + PrimarySatDiffs[645]) * 10) / 10 : HexToHSL("#" + secondaryColor)[1]}%) ${Math.max(HexToHSL("#" + secondaryColor)[2] - 1.1, 0)}%;
+		--primary-630-hsl: ${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + secondaryColor)[1]}%) ${HexToHSL("#" + secondaryColor)[2]}%;
+		--primary-600-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%;
+		--primary-560-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 3.6, 100)}%;
+		--primary-530-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[530]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 3.6 * 2, 100)}% !important;
+		--primary-500-hsl: ${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[500]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 3.6 * 3, 100)}% !important;
+		--primary-330: ${HexToHSL("#" + secondaryColor)[0] === 0 ? "gray" : HexToHSL("#" + secondaryColor)[2] < 80 ? "hsl(" + HexToHSL("#" + secondaryColor)[0] + `, calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[330]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%), 90%)` : "hsl(" + HexToHSL("#" + secondaryColor)[0] + ", calc(var(--saturation-factor, 1)*100%), 20%)"};
+		--primary-360: ${HexToHSL("#" + secondaryColor)[0] === 0 ? "gray" : HexToHSL("#" + secondaryColor)[2] < 80 ? "hsl(" + HexToHSL("#" + secondaryColor)[0] + `, calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[360]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%), 90%)` : "hsl(" + HexToHSL("#" + secondaryColor)[0] + ", calc(var(--saturation-factor, 1)*100%), 20%)"};
+		--primary-400: ${HexToHSL("#" + secondaryColor)[0] === 0 ? "gray" : HexToHSL("#" + secondaryColor)[2] < 80 ? "hsl(" + HexToHSL("#" + secondaryColor)[0] + `, calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + primaryColor)[1] / 100 * (100 + PrimarySatDiffs[400]) * 10) / 10 : HexToHSL("#" + primaryColor)[1]}%), 90%)` : "hsl(" + HexToHSL("#" + secondaryColor)[0] + ", calc(var(--saturation-factor, 1)*100%), 20%)"}
 }`;
 	}
 	function virtualBoy(discordSaturation = false) {
@@ -1672,13 +1718,6 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 		--VBaccent: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + accentColor)[1]}%) ${HexToHSL("#" + accentColor)[2]}%;
 		--VBaccent-muted: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${Math.max(HexToHSL("#" + tertiaryColor)[2] - 10, 0)}%;
 		--VBaccent-dimmest: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${Math.min(HexToHSL("#" + tertiaryColor)[2] + 3.6 * 5 - 3, 100)}%;
-}`;
-	}
-	function modular(discordSaturation = false) {
-		return `:root:root {
-		--modular-hue: ${HexToHSL("#" + accentColor)[0]};
-		--modular-saturation: calc(var(--saturation-factor, 1)${HexToHSL("#" + accentColor)[1]}%);
-		--modular-lightness: ${HexToHSL("#" + accentColor)[2]}%;
 }`;
 	}
 	function solana(discordSaturation = false) {
@@ -1710,76 +1749,6 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 			base: `48.17deg, #${primaryColor} 11.21%, #${secondaryColor} 61.92%`
 		};
 	}
-	function hueRotation(discordSaturation = false) {
-		return `:root:root {
-		--brand-100-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[100]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[100]) * 10) / 10, 0)};
-		--brand-130-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[130]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[130]) * 10) / 10, 0)}%;
-		--brand-160-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[160]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[160]) * 10) / 10, 0)}%;
-		--brand-200-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[200]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[200]) * 10) / 10, 0)}%;
-		--brand-230-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[230]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[230]) * 10) / 10, 0)}%;
-		--brand-260-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[260]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[260]) * 10) / 10, 0)}%;
-		--brand-300-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[300]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[300]) * 10) / 10, 0)}%;
-		--brand-330-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[330]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[330]) * 10) / 10, 0)}%;
-		--brand-345-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[345]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[345]) * 10) / 10, 0)}%;
-		--brand-360-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[360]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[360]) * 10) / 10, 0)}%;
-		--brand-400-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[400]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[400]) * 10) / 10, 0)}%;
-		--brand-430-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[430]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[430]) * 10) / 10, 0)}%;
-		--brand-460-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[460]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[460]) * 10) / 10, 0)}%;
-		--brand-500-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + accentColor)[1]}%) ${HexToHSL("#" + accentColor)[2]}%;
-		--brand-530-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[530]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[530]) * 10) / 10, 100)}%;
-		--brand-560-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[560]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[560]) * 10) / 10, 100)}%;
-		--brand-600-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[600]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[600]) * 10) / 10, 100)}%;
-		--brand-630-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[630]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[630]) * 10) / 10, 100)}%;
-		--brand-660-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[660]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[660]) * 10) / 10, 100)}%;
-		--brand-700-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[700]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[700]) * 10) / 10, 100)}%;
-		--brand-730-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[730]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[730]) * 10) / 10, 100)}%;
-		--brand-760-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[760]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[760]) * 10) / 10, 100)}%;
-		--brand-800-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[800]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[800]) * 10) / 10, 100)}%;
-		--brand-830-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[830]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[830]) * 10) / 10, 100)}%;
-		--brand-860-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[860]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[860]) * 10) / 10, 100)}%;
-		--brand-900-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[900]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[900]) * 10) / 10, 100)}%;
-		--primary-800-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*12%) 7%;
-		--primary-730-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*10%) 13%;
-		--primary-700-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*10%) 13%;
-		--primary-660-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*11%) 15%;
-		--primary-645-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*11%) 16%;
-		--primary-630-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*11%) 18%;
-		--primary-600-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*11%) 21%;
-		--primary-560-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*11%) 24%;
-		--primary-530-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*11%) 24%;
-		--primary-500-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*11%) 24%;
-}`;
-	}
-	function accentSwap(discordSaturation = false) {
-		return `:root:root {
-		--brand-100-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[100]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[100]) * 10) / 10, 0)};
-		--brand-130-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[130]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[130]) * 10) / 10, 0)}%;
-		--brand-160-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[160]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[160]) * 10) / 10, 0)}%;
-		--brand-200-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[200]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[200]) * 10) / 10, 0)}%;
-		--brand-230-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[230]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[230]) * 10) / 10, 0)}%;
-		--brand-260-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[260]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[260]) * 10) / 10, 0)}%;
-		--brand-300-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[300]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[300]) * 10) / 10, 0)}%;
-		--brand-330-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[330]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[330]) * 10) / 10, 0)}%;
-		--brand-345-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[345]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[345]) * 10) / 10, 0)}%;
-		--brand-360-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[360]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[360]) * 10) / 10, 0)}%;
-		--brand-400-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[400]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[400]) * 10) / 10, 0)}%;
-		--brand-430-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[430]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[430]) * 10) / 10, 0)}%;
-		--brand-460-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[460]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[460]) * 10) / 10, 0)}%;
-		--brand-500-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + accentColor)[1]}%) ${HexToHSL("#" + accentColor)[2]}%;
-		--brand-530-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[530]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[530]) * 10) / 10, 100)}%;
-		--brand-560-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[560]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[560]) * 10) / 10, 100)}%;
-		--brand-600-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[600]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[600]) * 10) / 10, 100)}%;
-		--brand-630-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[630]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[630]) * 10) / 10, 100)}%;
-		--brand-660-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[660]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[660]) * 10) / 10, 100)}%;
-		--brand-700-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[700]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[700]) * 10) / 10, 100)}%;
-		--brand-730-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[730]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[730]) * 10) / 10, 100)}%;
-		--brand-760-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[760]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[760]) * 10) / 10, 100)}%;
-		--brand-800-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[800]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[800]) * 10) / 10, 100)}%;
-		--brand-830-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[830]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[830]) * 10) / 10, 100)}%;
-		--brand-860-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[860]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[860]) * 10) / 10, 100)}%;
-		--brand-900-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[900]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.min(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[900]) * 10) / 10, 100)}%;
-}`;
-	}
 	return {
 		default: {
 			name: "Default",
@@ -1793,11 +1762,17 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 			id: "cyan",
 			colors: ["accent", "primary", "secondary"]
 		},
-		cyan2: {
-			name: "Cyan 2",
-			preset: cyan2,
-			id: "cyan2",
+		cyanLegacy: {
+			name: "Cyan 1 (Legacy)",
+			preset: cyanLegacy,
+			id: "cyanLegacy",
 			colors: ["accent", "primary", "secondary"]
+		},
+		nexusRemastered: {
+			name: "Nexus Remastered",
+			preset: nexusRemastered,
+			id: "nexusRemastered",
+			colors: ["accent", "primary", "secondary", "tertiary"]
 		},
 		virtualBoy: {
 			name: "Virtual Boy",
@@ -1809,7 +1784,7 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 			name: "Modular",
 			preset: modular,
 			id: "modular",
-			colors: ["accent"]
+			colors: ["accent", "primary", "secondary", "tertiary"]
 		},
 		solana: {
 			name: "Solana",
@@ -1831,14 +1806,20 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 		},
 		hueRotation: {
 			name: "Hue Rotation",
-			preset: hueRotation,
+			preset: getAutoPresets(accentColor).hueRotation.preset,
 			id: "hueRotation",
 			colors: ["accent"]
 		},
 		accentSwap: {
 			name: "Accent Swap",
-			preset: accentSwap,
+			preset: getAutoPresets(accentColor).accentSwap.preset,
 			id: "accentSwap",
+			colors: ["accent"]
+		},
+		materialYou: {
+			name: "Material You",
+			preset: getAutoPresets(accentColor).materialYou.preset,
+			id: "materialYou",
 			colors: ["accent"]
 		}
 	};
@@ -2290,165 +2271,132 @@ function ConflictingColorsModal({
 	)));
 }
 
-function ThemePreviewCategory({
+function ThemePreview({
 	accent,
 	primary,
 	secondary,
 	tertiary,
-	className,
-	isCollapsed,
 	previewCSS,
-	noContainer
+	modalProps,
+	isModal
 }) {
-	function ThemePreview({
-		accent: accent2,
-		primary: primary2,
-		secondary: secondary2,
-		tertiary: tertiary2,
-		isModal,
-		modalProps
-	}) {
-		return BdApi.React.createElement(
+	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("style", null, ".colorwaysPreview-wrapper {color: var(--header-secondary); box-shadow: var(--legacy-elevation-border);}" + previewCSS), BdApi.React.createElement(
+		"div",
+		{
+			className: "colorwaysPreview-wrapper",
+			style: { background: `var(--dc-overlay-app-frame, ${tertiary})` }
+		},
+		BdApi.React.createElement("div", { className: "colorwaysPreview-titlebar" }),
+		BdApi.React.createElement("div", { className: "colorwaysPreview-body" }, BdApi.React.createElement("div", { className: "colorwayPreview-guilds" }, BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement(
 			"div",
 			{
-				className: "colorwaysPreview-wrapper",
-				style: { background: `var(--dc-overlay-app-frame, ${tertiary2})` }
+				className: "colorwayPreview-guildItem",
+				style: { background: `var(--dc-guild-button, ${primary})` },
+				onMouseEnter: (e) => e.currentTarget.style.background = accent,
+				onMouseLeave: (e) => e.currentTarget.style.background = `var(--dc-guild-button, ${primary})`,
+				onClick: () => {
+					if (isModal) {
+						modalProps?.onClose();
+					} else {
+						Modals.openModal((props) => BdApi.React.createElement(Modals.ModalRoot, { className: "colorwaysPreview-modal", ...props }, BdApi.React.createElement("style", null, previewCSS), BdApi.React.createElement(ThemePreview, { accent, primary, secondary, tertiary, isModal: true, modalProps: props })));
+					}
+				}
 			},
-			BdApi.React.createElement("div", { className: "colorwaysPreview-titlebar" }),
-			BdApi.React.createElement("div", { className: "colorwaysPreview-body" }, BdApi.React.createElement("div", { className: "colorwayPreview-guilds" }, BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement(
-				"div",
+			isModal ? BdApi.React.createElement(CloseIcon, { style: { color: "var(--header-secondary)" } }) : BdApi.React.createElement(
+				"svg",
 				{
-					className: "colorwayPreview-guildItem",
-					style: { background: `var(--dc-guild-button, ${primary2})` },
-					onMouseEnter: (e) => e.currentTarget.style.background = accent2,
-					onMouseLeave: (e) => e.currentTarget.style.background = `var(--dc-guild-button, ${primary2})`,
-					onClick: () => {
-						if (isModal) {
-							modalProps?.onClose();
-						} else {
-							Modals.openModal((props) => BdApi.React.createElement(Modals.ModalRoot, { className: "colorwaysPreview-modal", ...props }, BdApi.React.createElement("style", null, previewCSS), BdApi.React.createElement(ThemePreview, { accent: accent2, primary: primary2, secondary: secondary2, tertiary: tertiary2, isModal: true, modalProps: props })));
-						}
-					}
-				},
-				isModal ? BdApi.React.createElement(CloseIcon, { style: { color: "var(--header-secondary)" } }) : BdApi.React.createElement(
-					"svg",
-					{
-						"aria-hidden": "true",
-						role: "img",
-						width: "24",
-						height: "24",
-						viewBox: "0 0 24 24"
-					},
-					BdApi.React.createElement(
-						"path",
-						{
-							fill: "currentColor",
-							d: "M19,3H14V5h5v5h2V5A2,2,0,0,0,19,3Z"
-						}
-					),
-					BdApi.React.createElement(
-						"path",
-						{
-							fill: "currentColor",
-							d: "M19,19H14v2h5a2,2,0,0,0,2-2V14H19Z"
-						}
-					),
-					BdApi.React.createElement(
-						"path",
-						{
-							fill: "currentColor",
-							d: "M3,5v5H5V5h5V3H5A2,2,0,0,0,3,5Z"
-						}
-					),
-					BdApi.React.createElement(
-						"path",
-						{
-							fill: "currentColor",
-							d: "M5,14H3v5a2,2,0,0,0,2,2h5V19H5Z"
-						}
-					)
-				)
-			)), BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement("div", { className: "colorwayPreview-guildSeparator", style: { backgroundColor: primary2 } })), BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement(
-				"div",
-				{
-					className: "colorwayPreview-guildItem",
-					style: { background: `var(--dc-guild-button, ${primary2})` },
-					onMouseEnter: (e) => e.currentTarget.style.background = accent2,
-					onMouseLeave: (e) => e.currentTarget.style.background = `var(--dc-guild-button, ${primary2})`
-				}
-			)), BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement(
-				"div",
-				{
-					className: "colorwayPreview-guildItem",
-					style: { background: `var(--dc-guild-button, ${primary2})` },
-					onMouseEnter: (e) => e.currentTarget.style.background = accent2,
-					onMouseLeave: (e) => e.currentTarget.style.background = `var(--dc-guild-button, ${primary2})`
-				}
-			))), BdApi.React.createElement("div", { className: "colorwayPreview-channels", style: { background: `var(--dc-overlay-3, ${secondary2})` } }, BdApi.React.createElement(
-				"div",
-				{
-					className: "colorwayPreview-userArea",
-					style: {
-						background: `var(--dc-secondary-alt, hsl(${HexToHSL(secondary2)[0]} ${HexToHSL(secondary2)[1]}% ${Math.max(HexToHSL(secondary2)[2] - 3.6, 0)}%))`
-					}
-				}
-			), BdApi.React.createElement("div", { className: "colorwayPreview-filler" }), BdApi.React.createElement(
-				"div",
-				{
-					className: "colorwayPreview-topShadow",
-					style: {
-						"--primary-900-hsl": `${HexToHSL(tertiary2)[0]} ${HexToHSL(tertiary2)[1]}% ${Math.max(HexToHSL(tertiary2)[2] - 3.6 * 6, 0)}%`,
-						"--primary-500-hsl": `${HexToHSL(primary2)[0]} ${HexToHSL(primary2)[1]}% ${Math.min(HexToHSL(primary2)[2] + 3.6 * 3, 100)}%`
-					}
+					"aria-hidden": "true",
+					role: "img",
+					width: "24",
+					height: "24",
+					viewBox: "0 0 24 24"
 				},
 				BdApi.React.createElement(
-					Text,
+					"path",
 					{
-						tag: "div",
-						variant: "text-md/semibold",
-						lineClamp: 1,
-						selectable: false
-					},
-					"Preview"
-				)
-			)), BdApi.React.createElement("div", { className: "colorwayPreview-chat", style: { background: `var(--dc-overlay-chat, ${primary2})` } }, BdApi.React.createElement(
-				"div",
-				{
-					className: "colorwayPreview-chatBox",
-					style: {
-						background: `var(--dc-overlay-3, hsl(${HexToHSL(primary2)[0]} ${HexToHSL(primary2)[1]}% ${Math.min(HexToHSL(primary2)[2] + 3.6, 100)}%))`
+						fill: "currentColor",
+						d: "M19,3H14V5h5v5h2V5A2,2,0,0,0,19,3Z"
 					}
+				),
+				BdApi.React.createElement(
+					"path",
+					{
+						fill: "currentColor",
+						d: "M19,19H14v2h5a2,2,0,0,0,2-2V14H19Z"
+					}
+				),
+				BdApi.React.createElement(
+					"path",
+					{
+						fill: "currentColor",
+						d: "M3,5v5H5V5h5V3H5A2,2,0,0,0,3,5Z"
+					}
+				),
+				BdApi.React.createElement(
+					"path",
+					{
+						fill: "currentColor",
+						d: "M5,14H3v5a2,2,0,0,0,2,2h5V19H5Z"
+					}
+				)
+			)
+		)), BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement("div", { className: "colorwayPreview-guildSeparator", style: { backgroundColor: primary } })), BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement(
+			"div",
+			{
+				className: "colorwayPreview-guildItem",
+				style: { background: `var(--dc-guild-button, ${primary})` },
+				onMouseEnter: (e) => e.currentTarget.style.background = accent,
+				onMouseLeave: (e) => e.currentTarget.style.background = `var(--dc-guild-button, ${primary})`
+			}
+		)), BdApi.React.createElement("div", { className: "colorwayPreview-guild" }, BdApi.React.createElement(
+			"div",
+			{
+				className: "colorwayPreview-guildItem",
+				style: { background: `var(--dc-guild-button, ${primary})` },
+				onMouseEnter: (e) => e.currentTarget.style.background = accent,
+				onMouseLeave: (e) => e.currentTarget.style.background = `var(--dc-guild-button, ${primary})`
+			}
+		))), BdApi.React.createElement("div", { className: "colorwayPreview-channels", style: { background: `var(--dc-overlay-3, ${secondary})` } }, BdApi.React.createElement(
+			"div",
+			{
+				className: "colorwayPreview-userArea",
+				style: {
+					background: `var(--dc-secondary-alt, hsl(${HexToHSL(secondary)[0]} ${HexToHSL(secondary)[1]}% ${Math.max(HexToHSL(secondary)[2] - 3.6, 0)}%))`
 				}
-			), BdApi.React.createElement("div", { className: "colorwayPreview-filler" }), BdApi.React.createElement(
-				"div",
+			}
+		), BdApi.React.createElement("div", { className: "colorwayPreview-filler" }), BdApi.React.createElement(
+			"div",
+			{
+				className: "colorwayPreview-topShadow",
+				style: {
+					"--primary-900-hsl": `${HexToHSL(tertiary)[0]} ${HexToHSL(tertiary)[1]}% ${Math.max(HexToHSL(tertiary)[2] - 3.6 * 6, 0)}%`,
+					"--primary-500-hsl": `${HexToHSL(primary)[0]} ${HexToHSL(primary)[1]}% ${Math.min(HexToHSL(primary)[2] + 3.6 * 3, 100)}%`
+				}
+			},
+			BdApi.React.createElement(
+				Text,
 				{
-					className: "colorwayPreview-topShadow"
+					tag: "div",
+					variant: "text-md/semibold",
+					lineClamp: 1,
+					selectable: false
+				},
+				"Preview"
+			)
+		)), BdApi.React.createElement("div", { className: "colorwayPreview-chat", style: { background: `var(--dc-overlay-chat, ${primary})` } }, BdApi.React.createElement(
+			"div",
+			{
+				className: "colorwayPreview-chatBox",
+				style: {
+					background: `var(--dc-overlay-3, hsl(${HexToHSL(primary)[0]} ${HexToHSL(primary)[1]}% ${Math.min(HexToHSL(primary)[2] + 3.6, 100)}%))`
 				}
-			)))
-		);
-	}
-	return !noContainer ? BdApi.React.createElement("div", { className: "colorwaysPreview" }, BdApi.React.createElement(
-		Forms.FormTitle,
-		{
-			style: { marginBottom: 0 }
-		},
-		"Preview"
-	), BdApi.React.createElement("style", null, previewCSS), BdApi.React.createElement(
-		ThemePreview,
-		{
-			accent,
-			primary,
-			secondary,
-			tertiary
-		}
-	)) : BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("style", null, `.colorwaysPreview-wrapper {color: var(--header-secondary); box-shadow: var(--legacy-elevation-border);}` + previewCSS), BdApi.React.createElement(
-		ThemePreview,
-		{
-			accent,
-			primary,
-			secondary,
-			tertiary
-		}
+			}
+		), BdApi.React.createElement("div", { className: "colorwayPreview-filler" }), BdApi.React.createElement(
+			"div",
+			{
+				className: "colorwayPreview-topShadow"
+			}
+		)))
 	));
 }
 
@@ -2544,6 +2492,8 @@ function CreatorModal({
 	const [discordSaturation, setDiscordSaturation] = React.useState(true);
 	const [preset, setPreset] = React.useState("default");
 	const [presetColorArray, setPresetColorArray] = React.useState(["accent", "primary", "secondary", "tertiary"]);
+	const [nameError, setNameError] = React.useState();
+	const [colorwayNames, setColorwayNames] = React.useState(["Auto", ...betterdiscord.Data.load("custom_colorways").map((color) => color.name)]);
 	const colorProps = {
 		accent: {
 			get: accentColor,
@@ -2583,6 +2533,22 @@ function CreatorModal({
 				hexToString(parsedID).split(/,#/).forEach((color, i) => setColor[i](colorToHex(color)));
 			}
 		}
+		(async function() {
+			const responses = await Promise.all(
+				betterdiscord.Data.load("settings").colorwayLists.map(
+					(url) => fetch(url)
+				)
+			);
+			const data = await Promise.all(
+				responses.map(
+					(res) => res.json().catch(() => {
+						return { colorways: [] };
+					})
+				)
+			);
+			const colorways = data.flatMap((json) => json.colorways);
+			setColorwayNames([...colorwayNames, ...(colorways || fallbackColorways).map((color) => color.name)]);
+		})();
 	});
 	const colorPickerProps = {
 		suggestedColors: [
@@ -2598,7 +2564,8 @@ function CreatorModal({
 		{
 			placeholder: "Give your Colorway a name",
 			value: colorwayName,
-			onChange: setColorwayName
+			onChange: setColorwayName,
+			error: nameError
 		}
 	), BdApi.React.createElement("div", { className: "colorwaysCreator-settingCat" }, BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: "0" } }, "Colors:"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, presetColorArray.map((presetColor) => {
 		return BdApi.React.createElement(
@@ -2639,14 +2606,12 @@ function CreatorModal({
 		BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Settings & Presets"),
 		BdApi.React.createElement("svg", { width: "24", height: "24", viewBox: "0 0 24 24", "aria-hidden": "true", role: "img", style: { rotate: "-90deg" } }, BdApi.React.createElement("path", { fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", d: "M7 10L12 15 17 10", "aria-hidden": "true" }))
 	), BdApi.React.createElement(
-		ThemePreviewCategory,
+		ThemePreview,
 		{
-			isCollapsed: false,
 			accent: "#" + accentColor,
 			primary: "#" + primaryColor,
 			secondary: "#" + secondaryColor,
 			tertiary: "#" + tertiaryColor,
-			noContainer: true,
 			previewCSS: gradientPresetIds.includes(getPreset()[preset].id) ? pureGradientBase + `.colorwaysPreview-modal,.colorwaysPreview-wrapper {--gradient-theme-bg: linear-gradient(${getPreset(
 				primaryColor,
 				secondaryColor,
@@ -2662,6 +2627,10 @@ function CreatorModal({
 			size: Button.Sizes.MEDIUM,
 			look: Button.Looks.FILLED,
 			onClick: (e) => {
+				setNameError("");
+				if (colorwayNames.includes(colorwayName)) {
+					return setNameError("Error: A colorway with that name already exists");
+				}
 				var customColorwayCSS = "";
 				if (preset === "default") {
 					customColorwayCSS = generateCss(
@@ -2921,64 +2890,29 @@ function ColorwayInfoModal({
 			}
 		},
 		"Copy"
-	), discrimProps ? BdApi.React.createElement(
+	), BdApi.React.createElement(
 		Button,
 		{
 			color: Button.Colors.PRIMARY,
 			size: Button.Sizes.MEDIUM,
 			look: Button.Looks.OUTLINED,
-			onClick: async () => {
+			style: { flex: "0 0 auto" },
+			onClick: () => {
+				const customColorways = betterdiscord.Data.load("custom_colorways");
 				const customColorwaysArray = [];
-				betterdiscord.Data.load("custom_colorways").map((color, i) => {
-					if (betterdiscord.Data.load("custom_colorways").length > 0) {
-						if (color.name === colorwayProps.name) {
-							color["dc-import"] = generateCss(colorToHex(color.primary) || "313338", colorToHex(color.secondary) || "2b2d31", colorToHex(color.tertiary) || "1e1f22", colorToHex(color.accent) || "5865f2", true, true);
-							customColorwaysArray.push(color);
-						} else {
+				customColorways.map((color, i) => {
+					if (customColorways.length > 0) {
+						if (color.name !== colorwayProps.name + " (Custom)" && color.name !== colorwayProps.name) {
 							customColorwaysArray.push(color);
 						}
-						if (++i === betterdiscord.Data.load("custom_colorways").length) {
+						if (++i === customColorways.length) {
+							const newColorway = {
+								...colorwayProps,
+								name: `${colorwayProps.name} (Custom)`,
+								"dc-import": generateCss(colorToHex(color.primary) || "313338", colorToHex(color.secondary) || "2b2d31", colorToHex(color.tertiary) || "1e1f22", colorToHex(color.accent) || "5865f2", true, true)
+							};
+							customColorwaysArray.push(newColorway);
 							betterdiscord.Data.save("custom_colorways", customColorwaysArray);
-						}
-						modalProps.onClose();
-						loadUIProps();
-					}
-				});
-			}
-		},
-		"Update"
-	) : BdApi.React.createElement(
-		Button,
-		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			onClick: async () => {
-				const responses = await Promise.all(
-					betterdiscord.Data.load("settings").colorwayLists.map(
-						(url) => fetch(url)
-					)
-				);
-				const data = await Promise.all(
-					responses.map(
-						(res) => res.json().then((dt) => {
-							return { colorways: dt.colorways, url: res.url };
-						}).catch(() => {
-							return { colorways: [], url: res.url };
-						})
-					)
-				);
-				const colorways = data.flatMap((json) => json.colorways);
-				const customColorwaysArray = [];
-				colorways.map((color, i) => {
-					if (colorways.length > 0) {
-						if (color.name === colorwayProps.name) {
-							color.name += " (Custom)";
-							color["dc-import"] = generateCss(colorToHex(color.primary) || "313338", colorToHex(color.secondary) || "2b2d31", colorToHex(color.tertiary) || "1e1f22", colorToHex(color.accent) || "5865f2", true, true);
-							customColorwaysArray.push(color);
-						}
-						if (++i === colorways.length) {
-							betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways"), ...customColorwaysArray]);
 						}
 						modalProps.onClose();
 						loadUIProps();
@@ -2996,15 +2930,12 @@ function ColorwayInfoModal({
 		},
 		colorwayProps["dc-import"]
 	)), BdApi.React.createElement(
-		ThemePreviewCategory,
+		ThemePreview,
 		{
-			isCollapsed: true,
-			className: "colorwayInfo-lastCat",
 			accent: colorwayProps.accent,
 			primary: colorwayProps.primary,
 			secondary: colorwayProps.secondary,
 			tertiary: colorwayProps.tertiary,
-			noContainer: true,
 			previewCSS: colorwayProps.isGradient ? pureGradientBase + `.colorwaysPreview-modal,.colorwaysPreview-wrapper {--gradient-theme-bg: linear-gradient(${colorwayProps.linearGradient})}` : ""
 		}
 	), BdApi.React.createElement("div", { style: { width: "100%", height: "20px" } }))));
@@ -3549,7 +3480,7 @@ function ColorwaysButton() {
 	return BdApi.React.createElement(
 		Tooltip,
 		{
-			text: !isThin ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("span", null, "Colorways"), BdApi.React.createElement(Text, { variant: "text-xs/normal", style: { color: "var(--text-muted)", fontWeight: 500 } }, "Active Colorway: " + activeColorway)) : BdApi.React.createElement("span", null, "Active Colorway: " + activeColorway),
+			text: BdApi.React.createElement(BdApi.React.Fragment, null, !isThin ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("span", null, "Colorways"), BdApi.React.createElement(Text, { variant: "text-xs/normal", style: { color: "var(--text-muted)", fontWeight: 500 } }, "Active Colorway: " + activeColorway)) : BdApi.React.createElement("span", null, "Active Colorway: " + activeColorway), betterdiscord.Data.load("settings").activeColorwayID === "Auto" ? BdApi.React.createElement(Text, { variant: "text-xs/normal", style: { color: "var(--text-muted)", fontWeight: 500 } }, "Auto Preset: " + getAutoPresets()[betterdiscord.Data.load("settings").activeAutoPreset].name) : BdApi.React.createElement(BdApi.React.Fragment, null)),
 			position: "right",
 			tooltipContentClassName: "colorwaysBtn-tooltipContent"
 		},
@@ -3572,32 +3503,22 @@ function ColorwaysButton() {
 	);
 }
 
-const css = "/* stylelint-disable no-descending-specificity */\n/* stylelint-disable declaration-block-no-redundant-longhand-properties */\n/* stylelint-disable selector-id-pattern */\n/* stylelint-disable selector-class-pattern */\n@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-experiment);\n  	border-radius: 16px;\n}\n\n.discordColorway {\n  	height: 60px;\n  	width: 60px;\n  	cursor: pointer;\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	position: relative;\n  	align-items: center;\n  	justify-content: center;\n  	transition: 170ms ease;\n}\n\n.discordColorway:hover {\n  	filter: brightness(.8);\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1.5px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorwayPreviewColor {\n  	width: 50%;\n  	height: 50%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(2)))>.discordColorwayPreviewColor {\n  	height: 100%;\n  	width: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor {\n  	height: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(4)))>.discordColorwayPreviewColor:nth-child(3) {\n  	width: 100%;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 16px 23px;\n  	width: 100%;\n  	flex-wrap: wrap;\n  	padding: 2px;\n  	scrollbar-width: none !important;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal {\n  	width: 100% !important;\n  	min-width: 596px !important;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	width: 100%;\n  	max-width: 596px;\n  	overflow: visible !important;\n  	padding: 0 16px 16px !important;\n}\n\n.ColorwaySelectorBtnContainer {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayInfoIconContainer {\n  	height: 22px;\n  	width: 22px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: -1px;\n  	left: -1px;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n  	color: var(--white-500);\n  	padding: 1px;\n  	box-sizing: border-box;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-experiment-560);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: .15s;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	box-sizing: border-box;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"]>[class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"])>.colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100%;\n  	height: 46px;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	position: relative;\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: auto;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed>:is(.colorwaysCreator-settingsList, .colorwayInfo-cssCodeblock),\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-wrapper {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: .2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: .48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 1 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n  	flex: 0 1 auto;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow: 0 1px 0 hsl(var(--primary-900-hsl)/20%), 0 1.5px 0 hsl(var(--primary-860-hsl)/5%), 0 2px 0 hsl(var(--primary-900-hsl)/5%);\n  	width: 100%;\n  	height: 32px;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl)/30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition: transform .1s ease-out, opacity .1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwaySelector-search {\n  	width: 100%;\n}\n\n.colorwaySelector-sources {\n  	flex: 0 0 auto;\n  	margin-right: auto;\n  	color: var(--button-outline-primary-text);\n  	border-color: var(--button-outline-primary-border);\n}\n\n.colorwaySelector-sources:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: .3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1)*9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1)*5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: .15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: .6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1)*87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: .15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: .23s;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: .2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: .15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary+.colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary+.colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary+.colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent+.colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwaySelector-searchPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: .625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: var(--brand-experiment);\n  	color: var(--white-500);\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 1px;\n  	border-radius: 4px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all .22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0,-107%,0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.dc-warning-card {\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n}\n\n/* stylelint-disable-next-line no-duplicate-selectors */\n.colorwaysPreview-modal {\n  	width: 90vw !important;\n  	height: 90vh !important;\n  	max-height: unset !important;\n}\n\n.colorwaysPresetPicker-content {\n  	padding: 16px;\n}\n\n.colorwaysPresetPicker {\n  	width: 600px;\n}\n\n.colorwaysCreator-setting {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	padding: 10px 18px;\n  	padding-right: 10px;\n  	cursor: pointer;\n  	align-items: center;\n}\n\n.colorwaysCreator-setting:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n:root {\n  	--dc-picker-svg: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='vc-pallete-icon vc-icon' role='img' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M 12 7.5 C 13.242188 7.5 14.25 6.492188 14.25 5.25 C 14.25 4.007812 13.242188 3 12 3 C 10.757812 3 9.75 4.007812 9.75 5.25 C 9.75 6.492188 10.757812 7.5 12 7.5 Z M 18 12 C 19.242188 12 20.25 10.992188 20.25 9.75 C 20.25 8.507812 19.242188 7.5 18 7.5 C 16.757812 7.5 15.75 8.507812 15.75 9.75 C 15.75 10.992188 16.757812 12 18 12 Z M 8.25 10.5 C 8.25 11.742188 7.242188 12.75 6 12.75 C 4.757812 12.75 3.75 11.742188 3.75 10.5 C 3.75 9.257812 4.757812 8.25 6 8.25 C 7.242188 8.25 8.25 9.257812 8.25 10.5 Z M 9 19.5 C 10.242188 19.5 11.25 18.492188 11.25 17.25 C 11.25 16.007812 10.242188 15 9 15 C 7.757812 15 6.75 16.007812 6.75 17.25 C 6.75 18.492188 7.757812 19.5 9 19.5 Z M 9 19.5 M 24 12 C 24 16.726562 21.199219 15.878906 18.648438 15.105469 C 17.128906 14.644531 15.699219 14.210938 15 15 C 14.09375 16.023438 14.289062 17.726562 14.472656 19.378906 C 14.738281 21.742188 14.992188 24 12 24 C 5.371094 24 0 18.628906 0 12 C 0 5.371094 5.371094 0 12 0 C 18.628906 0 24 5.371094 24 12 Z M 12 22.5 C 12.917969 22.5 12.980469 22.242188 12.984375 22.234375 C 13.097656 22.015625 13.167969 21.539062 13.085938 20.558594 C 13.066406 20.304688 13.03125 20.003906 12.996094 19.671875 C 12.917969 18.976562 12.828125 18.164062 12.820312 17.476562 C 12.804688 16.417969 12.945312 15.0625 13.875 14.007812 C 14.429688 13.382812 15.140625 13.140625 15.78125 13.078125 C 16.390625 13.023438 17 13.117188 17.523438 13.234375 C 18.039062 13.351562 18.574219 13.515625 19.058594 13.660156 L 19.101562 13.675781 C 19.621094 13.832031 20.089844 13.972656 20.53125 14.074219 C 21.511719 14.296875 21.886719 14.199219 22.019531 14.109375 C 22.074219 14.070312 22.5 13.742188 22.5 12 C 22.5 6.199219 17.800781 1.5 12 1.5 C 6.199219 1.5 1.5 6.199219 1.5 12 C 1.5 17.800781 6.199219 22.5 12 22.5 Z M 12 22.5'%3E%3C/path%3E%3C/svg%3E\");\n  	--dc-settings-svg : url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' width='24' height='24' preserveAspectRatio='xMidYMid meet' style='width: 100%25; height: 100%25; transform: translate3d(0px, 0px, 0px); content-visibility: visible;'%3E%3Cdefs%3E%3CclipPath id='__lottie_element_97'%3E%3Crect width='24' height='24' x='0' y='0'%3E%3C/rect%3E%3C/clipPath%3E%3CclipPath id='__lottie_element_99'%3E%3Cpath d='M0,0 L600,0 L600,600 L0,600z'%3E%3C/path%3E%3C/clipPath%3E%3C/defs%3E%3Cg clip-path='url(%23__lottie_element_97)'%3E%3Cg clip-path='url(%23__lottie_element_99)' transform='matrix(0.03999999910593033,0,0,0.03999999910593033,0,0)' opacity='1' style='display: block;'%3E%3Cg transform='matrix(25,0,0,25,300,300)' opacity='1' style='display: block;'%3E%3Cg opacity='1' transform='matrix(1,0,0,1,0,0)'%3E%3Cpath fill='rgb(88,101,242)' fill-opacity='1' d=' M-1.4420000314712524,-10.906000137329102 C-1.8949999809265137,-10.847000122070312 -2.1470000743865967,-10.375 -2.078000068664551,-9.92300033569336 C-1.899999976158142,-8.756999969482422 -2.265000104904175,-7.7210001945495605 -3.061000108718872,-7.390999794006348 C-3.8570001125335693,-7.060999870300293 -4.8480000495910645,-7.534999847412109 -5.546000003814697,-8.484999656677246 C-5.816999912261963,-8.852999687194824 -6.329999923706055,-9.008999824523926 -6.691999912261963,-8.730999946594238 C-7.458000183105469,-8.142999649047852 -8.142999649047852,-7.458000183105469 -8.730999946594238,-6.691999912261963 C-9.008999824523926,-6.329999923706055 -8.852999687194824,-5.816999912261963 -8.484999656677246,-5.546000003814697 C-7.534999847412109,-4.8480000495910645 -7.060999870300293,-3.8570001125335693 -7.390999794006348,-3.061000108718872 C-7.7210001945495605,-2.265000104904175 -8.756999969482422,-1.899999976158142 -9.92300033569336,-2.078000068664551 C-10.375,-2.1470000743865967 -10.847000122070312,-1.8949999809265137 -10.906000137329102,-1.4420000314712524 C-10.968000411987305,-0.9700000286102295 -11,-0.48899999260902405 -11,0 C-11,0.48899999260902405 -10.968000411987305,0.9700000286102295 -10.906000137329102,1.4420000314712524 C-10.847000122070312,1.8949999809265137 -10.375,2.1470000743865967 -9.92300033569336,2.078000068664551 C-8.756999969482422,1.899999976158142 -7.7210001945495605,2.265000104904175 -7.390999794006348,3.061000108718872 C-7.060999870300293,3.8570001125335693 -7.534999847412109,4.8470001220703125 -8.484999656677246,5.546000003814697 C-8.852999687194824,5.816999912261963 -9.008999824523926,6.328999996185303 -8.730999946594238,6.691999912261963 C-8.142999649047852,7.458000183105469 -7.458000183105469,8.142999649047852 -6.691999912261963,8.730999946594238 C-6.329999923706055,9.008999824523926 -5.816999912261963,8.852999687194824 -5.546000003814697,8.484999656677246 C-4.8480000495910645,7.534999847412109 -3.8570001125335693,7.060999870300293 -3.061000108718872,7.390999794006348 C-2.265000104904175,7.7210001945495605 -1.899999976158142,8.756999969482422 -2.078000068664551,9.92300033569336 C-2.1470000743865967,10.375 -1.8949999809265137,10.847000122070312 -1.4420000314712524,10.906000137329102 C-0.9700000286102295,10.968000411987305 -0.48899999260902405,11 0,11 C0.48899999260902405,11 0.9700000286102295,10.968000411987305 1.4420000314712524,10.906000137329102 C1.8949999809265137,10.847000122070312 2.1470000743865967,10.375 2.078000068664551,9.92300033569336 C1.899999976158142,8.756999969482422 2.2660000324249268,7.7210001945495605 3.062000036239624,7.390999794006348 C3.8580000400543213,7.060999870300293 4.8480000495910645,7.534999847412109 5.546000003814697,8.484999656677246 C5.816999912261963,8.852999687194824 6.328999996185303,9.008999824523926 6.691999912261963,8.730999946594238 C7.458000183105469,8.142999649047852 8.142999649047852,7.458000183105469 8.730999946594238,6.691999912261963 C9.008999824523926,6.328999996185303 8.852999687194824,5.816999912261963 8.484999656677246,5.546000003814697 C7.534999847412109,4.8480000495910645 7.060999870300293,3.8570001125335693 7.390999794006348,3.061000108718872 C7.7210001945495605,2.265000104904175 8.756999969482422,1.899999976158142 9.92300033569336,2.078000068664551 C10.375,2.1470000743865967 10.847000122070312,1.8949999809265137 10.906000137329102,1.4420000314712524 C10.968000411987305,0.9700000286102295 11,0.48899999260902405 11,0 C11,-0.48899999260902405 10.968000411987305,-0.9700000286102295 10.906000137329102,-1.4420000314712524 C10.847000122070312,-1.8949999809265137 10.375,-2.1470000743865967 9.92300033569336,-2.078000068664551 C8.756999969482422,-1.899999976158142 7.7210001945495605,-2.265000104904175 7.390999794006348,-3.061000108718872 C7.060999870300293,-3.8570001125335693 7.534999847412109,-4.8480000495910645 8.484999656677246,-5.546000003814697 C8.852999687194824,-5.816999912261963 9.008999824523926,-6.329999923706055 8.730999946594238,-6.691999912261963 C8.142999649047852,-7.458000183105469 7.458000183105469,-8.142999649047852 6.691999912261963,-8.730999946594238 C6.328999996185303,-9.008999824523926 5.817999839782715,-8.852999687194824 5.546999931335449,-8.484999656677246 C4.848999977111816,-7.534999847412109 3.8580000400543213,-7.060999870300293 3.062000036239624,-7.390999794006348 C2.2660000324249268,-7.7210001945495605 1.9010000228881836,-8.756999969482422 2.0789999961853027,-9.92300033569336 C2.1480000019073486,-10.375 1.8949999809265137,-10.847000122070312 1.4420000314712524,-10.906000137329102 C0.9700000286102295,-10.968000411987305 0.48899999260902405,-11 0,-11 C-0.48899999260902405,-11 -0.9700000286102295,-10.968000411987305 -1.4420000314712524,-10.906000137329102z M4,0 C4,2.2090001106262207 2.2090001106262207,4 0,4 C-2.2090001106262207,4 -4,2.2090001106262207 -4,0 C-4,-2.2090001106262207 -2.2090001106262207,-4 0,-4 C2.2090001106262207,-4 4,-2.2090001106262207 4,0z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");\n  	--dc-ondemand-svg: url(\"https://icons.getbootstrap.com/assets/icons/check-circle.svg\");\n}\n\n.dc-colorway-selector::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--dc-picker-svg) center/contain no-repeat !important;\n  	mask: var(--dc-picker-svg) center/contain no-repeat !important\n}\n\n.dc-colorway-settings::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--dc-settings-svg) center/contain no-repeat !important;\n  	mask: var(--dc-settings-svg) center/contain no-repeat !important\n}\n\n.dc-colorway-ondemand::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--dc-ondemand-svg) center/contain no-repeat !important;\n  	mask: var(--dc-ondemand-svg) center/contain no-repeat !important\n}\n\n.dc-colorway-management::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-developeroptions) center/contain no-repeat !important;\n  	mask: var(--si-developeroptions) center/contain no-repeat !important\n}\n\n.colorwaySourceModal {\n  	min-height: unset;\n}\n\n.colorwaySelectorModal-header {\n  	box-shadow: none !important;\n  	padding-bottom: 8px;\n}\n\n.colorwaySelector-sourceSelect {\n  	width: fit-content !important;\n}\n\n.dc-info-card {\n  	border-radius: 5px;\n  	border: 1px solid var(--blue-345);\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	display: flex;\n  	gap: 1em;\n  	flex-direction: column;\n}\n\n.theme-dark .dc-info-card {\n  	color: var(--white-500);\n}\n\n.theme-light .dc-info-card {\n  	color: var(--black-500);\n}";
+const css = "/* stylelint-disable no-descending-specificity */\n/* stylelint-disable declaration-block-no-redundant-longhand-properties */\n/* stylelint-disable selector-id-pattern */\n/* stylelint-disable selector-class-pattern */\n@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-experiment);\n  	border-radius: 16px;\n}\n\n.discordColorway {\n  	height: 60px;\n  	width: 60px;\n  	cursor: pointer;\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	position: relative;\n  	align-items: center;\n  	justify-content: center;\n  	transition: 170ms ease;\n}\n\n.discordColorway:hover {\n  	filter: brightness(.8);\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1.5px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorwayPreviewColor {\n  	width: 50%;\n  	height: 50%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(2)))>.discordColorwayPreviewColor {\n  	height: 100%;\n  	width: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor {\n  	height: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(4)))>.discordColorwayPreviewColor:nth-child(3) {\n  	width: 100%;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 16px 23px;\n  	width: 100%;\n  	flex-wrap: wrap;\n  	padding: 2px;\n  	scrollbar-width: none !important;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal {\n  	width: 100% !important;\n  	min-width: 596px !important;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	width: 100%;\n  	max-width: 596px;\n  	overflow: visible !important;\n  	padding: 0 16px 16px !important;\n}\n\n.ColorwaySelectorBtnContainer {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayInfoIconContainer {\n  	height: 22px;\n  	width: 22px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: -1px;\n  	left: -1px;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n  	color: var(--white-500);\n  	padding: 1px;\n  	box-sizing: border-box;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-experiment-560);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: .15s;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	box-sizing: border-box;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"]>[class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"])>.colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100%;\n  	height: 46px;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	position: relative;\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: auto;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed>:is(.colorwaysCreator-settingsList, .colorwayInfo-cssCodeblock),\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-wrapper {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: .2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: .48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 1 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n  	flex: 0 1 auto;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow: 0 1px 0 hsl(var(--primary-900-hsl)/20%), 0 1.5px 0 hsl(var(--primary-860-hsl)/5%), 0 2px 0 hsl(var(--primary-900-hsl)/5%);\n  	width: 100%;\n  	height: 32px;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl)/30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition: transform .1s ease-out, opacity .1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwaySelector-search {\n  	width: 100%;\n}\n\n.colorwaySelector-sources {\n  	flex: 0 0 auto;\n  	margin-right: auto;\n  	color: var(--button-outline-primary-text);\n  	border-color: var(--button-outline-primary-border);\n}\n\n.colorwaySelector-sources:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: .3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1)*9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1)*5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: .15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: .6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1)*87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: .15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: .23s;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: .2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: .15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary+.colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary+.colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary+.colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent+.colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwaySelector-searchPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: .625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: var(--brand-experiment);\n  	color: var(--white-500);\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 1px;\n  	border-radius: 4px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all .22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0,-107%,0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.dc-warning-card {\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n}\n\n/* stylelint-disable-next-line no-duplicate-selectors */\n.colorwaysPreview-modal {\n  	width: 90vw !important;\n  	height: 90vh !important;\n  	max-height: unset !important;\n}\n\n.colorwaysPresetPicker-content {\n  	padding: 16px;\n}\n\n.colorwaysPresetPicker {\n  	width: 600px;\n}\n\n.colorwaysCreator-setting {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	padding: 10px 18px;\n  	padding-right: 10px;\n  	cursor: pointer;\n  	align-items: center;\n}\n\n.colorwaysCreator-setting:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n:root {\n  	--dc-picker-svg: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='vc-pallete-icon vc-icon' role='img' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M 12 7.5 C 13.242188 7.5 14.25 6.492188 14.25 5.25 C 14.25 4.007812 13.242188 3 12 3 C 10.757812 3 9.75 4.007812 9.75 5.25 C 9.75 6.492188 10.757812 7.5 12 7.5 Z M 18 12 C 19.242188 12 20.25 10.992188 20.25 9.75 C 20.25 8.507812 19.242188 7.5 18 7.5 C 16.757812 7.5 15.75 8.507812 15.75 9.75 C 15.75 10.992188 16.757812 12 18 12 Z M 8.25 10.5 C 8.25 11.742188 7.242188 12.75 6 12.75 C 4.757812 12.75 3.75 11.742188 3.75 10.5 C 3.75 9.257812 4.757812 8.25 6 8.25 C 7.242188 8.25 8.25 9.257812 8.25 10.5 Z M 9 19.5 C 10.242188 19.5 11.25 18.492188 11.25 17.25 C 11.25 16.007812 10.242188 15 9 15 C 7.757812 15 6.75 16.007812 6.75 17.25 C 6.75 18.492188 7.757812 19.5 9 19.5 Z M 9 19.5 M 24 12 C 24 16.726562 21.199219 15.878906 18.648438 15.105469 C 17.128906 14.644531 15.699219 14.210938 15 15 C 14.09375 16.023438 14.289062 17.726562 14.472656 19.378906 C 14.738281 21.742188 14.992188 24 12 24 C 5.371094 24 0 18.628906 0 12 C 0 5.371094 5.371094 0 12 0 C 18.628906 0 24 5.371094 24 12 Z M 12 22.5 C 12.917969 22.5 12.980469 22.242188 12.984375 22.234375 C 13.097656 22.015625 13.167969 21.539062 13.085938 20.558594 C 13.066406 20.304688 13.03125 20.003906 12.996094 19.671875 C 12.917969 18.976562 12.828125 18.164062 12.820312 17.476562 C 12.804688 16.417969 12.945312 15.0625 13.875 14.007812 C 14.429688 13.382812 15.140625 13.140625 15.78125 13.078125 C 16.390625 13.023438 17 13.117188 17.523438 13.234375 C 18.039062 13.351562 18.574219 13.515625 19.058594 13.660156 L 19.101562 13.675781 C 19.621094 13.832031 20.089844 13.972656 20.53125 14.074219 C 21.511719 14.296875 21.886719 14.199219 22.019531 14.109375 C 22.074219 14.070312 22.5 13.742188 22.5 12 C 22.5 6.199219 17.800781 1.5 12 1.5 C 6.199219 1.5 1.5 6.199219 1.5 12 C 1.5 17.800781 6.199219 22.5 12 22.5 Z M 12 22.5'%3E%3C/path%3E%3C/svg%3E\");\n  	--dc-settings-svg : url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' width='24' height='24' preserveAspectRatio='xMidYMid meet' style='width: 100%25; height: 100%25; transform: translate3d(0px, 0px, 0px); content-visibility: visible;'%3E%3Cdefs%3E%3CclipPath id='__lottie_element_97'%3E%3Crect width='24' height='24' x='0' y='0'%3E%3C/rect%3E%3C/clipPath%3E%3CclipPath id='__lottie_element_99'%3E%3Cpath d='M0,0 L600,0 L600,600 L0,600z'%3E%3C/path%3E%3C/clipPath%3E%3C/defs%3E%3Cg clip-path='url(%23__lottie_element_97)'%3E%3Cg clip-path='url(%23__lottie_element_99)' transform='matrix(0.03999999910593033,0,0,0.03999999910593033,0,0)' opacity='1' style='display: block;'%3E%3Cg transform='matrix(25,0,0,25,300,300)' opacity='1' style='display: block;'%3E%3Cg opacity='1' transform='matrix(1,0,0,1,0,0)'%3E%3Cpath fill='rgb(88,101,242)' fill-opacity='1' d=' M-1.4420000314712524,-10.906000137329102 C-1.8949999809265137,-10.847000122070312 -2.1470000743865967,-10.375 -2.078000068664551,-9.92300033569336 C-1.899999976158142,-8.756999969482422 -2.265000104904175,-7.7210001945495605 -3.061000108718872,-7.390999794006348 C-3.8570001125335693,-7.060999870300293 -4.8480000495910645,-7.534999847412109 -5.546000003814697,-8.484999656677246 C-5.816999912261963,-8.852999687194824 -6.329999923706055,-9.008999824523926 -6.691999912261963,-8.730999946594238 C-7.458000183105469,-8.142999649047852 -8.142999649047852,-7.458000183105469 -8.730999946594238,-6.691999912261963 C-9.008999824523926,-6.329999923706055 -8.852999687194824,-5.816999912261963 -8.484999656677246,-5.546000003814697 C-7.534999847412109,-4.8480000495910645 -7.060999870300293,-3.8570001125335693 -7.390999794006348,-3.061000108718872 C-7.7210001945495605,-2.265000104904175 -8.756999969482422,-1.899999976158142 -9.92300033569336,-2.078000068664551 C-10.375,-2.1470000743865967 -10.847000122070312,-1.8949999809265137 -10.906000137329102,-1.4420000314712524 C-10.968000411987305,-0.9700000286102295 -11,-0.48899999260902405 -11,0 C-11,0.48899999260902405 -10.968000411987305,0.9700000286102295 -10.906000137329102,1.4420000314712524 C-10.847000122070312,1.8949999809265137 -10.375,2.1470000743865967 -9.92300033569336,2.078000068664551 C-8.756999969482422,1.899999976158142 -7.7210001945495605,2.265000104904175 -7.390999794006348,3.061000108718872 C-7.060999870300293,3.8570001125335693 -7.534999847412109,4.8470001220703125 -8.484999656677246,5.546000003814697 C-8.852999687194824,5.816999912261963 -9.008999824523926,6.328999996185303 -8.730999946594238,6.691999912261963 C-8.142999649047852,7.458000183105469 -7.458000183105469,8.142999649047852 -6.691999912261963,8.730999946594238 C-6.329999923706055,9.008999824523926 -5.816999912261963,8.852999687194824 -5.546000003814697,8.484999656677246 C-4.8480000495910645,7.534999847412109 -3.8570001125335693,7.060999870300293 -3.061000108718872,7.390999794006348 C-2.265000104904175,7.7210001945495605 -1.899999976158142,8.756999969482422 -2.078000068664551,9.92300033569336 C-2.1470000743865967,10.375 -1.8949999809265137,10.847000122070312 -1.4420000314712524,10.906000137329102 C-0.9700000286102295,10.968000411987305 -0.48899999260902405,11 0,11 C0.48899999260902405,11 0.9700000286102295,10.968000411987305 1.4420000314712524,10.906000137329102 C1.8949999809265137,10.847000122070312 2.1470000743865967,10.375 2.078000068664551,9.92300033569336 C1.899999976158142,8.756999969482422 2.2660000324249268,7.7210001945495605 3.062000036239624,7.390999794006348 C3.8580000400543213,7.060999870300293 4.8480000495910645,7.534999847412109 5.546000003814697,8.484999656677246 C5.816999912261963,8.852999687194824 6.328999996185303,9.008999824523926 6.691999912261963,8.730999946594238 C7.458000183105469,8.142999649047852 8.142999649047852,7.458000183105469 8.730999946594238,6.691999912261963 C9.008999824523926,6.328999996185303 8.852999687194824,5.816999912261963 8.484999656677246,5.546000003814697 C7.534999847412109,4.8480000495910645 7.060999870300293,3.8570001125335693 7.390999794006348,3.061000108718872 C7.7210001945495605,2.265000104904175 8.756999969482422,1.899999976158142 9.92300033569336,2.078000068664551 C10.375,2.1470000743865967 10.847000122070312,1.8949999809265137 10.906000137329102,1.4420000314712524 C10.968000411987305,0.9700000286102295 11,0.48899999260902405 11,0 C11,-0.48899999260902405 10.968000411987305,-0.9700000286102295 10.906000137329102,-1.4420000314712524 C10.847000122070312,-1.8949999809265137 10.375,-2.1470000743865967 9.92300033569336,-2.078000068664551 C8.756999969482422,-1.899999976158142 7.7210001945495605,-2.265000104904175 7.390999794006348,-3.061000108718872 C7.060999870300293,-3.8570001125335693 7.534999847412109,-4.8480000495910645 8.484999656677246,-5.546000003814697 C8.852999687194824,-5.816999912261963 9.008999824523926,-6.329999923706055 8.730999946594238,-6.691999912261963 C8.142999649047852,-7.458000183105469 7.458000183105469,-8.142999649047852 6.691999912261963,-8.730999946594238 C6.328999996185303,-9.008999824523926 5.817999839782715,-8.852999687194824 5.546999931335449,-8.484999656677246 C4.848999977111816,-7.534999847412109 3.8580000400543213,-7.060999870300293 3.062000036239624,-7.390999794006348 C2.2660000324249268,-7.7210001945495605 1.9010000228881836,-8.756999969482422 2.0789999961853027,-9.92300033569336 C2.1480000019073486,-10.375 1.8949999809265137,-10.847000122070312 1.4420000314712524,-10.906000137329102 C0.9700000286102295,-10.968000411987305 0.48899999260902405,-11 0,-11 C-0.48899999260902405,-11 -0.9700000286102295,-10.968000411987305 -1.4420000314712524,-10.906000137329102z M4,0 C4,2.2090001106262207 2.2090001106262207,4 0,4 C-2.2090001106262207,4 -4,2.2090001106262207 -4,0 C-4,-2.2090001106262207 -2.2090001106262207,-4 0,-4 C2.2090001106262207,-4 4,-2.2090001106262207 4,0z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");\n  	--dc-ondemand-svg: url(\"https://icons.getbootstrap.com/assets/icons/check-circle.svg\");\n}\n\n.dc-colorway-selector::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--dc-picker-svg) center/contain no-repeat !important;\n  	mask: var(--dc-picker-svg) center/contain no-repeat !important\n}\n\n.dc-colorway-settings::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--dc-settings-svg) center/contain no-repeat !important;\n  	mask: var(--dc-settings-svg) center/contain no-repeat !important\n}\n\n.dc-colorway-ondemand::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--dc-ondemand-svg) center/contain no-repeat !important;\n  	mask: var(--dc-ondemand-svg) center/contain no-repeat !important\n}\n\n.dc-colorway-management::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-developeroptions) center/contain no-repeat !important;\n  	mask: var(--si-developeroptions) center/contain no-repeat !important\n}\n\n.colorwaySourceModal {\n  	min-height: unset;\n}\n\n.colorwaySelectorModal-header {\n  	box-shadow: none !important;\n  	padding-bottom: 8px;\n}\n\n.colorwaySelector-sourceSelect {\n  	width: fit-content !important;\n}\n\n.dc-info-card {\n  	border-radius: 5px;\n  	border: 1px solid var(--blue-345);\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	display: flex;\n  	gap: 1em;\n  	flex-direction: column;\n}\n\n.theme-dark .dc-info-card {\n  	color: var(--white-500);\n}\n\n.theme-light .dc-info-card {\n  	color: var(--black-500);\n}\n\n.colorwaysSettings-sourceScroller {\n  	scrollbar-width: none;\n}\n\n.colorwaysSettings-sourceScroller::-webkit-scrollbar {\n  	width: 0;\n}\n";
 
 function SettingsPage() {
 	const [colorways, setColorways] = React.useState([]);
 	const [colorwaySourceFiles, setColorwaySourceFiles] = React.useState(betterdiscord.Data.load("settings").colorwayLists);
 	const [colorsButtonVisibility, setColorsButtonVisibility] = React.useState(betterdiscord.Data.load("settings").showInGuildBar);
 	const [isButtonThin, setIsButtonThin] = React.useState(betterdiscord.Data.load("settings").isButtonThin);
-	async function loadUI() {
-		const responses = await Promise.all(
-			betterdiscord.Data.load("settings").colorwayLists.map(
-				(url) => fetch(url)
-			)
-		);
-		const data = await Promise.all(
-			responses.map(
-				(res) => res.json().catch(() => {
-					return { colorways: [] };
-				})
-			)
-		);
-		const colorways2 = data.flatMap((json) => json.colorways);
-		setColorways(colorways2 || fallbackColorways);
-	}
-	const cached_loadUI = React.useCallback(loadUI, []);
 	React.useEffect(() => {
-		cached_loadUI();
+		(async function() {
+			const responses = await Promise.all(betterdiscord.Data.load("settings").colorwayLists.map((url) => fetch(url)));
+			const data = await Promise.all(responses.map((res) => res.json().catch(() => {
+				return { colorways: [] };
+			})));
+			const colorways2 = data.flatMap((json) => json.colorways);
+			setColorways(colorways2 || fallbackColorways);
+		})();
 	}, []);
 	return BdApi.React.createElement(SettingsTab, { title: "Settings" }, BdApi.React.createElement("div", { className: "colorwaysSettingsPage-wrapper" }, BdApi.React.createElement(Flex, { style: { gap: "0", marginBottom: "8px" } }, BdApi.React.createElement(Forms.FormTitle, { tag: "h5", style: { width: "100%", marginBottom: "0", lineHeight: "32px" } }, "Sources"), BdApi.React.createElement(
 		Button,
@@ -3669,7 +3590,7 @@ function SettingsPage() {
 			)
 		),
 		"Add a source..."
-	)), BdApi.React.createElement(Flex, { flexDirection: "column", style: { gap: "0" } }, colorwaySourceFiles?.map(
+	)), BdApi.React.createElement(ScrollerThin, { orientation: "vertical", style: { maxHeight: "250px" }, className: "colorwaysSettings-sourceScroller" }, getComputedStyle(document.body).getPropertyValue("--os-accent-color") ? BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled} colorwaysSettings-colorwaySource` }, BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel" }, "OS Accent Color ", BdApi.React.createElement("div", { className: "colorways-badge" }, "Built-In"))) : BdApi.React.createElement(BdApi.React.Fragment, null), colorwaySourceFiles?.map(
 		(colorwaySourceFile) => BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled} colorwaysSettings-colorwaySource` }, knownColorwaySources.find((o) => o.url === colorwaySourceFile) ? BdApi.React.createElement("div", { className: "hoverRoll" }, BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel hoverRoll_normal" }, knownColorwaySources.find((o) => o.url === colorwaySourceFile).name, " ", colorwaySourceFile === defaultColorwaySource && BdApi.React.createElement("div", { className: "colorways-badge" }, "DEFAULT")), BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel hoverRoll_hovered" }, colorwaySourceFile)) : BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel" }, colorwaySourceFile), colorwaySourceFile !== defaultColorwaySource && BdApi.React.createElement(
 			Button,
 			{
@@ -4075,7 +3996,16 @@ class DiscordColorways {
 			"Open Color Stealer": () => Modals.openModal((props) => BdApi.React.createElement(ColorPicker, { modalProps: props })),
 			"Open Settings": () => SettingsRouter.open("ColorwaysSettings"),
 			"Open On-Demand Settings": () => SettingsRouter.open("ColorwaysOnDemand"),
-			"Manage Colorways...": () => SettingsRouter.open("ColorwaysManagement")
+			"Manage Colorways...": () => SettingsRouter.open("ColorwaysManagement"),
+			"Change Auto Colorway Preset": async () => {
+				Modals.openModal((props) => BdApi.React.createElement(AutoColorwaySelector, { modalProps: props, onChange: (autoPresetId) => {
+					if (betterdiscord.Data.load("settings").activeColorwayID === "Auto") {
+						const demandedColorway = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")))[autoPresetId].preset();
+						betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), activeColorway: demandedColorway });
+						ColorwayCSS.set(demandedColorway);
+					}
+				} }));
+			}
 		};
 	}
 	stop() {
