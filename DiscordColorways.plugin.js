@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways
- * @version 5.6.9
+ * @version 5.6.9.1
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -37,6 +37,10 @@ const betterdiscord = new BdApi("DiscordColorways");
 const React = BdApi.React;
 const ReactDOM = BdApi.ReactDOM;
 
+function Spinner({ className }) {
+	return BdApi.React.createElement("div", { className: "colorwaysBtn-spinner" + (className ? " " + className : ""), role: "img", "aria-label": "Loading" }, BdApi.React.createElement("div", { className: "colorwaysBtn-spinnerInner" }, BdApi.React.createElement("svg", { className: "colorwaysBtn-spinnerCircular", viewBox: "25 25 50 50", fill: "currentColor" }, BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam3", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam2", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam", cx: "50", cy: "50", r: "20" }))));
+}
+
 const Filters = {
 	...betterdiscord.Webpack.Filters,
 	byName: (name) => {
@@ -56,13 +60,49 @@ const Filters = {
 			if (target instanceof Function) {
 				const source = target.toString();
 				const renderSource = target.prototype?.render?.toString();
-				return fragments.every((fragment) => typeof fragment === "string" ? source.includes(fragment) || renderSource?.includes(fragment) : fragment(source) || renderSource && fragment(renderSource));
+				return fragments.every(
+					(fragment) => typeof fragment === "string" ? source.includes(fragment) || renderSource?.includes(fragment) : fragment(source) || renderSource && fragment(renderSource)
+				);
 			} else {
 				return false;
 			}
 		};
+	},
+	byCode: (...code) => (m) => {
+		if (typeof m !== "function")
+			return false;
+		const s = Function.prototype.toString.call(m);
+		for (const c of code) {
+			if (!s.includes(c))
+				return false;
+		}
+		return true;
+	},
+	componentByCode: (...code) => {
+		const filter = Filters.byCode(...code);
+		return (m) => {
+			if (filter(m))
+				return true;
+			if (!m.$$typeof)
+				return false;
+			if (m.type && m.type.render)
+				return filter(m.type.render);
+			if (m.type)
+				return filter(m.type);
+			if (m.render)
+				return filter(m.render);
+			return false;
+		};
 	}
 };
+function findComponentByCodeLazy(...code) {
+	return LazyComponent(() => {
+		const res = Webpack.getModule(Filters.componentByCode(...code));
+		if (!res)
+			handleModuleNotFound("findComponentByCode", ...code);
+		return res;
+	});
+}
 const hasThrown = new WeakSet();
 const wrapFilter = (filter) => (exports, module, moduleId) => {
 	try {
@@ -77,7 +117,12 @@ const wrapFilter = (filter) => (exports, module, moduleId) => {
 		return filter(exports, module, moduleId);
 	} catch (err) {
 		if (!hasThrown.has(filter))
-			console.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+			console.warn(
+				"WebpackModules~getModule",
+				"Module filter threw an exception.",
+				filter,
+				err
+			);
 		hasThrown.add(filter);
 		return false;
 	}
@@ -93,8 +138,15 @@ function removeListener(listener) {
 const Webpack = {
 	...betterdiscord.Webpack,
 	getLazy: (filter, options = {}) => {
-		const { signal: abortSignal, defaultExport = true, searchExports = false } = options;
-		const fromCache = Webpack.getModule(filter, { defaultExport, searchExports });
+		const {
+			signal: abortSignal,
+			defaultExport = true,
+			searchExports = false
+		} = options;
+		const fromCache = Webpack.getModule(filter, {
+			defaultExport,
+			searchExports
+		});
 		if (fromCache)
 			return Promise.resolve(fromCache);
 		const wrappedFilter = wrapFilter(filter);
@@ -137,8 +189,18 @@ const Webpack = {
 	}
 };
 const ReactDOMInternals = ReactDOM?.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED?.Events ?? [];
-const [getInstanceFromNode, getNodeFromInstance, getFiberCurrentPropsFromNode, enqueueStateRestore, restoreStateIfNeeded, batchedUpdates] = ReactDOMInternals;
-const FCHook = ({ children: { type, props }, callback }) => {
+const [
+	getInstanceFromNode,
+	getNodeFromInstance,
+	getFiberCurrentPropsFromNode,
+	enqueueStateRestore,
+	restoreStateIfNeeded,
+	batchedUpdates
+] = ReactDOMInternals;
+const FCHook = ({
+	children: { type, props },
+	callback
+}) => {
 	const result = type(props);
 	return callback(result, props) ?? result;
 };
@@ -199,7 +261,12 @@ const queryFiber = (fiber, predicate, direction = "up", depth = 30) => {
 	return null;
 };
 const findOwner = (fiber, depth = 50) => {
-	return queryFiber(fiber, (node) => node?.stateNode instanceof React.Component, "up", depth);
+	return queryFiber(
+		fiber,
+		(node) => node?.stateNode instanceof React.Component,
+		"up",
+		depth
+	);
 };
 const ColorwayCSS = {
 	get: () => document.getElementById("activeColorwayCSS")?.textContent || "",
@@ -265,78 +332,46 @@ function colorToHex(color) {
 	}
 	color = color.replaceAll(",", "").replace(/.+?\(/, "").replace(")", "").replaceAll(/[ \t]+\/[ \t]+/g, " ").replaceAll("%", "").replaceAll("/", "");
 	if (colorType === "hsl") {
-		color = hslToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
+		color = hslToHex(
+			Number(color.split(" ")[0]),
+			Number(color.split(" ")[1]),
+			Number(color.split(" ")[2])
+		);
 	}
 	if (colorType === "rgb") {
-		color = rgbToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
+		color = rgbToHex(
+			Number(color.split(" ")[0]),
+			Number(color.split(" ")[1]),
+			Number(color.split(" ")[2])
+		);
 	}
 	return color.replace("#", "");
 }
-const { radioBar, item: radioBarItem, itemFilled: radioBarItemFilled, radioPositionLeft } = Webpack.getByKeys("radioBar");
-
-function HexToHSL(H) {
-	let r = 0, g = 0, b = 0;
-	if (H.length === 4)
-		r = "0x" + H[1] + H[1], g = "0x" + H[2] + H[2], b = "0x" + H[3] + H[3];
-	else if (H.length === 7) {
-		r = "0x" + H[1] + H[2];
-		g = "0x" + H[3] + H[4];
-		b = "0x" + H[5] + H[6];
-	}
-	r /= 255, g /= 255, b /= 255;
-	var cmin = Math.min(r, g, b), cmax = Math.max(r, g, b), delta = cmax - cmin, h = 0, s = 0, l = 0;
-	if (delta === 0)
-		h = 0;
-	else if (cmax === r)
-		h = (g - b) / delta % 6;
-	else if (cmax === g)
-		h = (b - r) / delta + 2;
-	else
-		h = (r - g) / delta + 4;
-	h = Math.round(h * 60);
-	if (h < 0)
-		h += 360;
-	l = (cmax + cmin) / 2;
-	s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-	s = +(s * 100).toFixed(1);
-	l = +(l * 100).toFixed(1);
-	return [Math.round(h), Math.round(s), Math.round(l)];
+function makeLazy(factory, attempts = 5) {
+	let tries = 0;
+	let cache;
+	return () => {
+		if (!cache && attempts > tries++) {
+			cache = factory();
+			if (!cache && attempts === tries)
+				console.error("Lazy factory failed:", factory);
+		}
+		return cache;
+	};
 }
-const stringToHex = (str) => {
-	let hex = "";
-	for (let i = 0; i < str.length; i++) {
-		const charCode = str.charCodeAt(i);
-		const hexValue = charCode.toString(16);
-		hex += hexValue.padStart(2, "0");
-	}
-	return hex;
-};
-const hexToString = (hex) => {
-	let str = "";
-	for (let i = 0; i < hex.length; i += 2) {
-		const hexValue = hex.substr(i, 2);
-		const decimalValue = parseInt(hexValue, 16);
-		str += String.fromCharCode(decimalValue);
-	}
-	return str;
-};
-function getHex(str) {
-	const color = Object.assign(
-		document.createElement("canvas").getContext("2d"),
-		{ fillStyle: str }
-	).fillStyle;
-	if (color.includes("rgba(")) {
-		return getHex(String([...color.split(",").slice(0, 3), ")"]).replace(",)", ")").replace("a", ""));
-	} else {
-		return color;
-	}
+const NoopComponent = () => null;
+function LazyComponent(factory, attempts = 5) {
+	const get = makeLazy(factory, attempts);
+	const LazyComponent2 = (props) => {
+		const Component = get() ?? NoopComponent;
+		return BdApi.React.createElement(Component, { ...props });
+	};
+	LazyComponent2.$$vencordInternal = get;
+	return LazyComponent2;
 }
-function getFontOnBg(bgColor) {
-	var color = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
-	var r = parseInt(color.substring(0, 2), 16);
-	var g = parseInt(color.substring(2, 4), 16);
-	var b = parseInt(color.substring(4, 6), 16);
-	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
+function handleModuleNotFound(method, ...filter) {
+	const err = new Error(`webpack.${method} found no module`);
+	console.error(err, "Filter:", filter);
 }
 const unconfigurable = ["arguments", "caller", "prototype"];
 const handler = {};
@@ -409,14 +444,15 @@ function proxyLazy(factory, attempts = 5, isChild = false) {
 		}
 	});
 }
-function waitForStore(storeName, callback) {
-	betterdiscord.Webpack.waitForModule(Filters.byStoreName(storeName)).then((e) => callback(e));
-}
-
-function Spinner({ className }) {
-	return BdApi.React.createElement("div", { className: "colorwaysBtn-spinner" + (className ? " " + className : ""), role: "img", "aria-label": "Loading" }, BdApi.React.createElement("div", { className: "colorwaysBtn-spinnerInner" }, BdApi.React.createElement("svg", { className: "colorwaysBtn-spinnerCircular", viewBox: "25 25 50 50", fill: "currentColor" }, BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam3", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam2", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam", cx: "50", cy: "50", r: "20" }))));
-}
-
+const {
+	radioBar,
+	item: radioBarItem,
+	itemFilled: radioBarItemFilled,
+	radioPositionLeft
+} = Webpack.getByKeys("radioBar");
+const {
+	useStateFromStores
+} = proxyLazy(() => Webpack.getModule(Filters.byProps("useStateFromStores")));
 let Clipboard;
 let Forms = {};
 let Card;
@@ -439,19 +475,42 @@ let Clickable;
 let Avatar;
 let FocusLock;
 let useToken;
-const SettingsRouter = betterdiscord.Webpack.getByKeys("open", "saveAccountChanges");
+const SettingsRouter = Webpack.getByKeys("open", "saveAccountChanges");
 const Menu = {
-	Menu: betterdiscord.Webpack.getByKeys("Menu").Menu,
-	MenuItem: betterdiscord.Webpack.getByKeys("Menu").MenuItem
+	Menu: Webpack.getByKeys("Menu").Menu,
+	MenuItem: Webpack.getByKeys("Menu").MenuItem
 };
 let ColorPicker$1 = () => {
 	return BdApi.React.createElement(Spinner, { className: "colorways-creator-module-warning" });
 };
-betterdiscord.Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
-	({ useToken, Card, Button, FormSwitch: Switch, Tooltip, TextInput, TextArea, Text, Select, SearchableSelect, Slider, ButtonLooks, TabBar, Popout, Dialog, Paginator, ScrollerThin, Clickable, Avatar, FocusLock } = m);
+Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
+	({
+		useToken,
+		Card,
+		Button,
+		FormSwitch: Switch,
+		Tooltip,
+		TextInput,
+		TextArea,
+		Text,
+		Select,
+		SearchableSelect,
+		Slider,
+		ButtonLooks,
+		TabBar,
+		Popout,
+		Dialog,
+		Paginator,
+		ScrollerThin,
+		Clickable,
+		Avatar,
+		FocusLock
+	} = m);
 	Forms = m;
 });
-betterdiscord.Webpack.waitForModule(Filters.byStrings("showEyeDropper")).then((e) => ColorPicker$1 = e);
+Webpack.waitForModule(Filters.byStrings("showEyeDropper")).then(
+	(e) => ColorPicker$1 = e
+);
 function Flex(props) {
 	props.style ??= {};
 	props.style.display = "flex";
@@ -461,57 +520,74 @@ function Flex(props) {
 	return BdApi.React.createElement("div", { ...props }, props.children);
 }
 let UserStore;
-let SelectedChannelStore;
-let SelectedGuildStore;
-const UserProfileActions = proxyLazy(() => betterdiscord.Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal"));
-const UserUtils = proxyLazy(() => betterdiscord.Webpack.getByKeys("getUser", "fetchCurrentUser"));
+proxyLazy(
+	() => Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal")
+);
+proxyLazy(
+	() => Webpack.getByKeys("getUser", "fetchCurrentUser")
+);
 const Modals = {
-	openModal: betterdiscord.Webpack.getByKeys("openModal", "ModalHeader").openModal,
-	ModalRoot: betterdiscord.Webpack.getByKeys("ModalRoot").ModalRoot,
-	ModalHeader: betterdiscord.Webpack.getByKeys("ModalRoot").ModalHeader,
-	ModalContent: betterdiscord.Webpack.getByKeys("ModalRoot").ModalContent,
-	ModalFooter: betterdiscord.Webpack.getByKeys("ModalRoot").ModalFooter
+	openModal: Webpack.getByKeys("openModal", "ModalHeader").openModal,
+	ModalRoot: Webpack.getByKeys("ModalRoot").ModalRoot,
+	ModalHeader: Webpack.getByKeys("ModalRoot").ModalHeader,
+	ModalContent: Webpack.getByKeys("ModalRoot").ModalContent,
+	ModalFooter: Webpack.getByKeys("ModalRoot").ModalFooter
 };
 const Toasts = {
-	show: betterdiscord.Webpack.getByKeys("showToast")["showToast"],
-	pop: betterdiscord.Webpack.getByKeys("popToast")["popToast"],
-	useToastStore: betterdiscord.Webpack.getByKeys("useToastStore")["useToastStore"],
-	create: betterdiscord.Webpack.getByKeys("createToast")["createToast"]
+	show: Webpack.getByKeys("showToast")["showToast"],
+	pop: Webpack.getByKeys("popToast")["popToast"],
+	useToastStore: Webpack.getByKeys("useToastStore")["useToastStore"],
+	create: Webpack.getByKeys("createToast")["createToast"]
 };
-const FluxDispatcher = betterdiscord.Webpack.getModule((m) => m.dispatch && m.subscribe);
-async function openUserProfile(id) {
-	const user = await UserUtils.getUser(id);
-	if (!user)
-		throw new Error("No such user: " + id);
-	const guildId = SelectedGuildStore.getGuildId();
-	UserProfileActions.openUserProfileModal({
-		userId: id,
-		guildId,
-		channelId: SelectedChannelStore.getChannelId(),
-		analyticsLocation: {
-			page: guildId ? "Guild Channel" : "DM Channel",
-			section: "Profile Popout"
-		}
-	});
+const FluxDispatcher = Webpack.getModule(
+	(m) => m.dispatch && m.subscribe
+);
+function waitForStore(storeName, callback) {
+	Webpack.waitForModule(Filters.byStoreName(storeName)).then(
+		(e) => callback(e)
+	);
 }
 waitForStore("DraftStore", (s) => s);
 waitForStore("UserStore", (s) => UserStore = s);
-waitForStore("SelectedChannelStore", (s) => SelectedChannelStore = s);
-waitForStore("SelectedGuildStore", (s) => SelectedGuildStore = s);
+waitForStore(
+	"SelectedChannelStore",
+	(s) => s
+);
+waitForStore(
+	"SelectedGuildStore",
+	(s) => s
+);
 waitForStore("UserProfileStore", (m) => m);
-waitForStore("ChannelStore", (m) => m);
+waitForStore(
+	"ChannelStore",
+	(m) => m
+);
 waitForStore("GuildStore", (m) => m);
-waitForStore("GuildMemberStore", (m) => m);
-waitForStore("RelationshipStore", (m) => m);
+waitForStore(
+	"GuildMemberStore",
+	(m) => m
+);
+waitForStore(
+	"RelationshipStore",
+	(m) => m
+);
 waitForStore("PermissionStore", (m) => m);
 waitForStore("PresenceStore", (m) => m);
 waitForStore("ReadStateStore", (m) => m);
 waitForStore("GuildChannelStore", (m) => m);
-waitForStore("MessageStore", (m) => m);
+waitForStore(
+	"MessageStore",
+	(m) => m
+);
 waitForStore("WindowStore", (m) => m);
 waitForStore("EmojiStore", (m) => m);
-betterdiscord.Webpack.waitForModule(Filters.byKeys("SUPPORTS_COPY", "copy")).then((e) => Clipboard = e);
-function SettingsTab({ title, children }) {
+Webpack.waitForModule(Filters.byKeys("SUPPORTS_COPY", "copy")).then(
+	(e) => Clipboard = e
+);
+function SettingsTab({
+	title,
+	children
+}) {
 	return BdApi.React.createElement(Forms.FormSection, null, BdApi.React.createElement(
 		Text,
 		{
@@ -848,7 +924,7 @@ const mainColors = [
 const name = "DiscordColorways";
 const author = "DaBluLite";
 const description = "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways";
-const version = "5.6.9";
+const version = "5.6.9.1";
 const authorId = "582170007505731594";
 const invite = "ZfPH6SDkMW";
 const creatorVersion = "1.19.6";
@@ -861,6 +937,71 @@ const plugin = {
 	invite: invite,
 	creatorVersion: creatorVersion
 };
+
+function HexToHSL(H) {
+	let r = 0, g = 0, b = 0;
+	if (H.length === 4)
+		r = "0x" + H[1] + H[1], g = "0x" + H[2] + H[2], b = "0x" + H[3] + H[3];
+	else if (H.length === 7) {
+		r = "0x" + H[1] + H[2];
+		g = "0x" + H[3] + H[4];
+		b = "0x" + H[5] + H[6];
+	}
+	r /= 255, g /= 255, b /= 255;
+	var cmin = Math.min(r, g, b), cmax = Math.max(r, g, b), delta = cmax - cmin, h = 0, s = 0, l = 0;
+	if (delta === 0)
+		h = 0;
+	else if (cmax === r)
+		h = (g - b) / delta % 6;
+	else if (cmax === g)
+		h = (b - r) / delta + 2;
+	else
+		h = (r - g) / delta + 4;
+	h = Math.round(h * 60);
+	if (h < 0)
+		h += 360;
+	l = (cmax + cmin) / 2;
+	s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+	s = +(s * 100).toFixed(1);
+	l = +(l * 100).toFixed(1);
+	return [Math.round(h), Math.round(s), Math.round(l)];
+}
+const stringToHex = (str) => {
+	let hex = "";
+	for (let i = 0; i < str.length; i++) {
+		const charCode = str.charCodeAt(i);
+		const hexValue = charCode.toString(16);
+		hex += hexValue.padStart(2, "0");
+	}
+	return hex;
+};
+const hexToString = (hex) => {
+	let str = "";
+	for (let i = 0; i < hex.length; i += 2) {
+		const hexValue = hex.substr(i, 2);
+		const decimalValue = parseInt(hexValue, 16);
+		str += String.fromCharCode(decimalValue);
+	}
+	return str;
+};
+function getHex(str) {
+	const color = Object.assign(
+		document.createElement("canvas").getContext("2d"),
+		{ fillStyle: str }
+	).fillStyle;
+	if (color.includes("rgba(")) {
+		return getHex(String([...color.split(",").slice(0, 3), ")"]).replace(",)", ")").replace("a", ""));
+	} else {
+		return color;
+	}
+}
+function getFontOnBg(bgColor) {
+	var color = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
+	var r = parseInt(color.substring(0, 2), 16);
+	var g = parseInt(color.substring(2, 4), 16);
+	var b = parseInt(color.substring(4, 6), 16);
+	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
+}
 
 const colorVariables = [
 	"brand-100",
@@ -2774,6 +2915,7 @@ function CreatorModal({
 	)));
 }
 
+const UserSummaryItem = findComponentByCodeLazy("defaultRenderUser", "showDefaultAvatarsForNullUsers");
 function ColorwayInfoModal({
 	modalProps,
 	colorwayProps,
@@ -2787,6 +2929,7 @@ function ColorwayInfoModal({
 		"tertiary"
 	];
 	const [collapsedCSS, setCollapsedCSS] = React.useState(true);
+	const profile = useStateFromStores([UserStore], () => UserStore.getUser(colorwayProps.authorID));
 	return BdApi.React.createElement(Modals.ModalRoot, { ...modalProps, className: "colorwayCreator-modal" }, BdApi.React.createElement(Modals.ModalHeader, null, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Colorway Details: ", colorwayProps.name)), BdApi.React.createElement(Modals.ModalContent, null, BdApi.React.createElement("div", { className: "colorwayInfo-wrapper" }, BdApi.React.createElement("div", { className: "colorwayInfo-colorSwatches" }, colors.map((color) => {
 		return BdApi.React.createElement(
 			"div",
@@ -2806,18 +2949,15 @@ function ColorwayInfoModal({
 			}
 		);
 	})), BdApi.React.createElement("div", { className: "colorwayInfo-row colorwayInfo-author" }, BdApi.React.createElement(Flex, { style: { gap: "10px", width: "100%", alignItems: "center" } }, BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0, width: "100%" } }, "Properties:"), BdApi.React.createElement(
-		Button,
+		UserSummaryItem,
 		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			style: { flex: "0 0 auto", maxWidth: "236px" },
-			onClick: () => {
-				openUserProfile(colorwayProps.authorID);
-			}
-		},
-		"Author: ",
-		colorwayProps.author
+			users: [profile],
+			guildId: void 0,
+			renderIcon: false,
+			showDefaultAvatarsForNullUsers: true,
+			size: 32,
+			showUserPopout: true
+		}
 	), BdApi.React.createElement(
 		Button,
 		{
