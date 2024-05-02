@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways
- * @version 5.6.8
+ * @version 5.6.9
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -848,7 +848,7 @@ const mainColors = [
 const name = "DiscordColorways";
 const author = "DaBluLite";
 const description = "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways";
-const version = "5.6.8";
+const version = "5.6.9";
 const authorId = "582170007505731594";
 const invite = "ZfPH6SDkMW";
 const creatorVersion = "1.19.6";
@@ -3786,7 +3786,7 @@ function ManageColorwaysPage() {
 				const file = data.file;
 				if (file) {
 					try {
-						betterdiscord.Data.save("custom_colorways", JSON.parse(new TextDecoder().decode(file.data)));
+						betterdiscord.Data.save("custom_colorways", JSON.parse(new TextDecoder().decode(file.data)).colorways);
 					} catch (err) {
 						throw new Error(`(DiscordColorways) ${err}`);
 					}
@@ -3798,7 +3798,7 @@ function ManageColorwaysPage() {
 		Button,
 		{
 			size: Button.Sizes.SMALL,
-			onClick: () => DiscordNative.fileManager.saveWithDialog(JSON.stringify(betterdiscord.Data.load("custom_colorways")), "colorways.json")
+			onClick: () => DiscordNative.fileManager.saveWithDialog(JSON.stringify({ "colorways": betterdiscord.Data.load("custom_colorways") }), "colorways.json")
 		},
 		"Export Colorways"
 	))), BdApi.React.createElement(Forms.FormDivider, { style: { marginTop: "8px", marginBottom: "8px" } }), BdApi.React.createElement(Forms.FormSection, { title: "Transfer 3rd Party Colorways to local index (3rd-Party > Custom):" }, BdApi.React.createElement(Flex, null, BdApi.React.createElement(
@@ -3949,6 +3949,7 @@ const SettingsSection = [
 		section: "DIVIDER"
 	}
 ].filter(Boolean);
+console.log(Webpack.getModule(Filters.bySource("Messages.REMOVE_ATTACHMENT_BODY")));
 class DiscordColorways {
 	load() {
 	}
