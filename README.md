@@ -13,6 +13,6 @@ Colorways are simple color schemes/themes for Discord, meant to expand the funct
 * Discord Default
 * [Virtual Boy](https://github.com/Riddim-GLiTCH/Virtual-Boy), by [Riddim GLiTCH](https://github.com/Riddim-GLiTCH) (Works both as-is and with a preset for extra accuracy (Virtual Boy))
 * [Modular](https://github.com/SEELE1306/Modular), by [SEELE1306](https://github.com/SEELE1306) (Available only as a preset (Modular))
-* [Cyan and Cyan 2](https://github.com/DaBluLite/Cyan) (Available only as presets (Cyan) (Cyan 2))
-* ????? (Available ?????? (???????))
+* [Cyan and Cyan 1 (Legacy)](https://github.com/DaBluLite/Cyan) (Available only as presets ("Cyan" and "Cyan 1 (Legacy)"))
+* [Nexus Remastered](https://github.com/DaBluLite/NexusRemastered) (Available only as a preset (Nexus Remastered))
 * You tell me, this list can still grow with your help. If you know any compatible themes, open an Issue with the name of the supported theme.
