@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: My Support Server
+    url: https://discord.gg/67VRpSjzxU
+    about: If you need help regarding DiscordColorways, Project Colorway, or any of my other projects, please join this support server!
+  - name: DiscordColorways (Vencord Userplugin)
+    url: https://github.com/DaBluLite/DiscordColorways-VencordUserplugin
+    about: You can find the DiscordColorways plugin for Vencord here, as well as instructions on how to install it on a dev build. Do not open issues here regarding on how to make a dev build. Your GitHub account will be blocked.
