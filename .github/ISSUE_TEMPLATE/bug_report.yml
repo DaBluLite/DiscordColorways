@@ -26,6 +26,15 @@ body:
     validations:
       required: false
 
+  - type: input
+    id: client-mod
+    attributes:
+      label: Client Mod
+      description: What client mod are you using to install DiscordColorways?
+      placeholder: BetterDiscord/Vencord
+    validations:
+      required: true
+
   - type: textarea
     id: bug-description
     attributes:
