@@ -1,5 +1,5 @@
 # Kabuki (Original Colorway)
-High-contrast
+High-contrast, high action
 
 ### Importing:
 ```css
