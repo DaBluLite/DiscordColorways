@@ -16,10 +16,3 @@ Colorways are simple color schemes/themes for Discord, meant to expand the funct
 * [Cyan and Cyan 1 (Legacy)](https://github.com/DaBluLite/Cyan) (Available only as presets ("Cyan" and "Cyan 1 (Legacy)"))
 * [Nexus Remastered](https://github.com/DaBluLite/NexusRemastered) (Available only as a preset (Nexus Remastered))
 * You tell me, this list can still grow with your help. If you know any compatible themes, open an Issue with the name of the supported theme.
-
-Credits to [byeoon](https://github.com/byeoon) for the cool bg trick
-
-```math
-$$\ce{$\unicode[goombafont; color:blue; z-index: -1; position: fixed; pointer-events: none; top: 0; left: 0; height: 1000%; object-fit: fill; width: 1000%; opacity: 0.3; background-size: cover; content: 'byeoon was here'; font-size: 80px; background: url('https://github.com/DaBluLite/DiscordColorways/assets/73998678/85af97f9-37da-4f7c-8fbc-128123025bcd');]
-{x0000}$}$$
-```
