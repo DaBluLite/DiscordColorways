@@ -1,4 +1,4 @@
-# DiscordColorways (by [Project Colorway](https://github.com/DaBluLite/ProjectColorway))
+# DiscordColorways (by [Project Colorway](https://github.com/ProjectColorway/ProjectColorway))
 
 ## Before you read further below, let's address the main question: *What is a colorway?*
 Colorways are simple color schemes/themes for Discord, meant to expand the functionality of the built in light and dark themes, by offering more simple color choices, that aren't locked behind Nitro.
@@ -6,7 +6,7 @@ Colorways are simple color schemes/themes for Discord, meant to expand the funct
 ### The Definitive way of styling Discord and select themes
 
 * [Download the BetterDiscord plugin](https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/DiscordColorways.plugin.js)
-* [Download the Vencord userplugin](https://raw.githubusercontent.com/DaBluLite/DiscordColorways/master/VencordUserPlugin/discordColorways)
+* [Download the Vencord userplugin](https://github.com/DaBluLite/DiscordColorways-VencordUserplugin)
 * Use the available `@import` lines for the different Colorways
 
 ### Currently Supported themes:
