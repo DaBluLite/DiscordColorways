@@ -3,7 +3,7 @@ A treat for the eyes! Looks and works both in light and dark mode!
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/NeonCandy/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/NeonCandy/import.css");
 ```
 
 ### Screenshots:

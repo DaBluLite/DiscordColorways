@@ -3,7 +3,7 @@ A colorway based on the colors of the Facebook UI
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Facebook/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Facebook/import.css");
 ```
 
 ### Screenshots:

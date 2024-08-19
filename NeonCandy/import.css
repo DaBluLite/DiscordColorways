@@ -1,4 +1,4 @@
-@import url(//dablulite.github.io/css-snippets/NitroThemesFix/import.css);
+@import url("https://dablulite.github.io/css-snippets/NitroThemesFix/import.css");
 :root:root {
     --brand-100-hsl: 299 calc(var(--saturation-factor, 1)*100%) 97%;
     --brand-130-hsl: 299 calc(var(--saturation-factor, 1)*100%) 93%;

@@ -2,7 +2,7 @@
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/StillYoung/import.css");
 ```
 
 ### Screenshots:

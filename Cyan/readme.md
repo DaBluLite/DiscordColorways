@@ -3,7 +3,7 @@ A Colorway based on Cyan's color pallete
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Cyan/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Cyan/import.css");
 ```
 
 ### Screenshots:

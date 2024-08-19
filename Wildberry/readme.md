@@ -3,7 +3,7 @@ A colorway based on the abandoned Wildberry BetterDiscord Theme
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Wildberry/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Wildberry/import.css");
 ```
 
 ### Screenshots:

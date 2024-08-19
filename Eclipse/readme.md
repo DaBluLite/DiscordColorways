@@ -4,7 +4,7 @@ A Colorway based on the brand colors of Eclipse, a Virtual Reality communication
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Eclipse/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Eclipse/import.css");
 ```
 
 ### Screenshots:

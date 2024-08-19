@@ -3,7 +3,7 @@ A Colorway based on cbani's [Pyontheme](https://github.com/rennpy/pyontheme) for
 
 ### Importing:
 ```css
-@import url(https://dablulite.github.io/DiscordColorways/PyonMidnight/import.css);
+@import url(https://dablulite.github.io/DiscordColorways/PyonMidnight/import.css");
 ```
 
 ### Screenshots:

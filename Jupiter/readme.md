@@ -3,7 +3,7 @@ The first ever official gradient colorway!
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Jupiter/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Jupiter/import.css");
 ```
 
 ### Screenshots:

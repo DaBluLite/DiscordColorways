@@ -3,7 +3,7 @@ A Colorway that reverts Discord's 2021 brand color change
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Desaturated/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Desaturated/import.css");
 ```
 
 ### Screenshots:

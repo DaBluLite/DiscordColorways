@@ -2,7 +2,7 @@
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/BrightBlue/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/BrightBlue/import.css");
 ```
 
 ### Screenshots:

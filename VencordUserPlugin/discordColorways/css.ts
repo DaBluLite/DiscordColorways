@@ -356,7 +356,7 @@ export const pureGradientBase = `
 
 
 export function gradientBase(accentColor?: string, discordSaturation = false) {
-    return `@import url(//dablulite.github.io/css-snippets/NitroThemesFix/import.css);
+    return `@import url("https://dablulite.github.io/css-snippets/NitroThemesFix/import.css");
 .theme-dark {
     --bg-overlay-color: 0 0 0;
     --bg-overlay-color-inverse: 255 255 255;

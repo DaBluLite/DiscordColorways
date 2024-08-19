@@ -3,7 +3,7 @@ A Colorway based on ZorinOS's GTK theme, inspired by schnensch's [Zelk](https://
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Zorin/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Zorin/import.css");
 ```
 
 ### Screenshots:

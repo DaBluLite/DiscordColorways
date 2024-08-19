@@ -3,7 +3,7 @@ A Colorway based on the Virtual Boy theme by Riddim_GLiTCH
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Crimson/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Crimson/import.css");
 ```
 
 ### Screenshots:

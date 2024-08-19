@@ -1,0 +1,89 @@
+/**
+ * @name Colorish
+ * @version 1.20
+ * @description Automatically generated Colorway.
+ * @author dablulite
+ * @authorId 582170007505731594
+ */
+ :root:root {
+    --brand-100-hsl: 0 calc(var(--saturation-factor, 1)*0%) 133.5;
+    --brand-130-hsl: 0 calc(var(--saturation-factor, 1)*0%) 132.2%;
+    --brand-160-hsl: 0 calc(var(--saturation-factor, 1)*0%) 130.2%;
+    --brand-200-hsl: 0 calc(var(--saturation-factor, 1)*0%) 128.2%;
+    --brand-230-hsl: 0 calc(var(--saturation-factor, 1)*0%) 126.3%;
+    --brand-260-hsl: 0 calc(var(--saturation-factor, 1)*0%) 123.9%;
+    --brand-300-hsl: 0 calc(var(--saturation-factor, 1)*0%) 121.2%;
+    --brand-330-hsl: 0 calc(var(--saturation-factor, 1)*0%) 116.9%;
+    --brand-345-hsl: 0 calc(var(--saturation-factor, 1)*0%) 114.1%;
+    --brand-360-hsl: 0 calc(var(--saturation-factor, 1)*0%) 112.8%;
+    --brand-400-hsl: 0 calc(var(--saturation-factor, 1)*0%) 107.1%;
+    --brand-430-hsl: 0 calc(var(--saturation-factor, 1)*0%) 105.1%;
+    --brand-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 102.8%;
+    --brand-500-hsl: 0 calc(var(--saturation-factor, 1)*0%) 100%;
+    --brand-530-hsl: 0 calc(var(--saturation-factor, 1)*0%) 94.1%;
+    --brand-560-hsl: 0 calc(var(--saturation-factor, 1)*0%) 87.7%;
+    --brand-600-hsl: 0 calc(var(--saturation-factor, 1)*0%) 79.4%;
+    --brand-630-hsl: 0 calc(var(--saturation-factor, 1)*0%) 73.5%;
+    --brand-660-hsl: 0 calc(var(--saturation-factor, 1)*0%) 68.6%;
+    --brand-700-hsl: 0 calc(var(--saturation-factor, 1)*0%) 61.2%;
+    --brand-730-hsl: 0 calc(var(--saturation-factor, 1)*0%) 59.6%;
+    --brand-760-hsl: 0 calc(var(--saturation-factor, 1)*0%) 57.5%;
+    --brand-800-hsl: 0 calc(var(--saturation-factor, 1)*0%) 54.7%;
+    --brand-830-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50.2%;
+    --brand-860-hsl: 0 calc(var(--saturation-factor, 1)*0%) 44.9%;
+    --brand-900-hsl: 0 calc(var(--saturation-factor, 1)*0%) 38.4%;
+}
+.theme-dark {
+    --primary-800-hsl: 0 calc(var(--saturation-factor, 1)*0%) 1.7999999999999998%;
+    --primary-730-hsl: 0 calc(var(--saturation-factor, 1)*0%) 5.4%;
+    --primary-700-hsl: 0 calc(var(--saturation-factor, 1)*0%) 9%;
+    --primary-660-hsl: 0 calc(var(--saturation-factor, 1)*0%) 2.4%;
+    --primary-645-hsl: 0 calc(var(--saturation-factor, 1)*0%) 4.9%;
+    --primary-630-hsl: 0 calc(var(--saturation-factor, 1)*0%) 6%;
+    --primary-600-hsl: 0 calc(var(--saturation-factor, 1)*0%) 4%;
+    --primary-560-hsl: 0 calc(var(--saturation-factor, 1)*0%) 7.6%;
+    --primary-530-hsl: 0 calc(var(--saturation-factor, 1)*0%) 11.2%;
+    --primary-500-hsl: 0 calc(var(--saturation-factor, 1)*0%) 31.8%;
+    --interactive-muted: hsl(0 0% 45%);
+    --primary-460-hsl: 0 calc(var(--saturation-factor, 1)*0%) 50%;
+    --primary-430: gray;
+    --primary-400: gray;
+    --primary-360: gray;
+}
+.theme-light {
+    --white-500-hsl: 0 calc(var(--saturation-factor, 1)*0%) 84%;
+    --primary-130-hsl: 0 calc(var(--saturation-factor, 1)*0%) 85%;
+    --primary-160-hsl: 0 calc(var(--saturation-factor, 1)*0%) 82.4%;
+    --primary-200-hsl: 0 calc(var(--saturation-factor, 1)*0%) 80%;
+}
+.emptyPage_c6b11b,
+.scrollerContainer_c6b11b,
+.container_f1fd9c,
+.header_f1fd9c {
+    background-color: unset !important;
+}
+.container_c2efea,
+.container_f1fd9c,
+.header_f1fd9c {
+    background: transparent !important;
+}
+
+/*Accent*/
+.selected_db6521 *,
+.selected_ae80f7 *,
+#app-mount .lookFilled_dd4f85.colorBrand_dd4f85:not(.buttonColor_adcaac),
+.colorDefault_d90b3d.focused_d90b3d,
+.row_c5b389:hover,
+.colorwayInfoIcon,
+.checkmarkCircle_cb7c27 > circle {
+    --white-500: black !important;
+}
+
+.ColorwaySelectorBtn:hover .vc-pallete-icon {
+    color: #000 !important;
+}
+
+:root:root {
+    --mention-foreground: black !important;
+}
+/*End Accent*/

@@ -3,7 +3,7 @@ A colorway based on the default colors of the Material You UI
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/MaterialYou/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/MaterialYou/import.css");
 ```
 
 ### Screenshots:

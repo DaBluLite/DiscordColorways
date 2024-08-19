@@ -3,7 +3,7 @@ A Colorway based on Spotify's colors
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Spotify/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Spotify/import.css");
 ```
 
 ### Screenshots:

@@ -3,7 +3,7 @@ A low-profile purple colorway
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/TwilightBlossom/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/TwilightBlossom/import.css");
 ```
 
 ### Screenshots:

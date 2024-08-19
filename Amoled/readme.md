@@ -2,7 +2,7 @@
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/Amoled/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/Amoled/import.css");
 ```
 
 ### Screenshots:

@@ -3,7 +3,7 @@ A colorway inspired by the UIs of Counter Strike 1.6
 
 ### Importing:
 ```css
-@import url(//dablulite.github.io/DiscordColorways/CS16/import.css);
+@import url("https://dablulite.github.io/DiscordColorways/CS16/import.css");
 ```
 
 ### Screenshots:
