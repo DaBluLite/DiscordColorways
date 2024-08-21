@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways
- * @version 5.7.0
+ * @version 6.1.0
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -32,6 +32,8 @@
 @else@*/
 
 'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 const betterdiscord = new BdApi("DiscordColorways");
 const React = BdApi.React;
@@ -69,40 +71,25 @@ const Filters = {
 		};
 	},
 	byCode: (...code) => (m) => {
-		if (typeof m !== "function")
-			return false;
+		if (typeof m !== "function") return false;
 		const s = Function.prototype.toString.call(m);
 		for (const c of code) {
-			if (!s.includes(c))
-				return false;
+			if (!s.includes(c)) return false;
 		}
 		return true;
 	},
 	componentByCode: (...code) => {
 		const filter = Filters.byCode(...code);
 		return (m) => {
-			if (filter(m))
-				return true;
-			if (!m.$$typeof)
-				return false;
-			if (m.type && m.type.render)
-				return filter(m.type.render);
-			if (m.type)
-				return filter(m.type);
-			if (m.render)
-				return filter(m.render);
+			if (filter(m)) return true;
+			if (!m.$$typeof) return false;
+			if (m.type && m.type.render) return filter(m.type.render);
+			if (m.type) return filter(m.type);
+			if (m.render) return filter(m.render);
 			return false;
 		};
 	}
 };
-function findComponentByCodeLazy(...code) {
-	return LazyComponent(() => {
-		const res = Webpack.getModule(Filters.componentByCode(...code));
-		if (!res)
-			handleModuleNotFound("findComponentByCode", ...code);
-		return res;
-	});
-}
 const hasThrown = new WeakSet();
 const wrapFilter = (filter) => (exports, module, moduleId) => {
 	try {
@@ -147,8 +134,7 @@ const Webpack = {
 			defaultExport,
 			searchExports
 		});
-		if (fromCache)
-			return Promise.resolve(fromCache);
+		if (fromCache) return Promise.resolve(fromCache);
 		const wrappedFilter = wrapFilter(filter);
 		return new Promise((resolve) => {
 			const cancel = () => removeListener(listener);
@@ -160,10 +146,8 @@ const Webpack = {
 					for (const key in exports) {
 						foundModule = null;
 						const wrappedExport = exports[key];
-						if (!wrappedExport)
-							continue;
-						if (wrappedFilter(wrappedExport))
-							foundModule = wrappedExport;
+						if (!wrappedExport) continue;
+						if (wrappedFilter(wrappedExport)) foundModule = wrappedExport;
 					}
 				} else {
 					if (exports.Z && wrappedFilter(exports.Z))
@@ -172,11 +156,9 @@ const Webpack = {
 						foundModule = defaultExport ? exports.ZP : exports;
 					if (exports.__esModule && exports.default && wrappedFilter(exports.default))
 						foundModule = defaultExport ? exports.default : exports;
-					if (wrappedFilter(exports))
-						foundModule = exports;
+					if (wrappedFilter(exports)) foundModule = exports;
 				}
-				if (!foundModule)
-					return;
+				if (!foundModule) return;
 				cancel();
 				resolve(foundModule);
 			};
@@ -268,110 +250,18 @@ const findOwner = (fiber, depth = 50) => {
 		depth
 	);
 };
-const ColorwayCSS = {
-	get: () => document.getElementById("activeColorwayCSS").textContent || "",
+const ColorwayCSS$1 = {
+	get: () => document.getElementById("activeColorwayCSS")?.textContent || "",
 	set: (e) => {
 		if (!document.getElementById("activeColorwayCSS")) {
 			document.head.append(Object.assign(document.createElement("style"), {
 				id: "activeColorwayCSS",
 				textContent: e
 			}));
-		} else
-			document.getElementById("activeColorwayCSS").textContent = e;
+		} else document.getElementById("activeColorwayCSS").textContent = e;
 	},
-	remove: () => document.getElementById("activeColorwayCSS").remove()
+	remove: () => document.getElementById("activeColorwayCSS")?.remove()
 };
-var DiscordNative = window.DiscordNative;
-function hslToHex(h, s, l) {
-	h /= 360;
-	s /= 100;
-	l /= 100;
-	let r, g, b;
-	if (s === 0) {
-		r = g = b = l;
-	} else {
-		const hue2rgb = (p2, q2, t) => {
-			if (t < 0)
-				t += 1;
-			if (t > 1)
-				t -= 1;
-			if (t < 1 / 6)
-				return p2 + (q2 - p2) * 6 * t;
-			if (t < 1 / 2)
-				return q2;
-			if (t < 2 / 3)
-				return p2 + (q2 - p2) * (2 / 3 - t) * 6;
-			return p2;
-		};
-		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		const p = 2 * l - q;
-		r = hue2rgb(p, q, h + 1 / 3);
-		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1 / 3);
-	}
-	const toHex = (x) => {
-		const hex = Math.round(x * 255).toString(16);
-		return hex.length === 1 ? "0" + hex : hex;
-	};
-	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-function rgbToHex(r, g, b) {
-	const toHex = (x) => {
-		const hex = Math.round(x * 255).toString(16);
-		return hex.length === 1 ? "0" + hex : hex;
-	};
-	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-function colorToHex(color) {
-	var colorType = "hex";
-	if (color.includes("hsl")) {
-		colorType = "hsl";
-	} else if (color.includes("rgb")) {
-		colorType = "rgb";
-	}
-	color = color.replaceAll(",", "").replace(/.+?\(/, "").replace(")", "").replaceAll(/[ \t]+\/[ \t]+/g, " ").replaceAll("%", "").replaceAll("/", "");
-	if (colorType === "hsl") {
-		color = hslToHex(
-			Number(color.split(" ")[0]),
-			Number(color.split(" ")[1]),
-			Number(color.split(" ")[2])
-		);
-	}
-	if (colorType === "rgb") {
-		color = rgbToHex(
-			Number(color.split(" ")[0]),
-			Number(color.split(" ")[1]),
-			Number(color.split(" ")[2])
-		);
-	}
-	return color.replace("#", "");
-}
-function makeLazy(factory, attempts = 5) {
-	let tries = 0;
-	let cache;
-	return () => {
-		if (!cache && attempts > tries++) {
-			cache = factory();
-			if (!cache && attempts === tries)
-				console.error("Lazy factory failed:", factory);
-		}
-		return cache;
-	};
-}
-const NoopComponent = () => null;
-function LazyComponent(factory, attempts = 5) {
-	const get = makeLazy(factory, attempts);
-	const LazyComponent2 = (props) => {
-		const Component = get() ?? NoopComponent;
-		return BdApi.React.createElement(Component, { ...props });
-	};
-	LazyComponent2.$$vencordInternal = get;
-	return LazyComponent2;
-}
-function handleModuleNotFound(method, ...filter) {
-	const err = new Error(`webpack.${method} found no module`);
-	console.error(err, "Filter:", filter);
-}
 const unconfigurable = ["arguments", "caller", "prototype"];
 const handler = {};
 const kGET = Symbol.for("vencord.lazy.get");
@@ -396,8 +286,7 @@ handler.ownKeys = (target) => {
 	const v = target[kGET]();
 	const keys = Reflect.ownKeys(v);
 	for (const key of unconfigurable) {
-		if (!keys.includes(key))
-			keys.push(key);
+		if (!keys.includes(key)) keys.push(key);
 	}
 	return keys;
 };
@@ -405,14 +294,12 @@ handler.getOwnPropertyDescriptor = (target, p) => {
 	if (typeof p === "string" && unconfigurable.includes(p))
 		return Reflect.getOwnPropertyDescriptor(target, p);
 	const descriptor = Reflect.getOwnPropertyDescriptor(target[kGET](), p);
-	if (descriptor)
-		Object.defineProperty(target, p, descriptor);
+	if (descriptor) Object.defineProperty(target, p, descriptor);
 	return descriptor;
 };
 function proxyLazy(factory, attempts = 5, isChild = false) {
 	let isSameTick = true;
-	if (!isChild)
-		setTimeout(() => isSameTick = false, 0);
+	if (!isChild) setTimeout(() => isSameTick = false, 0);
 	let tries = 0;
 	const proxyDummy = Object.assign(function() {
 	}, {
@@ -443,31 +330,24 @@ function proxyLazy(factory, attempts = 5, isChild = false) {
 		}
 	});
 }
-const {
-	radioBar,
-	item: radioBarItem,
-	itemFilled: radioBarItemFilled,
-	radioPositionLeft
-} = Webpack.getByKeys("radioBar");
+Webpack.getByKeys("radioBar");
 const {
 	useStateFromStores
 } = proxyLazy(() => Webpack.getModule(Filters.byProps("useStateFromStores")));
-let Clipboard;
-let Forms = {};
 let Card;
 let Button;
-let Switch;
-let Tooltip;
+let Switch$1;
+let Tooltip$1;
 let TextInput;
 let TextArea;
 let Text;
 let Select;
 let SearchableSelect;
-let Slider;
+exports.Slider = void 0;
 let ButtonLooks;
 let Popout;
 let Dialog;
-let TabBar;
+let TabBar$1;
 let Paginator;
 let ScrollerThin;
 let Clickable;
@@ -475,8 +355,8 @@ let Avatar;
 let FocusLock;
 let useToken;
 Webpack.getByKeys("open", "saveAccountChanges");
-const Menu = { ...Webpack.getByKeys("MenuItem", "MenuSliderControl") };
-let ColorPicker$1 = () => {
+({ ...Webpack.getByKeys("MenuItem", "MenuSliderControl") });
+exports.ColorPicker = () => {
 	return BdApi.React.createElement(Spinner, { className: "colorways-creator-module-warning" });
 };
 Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
@@ -484,16 +364,16 @@ Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
 		useToken,
 		Card,
 		Button,
-		FormSwitch: Switch,
-		Tooltip,
+		FormSwitch: Switch$1,
+		Tooltip: Tooltip$1,
 		TextInput,
 		TextArea,
 		Text,
 		Select,
 		SearchableSelect,
-		Slider,
+		Slider: exports.Slider,
 		ButtonLooks,
-		TabBar,
+		TabBar: TabBar$1,
 		Popout,
 		Dialog,
 		Paginator,
@@ -502,32 +382,18 @@ Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
 		Avatar,
 		FocusLock
 	} = m);
-	Forms = m;
 });
 Webpack.waitForModule(Filters.byStrings("showEyeDropper")).then(
-	(e) => ColorPicker$1 = e
+	(e) => exports.ColorPicker = e
 );
-function Flex(props) {
-	props.style ??= {};
-	props.style.display = "flex";
-	props.style.gap ??= "1em";
-	props.style.flexDirection ||= props.flexDirection;
-	delete props.flexDirection;
-	return BdApi.React.createElement("div", { ...props }, props.children);
-}
-let UserStore;
+exports.UserStore = void 0;
 proxyLazy(
 	() => Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal")
 );
 proxyLazy(
 	() => Webpack.getByKeys("getUser", "fetchCurrentUser")
 );
-const Modals = proxyLazy(() => Webpack.getByKeys("ModalRoot", "ModalCloseButton"));
-const ModalRoot = LazyComponent(() => Modals.ModalRoot);
-const ModalHeader = LazyComponent(() => Modals.ModalHeader);
-const ModalContent = LazyComponent(() => Modals.ModalContent);
-const ModalFooter = LazyComponent(() => Modals.ModalFooter);
-const ModalCloseButton = LazyComponent(() => Modals.ModalCloseButton);
+proxyLazy(() => Webpack.getByKeys("ModalRoot", "ModalCloseButton"));
 const Toasts = {
 	show: Webpack.getByKeys("showToast")["showToast"],
 	pop: Webpack.getByKeys("popToast")["popToast"],
@@ -543,7 +409,7 @@ function waitForStore(storeName, callback) {
 	);
 }
 waitForStore("DraftStore", (s) => s);
-waitForStore("UserStore", (s) => UserStore = s);
+waitForStore("UserStore", (s) => exports.UserStore = s);
 waitForStore(
 	"SelectedChannelStore",
 	(s) => s
@@ -577,52 +443,14 @@ waitForStore(
 waitForStore("WindowStore", (m) => m);
 waitForStore("EmojiStore", (m) => m);
 Webpack.waitForModule(Filters.byKeys("SUPPORTS_COPY", "copy")).then(
-	(e) => Clipboard = e
+	(e) => e
 );
-function SettingsTab$1({
-	title,
-	children,
-	inModal
-}) {
-	return BdApi.React.createElement(Forms.FormSection, null, !inModal && BdApi.React.createElement(
-		Text,
-		{
-			variant: "heading-lg/semibold",
-			tag: "h2",
-			style: { marginBottom: "16px" }
-		},
-		title
-	), children);
-}
-function Link(props) {
-	if (props.disabled) {
-		props.style ??= {};
-		props.style.pointerEvents = "none";
-		props["aria-disabled"] = true;
-	}
-	return BdApi.React.createElement("a", { role: "link", target: "_blank", ...props }, props.children);
-}
 const ModalAPI = proxyLazy(() => Webpack.getByKeys("openModalLazy"));
 function openModal(render, options, contextKey) {
 	return ModalAPI.openModal(render, options, contextKey);
 }
-function closeModal(modalKey, contextKey) {
-	return ModalAPI.closeModal(modalKey, contextKey);
-}
-let Parser;
-Webpack.waitForModule(Filters.byKeys("parseTopic")).then((m) => Parser = m);
-function classes(...classes2) {
-	return classes2.filter(Boolean).join(" ");
-}
-var Theme = ((Theme2) => {
-	Theme2[Theme2["Dark"] = 1] = "Dark";
-	Theme2[Theme2["Light"] = 2] = "Light";
-	return Theme2;
-})(Theme || {});
-const UserSettingsActionCreators = proxyLazy(() => Webpack.getByKeys("PreloadedUserSettingsActionCreators"));
-function getTheme() {
-	return UserSettingsActionCreators.PreloadedUserSettingsActionCreators.getCurrentValue()?.appearance?.theme;
-}
+Webpack.waitForModule(Filters.byKeys("parseTopic")).then((m) => m);
+proxyLazy(() => Webpack.getByKeys("PreloadedUserSettingsActionCreators"));
 function saveSettings(settings) {
 	betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), ...settings });
 }
@@ -633,27 +461,13 @@ function getBulkSetting(...settings) {
 	return settings.map((setting) => betterdiscord.Data.load("settings")[setting]);
 }
 
-const name = "DiscordColorways";
-const author = "DaBluLite";
-const description = "A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways";
-const version = "5.7.0";
-const authorId = "582170007505731594";
-const invite = "ZfPH6SDkMW";
-const creatorVersion = "1.20";
-const plugin = {
-	name: name,
-	author: author,
-	description: description,
-	version: version,
-	authorId: authorId,
-	invite: invite,
-	creatorVersion: creatorVersion
-};
+const css$1 = "/* stylelint-disable no-descending-specificity */\n/* stylelint-disable declaration-block-no-redundant-longhand-properties */\n/* stylelint-disable selector-id-pattern */\n/* stylelint-disable selector-class-pattern */\n@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: 0.15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-500);\n  	border-radius: 16px;\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1.5px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorwayPreviewColor {\n  	width: 50%;\n  	height: 50%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(2)))\n  	> .discordColorwayPreviewColor {\n  	height: 100%;\n  	width: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(3)))\n  	> .discordColorwayPreviewColor {\n  	height: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(4)))\n  	> .discordColorwayPreviewColor:nth-child(3) {\n  	width: 100%;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 8px;\n  	width: 100%;\n  	scrollbar-width: none !important;\n  	flex-direction: column;\n  	padding: 0 16px !important;\n  	box-sizing: border-box;\n  	overflow: hidden auto;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal,\n.colorwayModal {\n  	width: 90% !important;\n  	height: 90% !important;\n  	border-radius: 8px;\n  	border: 1px solid #a6a6a6f0;\n  	display: flex;\n  	flex-direction: row;\n  	background-color: #090909;\n  	margin: 0 auto;\n  	pointer-events: all;\n  	position: relative;\n  	animation: show-modal 0.2s ease-in-out;\n}\n\n@keyframes reveal-modal {\n  	from {\n  			translate: 0 -20px;\n  	}\n  	to {\n  			translate: 0;\n  	}\n}\n@keyframes reveal-modal-backdrop {\n  	from {\n  			opacity: 0;\n  	}\n  	to {\n  			opacity: 0.75;\n  	}\n}\n\n.colorwaysModalBackdrop {\n  	background-color: #707070;\n  	opacity: 0.75;\n  	position: fixed;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	z-index: 1;\n  	transition: 0.4s ease;\n  	animation: reveal-modal-backdrop 0.4s ease;\n  	pointer-events: all;\n}\n\n.colorwayModal {\n  	flex-direction: column;\n}\n\n.colorwaySelectorModal.closing,\n.colorwayModal.closing,\n.colorwaysPreview-modal.closing,\n.colorwaysModal.closing {\n  	animation: close-modal 0.2s ease-in-out;\n  	transform: scale(0.5);\n  	opacity: 0;\n}\n\n.colorwaySelectorModal.hidden,\n.colorwayModal.hidden,\n.colorwaysPreview-modal.hidden,\n.colorwaysModal.hidden {\n  	animation: close-modal 0.2s ease-in-out;\n  	transform: scale(0.5);\n  	opacity: 0;\n}\n\n@keyframes show-modal {\n  	0% {\n  			transform: scale(0.7);\n  			opacity: 0;\n  	}\n  	75% {\n  			transform: scale(1.009);\n  			opacity: 1;\n  	}\n  	100% {\n  			transform: scale(1);\n  			opacity: 1;\n  	}\n}\n\n@keyframes close-modal {\n  	from {\n  			transform: scale(1);\n  			opacity: 1;\n  	}\n  	to {\n  			transform: scale(0.7);\n  			opacity: 0;\n  	}\n}\n\n.colorwaysSettingsDivider {\n  	width: 100%;\n  	height: 1px;\n  	border-top: thin solid #fff;\n  	margin-top: 20px;\n}\n\n.colorwaysSettings-switch {\n  	background-color: rgb(85, 87, 94);\n  	flex: 0 0 auto;\n  	position: relative;\n  	border-radius: 14px;\n  	width: 40px;\n  	height: 24px;\n  	cursor: pointer;\n  	transition: 0.15s ease;\n  	cursor: pointer;\n}\n\n.colorwaysSettings-switch.checked {\n  	background-color: #fff;\n}\n\n.colorwaySwitch-label {\n  	flex: 1;\n  	display: block;\n  	overflow: hidden;\n  	margin-top: 0;\n  	margin-bottom: 0;\n  	color: #fff;\n  	line-height: 24px;\n  	font-size: 16px;\n  	font-weight: 500;\n  	word-wrap: break-word;\n  	cursor: pointer;\n}\n\n.colorwaysNote {\n  	color: #fff;\n  	opacity: 0.5;\n}\n\n.colorwayModal-selectorHeader {\n  	display: flex;\n  	width: 100%;\n  	padding: 16px;\n  	padding-bottom: 8px;\n  	box-sizing: border-box;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwayModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 100%;\n}\n\n.colorwaySelectorSidebar-tab {\n  	font-family: bootstrap-icons;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 8px;\n  	cursor: pointer;\n  	transition: 0.2s ease;\n  	border: 1px solid transparent;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	font-size: 24px;\n}\n\n.colorwaysPillButton {\n  	padding: 4px 12px;\n  	border-radius: 16px;\n  	background-color: #101010;\n  	color: #fff;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n  	display: flex;\n  	gap: 0.5rem;\n  	justify-content: center;\n  	align-items: center;\n  	width: fit-content;\n  	height: 32px;\n}\n\n.colorwaysPillButton.colorwaysPillButton-onSurface {\n  	background-color: #1a1a1a;\n}\n\n.colorwaysPillButton.colorwaysPillButton-icon {\n  	padding: 4px;\n}\n\n.colorwaysPillButton:hover {\n  	background-color: #2a2a2a;\n}\n\n.colorwaySelectorSidebar-tab:hover {\n  	background-color: #2a2a2a;\n}\n\n.colorwaySelectorSidebar-tab.active {\n  	background-color: #0a0a0a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaySelectorSidebar {\n  	background-color: #101010;\n  	color: #fff;\n  	box-sizing: border-box;\n  	height: 100%;\n  	flex: 0 0 auto;\n  	padding: 16px;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	border-top-left-radius: 8px;\n  	border-bottom-left-radius: 8px;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 100%;\n  	overflow: visible !important;\n  	padding: 0 16px !important;\n}\n\n.ColorwaySelectorBtnContainer {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayInfoIconContainer {\n  	height: 22px;\n  	width: 22px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: -1px;\n  	left: -1px;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n  	color: var(--white-500);\n  	padding: 1px;\n  	box-sizing: border-box;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-experiment-560);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: 0.15s;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	box-sizing: border-box;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorwayCreator-colorPreviews > [class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews > [class^=\"colorSwatch\"] > [class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews > .colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"]) > .colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: center;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100px;\n  	height: 38px;\n  	border-radius: 3px;\n  	cursor: pointer;\n  	position: relative;\n  	transition: 0.15s;\n}\n\n.colorwayInfo-colorSwatch:hover {\n  	filter: brightness(0.8);\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	border-radius: 8px;\n  	background-color: #1a1a1a;\n  	box-sizing: border-box;\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: hidden auto;\n  	scrollbar-width: none !important;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed > :is(.colorwaysCreator-settingsList, .colorwayInfo-cssCodeblock),\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n  	pointer-events: all;\n}\n\n.colorwaysPreview-modal > .colorwaysPreview-wrapper {\n  	height: 100%;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-wrapper {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: 0.2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: 0.48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: 0.15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 1 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n  	flex: 0 1 auto;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow:\n  			0 1px 0 hsl(var(--primary-900-hsl) / 20%),\n  			0 1.5px 0 hsl(var(--primary-860-hsl) / 5%),\n  			0 2px 0 hsl(var(--primary-900-hsl) / 5%);\n  	width: 100%;\n  	height: 32px;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-channels > .colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels > .colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl) / 30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition:\n  			transform 0.1s ease-out,\n  			opacity 0.1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwaySelector-search {\n  	width: 100%;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	transition: 0.2s ease;\n  	border: 1px solid transparent;\n  	padding-left: 12px;\n  	color: #fff;\n  	height: 40px;\n  	box-sizing: border-box;\n}\n\n.colorwaySelector-search:hover {\n  	background-color: #1a1a1a;\n}\n\n.colorwaySelector-search:focus {\n  	background-color: #1a1a1a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaySelector-sources {\n  	flex: 0 0 auto;\n  	color: var(--button-outline-primary-text);\n  	border-color: var(--button-outline-primary-border);\n}\n\n.colorwaySelector-sources:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: 0.3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1) * 9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1) * 5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: 0.15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: 0.6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1) * 87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar > .colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar > .colorwaySelector-pillWrapper:first-child > .colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile\n  	.colorwaySelector-doublePillBar\n  	> .colorwaySelector-pillWrapper:first-child\n  	> .colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: 0.15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: 0.23s;\n}\n\n.colorwaysModalTab {\n  	padding: 16px;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 8px;\n  	gap: 5px;\n  	border-radius: 8px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	background-color: #101010;\n}\n\n.discordColorway {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: start;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n  	border: 1px solid transparent;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n}\n\n.discordColorway:hover {\n  	background-color: #2a2a2a;\n  	filter: brightness(0.8);\n}\n\n.discordColorway[aria-checked=\"true\"] {\n  	background-color: #2a2a2a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	line-height: 30px;\n}\n\n.colorwaysSettings-colorwaySourceLabelHeader {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	font-weight: 700;\n  	font-size: 16px;\n}\n\n.colorwaysModalSectionHeader,\n.colorwaysSettings-colorwaySourceLabel,\n.colorwaysSettings-colorwaySourceLabelHeader,\n.colorwaysSettings-colorwaySourceDesc {\n  	color: #fff;\n}\n\n.colorwaysSettings-colorwaySourceDesc {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: 0.2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: 0.15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary + .colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary + .colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary + .colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent + .colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n  	color: #fff;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwaySelector-searchPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: 0.625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: #fff;\n  	color: #000;\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 7.5px;\n  	border-radius: 16px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all 0.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0, -107%, 0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.dc-warning-card {\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n}\n\n/* stylelint-disable-next-line no-duplicate-selectors */\n.colorwaysPreview-modal {\n  	width: 90vw !important;\n  	height: 90vh !important;\n  	max-height: unset !important;\n  	animation: show-modal 0.2s ease;\n}\n\n.colorwaysPresetPicker-content {\n  	padding: 16px;\n}\n\n.colorwaysPresetPicker {\n  	width: 600px;\n}\n\n.colorwaysCreator-setting {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	border-radius: 8px;\n  	background-color: #1a1a1a;\n  	box-sizing: border-box;\n  	padding: 10px 18px;\n  	padding-right: 10px;\n  	cursor: pointer;\n  	align-items: center;\n}\n\n.colorwaysCreator-setting:hover {\n  	background-color: #2a2a2a;\n}\n\n.dc-colorway-selector::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-appearance) center/contain no-repeat !important;\n  	mask: var(--si-appearance) center/contain no-repeat !important;\n}\n\n.dc-colorway-settings::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-vencordsettings) center/contain no-repeat !important;\n  	mask: var(--si-vencordsettings) center/contain no-repeat !important;\n}\n\n.dc-colorway-ondemand::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-vencordupdater) center/contain no-repeat !important;\n  	mask: var(--si-vencordupdater) center/contain no-repeat !important;\n}\n\n.dc-colorway-sources-manager::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-instantinvites) center/contain no-repeat !important;\n  	mask: var(--si-instantinvites) center/contain no-repeat !important;\n}\n\n.colorwaySourceModal {\n  	min-height: unset;\n}\n\n.colorwaySelector-sourceSelect {\n  	width: fit-content !important;\n}\n\n.dc-info-card {\n  	border-radius: 5px;\n  	border: 1px solid var(--blue-345);\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	display: flex;\n  	gap: 1em;\n  	flex-direction: column;\n}\n\n.theme-dark .dc-info-card {\n  	color: var(--white-500);\n}\n\n.theme-light .dc-info-card {\n  	color: var(--black-500);\n}\n\n.colorwaysSettings-sourceScroller {\n  	scrollbar-width: none;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	overflow: hidden auto;\n}\n\n.colorwaysScroller {\n  	scrollbar-width: none !important;\n  	overflow: hidden auto;\n}\n\n.colorwaysSettings-sourceScroller::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwayMessage {\n  	padding: 20px;\n  	border: 1px solid #a6a6a6f0;\n  	border-radius: 8px;\n  	background-color: #090909;\n  	display: flex;\n}\n\n.colorwayMessage-contents {\n  	display: flex;\n  	flex-direction: column;\n}\n\n.colorwaysLoadingModal,\n.colorwayInfo-cssModal {\n  	width: fit-content;\n  	height: fit-content;\n  	min-width: unset;\n  	min-height: unset;\n  	background: none;\n  	box-shadow: none !important;\n  	border: none;\n}\n\n.discordColorway .discordColorwayPreviewColorContainer {\n  	width: 30px;\n  	height: 30px;\n}\n\n.discordColorway .colorwayInfoIconContainer {\n  	height: 28px;\n  	width: 28px;\n  	border-radius: 3px;\n  	position: static;\n  	opacity: 1;\n  	justify-content: center;\n  	display: flex;\n  	align-items: center;\n  	background: transparent;\n  	border: 1px solid var(--button-outline-primary-border);\n  	color: var(--button-outline-primary-text);\n  	transition: 0.15s;\n}\n\n.discordColorway .colorwayInfoIconContainer:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwayLabel {\n  	margin-right: auto;\n  	margin-top: 0 !important;\n  	margin-left: 0.5rem;\n  	color: #dfdfdf;\n}\n\n.colorwaySelectionCircle {\n  	position: absolute;\n  	width: 56px;\n  	height: 56px;\n  	top: 0;\n  	left: 0;\n}\n\n.colorwaySelector-sorter {\n  	height: 50px;\n  	width: 100%;\n  	box-shadow: var(--elevation-low);\n  	margin-bottom: 8px;\n  	display: flex;\n}\n\n.colorwaySelector-sorter_selectedSpacer {\n  	width: 80px;\n  	height: 50px;\n}\n\n.colorwaySelector-sorter_text {\n  	line-height: 50px;\n  	margin: 0;\n}\n\n.colorwaySelector-sorter_name {\n  	margin-right: auto;\n  	cursor: pointer;\n}\n\n.colorwayPresetLabel {\n  	margin-right: 1rem;\n}\n\n.colorwayPreview-channel {\n  	margin: 10px;\n  	width: calc(100% - 20px);\n  	height: 8px;\n  	border-radius: 16px;\n}\n\n.colorwaysModal {\n  	border-radius: 16px;\n  	background-color: #000;\n  	color: #fff;\n  	height: fit-content;\n  	min-height: unset;\n  	width: fit-content;\n  	border: none;\n  	padding: 0;\n  	margin: 0;\n  	transition: 0.4s ease;\n  	animation: show-modal 0.4s ease;\n  	pointer-events: all;\n}\n\n.colorwaysModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 4px;\n  	padding: 16px;\n}\n\n.colorwaysModalContent-sourcePreview {\n  	padding-left: 0;\n  	padding-right: 0;\n}\n\n.colorwaysMenuTabs {\n  	width: 100%;\n  	height: 30px;\n  	padding-bottom: 8px;\n  	box-sizing: content-box;\n}\n\n.colorwaysMenuTab {\n  	color: #fff;\n  	text-decoration: none;\n  	padding: 4px 12px;\n  	border-radius: 32px;\n  	transition: 0.2s ease;\n  	margin-right: 8px;\n  	display: inline-block;\n}\n\n.colorwaySourceTab {\n  	box-sizing: border-box;\n  	width: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysMenuTab:hover {\n  	background-color: #1f1f1f;\n}\n\n.colorwaysMenuTab.active {\n  	color: #000;\n  	background-color: #fff;\n}\n\n.colorwaysModalFooter {\n  	border-top-left-radius: 8px;\n  	border-top-right-radius: 8px;\n  	border-bottom-left-radius: 16px;\n  	border-bottom-right-radius: 16px;\n  	padding: 8px;\n  	display: flex;\n  	flex-direction: row-reverse;\n  	background-color: #0a0a0a;\n  	width: calc(100% - 16px);\n  	gap: 8px;\n}\n\n.colorwaysModalFooter > .colorwaysPillButton {\n  	width: 100%;\n}\n\n.colorwaysModalHeader {\n  	margin: 0;\n  	font-weight: normal;\n  	font-size: 1.25em;\n  	padding: 16px;\n}\n\n.colorwaysModalSectionHeader {\n  	font-size: 14px;\n  	margin-bottom: 2px;\n}\n\n.colorwaysModalSectionError {\n  	color: red;\n  	font-style: italic;\n}\n\n.colorwayIDCard {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 1em;\n}\n\n.colorwaysContextMenu {\n  	border-radius: 8px;\n  	border: 1px solid #dfdfdf;\n  	background-color: #000;\n  	padding: 4px;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 4px;\n  	z-index: 5;\n}\n\n.colorwaysContextMenuItm {\n  	box-sizing: border-box;\n  	display: flex;\n  	justify-content: space-between;\n  	align-items: center;\n  	min-height: 32px;\n  	padding: 6px 8px;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	border: 1px solid transparent;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n  	color: #dfdfdf;\n}\n\n.colorwaysContextMenuItm:hover {\n  	background-color: #2a2a2a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaysRadioSelected {\n  	fill: #fff;\n}\n\n.colorwaysTooltip {\n  	background-color: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	color: var(--text-normal);\n  	pointer-events: none;\n  	border-radius: 5px;\n  	font-weight: 500;\n  	font-size: 14px;\n  	line-height: 16px;\n  	max-width: 190px;\n  	box-sizing: border-box;\n  	word-wrap: break-word;\n  	z-index: 1002;\n  	will-change: opacity, transform;\n  	transition:\n  			transform 0.1s ease,\n  			opacity 0.1s ease;\n  	position: fixed;\n}\n\n.colorwaysTooltip.colorwaysTooltip-hidden {\n  	transform: scale(0.95);\n  	opacity: 0;\n}\n\n.colorwaysTooltip-right {\n  	transform-origin: 0% 50%;\n}\n\n.colorwaysTooltipPointer {\n  	width: 0;\n  	height: 0;\n  	border: 0 solid transparent;\n  	border-width: 5px;\n  	pointer-events: none;\n  	border-top-color: var(--background-floating);\n}\n\n.colorwaysTooltip-right > .colorwaysTooltipPointer {\n  	position: absolute;\n  	right: 100%;\n  	top: 50%;\n  	margin-top: -5px;\n  	border-left-width: 5px;\n  	transform: rotate(90deg);\n}\n\n.colorwaysTooltipContent {\n  	padding: 8px 12px;\n  	overflow: hidden;\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n  	display: flex;\n  	flex-direction: column;\n}\n\n.colorwaysManagerConnectionMenu {\n  	transform: translateX(-20px);\n  	opacity: 0;\n  	border: 1px solid #a6a6a6f0;\n  	background-color: #090909;\n  	transition:\n  			transform 0.2s ease,\n  			opacity 0.2s ease;\n  	display: flex;\n  	flex-direction: column;\n  	padding: 8px 12px;\n  	color: #fff;\n  	pointer-events: none;\n  	border-radius: 8px;\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysManagerConnectionMenu.visible {\n  	opacity: 1;\n  	transform: none;\n  	pointer-events: all;\n}\n\n.colorwaysManagerConnectionValue {\n  	color: #80868e;\n  	font-weight: 500;\n  	font-size: 12;\n}\n\n.colorwaysManagerConnectionValue > b {\n  	color: #a0a6ae;\n}\n";
+
+const css = ".colorwaySelectorModal[data-theme=\"discord\"],\n.colorwayModal[data-theme=\"discord\"] {\n  	border: none;\n  	box-shadow: var(--legacy-elevation-border), var(--legacy-elevation-high);\n  	background-color: var(--modal-background);\n}\n\n[data-theme=\"discord\"] .colorwaysSettingsDivider {\n  	border-color: var(--background-modifier-accent);\n}\n\n[data-theme=\"discord\"] .colorwaySwitch-label,\n[data-theme=\"discord\"] .colorwaysNote {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switchCircle {\n  	fill: #fff !important;\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switch {\n  	background-color: rgb(128, 132, 142);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switch.checked {\n  	background-color: #23a55a;\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab {\n  	transition: none;\n  	border-radius: 4px;\n  	border: none;\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab.active {\n  	background-color: var(--background-modifier-selected);\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysPillButton {\n  	color: var(--white-500);\n  	background-color: var(--button-secondary-background);\n  	height: var(--custom-button-button-sm-height);\n  	min-width: var(--custom-button-button-sm-width);\n  	min-height: var(--custom-button-button-sm-height);\n  	width: auto;\n  	transition:\n  			background-color var(--custom-button-transition-duration) ease,\n  			color var(--custom-button-transition-duration) ease;\n  	position: relative;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	box-sizing: border-box;\n  	border: none;\n  	border-radius: 3px;\n  	font-size: 14px;\n  	font-weight: 500;\n  	line-height: 16px;\n  	padding: 2px 16px;\n  	-moz-user-select: none;\n  	user-select: none;\n}\n\n[data-theme=\"discord\"] .colorwaysPillButton:hover {\n  	background-color: var(--button-secondary-background-hover);\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar {\n  	border-top-left-radius: 4px;\n  	border-bottom-left-radius: 4px;\n  	background-color: var(--modal-footer-background);\n  	box-shadow: inset 0 1px 0 hsl(var(--primary-630-hsl) / 0.6);\n  	padding: 12px;\n}\n\n[data-theme=\"discord\"] .colorwaySelector-search {\n  	border-radius: 3px;\n  	color: var(--text-normal);\n  	background-color: var(--input-background) !important;\n  	height: 40px;\n  	padding: 10px;\n  	transition: none;\n  	font-size: 16px;\n  	border: none;\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySource {\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	background-color: var(--background-secondary);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySource:hover {\n  	color: var(--interactive-active);\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .discordColorway {\n  	border-radius: 4px;\n  	transition: none;\n  	background-color: var(--background-secondary);\n  	border: none;\n}\n\n[data-theme=\"discord\"] .discordColorway:hover {\n  	filter: none;\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .discordColorway[aria-checked=\"true\"] {\n  	background-color: var(--background-modifier-selected);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabelHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceDesc {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorways-badge {\n  	height: 16px;\n  	padding: 0 4px;\n  	border-radius: 4px;\n  	margin-left: 4px;\n  	flex: 0 0 auto;\n  	background: var(--bg-brand);\n  	color: var(--white);\n  	font-size: 0.625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	font-weight: 600;\n  	font-size: 12px;\n  	line-height: 16px;\n}\n\n.colorwaysModal[data-theme=\"discord\"] {\n  	box-shadow: var(--legacy-elevation-border), var(--legacy-elevation-high);\n  	background-color: var(--modal-background);\n  	border-radius: 4px;\n  	display: flex;\n  	flex-direction: column;\n  	margin: 0 auto;\n  	pointer-events: all;\n  	position: relative;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTabs {\n  	padding-bottom: 16px;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab {\n  	padding: 0;\n  	padding-bottom: 16px;\n  	margin-right: 32px;\n  	margin-bottom: -2px;\n  	border-bottom: 2px solid transparent;\n  	transition: none;\n  	border-radius: 0;\n  	background-color: transparent;\n  	font-size: 16px;\n  	line-height: 20px;\n  	cursor: pointer;\n  	font-weight: 500;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab:hover {\n  	color: var(--interactive-hover);\n  	border-bottom-color: var(--brand-500);\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab.active {\n  	cursor: default;\n  	color: var(--interactive-active);\n  	border-bottom-color: var(--control-brand-foreground);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter {\n  	border-radius: 0 0 5px 5px;\n  	background-color: var(--modal-footer-background);\n  	padding: 16px;\n  	box-shadow: inset 0 1px 0 hsl(var(--primary-630-hsl) / 0.6);\n  	gap: 0;\n  	width: unset;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton {\n  	width: auto;\n  	height: var(--custom-button-button-md-height);\n  	min-width: var(--custom-button-button-md-width);\n  	min-height: var(--custom-button-button-md-height);\n  	transition:\n  			color var(--custom-button-transition-duration) ease,\n  			background-color var(--custom-button-transition-duration) ease,\n  			border-color var(--custom-button-transition-duration) ease;\n  	border: 1px solid var(--button-outline-primary-border);\n  	color: var(--button-outline-primary-text);\n  	margin-left: 8px;\n  	background-color: transparent;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton:active {\n  	background-color: var(--button-outline-primary-background-active);\n  	border-color: var(--button-outline-primary-border-active);\n  	color: var(--button-outline-primary-text-active);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface {\n  	color: var(--white-500);\n  	background-color: var(--brand-500);\n  	border: none;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface:hover {\n  	background-color: var(--brand-560);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface:active {\n  	background-color: var(--brand-600);\n}\n\n[data-theme=\"discord\"] .colorwaysModalHeader {\n  	box-shadow:\n  			0 1px 0 0 hsl(var(--primary-800-hsl) / 0.3),\n  			0 1px 2px 0 hsl(var(--primary-800-hsl) / 0.3);\n  	border-radius: 4px 4px 0 0;\n  	transition: box-shadow 0.1s ease-out;\n  	word-wrap: break-word;\n}\n\n[data-theme=\"discord\"] .colorwaysModalSectionHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabel,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabelHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceDesc {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorwaysCreator-setting,\n[data-theme=\"discord\"] .colorwaysCreator-settingCat {\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n}\n\n[data-theme=\"discord\"] .colorwaysCreator-setting:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenu {\n  	background: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	border-radius: 4px;\n  	padding: 6px 8px;\n  	border: none;\n  	gap: 0;\n  	min-width: 188px;\n  	max-width: 320px;\n  	box-sizing: border-box;\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm {\n  	border: none;\n  	transition: none;\n  	margin: 2px 0;\n  	border-radius: 2px;\n  	font-size: 14px;\n  	font-weight: 500;\n  	line-height: 18px;\n  	color: var(--interactive-normal);\n  	background-color: transparent;\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm:hover {\n  	background-color: var(--menu-item-default-hover-bg);\n  	color: var(--white);\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm:active {\n  	background-color: var(--menu-item-default-active-bg);\n  	color: var(--white);\n}\n\n[data-theme=\"discord\"] .colorwaysRadioSelected {\n  	fill: var(--control-brand-foreground-new);\n}\n\n[data-theme=\"discord\"] .colorwaysConflictingColors-warning {\n  	color: var(--text-normal);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionMenu {\n  	transition:\n  			transform 0.1s ease,\n  			opacity 0.1s ease !important;\n  	transform: scale(0.95);\n  	transform-origin: 0% 50%;\n  	background-color: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	color: var(--text-normal);\n  	border: none;\n  	border-radius: 5px;\n}\n\n.colorwayIDCard[data-theme=\"discord\"] > .colorwayMessage {\n  	border-radius: 5px;\n  	border: none;\n  	background-color: var(--background-secondary);\n}\n\n.theme-dark .colorwayIDCard[data-theme=\"discord\"] .colorwayMessage {\n  	background: hsl(var(--primary-630-hsl) / 60%);\n}\n\n.theme-light .colorwayIDCard[data-theme=\"discord\"] .colorwayMessage {\n  	background: hsl(var(--primary-100-hsl) / 60%);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionValue {\n  	color: var(--text-muted);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionValue > b {\n  	color: var(--text-normal);\n}\n";
 
 function HexToHSL(H) {
 	let r = 0, g = 0, b = 0;
-	if (H.length === 4)
-		r = "0x" + H[1] + H[1], g = "0x" + H[2] + H[2], b = "0x" + H[3] + H[3];
+	if (H.length === 4) r = "0x" + H[1] + H[1], g = "0x" + H[2] + H[2], b = "0x" + H[3] + H[3];
 	else if (H.length === 7) {
 		r = "0x" + H[1] + H[2];
 		g = "0x" + H[3] + H[4];
@@ -661,17 +475,12 @@ function HexToHSL(H) {
 	}
 	r /= 255, g /= 255, b /= 255;
 	var cmin = Math.min(r, g, b), cmax = Math.max(r, g, b), delta = cmax - cmin, h = 0, s = 0, l = 0;
-	if (delta === 0)
-		h = 0;
-	else if (cmax === r)
-		h = (g - b) / delta % 6;
-	else if (cmax === g)
-		h = (b - r) / delta + 2;
-	else
-		h = (r - g) / delta + 4;
+	if (delta === 0) h = 0;
+	else if (cmax === r) h = (g - b) / delta % 6;
+	else if (cmax === g) h = (b - r) / delta + 2;
+	else h = (r - g) / delta + 4;
 	h = Math.round(h * 60);
-	if (h < 0)
-		h += 360;
+	if (h < 0) h += 360;
 	l = (cmax + cmin) / 2;
 	s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
 	s = +(s * 100).toFixed(1);
@@ -714,211 +523,586 @@ function getFontOnBg(bgColor) {
 	var b = parseInt(color.substring(4, 6), 16);
 	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
 }
+function hslToHex(h, s, l) {
+	h /= 360;
+	s /= 100;
+	l /= 100;
+	let r, g, b;
+	if (s === 0) {
+		r = g = b = l;
+	} else {
+		const hue2rgb = (p2, q2, t) => {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p2 + (q2 - p2) * 6 * t;
+			if (t < 1 / 2) return q2;
+			if (t < 2 / 3) return p2 + (q2 - p2) * (2 / 3 - t) * 6;
+			return p2;
+		};
+		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		const p = 2 * l - q;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+	const toHex = (x) => {
+		const hex = Math.round(x * 255).toString(16);
+		return hex.length === 1 ? "0" + hex : hex;
+	};
+	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+function rgbToHex(r, g, b) {
+	const toHex = (x) => {
+		const hex = Math.round(x * 255).toString(16);
+		return hex.length === 1 ? "0" + hex : hex;
+	};
+	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+function colorToHex(color) {
+	var colorType = "hex";
+	if (color.includes("hsl")) {
+		colorType = "hsl";
+	} else if (color.includes("rgb")) {
+		colorType = "rgb";
+	}
+	color = color.replaceAll(",", "").replace(/.+?\(/, "").replace(")", "").replaceAll(/[ \t]+\/[ \t]+/g, " ").replaceAll("%", "").replaceAll("/", "");
+	if (colorType === "hsl") {
+		color = hslToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
+	}
+	if (colorType === "rgb") {
+		color = rgbToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
+	}
+	return color.replace("#", "");
+}
+const parseClr = (clr) => (clr & 16777215).toString(16).padStart(6, "0");
+async function getRepainterTheme(link) {
+	const linkCheck = link.match(/https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&\/\/=]*)/g).filter((x) => x.startsWith("https://repainter.app/themes/"))[0];
+	if (!linkCheck) return { status: "fail", errorCode: 0, errorMsg: "Invalid URL" };
+	const { pageProps: { fallback: { a: { name, colors } } } } = { "pageProps": { "initialId": "01G5PMR5G9H76H1R2RET4A0ZHY", "fallback": { a: { "id": "01G5PMR5G9H76H1R2RET4A0ZHY", "name": "Midwinter Fire", "description": "Very red", "createdAt": "2022-06-16T16:15:11.881Z", "updatedAt": "2022-07-12T08:37:13.141Z", "settingsLines": ["Colorful", "Bright", "Vibrant style"], "voteCount": 309, "colors": [-1426063361, 4294901760, 4294901760, -1426071591, -1426080078, -1426089335, 4294901760, -1426119398, -1428615936, -1431629312, -1434644480, 4294901760, 4294901760, 4294901760, 4294901760, -1426067223, -1426071086, -1426079070, -1426088082, 4294901760, -1428201216, -1430761216, -1433255936, 4294901760, 4294901760, 4294901760, 4294901760, 4294901760, 4294901760, -1426070330, 4294901760, -1426086346, 4294901760, -1430030080, 4294901760, -1434431744, 4294901760, 4294901760, 4294901760, 4294901760, -1426064133, 4294901760, -1426071591, 4294901760, -1426874223, 4294901760, -1430359452, 4294901760, -1433845194, 4294901760, -1437922816, 4294901760, 4294901760, 4294901760, 4294901760, -1426071591, -1426080078, -1426089335, -1427799438, -1429640356, 4294901760, -1433191891, 4294901760, 4294901760, 4294901760] } } }, "__N_SSP": true };
+	return { status: "success", id: name, colors: colors.filter((c) => c !== 4294901760).map((c) => "#" + parseClr(c)) };
+}
+function chooseFile(mimeTypes) {
+	return new Promise((resolve) => {
+		const input = document.createElement("input");
+		input.type = "file";
+		input.style.display = "none";
+		input.accept = mimeTypes;
+		input.onchange = async () => {
+			resolve(input.files?.[0] ?? null);
+		};
+		document.body.appendChild(input);
+		input.click();
+		setImmediate(() => document.body.removeChild(input));
+	});
+}
+function saveFile(file) {
+	const a = document.createElement("a");
+	a.href = URL.createObjectURL(file);
+	a.download = file.name;
+	document.body.appendChild(a);
+	a.click();
+	setImmediate(() => {
+		URL.revokeObjectURL(a.href);
+		document.body.removeChild(a);
+	});
+}
+function classes(...classes2) {
+	return classes2.filter(Boolean).join(" ");
+}
+function getWsClientIdentity() {
+	switch (PluginProps.clientMod) {
+		case "Vencord":
+			return "vencord";
+		case "BetterDiscord":
+			return "betterdiscord";
+		default:
+			return "discord";
+	}
+}
 
-const colorVariables = [
-	"brand-100",
-	"brand-130",
-	"brand-160",
-	"brand-200",
-	"brand-230",
-	"brand-260",
-	"brand-300",
-	"brand-330",
-	"brand-345",
-	"brand-360",
-	"brand-400",
-	"brand-430",
-	"brand-460",
-	"brand-500",
-	"brand-530",
-	"brand-560",
-	"brand-600",
-	"brand-630",
-	"brand-660",
-	"brand-700",
-	"brand-730",
-	"brand-760",
-	"brand-800",
-	"brand-830",
-	"brand-860",
-	"brand-900",
-	"primary-900",
-	"primary-860",
-	"primary-830",
-	"primary-800",
-	"primary-760",
-	"primary-730",
-	"primary-700",
-	"primary-660",
-	"primary-645",
-	"primary-630",
-	"primary-600",
-	"primary-560",
-	"primary-530",
-	"primary-500",
-	"primary-460",
-	"primary-430",
-	"primary-400",
-	"primary-360",
-	"primary-330",
-	"primary-300",
-	"primary-260",
-	"primary-230",
-	"primary-200",
-	"primary-160",
-	"primary-130",
-	"primary-100",
-	"white-900",
-	"white-860",
-	"white-830",
-	"white-800",
-	"white-760",
-	"white-730",
-	"white-700",
-	"white-660",
-	"white-630",
-	"white-600",
-	"white-560",
-	"white-530",
-	"white-500",
-	"white-460",
-	"white-430",
-	"white-400",
-	"white-360",
-	"white-330",
-	"white-300",
-	"white-260",
-	"white-230",
-	"white-200",
-	"white-160",
-	"white-130",
-	"white-100",
-	"teal-900",
-	"teal-860",
-	"teal-830",
-	"teal-800",
-	"teal-760",
-	"teal-730",
-	"teal-700",
-	"teal-660",
-	"teal-630",
-	"teal-600",
-	"teal-560",
-	"teal-530",
-	"teal-500",
-	"teal-460",
-	"teal-430",
-	"teal-400",
-	"teal-360",
-	"teal-330",
-	"teal-300",
-	"teal-260",
-	"teal-230",
-	"teal-200",
-	"teal-160",
-	"teal-130",
-	"teal-100",
-	"black-900",
-	"black-860",
-	"black-830",
-	"black-800",
-	"black-760",
-	"black-730",
-	"black-700",
-	"black-660",
-	"black-630",
-	"black-600",
-	"black-560",
-	"black-530",
-	"black-500",
-	"black-460",
-	"black-430",
-	"black-400",
-	"black-360",
-	"black-330",
-	"black-300",
-	"black-260",
-	"black-230",
-	"black-200",
-	"black-160",
-	"black-130",
-	"black-100",
-	"red-900",
-	"red-860",
-	"red-830",
-	"red-800",
-	"red-760",
-	"red-730",
-	"red-700",
-	"red-660",
-	"red-630",
-	"red-600",
-	"red-560",
-	"red-530",
-	"red-500",
-	"red-460",
-	"red-430",
-	"red-400",
-	"red-360",
-	"red-330",
-	"red-300",
-	"red-260",
-	"red-230",
-	"red-200",
-	"red-160",
-	"red-130",
-	"red-100",
-	"yellow-900",
-	"yellow-860",
-	"yellow-830",
-	"yellow-800",
-	"yellow-760",
-	"yellow-730",
-	"yellow-700",
-	"yellow-660",
-	"yellow-630",
-	"yellow-600",
-	"yellow-560",
-	"yellow-530",
-	"yellow-500",
-	"yellow-460",
-	"yellow-430",
-	"yellow-400",
-	"yellow-360",
-	"yellow-330",
-	"yellow-300",
-	"yellow-260",
-	"yellow-230",
-	"yellow-200",
-	"yellow-160",
-	"yellow-130",
-	"yellow-100",
-	"green-900",
-	"green-860",
-	"green-830",
-	"green-800",
-	"green-760",
-	"green-730",
-	"green-700",
-	"green-660",
-	"green-630",
-	"green-600",
-	"green-560",
-	"green-530",
-	"green-500",
-	"green-460",
-	"green-430",
-	"green-400",
-	"green-360",
-	"green-330",
-	"green-300",
-	"green-260",
-	"green-230",
-	"green-200",
-	"green-160",
-	"green-130",
-	"green-100"
+function Icon({ height = 24, width = 24, className, children, viewBox, ...svgProps }) {
+	return BdApi.React.createElement(
+		"svg",
+		{
+			className: classes(className, "dc-icon"),
+			role: "img",
+			width,
+			height,
+			viewBox,
+			...svgProps
+		},
+		children
+	);
+}
+function CopyIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-copy-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement("g", { fill: "currentColor" }, BdApi.React.createElement("path", { d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1z" }), BdApi.React.createElement("path", { d: "M15 5H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z" }))
+	);
+}
+function DeleteIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-delete-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"
+			}
+		),
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"
+			}
+		)
+	);
+}
+function PlusIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-plus-icon"),
+			viewBox: "0 0 18 18"
+		},
+		BdApi.React.createElement(
+			"polygon",
+			{
+				"fill-rule": "nonzero",
+				fill: "currentColor",
+				points: "15 10 10 10 10 15 8 15 8 10 3 10 3 8 8 8 8 3 10 3 10 8 15 8"
+			}
+		)
+	);
+}
+function CloseIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-close-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
+			}
+		)
+	);
+}
+function PalleteIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-pallete-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M 12,0 C 5.3733333,0 0,5.3733333 0,12 c 0,6.626667 5.3733333,12 12,12 1.106667,0 2,-0.893333 2,-2 0,-0.52 -0.2,-0.986667 -0.52,-1.346667 -0.306667,-0.346666 -0.506667,-0.813333 -0.506667,-1.32 0,-1.106666 0.893334,-2 2,-2 h 2.36 C 21.013333,17.333333 24,14.346667 24,10.666667 24,4.7733333 18.626667,0 12,0 Z M 4.6666667,12 c -1.1066667,0 -2,-0.893333 -2,-2 0,-1.1066667 0.8933333,-2 2,-2 1.1066666,0 2,0.8933333 2,2 0,1.106667 -0.8933334,2 -2,2 z M 8.666667,6.6666667 c -1.106667,0 -2.0000003,-0.8933334 -2.0000003,-2 0,-1.1066667 0.8933333,-2 2.0000003,-2 1.106666,0 2,0.8933333 2,2 0,1.1066666 -0.893334,2 -2,2 z m 6.666666,0 c -1.106666,0 -2,-0.8933334 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.1066666 -0.893333,2 -2,2 z m 4,5.3333333 c -1.106666,0 -2,-0.893333 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.106667 -0.893333,2 -2,2 z"
+			}
+		)
+	);
+}
+function DownloadIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-download-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M12 2a1 1 0 0 1 1 1v10.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V3a1 1 0 0 1 1-1ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
+			}
+		)
+	);
+}
+function ImportIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-import-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M.9 3a.9.9 0 0 1 .892.778l.008.123v16.201a.9.9 0 0 1-1.792.121L0 20.102V3.899A.9.9 0 0 1 .9 3Zm14.954 2.26.1-.112a1.2 1.2 0 0 1 1.584-.1l.113.1 5.998 5.998a1.2 1.2 0 0 1 .1 1.584l-.1.112-5.997 6.006a1.2 1.2 0 0 1-1.799-1.584l.1-.113 3.947-3.954H4.8a1.2 1.2 0 0 1-1.191-1.06l-.008-.14a1.2 1.2 0 0 1 1.06-1.192l.14-.008h15.103l-3.95-3.952a1.2 1.2 0 0 1-.1-1.585l.1-.112z"
+			}
+		)
+	);
+}
+function IDIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			viewBox: "0 0 24 24",
+			className: classes(props.className, "dc-id-icon"),
+			fillRule: "evenodd",
+			clipRule: "evenodd"
+		},
+		BdApi.React.createElement("path", { fill: "currentColor", d: "M15.3 14.48c-.46.45-1.08.67-1.86.67h-1.39V9.2h1.39c.78 0 1.4.22 1.86.67.46.45.68 1.22.68 2.31 0 1.1-.22 1.86-.68 2.31Z" }),
+		BdApi.React.createElement("path", { fill: "currentColor", "fill-rule": "evenodd", d: "M5 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3H5Zm1 15h2.04V7.34H6V17Zm4-9.66V17h3.44c1.46 0 2.6-.42 3.38-1.25.8-.83 1.2-2.02 1.2-3.58s-.4-2.75-1.2-3.58c-.79-.83-1.92-1.25-3.38-1.25H10Z", "clip-rule": "evenodd" })
+	);
+}
+function CodeIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-code-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M9.6 7.8 4 12l5.6 4.2a1 1 0 0 1 .4.8v1.98c0 .21-.24.33-.4.2l-8.1-6.4a1 1 0 0 1 0-1.56l8.1-6.4c.16-.13.4-.01.4.2V7a1 1 0 0 1-.4.8ZM14.4 7.8 20 12l-5.6 4.2a1 1 0 0 0-.4.8v1.98c0 .21.24.33.4.2l8.1-6.4a1 1 0 0 0 0-1.56l-8.1-6.4a.25.25 0 0 0-.4.2V7a1 1 0 0 0 .4.8Z"
+			}
+		)
+	);
+}
+function SortIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-sort-icon"),
+			viewBox: "0 0 16 16"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M3.5 3.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 12.293zm4 .5a.5.5 0 0 1 0-1h1a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h3a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h5a.5.5 0 0 1 0 1zM7 12.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5"
+			}
+		)
+	);
+}
+
+const defaultColorwaySource = "https://raw.githubusercontent.com/ProjectColorway/ProjectColorway/master/index.json";
+const fallbackColorways = [
+	{
+		name: "Keyboard Purple",
+		original: false,
+		accent: "hsl(235 85.6% 64.7%)",
+		primary: "#222456",
+		secondary: "#1c1f48",
+		tertiary: "#080d1d",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/KeyboardPurple/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Eclipse",
+		original: false,
+		accent: "hsl(87 85.6% 64.7%)",
+		primary: "#000000",
+		secondary: "#181818",
+		tertiary: "#0a0a0a",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Eclipse/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Cyan",
+		original: false,
+		accent: "#009f88",
+		primary: "#202226",
+		secondary: "#1c1e21",
+		tertiary: "#141517",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Cyan/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Spotify",
+		original: false,
+		accent: "hsl(141 76% 48%)",
+		primary: "#121212",
+		secondary: "#090909",
+		tertiary: "#090909",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Spotify/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Bright n' Blue",
+		original: true,
+		accent: "hsl(234, 68%, 33%)",
+		primary: "#394aae",
+		secondary: "#29379d",
+		tertiary: "#1b278d",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/BrightBlue/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Still Young",
+		original: true,
+		accent: "hsl(58 85.6% 89%)",
+		primary: "#443a31",
+		secondary: "#7c3d3e",
+		tertiary: "#207578",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/StillYoung/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Sea",
+		original: true,
+		accent: "hsl(184, 100%, 50%)",
+		primary: "#07353b",
+		secondary: "#0b5e60",
+		tertiary: "#08201d",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Sea/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Lava",
+		original: true,
+		accent: "hsl(4, 80.4%, 32%)",
+		primary: "#401b17",
+		secondary: "#351917",
+		tertiary: "#230b0b",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Lava/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Solid Pink",
+		original: true,
+		accent: "hsl(340, 55.2%, 56.3%)",
+		primary: "#1e151c",
+		secondary: "#21181f",
+		tertiary: "#291e27",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/SolidPink/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Sand",
+		original: true,
+		accent: "hsl(41, 31%, 45%)",
+		primary: "#7f6c43",
+		secondary: "#665b33",
+		tertiary: "#5c5733",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Sand/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "AMOLED",
+		original: true,
+		accent: "hsl(235 85.6% 64.7%)",
+		primary: "#000000",
+		secondary: "#000000",
+		tertiary: "#000000",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Amoled/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Zorin",
+		original: false,
+		accent: "hsl(200, 89%, 86%)",
+		primary: "#171d20",
+		secondary: "#171d20",
+		tertiary: "#1e2529",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Zorin/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Desaturated",
+		original: false,
+		accent: "hsl(227, 58%, 65%)",
+		primary: "#35383d",
+		secondary: "#2c2f34",
+		tertiary: "#1e1f24",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Desaturated/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Crimson",
+		original: false,
+		accent: "hsl(0, 100%, 50%)",
+		primary: "#050000",
+		secondary: "#0a0000",
+		tertiary: "#0f0000",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Crimson/import.css);",
+		author: "Riddim_GLiTCH",
+		authorID: "801089753038061669"
+	},
+	{
+		name: "Jupiter",
+		original: true,
+		accent: "#ffd89b",
+		primary: "#ffd89b",
+		secondary: "#19547b",
+		tertiary: "#1e1f22",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Jupiter/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594",
+		isGradient: true,
+		colors: ["accent", "primary", "secondary"]
+	},
+	{
+		name: "Neon Candy",
+		original: true,
+		accent: "#FC00FF",
+		primary: "#00DBDE",
+		secondary: "#00DBDE",
+		tertiary: "#00DBDE",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/NeonCandy/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594",
+		isGradient: true,
+		colors: ["accent", "primary"]
+	},
+	{
+		name: "Wildberry",
+		original: false,
+		accent: "#f40172",
+		primary: "#180029",
+		secondary: "#340057",
+		tertiary: "#4b007a",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Wildberry/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Facebook",
+		original: false,
+		accent: "#2375e1",
+		primary: "#18191a",
+		secondary: "#242526",
+		tertiary: "#3a3b3c",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Facebook/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Material You",
+		original: false,
+		accent: "#004977",
+		primary: "#1f1f1f",
+		secondary: "#28292a",
+		tertiary: "#2d2f31",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/MaterialYou/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "Discord Teal",
+		original: false,
+		accent: "#175f6d",
+		primary: "#313338",
+		secondary: "#2b2d31",
+		tertiary: "#1e1f22",
+		"dc-import": "@import url(//dablulite.github.io/css-snippets/DiscordTeal/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594",
+		colors: ["accent"]
+	},
+	{
+		name: "\u9EC4\u660F\u306E\u82B1 (Twilight Blossom)",
+		original: true,
+		accent: "#e100ff",
+		primary: "#04000a",
+		secondary: "#0b0024",
+		tertiary: "#210042",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/TwilightBlossom/import.css);",
+		author: "Riddim_GLiTCH",
+		authorID: "801089753038061669"
+	},
+	{
+		name: "Chai",
+		original: true,
+		accent: "#59cd51",
+		primary: "#1c1e15",
+		secondary: "#1e2118",
+		tertiary: "#24291e",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/Chai/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	},
+	{
+		name: "CS1.6",
+		original: false,
+		accent: "#929a8d",
+		primary: "#3f4738",
+		secondary: "#5b6c51",
+		tertiary: "#4d5945",
+		"dc-import": "@import url(//dablulite.github.io/DiscordColorways/CS16/import.css);",
+		author: "DaBluLite",
+		authorID: "582170007505731594"
+	}
 ];
+const knownThemeVars = {
+	"Cyan": {
+		variable: "--cyan-accent-color",
+		accent: "--cyan-accent-color",
+		primary: "--cyan-background-primary",
+		secondary: "--cyan-background-secondary"
+	},
+	"Virtual Boy": {
+		variable: "--VBaccent",
+		tertiary: "--VBaccent-muted",
+		alt: {
+			tertiary: "--VBaccent-dimmest"
+		}
+	},
+	"Modular": {
+		variable: "--modular-hue",
+		accentVariables: {
+			h: "--modular-hue",
+			s: "--modular-saturation",
+			l: "--modular-lightness"
+		}
+	},
+	"Solana": {
+		variable: "--accent-hue",
+		accentVariables: {
+			h: "--accent-hue",
+			s: "--accent-saturation",
+			l: "--accent-brightness"
+		},
+		primaryVariables: {
+			h: "--background-accent-hue",
+			s: "--background-accent-saturation",
+			l: "--background-accent-brightness"
+		}
+	}
+};
+const nullColorwayObj = { id: null, css: null, sourceType: null, source: null };
+
 const PrimarySatDiffs = {
 	130: 63.9594,
 	160: 49.4382,
@@ -1057,7 +1241,7 @@ const pureGradientBase = `
 		--dc-overlay-app-frame: linear-gradient(rgb(var(--dc-overlay-color)/var(--dc-overlay-opacity-app-frame)),rgb(var(--dc-overlay-color)/var(--dc-overlay-opacity-app-frame))) fixed 0 0/cover,var(--gradient-theme-bg) fixed 0 0/cover;
 }`;
 function gradientBase(accentColor, discordSaturation = false) {
-	return `@import url("https://dablulite.github.io/css-snippets/NitroThemesFix/import.css");
+	return `@import url(//dablulite.github.io/css-snippets/NitroThemesFix/import.css);
 .theme-dark {
 		--bg-overlay-color: 0 0 0;
 		--bg-overlay-color-inverse: 255 255 255;
@@ -1098,31 +1282,31 @@ function gradientBase(accentColor, discordSaturation = false) {
 		--bg-overlay-opacity-home-card: 0.9;
 		--bg-overlay-opacity-app-frame: var(--bg-overlay-opacity-5);
 }
-.children_cde9af:after, .form_d8a4a1:before {
+.children_fc4f04:after, .form_a7d72e:before {
 		content: none;
 }
-.scroller_de945b {
+.scroller_fea3ef {
 		background: var(--bg-overlay-app-frame,var(--background-tertiary));
 }
-.expandedFolderBackground_b1385f {
+.expandedFolderBackground_bc7085 {
 		background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
 .wrapper__8436d:not(:hover):not(.selected_ae80f7) .childWrapper_a6ce15 {
 		background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
-.folder__17546:has(.expandedFolderIconWrapper__324c1) {
+.folder_bc7085:has(.expandedFolderIconWrapper_bc7085) {
 		background: var(--bg-overlay-6,var(--background-secondary));
 }
-.circleIconButton__05cf2:not(.selected_aded59) {
+.circleIconButton_db6521:not(.selected_db6521) {
 		background: rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-6));
 }
-.auto_a3c0bd::-webkit-scrollbar-thumb,
-.thin_b1c063::-webkit-scrollbar-thumb {
+.auto_eed6a8::-webkit-scrollbar-thumb,
+.thin_eed6a8::-webkit-scrollbar-thumb {
 		background-size: 200vh;
 		background-image: -webkit-gradient(linear,left top,left bottom,from(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4))),to(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4)))),var(--custom-theme-background);
 		background-image: linear-gradient(rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4)),rgb(var(--bg-overlay-color-inverse)/var(--bg-overlay-opacity-4))),var(--custom-theme-background);
 }
-.auto_a3c0bd::-webkit-scrollbar-track {
+.auto_eed6a8::-webkit-scrollbar-track {
 		background-size: 200vh;
 		background-image: -webkit-gradient(linear,left top,left bottom,from(rgb(var(--bg-overlay-color)/.4)),to(rgb(var(--bg-overlay-color)/.4))),var(--custom-theme-background);
 		background-image: linear-gradient(rgb(var(--bg-overlay-color)/.4),rgb(var(--bg-overlay-color)/.4)),var(--custom-theme-background);
@@ -1169,13 +1353,13 @@ function gradientBase(accentColor, discordSaturation = false) {
 		--bg-overlay-app-frame: linear-gradient(rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-app-frame)),rgb(var(--bg-overlay-color)/var(--bg-overlay-opacity-app-frame))) fixed 0 0/cover,var(--custom-theme-background) fixed 0 0/cover;
 }`;
 }
-function generateCss(primaryColor, secondaryColor, tertiaryColor, accentColor, tintedText, discordSaturation, mutedTextBrightness, name) {
+function generateCss(primaryColor, secondaryColor, tertiaryColor, accentColor, tintedText = true, discordSaturation = true, mutedTextBrightness, name) {
 	return `/**
  * @name ${name}
- * @version ${plugin.creatorVersion}
+ * @version ${PluginProps.creatorVersion}
  * @description Automatically generated Colorway.
- * @author ${UserStore.getCurrentUser().username}
- * @authorId ${UserStore.getCurrentUser().id}
+ * @author ${exports.UserStore.getCurrentUser().username}
+ * @authorId ${exports.UserStore.getCurrentUser().id}
  */
 :root:root {
 		--brand-100-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[100]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[100]) * 10) / 10, 0)};
@@ -1228,32 +1412,32 @@ function generateCss(primaryColor, secondaryColor, tertiaryColor, accentColor, t
 		--primary-160-hsl: ${HexToHSL("#" + secondaryColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + secondaryColor)[1] / 100 * (100 + PrimarySatDiffs[660]) * 10) / 10 : HexToHSL("#" + secondaryColor)[1]}%) ${Math.min(HexToHSL("#" + secondaryColor)[2] + 76.4, 82.5)}%;
 		--primary-200-hsl: ${HexToHSL("#" + tertiaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + tertiaryColor)[1]}%) ${Math.min(HexToHSL("#" + tertiaryColor)[2] + 80, 80)}%;
 }
-.emptyPage_feb902,
-.scrollerContainer_dda72c,
-.container__03ec9,
-.header__71942 {
+.emptyPage_c6b11b,
+.scrollerContainer_c6b11b,
+.container_f1fd9c,
+.header_f1fd9c {
 		background-color: unset !important;
 }
-.container__6b2e5,
-.container__03ec9,
-.header__71942 {
+.container_c2efea,
+.container_f1fd9c,
+.header_f1fd9c {
 		background: transparent !important;
 }${Math.round(HexToHSL("#" + primaryColor)[2]) > 80 ? `
 
 /*Primary*/
-.theme-dark .container_bd15da,
-.theme-dark .body__616e6,
-.theme-dark .toolbar__62fb5,
-.theme-dark .container_e1387b,
-.theme-dark .messageContent_abea64,
-.theme-dark .attachButtonPlus_fd0021,
-.theme-dark .username__0b0e7:not([style]),
-.theme-dark .children_cde9af,
-.theme-dark .buttonContainer__6de7e,
-.theme-dark .listItem__48528,
-.theme-dark .body__616e6 .caret__33d19,
-.theme-dark .body__616e6 .titleWrapper_d6133e > h1,
-.theme-dark .body__616e6 .icon_ae0b42 {
+.theme-dark .container_c2739c,
+.theme-dark .body_cd82a7,
+.theme-dark .toolbar_fc4f04,
+.theme-dark .container_f0fccd,
+.theme-dark .messageContent_f9f2ca,
+.theme-dark .attachButtonPlus_f298d4,
+.theme-dark .username_f9f2ca:not([style]),
+.theme-dark .children_fc4f04,
+.theme-dark .buttonContainer_f9f2ca,
+.theme-dark .listItem_c96c45,
+.theme-dark .body_cd82a7 .caret_fc4f04,
+.theme-dark .body_cd82a7 .titleWrapper_fc4f04 > h1,
+.theme-dark .body_cd82a7 .icon_fc4f04 {
 		--white-500: black !important;
 		--interactive-normal: black !important;
 		--text-normal: black !important;
@@ -1262,23 +1446,23 @@ function generateCss(primaryColor, secondaryColor, tertiaryColor, accentColor, t
 		--header-secondary: black !important;
 }
 
-.theme-dark .contentRegionScroller__9ae20 :not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
+.theme-dark .contentRegionScroller_c25c6d :not(.mtk1,.mtk2,.mtk3,.mtk4,.mtk5,.mtk6,.mtk7,.mtk8,.mtk9,.monaco-editor .line-numbers) {
 		--white-500: black !important;
 }
 
-.theme-dark .container__26baa {
+.theme-dark .container_fc4f04 {
 		--channel-icon: black;
 }
 
-.theme-dark .callContainer__1477d {
+.theme-dark .callContainer_d880dc {
 		--white-500: ${HexToHSL("#" + tertiaryColor)[2] > 80 ? "black" : "white"} !important;
 }
 
-.theme-dark .channelTextArea_c2094b {
+.theme-dark .channelTextArea_a7d72e {
 		--text-normal: ${HexToHSL("#" + primaryColor)[2] + 3.6 > 80 ? "black" : "white"};
 }
 
-.theme-dark .placeholder_dec8c7 {
+.theme-dark .placeholder_a552a6 {
 		--channel-text-area-placeholder: ${HexToHSL("#" + primaryColor)[2] + 3.6 > 80 ? "black" : "white"};
 		opacity: .6;
 }
@@ -1287,18 +1471,18 @@ function generateCss(primaryColor, secondaryColor, tertiaryColor, accentColor, t
 		background-color: black;
 }
 
-.theme-dark .root_a28985 > .header__5e5a6 > h1 {
+.theme-dark .root_f9a4c9 > .header_f9a4c9 > h1 {
 		color: black;
 }
 /*End Primary*/` : ""}${HexToHSL("#" + secondaryColor)[2] > 80 ? `
 
 /*Secondary*/
-.theme-dark .wrapper__3c6d5 *,
-.theme-dark .sidebar_e031be *:not(.hasBanner__04337 *),
-.theme-dark .members__573eb *:not([style]),
-.theme-dark .sidebarRegionScroller__8113e *,
-.theme-dark .header__8e271,
-.theme-dark .lookFilled__950dd.colorPrimary_ebe632 {
+.theme-dark .wrapper_cd82a7 *,
+.theme-dark .sidebar_a4d4d9 *:not(.hasBanner_fd6364 *),
+.theme-dark .members_cbd271 *:not([style]),
+.theme-dark .sidebarRegionScroller_c25c6d *,
+.theme-dark .header_e06857,
+.theme-dark .lookFilled_dd4f85.colorPrimary_dd4f85 {
 		--white-500: black !important;
 		--channels-default: black !important;
 		--channel-icon: black !important;
@@ -1307,38 +1491,38 @@ function generateCss(primaryColor, secondaryColor, tertiaryColor, accentColor, t
 		--interactive-active: var(--white-500);
 }
 
-.theme-dark .channelRow__538ef {
+.theme-dark .channelRow_f04d06 {
 		background-color: var(--background-secondary);
 }
 
-.theme-dark .channelRow__538ef * {
+.theme-dark .channelRow_f04d06 * {
 		--channel-icon: black;
 }
 
-.theme-dark #app-mount .activity_bafb94 {
+.theme-dark #app-mount .activity_a31c43 {
 		--channels-default: var(--white-500) !important;
 }
 
-.theme-dark .nameTag__77ab2 {
+.theme-dark .nameTag_b2ca13 {
 		--header-primary: black !important;
 		--header-secondary: ${HexToHSL("#" + secondaryColor)[0] === 0 ? "gray" : HexToHSL("#" + secondaryColor)[2] < 80 ? "hsl(" + HexToHSL("#" + secondaryColor)[0] + ", calc(var(--saturation-factor, 1)*100%), 90%)" : "hsl(" + HexToHSL("#" + secondaryColor)[0] + ", calc(var(--saturation-factor, 1)*100%), 20%)"} !important;
 }
 
-.theme-dark .bannerVisible_ef30fe .headerContent__6fcc7 {
+.theme-dark .bannerVisible_fd6364 .headerContent_fd6364 {
 		color: #fff;
 }
 
-.theme-dark .embedFull__14919 {
+.theme-dark .embedFull_b0068a {
 		--text-normal: black;
 }
 /*End Secondary*/` : ""}${HexToHSL("#" + tertiaryColor)[2] > 80 ? `
 
 /*Tertiary*/
-.theme-dark .winButton_f17fb6,
-.theme-dark .searchBar__310d8 *,
-.theme-dark .wordmarkWindows_ffbc5e,
-.theme-dark .searchBar__5a20a *,
-.theme-dark .searchBarComponent__8f95f {
+.theme-dark .winButton_a934d8,
+.theme-dark .searchBar_e0840f *,
+.theme-dark .wordmarkWindows_a934d8,
+.theme-dark .searchBar_a46bef *,
+.theme-dark .searchBarComponent_f0963d {
 		--white-500: black !important;
 }
 
@@ -1346,27 +1530,27 @@ function generateCss(primaryColor, secondaryColor, tertiaryColor, accentColor, t
 		color: ${HexToHSL("#" + secondaryColor)[2] > 80 ? "black" : "white"};
 }
 
-.theme-dark .popout__24e32 > * {
+.theme-dark .popout_c5b389 > * {
 		--interactive-normal: black !important;
 		--header-secondary: black !important;
 }
 
-.theme-dark .tooltip__7b090 {
+.theme-dark .tooltip_b6c360 {
 		--text-normal: black !important;
 }
-.theme-dark .children_cde9af .icon_ae0b42 {
+.theme-dark .children_fc4f04 .icon_fc4f04 {
 		color: var(--interactive-active) !important;
 }
 /*End Tertiary*/` : ""}${HexToHSL("#" + accentColor)[2] > 80 ? `
 
 /*Accent*/
-.selected_aded59 *,
+.selected_db6521 *,
 .selected_ae80f7 *,
-#app-mount .lookFilled__950dd.colorBrand__27d57:not(.buttonColor__7bad9),
-.colorDefault_e361cf.focused_dcafb9,
-.row__9e25f:hover,
+#app-mount .lookFilled_dd4f85.colorBrand_dd4f85:not(.buttonColor_adcaac),
+.colorDefault_d90b3d.focused_d90b3d,
+.row_c5b389:hover,
 .colorwayInfoIcon,
-.checkmarkCircle_b1b1cc > circle {
+.checkmarkCircle_cb7c27 > circle {
 		--white-500: black !important;
 }
 
@@ -1493,10 +1677,10 @@ function getAutoPresets(accentColor) {
 		--primary-400: hsl(${HexToHSL("#" + accentColor)[0]}, calc(var(--saturation-factor, 1)*12%), 90%);
 		--primary-360: hsl(${HexToHSL("#" + accentColor)[0]}, calc(var(--saturation-factor, 1)*12%), 90%);
 }
-.emptyPage_feb902,
-.scrollerContainer_dda72c,
-.container__03ec9,
-.header__71942 {
+.emptyPage_c6b11b,
+.scrollerContainer_c6b11b,
+.container_f1fd9c,
+.header_f1fd9c {
 		background-color: unset !important;
 }`;
 	}
@@ -1674,7 +1858,12 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 			name: "Hue Rotation",
 			preset: getAutoPresets(accentColor).hueRotation.preset,
 			id: "hueRotation",
-			colors: ["accent"]
+			colors: ["accent"],
+			calculated: {
+				primary: `hsl(${HexToHSL("#" + accentColor)[0]} 11% 21%)`,
+				secondary: `hsl(${HexToHSL("#" + accentColor)[0]} 11% 18%)`,
+				tertiary: `hsl(${HexToHSL("#" + accentColor)[0]} 10% 13%)`
+			}
 		},
 		accentSwap: {
 			name: "Accent Swap",
@@ -1686,7 +1875,12 @@ function getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor) {
 			name: "Material You",
 			preset: getAutoPresets(accentColor).materialYou.preset,
 			id: "materialYou",
-			colors: ["accent"]
+			colors: ["accent"],
+			calculated: {
+				primary: `hsl(${HexToHSL("#" + accentColor)[0]} 12% 12%)`,
+				secondary: `hsl(${HexToHSL("#" + accentColor)[0]} 12% 16%)`,
+				tertiary: `hsl(${HexToHSL("#" + accentColor)[0]} 16% 18%)`
+			}
 		}
 	};
 }
@@ -1695,570 +1889,1228 @@ const gradientPresetIds = [
 	"gradientType2"
 ];
 
-function Icon({ height = 24, width = 24, className, children, viewBox, ...svgProps }) {
-	return BdApi.React.createElement(
-		"svg",
-		{
-			className: classes(className, "dc-icon"),
-			role: "img",
-			width,
-			height,
-			viewBox,
-			...svgProps
-		},
-		children
-	);
-}
-function PalleteIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-pallete-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M 12,0 C 5.3733333,0 0,5.3733333 0,12 c 0,6.626667 5.3733333,12 12,12 1.106667,0 2,-0.893333 2,-2 0,-0.52 -0.2,-0.986667 -0.52,-1.346667 -0.306667,-0.346666 -0.506667,-0.813333 -0.506667,-1.32 0,-1.106666 0.893334,-2 2,-2 h 2.36 C 21.013333,17.333333 24,14.346667 24,10.666667 24,4.7733333 18.626667,0 12,0 Z M 4.6666667,12 c -1.1066667,0 -2,-0.893333 -2,-2 0,-1.1066667 0.8933333,-2 2,-2 1.1066666,0 2,0.8933333 2,2 0,1.106667 -0.8933334,2 -2,2 z M 8.666667,6.6666667 c -1.106667,0 -2.0000003,-0.8933334 -2.0000003,-2 0,-1.1066667 0.8933333,-2 2.0000003,-2 1.106666,0 2,0.8933333 2,2 0,1.1066666 -0.893334,2 -2,2 z m 6.666666,0 c -1.106666,0 -2,-0.8933334 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.1066666 -0.893333,2 -2,2 z m 4,5.3333333 c -1.106666,0 -2,-0.893333 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.106667 -0.893333,2 -2,2 z"
-			}
-		)
-	);
-}
-function CloseIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-close-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
-			}
-		)
-	);
-}
-function DownloadIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-download-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M12 2a1 1 0 0 1 1 1v10.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V3a1 1 0 0 1 1-1ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
-			}
-		)
-	);
-}
-function ImportIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-import-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M.9 3a.9.9 0 0 1 .892.778l.008.123v16.201a.9.9 0 0 1-1.792.121L0 20.102V3.899A.9.9 0 0 1 .9 3Zm14.954 2.26.1-.112a1.2 1.2 0 0 1 1.584-.1l.113.1 5.998 5.998a1.2 1.2 0 0 1 .1 1.584l-.1.112-5.997 6.006a1.2 1.2 0 0 1-1.799-1.584l.1-.113 3.947-3.954H4.8a1.2 1.2 0 0 1-1.191-1.06l-.008-.14a1.2 1.2 0 0 1 1.06-1.192l.14-.008h15.103l-3.95-3.952a1.2 1.2 0 0 1-.1-1.585l.1-.112z"
-			}
-		)
-	);
-}
-function IDIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-id-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M15.3 14.48c-.46.45-1.08.67-1.86.67h-1.39V9.2h1.39c.78 0 1.4.22 1.86.67.46.45.68 1.22.68 2.31 0 1.1-.22 1.86-.68 2.31Z"
-			}
-		),
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				"fill-rule": "evenodd",
-				d: "M5 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3H5Zm1 15h2.04V7.34H6V17Zm4-9.66V17h3.44c1.46 0 2.6-.42 3.38-1.25.8-.83 1.2-2.02 1.2-3.58s-.4-2.75-1.2-3.58c-.79-.83-1.92-1.25-3.38-1.25H10Z",
-				"clip-rule": "evenodd"
-			}
-		)
-	);
-}
-function CodeIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-code-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M9.6 7.8 4 12l5.6 4.2a1 1 0 0 1 .4.8v1.98c0 .21-.24.33-.4.2l-8.1-6.4a1 1 0 0 1 0-1.56l8.1-6.4c.16-.13.4-.01.4.2V7a1 1 0 0 1-.4.8ZM14.4 7.8 20 12l-5.6 4.2a1 1 0 0 0-.4.8v1.98c0 .21.24.33.4.2l8.1-6.4a1 1 0 0 0 0-1.56l-8.1-6.4a.25.25 0 0 0-.4.2V7a1 1 0 0 0 .4.8Z"
-			}
-		)
-	);
-}
-function MoreIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-more-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				"fill-rule": "evenodd",
-				d: "M4 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10-2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z",
-				"clip-rule": "evenodd"
-			}
-		)
-	);
-}
-function PlusIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-plus-icon"),
-			viewBox: "0 0 18 18"
-		},
-		BdApi.React.createElement(
-			"polygon",
-			{
-				"fill-rule": "nonzero",
-				fill: "currentColor",
-				points: "15 10 10 10 10 15 8 15 8 10 3 10 3 8 8 8 8 3 10 3 10 8 15 8"
-			}
-		)
-	);
-}
-function CopyIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-copy-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement("g", { fill: "currentColor" }, BdApi.React.createElement("path", { d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1z" }), BdApi.React.createElement("path", { d: "M15 5H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z" }))
-	);
-}
-function DeleteIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-delete-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"
-			}
-		),
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"
-			}
-		)
-	);
-}
+var SortOptions = ((SortOptions2) => {
+	SortOptions2[SortOptions2["NAME_AZ"] = 1] = "NAME_AZ";
+	SortOptions2[SortOptions2["NAME_ZA"] = 2] = "NAME_ZA";
+	SortOptions2[SortOptions2["SOURCE_AZ"] = 3] = "SOURCE_AZ";
+	SortOptions2[SortOptions2["SOURCE_ZA"] = 4] = "SOURCE_ZA";
+	return SortOptions2;
+})(SortOptions || {});
 
-const defaultColorwaySource = "https://raw.githubusercontent.com/DaBluLite/ProjectColorway/master/index.json";
-const fallbackColorways = [
-	{
-		name: "Keyboard Purple",
-		original: false,
-		accent: "hsl(235 85.6% 64.7%)",
-		primary: "#222456",
-		secondary: "#1c1f48",
-		tertiary: "#080d1d",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/KeyboardPurple/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Eclipse",
-		original: false,
-		accent: "hsl(87 85.6% 64.7%)",
-		primary: "#000000",
-		secondary: "#181818",
-		tertiary: "#0a0a0a",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Eclipse/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Cyan",
-		original: false,
-		accent: "#009f88",
-		primary: "#202226",
-		secondary: "#1c1e21",
-		tertiary: "#141517",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Cyan/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Spotify",
-		original: false,
-		accent: "hsl(141 76% 48%)",
-		primary: "#121212",
-		secondary: "#090909",
-		tertiary: "#090909",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Spotify/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Bright n' Blue",
-		original: true,
-		accent: "hsl(234, 68%, 33%)",
-		primary: "#394aae",
-		secondary: "#29379d",
-		tertiary: "#1b278d",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/BrightBlue/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Still Young",
-		original: true,
-		accent: "hsl(58 85.6% 89%)",
-		primary: "#443a31",
-		secondary: "#7c3d3e",
-		tertiary: "#207578",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/StillYoung/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Sea",
-		original: true,
-		accent: "hsl(184, 100%, 50%)",
-		primary: "#07353b",
-		secondary: "#0b5e60",
-		tertiary: "#08201d",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Sea/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Lava",
-		original: true,
-		accent: "hsl(4, 80.4%, 32%)",
-		primary: "#401b17",
-		secondary: "#351917",
-		tertiary: "#230b0b",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Lava/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Solid Pink",
-		original: true,
-		accent: "hsl(340, 55.2%, 56.3%)",
-		primary: "#1e151c",
-		secondary: "#21181f",
-		tertiary: "#291e27",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/SolidPink/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Sand",
-		original: true,
-		accent: "hsl(41, 31%, 45%)",
-		primary: "#7f6c43",
-		secondary: "#665b33",
-		tertiary: "#5c5733",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Sand/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "AMOLED",
-		original: true,
-		accent: "hsl(235 85.6% 64.7%)",
-		primary: "#000000",
-		secondary: "#000000",
-		tertiary: "#000000",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Amoled/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Zorin",
-		original: false,
-		accent: "hsl(200, 89%, 86%)",
-		primary: "#171d20",
-		secondary: "#171d20",
-		tertiary: "#1e2529",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Zorin/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Desaturated",
-		original: false,
-		accent: "hsl(227, 58%, 65%)",
-		primary: "#35383d",
-		secondary: "#2c2f34",
-		tertiary: "#1e1f24",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Desaturated/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Crimson",
-		original: false,
-		accent: "hsl(0, 100%, 50%)",
-		primary: "#050000",
-		secondary: "#0a0000",
-		tertiary: "#0f0000",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Crimson/import.css");",
-		author: "Riddim_GLiTCH",
-		authorID: "801089753038061669"
-	},
-	{
-		name: "Jupiter",
-		original: true,
-		accent: "#ffd89b",
-		primary: "#ffd89b",
-		secondary: "#19547b",
-		tertiary: "#1e1f22",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Jupiter/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594",
-		isGradient: true,
-		colors: ["accent", "primary", "secondary"]
-	},
-	{
-		name: "Neon Candy",
-		original: true,
-		accent: "#FC00FF",
-		primary: "#00DBDE",
-		secondary: "#00DBDE",
-		tertiary: "#00DBDE",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/NeonCandy/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594",
-		isGradient: true,
-		colors: ["accent", "primary"]
-	},
-	{
-		name: "Wildberry",
-		original: false,
-		accent: "#f40172",
-		primary: "#180029",
-		secondary: "#340057",
-		tertiary: "#4b007a",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Wildberry/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Facebook",
-		original: false,
-		accent: "#2375e1",
-		primary: "#18191a",
-		secondary: "#242526",
-		tertiary: "#3a3b3c",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Facebook/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Material You",
-		original: false,
-		accent: "#004977",
-		primary: "#1f1f1f",
-		secondary: "#28292a",
-		tertiary: "#2d2f31",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/MaterialYou/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "Discord Teal",
-		original: false,
-		accent: "#175f6d",
-		primary: "#313338",
-		secondary: "#2b2d31",
-		tertiary: "#1e1f22",
-		"dc-import": "@import url("https://dablulite.github.io/css-snippets/DiscordTeal/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594",
-		colors: ["accent"]
-	},
-	{
-		name: "\u9EC4\u660F\u306E\u82B1 (Twilight Blossom)",
-		original: true,
-		accent: "#e100ff",
-		primary: "#04000a",
-		secondary: "#0b0024",
-		tertiary: "#210042",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/TwilightBlossom/import.css");",
-		author: "Riddim_GLiTCH",
-		authorID: "801089753038061669"
-	},
-	{
-		name: "Chai",
-		original: true,
-		accent: "#59cd51",
-		primary: "#1c1e15",
-		secondary: "#1e2118",
-		tertiary: "#24291e",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/Chai/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	},
-	{
-		name: "CS1.6",
-		original: false,
-		accent: "#929a8d",
-		primary: "#3f4738",
-		secondary: "#5b6c51",
-		tertiary: "#4d5945",
-		"dc-import": "@import url("https://dablulite.github.io/DiscordColorways/CS16/import.css");",
-		author: "DaBluLite",
-		authorID: "582170007505731594"
-	}
-];
-const knownThemeVars = {
-	"Cyan": {
-		variable: "--cyan-accent-color",
-		accent: "--cyan-accent-color",
-		primary: "--cyan-background-primary",
-		secondary: "--cyan-background-secondary"
-	},
-	"Virtual Boy": {
-		variable: "--VBaccent",
-		tertiary: "--VBaccent-muted",
-		alt: {
-			tertiary: "--VBaccent-dimmest"
+function AutoColorwaySelector({ modalProps, onChange, autoColorwayId = "" }) {
+	const [autoId, setAutoId] = React.useState(autoColorwayId);
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
-	},
-	"Modular": {
-		variable: "--modular-hue",
-		accentVariables: {
-			h: "--modular-hue",
-			s: "--modular-saturation",
-			l: "--modular-lightness"
-		}
-	},
-	"Solana": {
-		variable: "--accent-hue",
-		accentVariables: {
-			h: "--accent-hue",
-			s: "--accent-saturation",
-			l: "--accent-brightness"
-		},
-		primaryVariables: {
-			h: "--background-accent-hue",
-			s: "--background-accent-saturation",
-			l: "--background-accent-brightness"
-		}
-	}
-};
-const mainColors = [
-	{ name: "accent", title: "Accent", var: "--brand-experiment" },
-	{ name: "primary", title: "Primary", var: "--background-primary" },
-	{ name: "secondary", title: "Secondary", var: "--background-secondary" },
-	{ name: "tertiary", title: "Tertiary", var: "--background-tertiary" }
-];
-
-function ColorPicker({ modalProps }) {
-	const [ColorVars, setColorVars] = React.useState(colorVariables);
-	const [collapsedSettings, setCollapsedSettings] = React.useState(true);
-	let results;
-	function searchToolboxItems(e) {
-		results = [];
-		colorVariables.find((colorVariable) => {
-			if (colorVariable.toLowerCase().includes(e.toLowerCase())) {
-				results.push(colorVariable);
-			}
-		});
-		setColorVars(results);
-	}
-	return BdApi.React.createElement(ModalRoot, { ...modalProps, className: "colorwayColorpicker" }, BdApi.React.createElement(Flex, { style: { gap: "8px", marginBottom: "8px" } }, BdApi.React.createElement(
-		TextInput,
-		{
-			className: "colorwaysColorpicker-search",
-			placeholder: "Search for a color:",
-			onChange: (e) => {
-				searchToolboxItems(e);
-				if (e) {
-					setCollapsedSettings(false);
-				} else {
-					setCollapsedSettings(true);
-				}
-			}
-		}
-	), BdApi.React.createElement(
-		Button,
-		{
-			innerClassName: "colorwaysSettings-iconButtonInner",
-			size: Button.Sizes.ICON,
-			color: Button.Colors.PRIMARY,
-			look: Button.Looks.OUTLINED,
-			onClick: () => setCollapsedSettings(!collapsedSettings)
-		},
-		BdApi.React.createElement("svg", { width: "32", height: "24", viewBox: "0 0 24 24", "aria-hidden": "true", role: "img" }, BdApi.React.createElement("path", { fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", d: "M7 10L12 15 17 10", "aria-hidden": "true" }))
-	)), BdApi.React.createElement(ScrollerThin, { style: { color: "var(--text-normal)" }, orientation: "vertical", className: collapsedSettings ? " colorwaysColorpicker-collapsed" : "", paddingFix: true }, ColorVars.map((colorVariable) => BdApi.React.createElement(
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Auto Preset Settings"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("div", { className: "dc-info-card", style: { marginTop: "1em" } }, BdApi.React.createElement("strong", null, "About the Auto Colorway"), BdApi.React.createElement("span", null, "The auto colorway allows you to use your system's accent color in combination with a selection of presets that will fully utilize it.")), BdApi.React.createElement("div", { style: { marginBottom: "20px" } }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Presets:"), Object.values(getAutoPresets()).map((autoPreset) => BdApi.React.createElement(
 		"div",
 		{
-			id: `colorways-colorstealer-item_${colorVariable}`,
-			className: "colorwaysCreator-settingItm colorwaysCreator-toolboxItm",
+			className: "discordColorway",
+			"aria-checked": autoId === autoPreset.id,
+			style: { padding: "10px", marginBottom: "8px" },
 			onClick: () => {
-				Clipboard.copy(getHex(getComputedStyle(document.body).getPropertyValue("--" + colorVariable)));
-				Toasts.show({ message: "Color " + colorVariable + " copied to clipboard", id: "toolbox-color-var-copied", type: 1 });
-			},
-			style: { "--brand-experiment": `var(--${colorVariable})` }
+				setAutoId(autoPreset.id);
+			}
 		},
-		`Copy ${colorVariable}`
-	))), BdApi.React.createElement(Flex, { style: { justifyContent: "space-between", marginTop: "8px" }, wrap: "wrap", className: collapsedSettings ? "" : " colorwaysColorpicker-collapsed" }, mainColors.map(
-		(mainColor) => BdApi.React.createElement(
-			"div",
-			{
-				id: `colorways-toolbox_copy-${mainColor.name}`,
-				className: "colorwayToolbox-listItem"
+		BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), autoId === autoPreset.id && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
+		BdApi.React.createElement("span", { className: "colorwayLabel" }, autoPreset.name)
+	)))), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: () => {
+				DataStore.set("activeAutoPreset", autoId);
+				onChange(autoId);
+				modalProps.onClose();
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => {
+				modalProps.onClose();
+			}
+		},
+		"Cancel"
+	)));
+}
+
+const ColorwayCSS = {
+	get: () => document.getElementById("activeColorwayCSS").textContent || "",
+	set: (e) => {
+		if (!document.getElementById("activeColorwayCSS")) {
+			document.head.append(Object.assign(document.createElement("style"), {
+				id: "activeColorwayCSS",
+				textContent: e
+			}));
+		} else document.getElementById("activeColorwayCSS").textContent = e;
+	},
+	remove: () => document.getElementById("activeColorwayCSS")?.remove()
+};
+
+function TabBar({
+	items = []
+}) {
+	const [active, setActive] = React.useState(items[0].name);
+	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { className: "colorwaysMenuTabs" }, items.map((item) => {
+		return BdApi.React.createElement("div", { className: `colorwaysMenuTab ${active == item.name ? "active" : ""}`, onClick: () => {
+			setActive(item.name);
+		} }, item.name);
+	})), items.map((item) => {
+		const Component = item.component;
+		return active == item.name ? BdApi.React.createElement(Component, null) : null;
+	}));
+}
+
+function StoreNameModal({ modalProps, originalName, onFinish, conflicting }) {
+	const [error, setError] = React.useState("");
+	const [newStoreName, setNewStoreName] = React.useState(originalName);
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, conflicting ? "Duplicate Store Name" : "Give this store a name"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, conflicting ? BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "A store with the same name already exists. Please give a different name to the imported store:") : BdApi.React.createElement(BdApi.React.Fragment, null), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Name:"), BdApi.React.createElement("input", { type: "text", className: "colorwaySelector-search", value: newStoreName, onChange: ({ currentTarget: { value } }) => setNewStoreName(value), style: { marginBottom: "16px" } })), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			style: { marginLeft: 8 },
+			onClick: async () => {
+				setError("");
+				if ((await DataStore.get("customColorways")).map((store) => store.name).includes(newStoreName)) {
+					return setError("Error: Store name already exists");
+				}
+				onFinish(newStoreName);
+				modalProps.onClose();
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			style: { marginLeft: 8 },
+			onClick: () => modalProps.onClose()
+		},
+		"Cancel"
+	)));
+}
+function AddOnlineStoreModal({ modalProps, onFinish }) {
+	const [colorwaySourceName, setColorwaySourceName] = React.useState("");
+	const [colorwaySourceURL, setColorwaySourceURL] = React.useState("");
+	const [nameError, setNameError] = React.useState("");
+	const [URLError, setURLError] = React.useState("");
+	const [nameReadOnly, setNameReadOnly] = React.useState(false);
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Add a source:"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Name:"), BdApi.React.createElement(
+		"input",
+		{
+			type: "text",
+			className: "colorwaySelector-search",
+			placeholder: "Enter a valid Name...",
+			onInput: (e) => setColorwaySourceName(e.currentTarget.value),
+			value: colorwaySourceName,
+			readOnly: nameReadOnly,
+			disabled: nameReadOnly
+		}
+	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader", style: { marginTop: "8px" } }, "URL:"), BdApi.React.createElement(
+		"input",
+		{
+			type: "text",
+			className: "colorwaySelector-search",
+			placeholder: "Enter a valid URL...",
+			onChange: ({ currentTarget: { value } }) => {
+				setColorwaySourceURL(value);
+				if (value === defaultColorwaySource) {
+					setNameReadOnly(true);
+					setColorwaySourceName("Project Colorway");
+				}
 			},
-			BdApi.React.createElement(CopyIcon, { onClick: () => {
-				Clipboard.copy(getHex(getComputedStyle(document.body).getPropertyValue(mainColor.var)));
-				Toasts.show({ message: `${mainColor.title} color copied to clipboard`, id: `toolbox-${mainColor.name}-color-copied`, type: 1 });
-			}, width: 20, height: 20, className: "colorwayToolbox-listItemSVG" }),
-			BdApi.React.createElement("span", { className: "colorwaysToolbox-label" }, `Copy ${mainColor.title} Color`)
-		)
+			value: colorwaySourceURL,
+			style: { marginBottom: "16px" }
+		}
+	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: async () => {
+				const sourcesArr = await DataStore.get("colorwaySourceFiles");
+				if (!colorwaySourceName) {
+					setNameError("Error: Please enter a valid name");
+				} else if (!colorwaySourceURL) {
+					setURLError("Error: Please enter a valid URL");
+				} else if (sourcesArr.map((s) => s.name).includes(colorwaySourceName)) {
+					setNameError("Error: An online source with that name already exists");
+				} else if (sourcesArr.map((s) => s.url).includes(colorwaySourceURL)) {
+					setURLError("Error: An online source with that url already exists");
+				} else {
+					onFinish(colorwaySourceName, colorwaySourceURL);
+					modalProps.onClose();
+				}
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => modalProps.onClose()
+		},
+		"Cancel"
+	)));
+}
+function SourceManager({
+	hasTheme = false
+}) {
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	function Container({ children }) {
+		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
+	}
+	return BdApi.React.createElement(Container, null, BdApi.React.createElement(TabBar, { items: [
+		{
+			name: "Online",
+			component: OnlineTab
+		},
+		{
+			name: "Offline",
+			component: OfflineTab
+		}
+	] }));
+}
+function OfflineTab() {
+	const [customColorwayStores, setCustomColorwayStores] = React.useState([]);
+	React.useEffect(() => {
+		(async function() {
+			setCustomColorwayStores(await DataStore.get("customColorways"));
+			updateRemoteSources();
+		})();
+	}, []);
+	return BdApi.React.createElement("div", { className: "colorwaySourceTab" }, BdApi.React.createElement("div", { style: {
+		display: "flex",
+		gap: "8px"
+	} }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			style: { flexShrink: "0" },
+			onClick: async () => {
+				const file = await chooseFile("application/json");
+				if (!file) return;
+				const reader = new FileReader();
+				reader.onload = async () => {
+					try {
+						if ((await DataStore.get("customColorways")).map((store) => store.name).includes(JSON.parse(reader.result).name)) {
+							openModal((props) => BdApi.React.createElement(StoreNameModal, { conflicting: true, modalProps: props, originalName: JSON.parse(reader.result).name, onFinish: async (e) => {
+								await DataStore.set("customColorways", [...await DataStore.get("customColorways"), { name: e, colorways: JSON.parse(reader.result).colorways }]);
+								setCustomColorwayStores(await DataStore.get("customColorways"));
+								updateRemoteSources();
+							} }));
+						} else {
+							await DataStore.set("customColorways", [...await DataStore.get("customColorways"), JSON.parse(reader.result)]);
+							setCustomColorwayStores(await DataStore.get("customColorways"));
+							updateRemoteSources();
+						}
+					} catch (err) {
+						console.error("DiscordColorways: " + err);
+					}
+				};
+				reader.readAsText(file);
+				updateRemoteSources();
+			}
+		},
+		BdApi.React.createElement(ImportIcon, { width: 14, height: 14 }),
+		"Import..."
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			style: { flexShrink: "0" },
+			onClick: () => {
+				openModal((props) => BdApi.React.createElement(StoreNameModal, { conflicting: false, modalProps: props, originalName: "", onFinish: async (e) => {
+					await DataStore.set("customColorways", [...await DataStore.get("customColorways"), { name: e, colorways: [] }]);
+					setCustomColorwayStores(await DataStore.get("customColorways"));
+					props.onClose();
+					updateRemoteSources();
+				} }));
+			}
+		},
+		BdApi.React.createElement(
+			"svg",
+			{
+				xmlns: "http://www.w3.org/2000/svg",
+				"aria-hidden": "true",
+				role: "img",
+				width: "14",
+				height: "14",
+				viewBox: "0 0 24 24"
+			},
+			BdApi.React.createElement(
+				"path",
+				{
+					fill: "currentColor",
+					d: "M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"
+				}
+			)
+		),
+		"New..."
+	)), BdApi.React.createElement("div", { className: "colorwaysSettings-sourceScroller" }, getComputedStyle(document.body).getPropertyValue("--os-accent-color") ? BdApi.React.createElement("div", { className: `colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement("div", { style: { alignItems: "center", width: "100%", height: "30px", display: "flex" } }, BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabel" }, "OS Accent Color", " ", BdApi.React.createElement("div", { className: "colorways-badge" }, "Built-In")))) : BdApi.React.createElement(BdApi.React.Fragment, null), customColorwayStores.map(
+		({ name: customColorwaySourceName, colorways: offlineStoreColorways }) => BdApi.React.createElement("div", { className: `colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabel" }, customColorwaySourceName), BdApi.React.createElement("div", { style: { marginLeft: "auto", gap: "8px", display: "flex" } }, BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				onClick: async () => {
+					saveFile(new File([JSON.stringify({ "name": customColorwaySourceName, "colorways": [...offlineStoreColorways] })], `${customColorwaySourceName.replaceAll(" ", "-").toLowerCase()}.colorways.json`, { type: "application/json" }));
+				}
+			},
+			BdApi.React.createElement(DownloadIcon, { width: 14, height: 14 }),
+			" Export as..."
+		), BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				onClick: async () => {
+					var sourcesArr = [];
+					const customColorwaySources = await DataStore.get("customColorways");
+					customColorwaySources.map((source) => {
+						if (source.name !== customColorwaySourceName) {
+							sourcesArr.push(source);
+						}
+					});
+					DataStore.set("customColorways", sourcesArr);
+					setCustomColorwayStores(sourcesArr);
+					updateRemoteSources();
+				}
+			},
+			BdApi.React.createElement(DeleteIcon, { width: 20, height: 20 }),
+			" Remove"
+		)))
+	)));
+}
+function OnlineTab() {
+	const [colorwaySourceFiles, setColorwaySourceFiles] = React.useState([]);
+	React.useEffect(() => {
+		(async function() {
+			setColorwaySourceFiles(await DataStore.get("colorwaySourceFiles"));
+			updateRemoteSources();
+		})();
+	}, []);
+	return BdApi.React.createElement("div", { className: "colorwaySourceTab" }, BdApi.React.createElement("div", { style: {
+		display: "flex",
+		gap: "8px"
+	} }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			style: { flexShrink: "0" },
+			onClick: () => {
+				openModal((props) => BdApi.React.createElement(AddOnlineStoreModal, { modalProps: props, onFinish: async (name, url) => {
+					await DataStore.set("colorwaySourceFiles", [...await DataStore.get("colorwaySourceFiles"), { name, url }]);
+					setColorwaySourceFiles([...await DataStore.get("colorwaySourceFiles"), { name, url }]);
+					updateRemoteSources();
+				} }));
+			}
+		},
+		BdApi.React.createElement(
+			"svg",
+			{
+				xmlns: "http://www.w3.org/2000/svg",
+				"aria-hidden": "true",
+				role: "img",
+				width: "14",
+				height: "14",
+				viewBox: "0 0 24 24"
+			},
+			BdApi.React.createElement(
+				"path",
+				{
+					fill: "currentColor",
+					d: "M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"
+				}
+			)
+		),
+		"Add..."
+	)), BdApi.React.createElement("div", { className: "colorwaysSettings-sourceScroller" }, !colorwaySourceFiles.length && BdApi.React.createElement("div", { className: `colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" }, onClick: async () => {
+		DataStore.set("colorwaySourceFiles", [{ name: "Project Colorway", url: defaultColorwaySource }, ...(await DataStore.get("colorwaySourceFiles")).filter((i) => i.name !== "Project Colorway")]);
+		setColorwaySourceFiles([{ name: "Project Colorway", url: defaultColorwaySource }, ...(await DataStore.get("colorwaySourceFiles")).filter((i) => i.name !== "Project Colorway")]);
+	} }, BdApi.React.createElement(PlusIcon, { width: 24, height: 24 }), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabel" }, "Add Project Colorway Source")), colorwaySourceFiles.map(
+		(colorwaySourceFile, i) => BdApi.React.createElement("div", { className: `colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement("div", { className: "hoverRoll" }, BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabel hoverRoll_normal" }, colorwaySourceFile.name, " ", colorwaySourceFile.url === defaultColorwaySource && BdApi.React.createElement("div", { className: "colorways-badge" }, "Built-In"), " ", colorwaySourceFile.url === "https://raw.githubusercontent.com/DaBluLite/ProjectColorway/master/index.json" && BdApi.React.createElement("div", { className: "colorways-badge" }, "Built-In | Outdated")), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabel hoverRoll_hovered" }, colorwaySourceFile.url)), BdApi.React.createElement("div", { style: { marginLeft: "auto", gap: "8px", display: "flex" } }, BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				onClick: () => {
+					navigator.clipboard.writeText(colorwaySourceFile.url);
+				}
+			},
+			BdApi.React.createElement(CopyIcon, { width: 14, height: 14 }),
+			" Copy URL"
+		), colorwaySourceFile.url === "https://raw.githubusercontent.com/DaBluLite/ProjectColorway/master/index.json" && BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				onClick: async () => {
+					DataStore.set("colorwaySourceFiles", [{ name: "Project Colorway", url: defaultColorwaySource }, ...(await DataStore.get("colorwaySourceFiles")).filter((i2) => i2.name !== "Project Colorway")]);
+					setColorwaySourceFiles([{ name: "Project Colorway", url: defaultColorwaySource }, ...(await DataStore.get("colorwaySourceFiles")).filter((i2) => i2.name !== "Project Colorway")]);
+				}
+			},
+			BdApi.React.createElement(
+				"svg",
+				{
+					xmlns: "http://www.w3.org/2000/svg",
+					x: "0px",
+					y: "0px",
+					width: "14",
+					height: "14",
+					viewBox: "0 0 24 24",
+					fill: "currentColor"
+				},
+				BdApi.React.createElement(
+					"rect",
+					{
+						y: "0",
+						fill: "none",
+						width: "24",
+						height: "24"
+					}
+				),
+				BdApi.React.createElement(
+					"path",
+					{
+						d: "M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z"
+					}
+				),
+				BdApi.React.createElement(
+					"path",
+					{
+						d: "M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z"
+					}
+				)
+			),
+			" Update source..."
+		), colorwaySourceFile.url !== defaultColorwaySource && colorwaySourceFile.url !== "https://raw.githubusercontent.com/DaBluLite/ProjectColorway/master/index.json" && BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				onClick: async () => {
+					openModal((props) => BdApi.React.createElement(StoreNameModal, { conflicting: false, modalProps: props, originalName: colorwaySourceFile.name || "", onFinish: async (e) => {
+						const res = await fetch(colorwaySourceFile.url);
+						const data = await res.json();
+						DataStore.set("customColorways", [...await DataStore.get("customColorways"), { name: e, colorways: data.colorways || [] }]);
+						updateRemoteSources();
+					} }));
+				}
+			},
+			BdApi.React.createElement(DownloadIcon, { width: 14, height: 14 }),
+			" Download..."
+		), BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				onClick: async () => {
+					DataStore.set("colorwaySourceFiles", (await DataStore.get("colorwaySourceFiles")).filter((src, ii) => ii !== i));
+					setColorwaySourceFiles((await DataStore.get("colorwaySourceFiles")).filter((src, ii) => ii !== i));
+					updateRemoteSources();
+				}
+			},
+			BdApi.React.createElement(DeleteIcon, { width: 14, height: 14 }),
+			" Remove"
+		))))
+	)));
+}
+
+function Store({
+	hasTheme = false
+}) {
+	const [storeObject, setStoreObject] = React.useState([]);
+	const [colorwaySourceFiles, setColorwaySourceFiles] = React.useState([]);
+	const [searchValue, setSearchValue] = React.useState("");
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	React.useEffect(() => {
+		if (!searchValue) {
+			(async function() {
+				const res = await fetch("https://dablulite.vercel.app/");
+				const data = await res.json();
+				setStoreObject(data.sources);
+				setColorwaySourceFiles(await DataStore.get("colorwaySourceFiles"));
+			})();
+		}
+	}, []);
+	function Container({ children }) {
+		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
+	}
+	return BdApi.React.createElement(Container, null, BdApi.React.createElement("div", { style: { display: "flex", marginBottom: "8px" } }, BdApi.React.createElement(
+		"input",
+		{
+			type: "text",
+			className: "colorwaySelector-search",
+			placeholder: "Search for sources...",
+			value: searchValue,
+			onChange: (e) => setSearchValue(e.currentTarget.value)
+		}
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			style: { marginLeft: "8px", marginTop: "auto", marginBottom: "auto" },
+			onClick: async function() {
+				const res = await fetch("https://dablulite.vercel.app/");
+				const data = await res.json();
+				setStoreObject(data.sources);
+				setColorwaySourceFiles(await DataStore.get("colorwaySourceFiles"));
+			}
+		},
+		BdApi.React.createElement(
+			"svg",
+			{
+				xmlns: "http://www.w3.org/2000/svg",
+				x: "0px",
+				y: "0px",
+				width: "14",
+				height: "14",
+				style: { boxSizing: "content-box", flexShrink: 0 },
+				viewBox: "0 0 24 24",
+				fill: "currentColor"
+			},
+			BdApi.React.createElement(
+				"rect",
+				{
+					y: "0",
+					fill: "none",
+					width: "24",
+					height: "24"
+				}
+			),
+			BdApi.React.createElement(
+				"path",
+				{
+					d: "M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z"
+				}
+			),
+			BdApi.React.createElement(
+				"path",
+				{
+					d: "M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z"
+				}
+			)
+		),
+		"Refresh"
+	)), BdApi.React.createElement("div", { className: "colorwaysSettings-sourceScroller" }, storeObject.map(
+		(item) => item.name.toLowerCase().includes(searchValue.toLowerCase()) ? BdApi.React.createElement("div", { className: `colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement("div", { style: { gap: ".5rem", display: "flex", marginBottom: "8px", flexDirection: "column" } }, BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabelHeader" }, item.name), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceDesc" }, item.description), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceDesc", style: { opacity: ".8" } }, "by ", item.authorGh)), BdApi.React.createElement("div", { style: { gap: "8px", alignItems: "center", width: "100%", display: "flex" } }, BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/" + item.authorGh }, BdApi.React.createElement("img", { src: "/assets/6a853b4c87fce386cbfef4a2efbacb09.svg", alt: "GitHub" })), BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				style: { marginLeft: "auto" },
+				onClick: async () => {
+					if (colorwaySourceFiles.map((source) => source.name).includes(item.name)) {
+						const sourcesArr = colorwaySourceFiles.filter((source) => source.name !== item.name);
+						DataStore.set("colorwaySourceFiles", sourcesArr);
+						setColorwaySourceFiles(sourcesArr);
+					} else {
+						const sourcesArr = [...colorwaySourceFiles, { name: item.name, url: item.url }];
+						DataStore.set("colorwaySourceFiles", sourcesArr);
+						setColorwaySourceFiles(sourcesArr);
+					}
+				}
+			},
+			colorwaySourceFiles.map((source) => source.name).includes(item.name) ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(DeleteIcon, { width: 14, height: 14 }), " Remove") : BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(DownloadIcon, { width: 14, height: 14 }), " Add to Sources")
+		), BdApi.React.createElement(
+			"button",
+			{
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
+				onClick: async () => {
+					openModal((props) => BdApi.React.createElement("div", { className: `colorwaysModal ${props.transitionState == 2 ? "closing" : ""} ${props.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Previewing colorways for ", item.name), BdApi.React.createElement("div", { className: "colorwaysModalContent colorwaysModalContent-sourcePreview" }, BdApi.React.createElement(Selector, { settings: { selectorType: "preview", previewSource: item.url } }))));
+				}
+			},
+			BdApi.React.createElement(PalleteIcon, { width: 14, height: 14 }),
+			"Preview"
+		))) : BdApi.React.createElement(BdApi.React.Fragment, null)
+	)));
+}
+
+function Setting({
+	children,
+	divider = false,
+	disabled = false
+}) {
+	return BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "column",
+		marginBottom: "20px"
+	} }, disabled ? BdApi.React.createElement("div", { style: {
+		pointerEvents: "none",
+		opacity: 0.5,
+		cursor: "not-allowed"
+	} }, children) : children, divider && BdApi.React.createElement("div", { className: "colorwaysSettingsDivider" }));
+}
+
+function Switch({
+	onChange,
+	value,
+	id,
+	label
+}) {
+	return label ? BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		cursor: "pointer"
+	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label", htmlFor: id }, label), BdApi.React.createElement("div", { className: `colorwaysSettings-switch ${value ? "checked" : ""}` }, BdApi.React.createElement("svg", { viewBox: "0 0 28 20", preserveAspectRatio: "xMinYMid meet", "aria-hidden": "true", style: {
+		left: value ? "12px" : "-3px",
+		transition: ".2s ease",
+		display: "block",
+		position: "absolute",
+		width: "28px",
+		height: "18px",
+		margin: "3px"
+	} }, BdApi.React.createElement("rect", { className: "colorwaysSettings-switchCircle", fill: "#000", x: "4", y: "0", height: "20", width: "20", rx: "10" })), BdApi.React.createElement("input", { checked: value, id, type: "checkbox", style: {
+		position: "absolute",
+		opacity: 0,
+		width: "100%",
+		height: "100%",
+		cursor: "pointer",
+		borderRadius: "14px",
+		top: 0,
+		left: 0,
+		margin: 0
+	}, tabIndex: 0, onChange: (e) => {
+		onChange(e.currentTarget.checked);
+	} }))) : BdApi.React.createElement("div", { className: `colorwaysSettings-switch ${value ? "checked" : ""}` }, BdApi.React.createElement("svg", { viewBox: "0 0 28 20", preserveAspectRatio: "xMinYMid meet", "aria-hidden": "true", style: {
+		left: value ? "12px" : "-3px",
+		transition: ".2s ease",
+		display: "block",
+		position: "absolute",
+		width: "28px",
+		height: "18px",
+		margin: "3px"
+	} }, BdApi.React.createElement("rect", { className: "colorwaysSettings-switchCircle", fill: "#000", x: "4", y: "0", height: "20", width: "20", rx: "10" })), BdApi.React.createElement("input", { checked: value, id, type: "checkbox", style: {
+		position: "absolute",
+		opacity: 0,
+		width: "100%",
+		height: "100%",
+		cursor: "pointer",
+		borderRadius: "14px",
+		top: 0,
+		left: 0,
+		margin: 0
+	}, tabIndex: 0, onChange: (e) => {
+		onChange(e.currentTarget.checked);
+	} }));
+}
+
+function changeTheme$1(theme) {
+	changeTheme(theme);
+}
+function SettingsPage({
+	hasTheme = false
+}) {
+	const [colorways, setColorways] = React.useState([]);
+	const [customColorways, setCustomColorways] = React.useState([]);
+	const [colorsButtonVisibility, setColorsButtonVisibility] = React.useState(false);
+	const [theme, setTheme] = React.useState("discord");
+	const [shouldAutoconnect, setShouldAutoconnect] = React.useState("1");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+			setShouldAutoconnect(await DataStore.get("colorwaysManagerDoAutoconnect") ? "1" : "2");
+		}
+		load();
+	}, []);
+	React.useEffect(() => {
+		(async function() {
+			const [
+				customColorways2,
+				colorwaySourceFiles,
+				showColorwaysButton
+			] = await DataStore.getMany([
+				"customColorways",
+				"colorwaySourceFiles",
+				"showColorwaysButton"
+			]);
+			const responses = await Promise.all(
+				colorwaySourceFiles.map(
+					({ url }) => fetch(url)
+				)
+			);
+			const data = await Promise.all(
+				responses.map(
+					(res) => res.json().catch(() => {
+						return { colorways: [] };
+					})
+				)
+			);
+			const colorways2 = data.flatMap((json) => json.colorways);
+			setColorways(colorways2 || fallbackColorways);
+			setCustomColorways(customColorways2.map((source) => source.colorways).flat(2));
+			setColorsButtonVisibility(showColorwaysButton);
+		})();
+	}, []);
+	function Container({ children }) {
+		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
+	}
+	return BdApi.React.createElement(Container, null, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Quick Switch"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement(
+		Switch,
+		{
+			value: colorsButtonVisibility,
+			label: "Enable Quick Switch",
+			id: "showColorwaysButton",
+			onChange: (v) => {
+				setColorsButtonVisibility(v);
+				DataStore.set("showColorwaysButton", v);
+				FluxDispatcher.dispatch({
+					type: "COLORWAYS_UPDATE_BUTTON_VISIBILITY",
+					isVisible: v
+				});
+			}
+		}
+	), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Shows a button on the top of the servers list that opens a colorway selector modal.")), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Appearance"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		cursor: "pointer"
+	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Plugin Theme"), BdApi.React.createElement(
+		"select",
+		{
+			className: "colorwaysPillButton",
+			style: { border: "none" },
+			onChange: ({ currentTarget: { value } }) => {
+				setTheme(value);
+				DataStore.set("colorwaysPluginTheme", value);
+				changeTheme$1(value);
+			},
+			value: theme
+		},
+		BdApi.React.createElement("option", { value: "discord" }, "Discord (Default)"),
+		BdApi.React.createElement("option", { value: "colorish" }, "Colorish")
+	))), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Manager"), BdApi.React.createElement(Setting, null, BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		cursor: "pointer"
+	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Automatically retry to connect to Manager"), BdApi.React.createElement(
+		"select",
+		{
+			className: "colorwaysPillButton",
+			style: { border: "none" },
+			onChange: ({ currentTarget: { value } }) => {
+				if (value == "1") {
+					DataStore.set("colorwaysManagerDoAutoconnect", true);
+				} else {
+					DataStore.set("colorwaysManagerDoAutoconnect", false);
+				}
+				updateShouldAutoconnect(value);
+			},
+			value: shouldAutoconnect
+		},
+		BdApi.React.createElement("option", { value: "1" }, "On (Default)"),
+		BdApi.React.createElement("option", { value: "2" }, "Off")
+	))), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		cursor: "pointer"
+	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Try to connect to Manager manually"), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => connect(),
+			value: shouldAutoconnect
+		},
+		"Try to connect..."
+	))), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		cursor: "pointer"
+	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Reset plugin to default settings (CANNOT BE UNDONE)"), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => {
+				DataStore.setMany([
+					["customColorways", []],
+					["colorwaySourceFiles", [{
+						name: "Project Colorway",
+						url: defaultColorwaySource
+					}]],
+					["showColorwaysButton", false],
+					["onDemandWays", false],
+					["onDemandWaysTintedText", true],
+					["onDemandWaysDiscordSaturation", false],
+					["onDemandWaysOsAccentColor", false],
+					["activeColorwayObject", nullColorwayObj],
+					["colorwaysPluginTheme", "discord"],
+					["colorwaysBoundManagers", []],
+					["colorwaysManagerAutoconnectPeriod", 3e3],
+					["colorwaysManagerDoAutoconnect", true]
+				]);
+			}
+		},
+		"Reset..."
+	)), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Reset the plugin to its default settings. All bound managers, sources, and colorways will be deleted. Please reload Discord after use.")), BdApi.React.createElement("div", { style: { flexDirection: "column", display: "flex" } }, BdApi.React.createElement("h1", { style: {
+		fontFamily: "var(--font-headline)",
+		fontSize: "24px",
+		color: "var(--header-primary)",
+		lineHeight: "31px",
+		marginBottom: "0"
+	} }, "Discord ", BdApi.React.createElement("span", { style: {
+		fontFamily: "var(--font-display)",
+		fontSize: "24px",
+		backgroundColor: "var(--brand-500)",
+		padding: "0 4px",
+		borderRadius: "4px"
+	} }, "Colorways")), BdApi.React.createElement(
+		"span",
+		{
+			style: {
+				color: "var(--text-normal)",
+				fontWeight: 500,
+				fontSize: "14px",
+				marginBottom: "12px"
+			}
+		},
+		"by Project Colorway"
+	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Plugin Version:"), BdApi.React.createElement(
+		"span",
+		{
+			style: {
+				color: "var(--text-muted)",
+				fontWeight: 500,
+				fontSize: "14px",
+				marginBottom: "8px"
+			}
+		},
+		PluginProps.pluginVersion,
+		" (",
+		PluginProps.clientMod,
+		")"
+	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "UI Version:"), BdApi.React.createElement(
+		"span",
+		{
+			style: {
+				color: "var(--text-muted)",
+				fontWeight: 500,
+				fontSize: "14px",
+				marginBottom: "8px"
+			}
+		},
+		PluginProps.UIVersion
+	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Creator Version:"), BdApi.React.createElement(
+		"span",
+		{
+			style: {
+				color: "var(--text-muted)",
+				fontWeight: 500,
+				fontSize: "14px",
+				marginBottom: "8px"
+			}
+		},
+		PluginProps.creatorVersion
+	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Loaded Colorways:"), BdApi.React.createElement(
+		"span",
+		{
+			style: {
+				color: "var(--text-muted)",
+				fontWeight: 500,
+				fontSize: "14px",
+				marginBottom: "8px"
+			}
+		},
+		[...colorways, ...customColorways].length
+	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Project Repositories:"), BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/DaBluLite/DiscordColorways" }, "DiscordColorways"), BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/DaBluLite/ProjectColorway" }, "Project Colorway")));
+}
+
+let changeTheme = (theme) => {
+};
+let updateWSMain = () => {
+};
+let updateBoundKeyMain = () => {
+};
+function Selector$1({
+	modalProps
+}) {
+	const [activeTab, setActiveTab] = React.useState("selector");
+	const [theme, setTheme] = React.useState("discord");
+	const [pos, setPos] = React.useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = React.useState(false);
+	const [wsConnected, setWsConnected] = React.useState(wsOpen);
+	const [boundKey$1, setBoundKey] = React.useState(boundKey);
+	const menuProps = React.useRef(null);
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		updateWSMain = (status) => setWsConnected(status);
+		changeTheme = (theme2) => setTheme(theme2);
+		updateBoundKeyMain = (bound) => setBoundKey(bound);
+		load();
+		return () => {
+			updateWSMain = () => {
+			};
+			changeTheme = () => {
+			};
+			updateBoundKeyMain = () => {
+			};
+		};
+	}, []);
+	function SidebarTab({ id, title, icon, bottom }) {
+		return BdApi.React.createElement("div", { className: "colorwaySelectorSidebar-tab" + (id == activeTab ? " active" : ""), style: bottom ? { marginTop: "auto" } : {}, onClick: !bottom ? () => setActiveTab(id) : rightClickContextMenu }, icon);
+	}
+	const rightClickContextMenu = (e) => {
+		e.stopPropagation();
+		window.dispatchEvent(new Event("click"));
+		setShowMenu(!showMenu);
+		setPos({
+			x: e.currentTarget.getBoundingClientRect().x + e.currentTarget.offsetWidth + 8,
+			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight - menuProps.current.offsetHeight
+		});
+	};
+	function onPageClick(e) {
+		setShowMenu(false);
+	}
+	React.useEffect(() => {
+		window.addEventListener("click", onPageClick);
+		return () => {
+			window.removeEventListener("click", onPageClick);
+		};
+	}, []);
+	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { className: `colorwaySelectorModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme, ...modalProps }, BdApi.React.createElement("div", { className: "colorwaySelectorSidebar" }, BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF30D"), id: "selector", title: "Change Colorway" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF3E3"), id: "settings", title: "Settings" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF2C6"), id: "sources", title: "Sources" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF543"), id: "store", title: "Store" }), BdApi.React.createElement(SidebarTab, { bottom: true, icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF3EE"), id: "ws_connection", title: "Manager Connection" })), BdApi.React.createElement("div", { className: "colorwayModalContent" }, activeTab === "selector" && BdApi.React.createElement(Selector, null), activeTab == "sources" && BdApi.React.createElement(SourceManager, null), activeTab == "store" && BdApi.React.createElement(Store, null), activeTab == "settings" && BdApi.React.createElement("div", { style: { padding: "16px" } }, BdApi.React.createElement(SettingsPage, null))), BdApi.React.createElement("div", { ref: menuProps, className: `colorwaysManagerConnectionMenu ${showMenu ? "visible" : ""}`, style: {
+		position: "fixed",
+		top: `${pos.y}px`,
+		left: `${pos.x}px`
+	} }, BdApi.React.createElement("span", null, "Manager Connection Status: ", wsConnected ? "Connected" : "Disconnected"), wsConnected ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("span", { className: "colorwaysManagerConnectionValue" }, "Bound Key: ", BdApi.React.createElement("b", null, JSON.stringify(boundKey$1))), BdApi.React.createElement("button", { className: "colorwaysPillButton", style: {
+		marginTop: "4px"
+	}, onClick: () => navigator.clipboard.writeText(JSON.stringify(boundKey$1)) }, "Copy Bound Key"), BdApi.React.createElement("button", { className: "colorwaysPillButton", style: {
+		marginTop: "4px"
+	}, onClick: restartWS }, "Reset Connection"), BdApi.React.createElement("button", { className: "colorwaysPillButton", style: {
+		marginTop: "4px"
+	}, onClick: updateRemoteSources }, "Update Remote Sources")) : BdApi.React.createElement(BdApi.React.Fragment, null))));
+}
+
+let wsOpen = false;
+let boundKey = null;
+let hasManagerRole = false;
+let sendColorway = () => {
+};
+let requestManagerRole = () => {
+};
+let updateRemoteSources = () => {
+};
+let closeWS = () => {
+};
+let restartWS = () => connect();
+let updateShouldAutoconnect = (shouldAutoconnect) => {
+	if (shouldAutoconnect) connect();
+};
+function updateWS$1(status) {
+	updateWS(status);
+	updateWSMain(status);
+}
+function updateBoundKey(bound) {
+	updateBoundKeyMain(bound);
+}
+function connect() {
+	let ws = new WebSocket("ws://localhost:6124");
+	updateShouldAutoconnect = (shouldAutoconnect) => {
+		if (shouldAutoconnect && ws?.readyState == ws?.CLOSED) connect();
+	};
+	ws.onopen = function() {
+		wsOpen = true;
+		hasManagerRole = false;
+		updateWS$1(true);
+	};
+	restartWS = () => {
+		ws?.close();
+		connect();
+	};
+	closeWS = () => {
+		ws.onclose = function(e) {
+			boundKey = null;
+			hasManagerRole = false;
+			sendColorway = () => {
+			};
+			requestManagerRole = () => {
+			};
+			updateRemoteSources = () => {
+			};
+			restartWS = () => connect();
+			closeWS = () => {
+			};
+			updateShouldAutoconnect = (shouldAutoconnect) => {
+				if (shouldAutoconnect) connect();
+			};
+			try {
+				ws.close();
+			} catch (e2) {
+				return;
+			}
+			ws = null;
+			wsOpen = false;
+			updateWS$1(false);
+		};
+		ws?.close();
+	};
+	ws.onmessage = function(e) {
+		const data = JSON.parse(e.data);
+		function typeSwitch(type) {
+			switch (type) {
+				case "change-colorway":
+					if (data.active.id == null) {
+						DataStore.set("activeColorwayObject", nullColorwayObj);
+						ColorwayCSS.remove();
+						updateActiveColorway(nullColorwayObj);
+					} else {
+						const demandedColorway = generateCss(
+							colorToHex("#" + data.active.colors.primary || "#313338").replace("#", ""),
+							colorToHex("#" + data.active.colors.secondary || "#2b2d31").replace("#", ""),
+							colorToHex("#" + data.active.colors.tertiary || "#1e1f22").replace("#", ""),
+							colorToHex("#" + data.active.colors.accent || "#5865f2").replace("#", "")
+						);
+						ColorwayCSS.set(demandedColorway);
+						DataStore.set("activeColorwayObject", { ...data.active, css: demandedColorway });
+						updateActiveColorway({ ...data.active, css: demandedColorway });
+					}
+					return;
+				case "remove-colorway":
+					DataStore.set("activeColorwayObject", nullColorwayObj);
+					ColorwayCSS.remove();
+					updateActiveColorway(nullColorwayObj);
+					return;
+				case "manager-connection-established":
+					DataStore.get("colorwaysBoundManagers").then((boundManagers) => {
+						if (data.MID) {
+							const boundSearch = boundManagers.filter((boundManager) => {
+								if (Object.keys(boundManager)[0] == data.MID) return boundManager;
+							});
+							if (boundSearch.length) {
+								boundKey = boundSearch[0];
+							} else {
+								const id = { [data.MID]: `${getWsClientIdentity()}.${Math.random().toString(16).slice(2)}.${( new Date()).getUTCMilliseconds()}` };
+								DataStore.set("colorwaysBoundManagers", [...boundManagers, id]);
+								boundKey = id;
+							}
+							updateBoundKey(typeof boundKey == "string" ? JSON.parse(boundKey) : boundKey);
+							ws?.send(JSON.stringify({
+								type: "client-sync-established",
+								boundKey,
+								complications: [
+									"remote-sources",
+									"manager-role",
+									"ui-summon"
+								]
+							}));
+							DataStore.getMany([
+								"colorwaySourceFiles",
+								"customColorways"
+							]).then(([
+								colorwaySourceFiles,
+								customColorways
+							]) => {
+								ws?.send(JSON.stringify({
+									type: "complication:remote-sources:init",
+									boundKey,
+									online: colorwaySourceFiles,
+									offline: customColorways
+								}));
+							});
+							sendColorway = (obj) => ws?.send(JSON.stringify({
+								type: "complication:manager-role:send-colorway",
+								active: obj,
+								boundKey
+							}));
+							requestManagerRole = () => ws?.send(JSON.stringify({
+								type: "complication:manager-role:request",
+								boundKey
+							}));
+							updateRemoteSources = () => DataStore.getMany([
+								"colorwaySourceFiles",
+								"customColorways"
+							]).then(([
+								colorwaySourceFiles,
+								customColorways
+							]) => {
+								ws?.send(JSON.stringify({
+									type: "complication:remote-sources:init",
+									boundKey,
+									online: colorwaySourceFiles,
+									offline: customColorways
+								}));
+							});
+						}
+					});
+					return;
+				case "complication:manager-role:granted":
+					hasManagerRole = true;
+					updateManagerRole(true);
+					return;
+				case "complication:manager-role:revoked":
+					hasManagerRole = false;
+					updateManagerRole(false);
+					return;
+				case "complication:ui-summon:summon":
+					openModal((props) => BdApi.React.createElement(Selector$1, { modalProps: props }));
+					return;
+				case "complication:remote-sources:update-request":
+					DataStore.getMany([
+						"colorwaySourceFiles",
+						"customColorways"
+					]).then(([
+						colorwaySourceFiles,
+						customColorways
+					]) => {
+						ws?.send(JSON.stringify({
+							type: "complication:remote-sources:init",
+							boundKey,
+							online: colorwaySourceFiles,
+							offline: customColorways
+						}));
+					});
+					return;
+			}
+		}
+		typeSwitch(data.type);
+	};
+	ws.onclose = function(e) {
+		boundKey = null;
+		hasManagerRole = false;
+		sendColorway = () => {
+		};
+		requestManagerRole = () => {
+		};
+		updateRemoteSources = () => {
+		};
+		restartWS = () => connect();
+		closeWS = () => {
+		};
+		updateShouldAutoconnect = (shouldAutoconnect) => {
+			if (shouldAutoconnect) connect();
+		};
+		try {
+			ws.close();
+		} catch (e2) {
+			return;
+		}
+		ws = null;
+		wsOpen = false;
+		updateWS$1(false);
+		DataStore.getMany([
+			"colorwaysManagerAutoconnectPeriod",
+			"colorwaysManagerDoAutoconnect"
+		]).then(([
+			colorwaysManagerAutoconnectPeriod,
+			colorwaysManagerDoAutoconnect
+		]) => {
+			if (colorwaysManagerDoAutoconnect || true) setTimeout(() => connect(), colorwaysManagerAutoconnectPeriod || 3e3);
+		});
+	};
+	ws.onerror = function(e) {
+		e.preventDefault();
+		boundKey = null;
+		sendColorway = () => {
+		};
+		requestManagerRole = () => {
+		};
+		updateRemoteSources = () => {
+		};
+		restartWS = () => connect();
+		closeWS = () => {
+		};
+		updateShouldAutoconnect = (shouldAutoconnect) => {
+			if (shouldAutoconnect) connect();
+		};
+		hasManagerRole = false;
+		ws.close();
+		ws = null;
+		wsOpen = false;
+		updateWS$1(false);
+		DataStore.getMany([
+			"colorwaysManagerAutoconnectPeriod",
+			"colorwaysManagerDoAutoconnect"
+		]).then(([
+			colorwaysManagerAutoconnectPeriod,
+			colorwaysManagerDoAutoconnect
+		]) => {
+			if (colorwaysManagerDoAutoconnect || true) setTimeout(() => connect(), colorwaysManagerAutoconnectPeriod || 3e3);
+		});
+	};
+}
+
+function ColorwayCreatorSettingsModal({ modalProps, onSettings, presetId, hasTintedText, hasDiscordSaturation }) {
+	const [tintedText, setTintedText] = React.useState(hasTintedText);
+	const [discordSaturation, setDiscordSaturation] = React.useState(hasDiscordSaturation);
+	const [preset, setPreset] = React.useState(presetId);
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Creator Settings"), BdApi.React.createElement("div", { className: "colorwaysModalContent", style: {
+		minWidth: "500px"
+	} }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Presets:"), BdApi.React.createElement("div", { className: "colorwaysScroller", style: { paddingRight: "2px", marginBottom: "20px", maxHeight: "250px" } }, Object.values(getPreset()).map((pre) => BdApi.React.createElement(
+		"div",
+		{
+			"aria-checked": preset === pre.id,
+			className: "discordColorway",
+			style: { padding: "10px", marginBottom: "8px" },
+			onClick: () => {
+				setPreset(pre.id);
+			}
+		},
+		BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), preset === pre.id && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
+		BdApi.React.createElement("span", { className: "colorwayLabel" }, pre.name)
+	))), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement(Switch, { value: tintedText, onChange: setTintedText, label: "Use colored text" })), BdApi.React.createElement(Switch, { value: discordSaturation, onChange: setDiscordSaturation, label: "Use Discord's saturation" })), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: () => {
+				onSettings({ presetId: preset, discordSaturation, tintedText });
+				modalProps.onClose();
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => {
+				modalProps.onClose();
+			}
+		},
+		"Cancel"
 	)));
 }
 
@@ -2286,13 +3138,20 @@ function ConflictingColorsModal({
 			document.body
 		).getPropertyValue("--background-tertiary")
 	));
-	return BdApi.React.createElement(Modals.ModalRoot, { ...modalProps, className: "colorwayCreator-modal" }, BdApi.React.createElement(Modals.ModalHeader, null, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Conflicting Colors Found")), BdApi.React.createElement(Modals.ModalContent, { className: "colorwayCreator-menuWrapper" }, BdApi.React.createElement(Text, { className: "colorwaysConflictingColors-warning" }, "Multiple known themes have been found, select the colors you want to copy from below:"), BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Colors to copy:"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: primaryColor, color: getFontOnBg(primaryColor) } }, "Primary"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: secondaryColor, color: getFontOnBg(secondaryColor) } }, "Secondary"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: tertiaryColor, color: getFontOnBg(tertiaryColor) } }, "Tertiary"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: accentColor, color: getFontOnBg(accentColor) } }, "Accent")), BdApi.React.createElement("div", { className: "colorwaysCreator-settingCat" }, BdApi.React.createElement(ScrollerThin, { orientation: "vertical", className: "colorwaysCreator-settingsList", paddingFix: true }, BdApi.React.createElement(
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Conflicting Colors Found"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("span", { className: "colorwaysConflictingColors-warning" }, "Multiple known themes have been found, select the colors you want to copy from below:"), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Colors to copy:"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: primaryColor, color: getFontOnBg(primaryColor) } }, "Primary"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: secondaryColor, color: getFontOnBg(secondaryColor) } }, "Secondary"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: tertiaryColor, color: getFontOnBg(tertiaryColor) } }, "Tertiary"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreview", style: { backgroundColor: accentColor, color: getFontOnBg(accentColor) } }, "Accent")), BdApi.React.createElement("div", { className: "colorwaysCreator-settingCat" }, BdApi.React.createElement("div", { className: "colorwaysCreator-settingsList" }, BdApi.React.createElement(
 		"div",
 		{
 			id: "colorways-colorstealer-item_Default",
 			className: "colorwaysCreator-settingItm colorwaysCreator-colorPreviewItm"
 		},
-		BdApi.React.createElement(Forms.FormTitle, null, "Discord"),
+		BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Discord"),
 		BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, BdApi.React.createElement(
 			"div",
 			{
@@ -2402,169 +3261,166 @@ function ConflictingColorsModal({
 			},
 			"Accent"
 		))
-	), Object.values(knownThemeVars).map((theme, i) => {
-		if (getComputedStyle(document.body).getPropertyValue(theme.variable)) {
+	), Object.values(knownThemeVars).map((theme2, i) => {
+		if (getComputedStyle(document.body).getPropertyValue(theme2.variable)) {
 			return BdApi.React.createElement(
 				"div",
 				{
 					id: "colorways-colorstealer-item_" + Object.keys(knownThemeVars)[i],
 					className: "colorwaysCreator-settingItm colorwaysCreator-colorPreviewItm"
 				},
-				BdApi.React.createElement(Forms.FormTitle, null, Object.keys(knownThemeVars)[i] + (theme.alt ? " (Main)" : "")),
-				BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, theme.primary && getComputedStyle(document.body).getPropertyValue(theme.primary).match(/^\d.*%$/) ? BdApi.React.createElement(
+				BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, Object.keys(knownThemeVars)[i] + (theme2.alt ? " (Main)" : "")),
+				BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, theme2.primary && getComputedStyle(document.body).getPropertyValue(theme2.primary).match(/^\d.*%$/) ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_primary",
 						style: {
-							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.primary)})`),
-							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.primary)})`))
+							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.primary)})`),
+							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.primary)})`))
 						},
 						onClick: () => {
-							setPrimaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.primary)})`));
+							setPrimaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.primary)})`));
 						}
 					},
 					"Primary"
-				) : theme.primary ? BdApi.React.createElement(
+				) : theme2.primary ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_primary",
 						style: {
-							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme.primary)),
-							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme.primary)))
+							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme2.primary)),
+							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme2.primary)))
 						},
 						onClick: () => {
-							setPrimaryColor(getHex(getComputedStyle(document.body).getPropertyValue(theme.primary)));
+							setPrimaryColor(getHex(getComputedStyle(document.body).getPropertyValue(theme2.primary)));
 						}
 					},
 					"Primary"
-				) : theme.primaryVariables && BdApi.React.createElement(
+				) : theme2.primaryVariables && BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_primary",
-						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l)})`)) },
+						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l)})`)) },
 						onClick: () => {
-							setPrimaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.primaryVariables.l)})`));
+							setPrimaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.primaryVariables.l)})`));
 						}
 					},
 					"Primary"
-				), theme.secondary && getComputedStyle(document.body).getPropertyValue(theme.secondary).match(/^\d.*%$/) ? BdApi.React.createElement(
+				), theme2.secondary && getComputedStyle(document.body).getPropertyValue(theme2.secondary).match(/^\d.*%$/) ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_secondary",
 						style: {
-							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.secondary)})`),
-							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.secondary)})`))
+							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.secondary)})`),
+							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.secondary)})`))
 						},
 						onClick: () => {
-							setSecondaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.secondary)})`));
+							setSecondaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.secondary)})`));
 						}
 					},
 					"Secondary"
-				) : theme.secondary ? BdApi.React.createElement(
+				) : theme2.secondary ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_secondary",
 						style: {
-							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme.secondary)),
-							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme.secondary)))
+							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme2.secondary)),
+							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme2.secondary)))
 						},
 						onClick: () => {
-							setSecondaryColor(getHex(getComputedStyle(document.body).getPropertyValue(theme.secondary)));
+							setSecondaryColor(getHex(getComputedStyle(document.body).getPropertyValue(theme2.secondary)));
 						}
 					},
 					"Secondary"
-				) : theme.secondaryVariables && BdApi.React.createElement(
+				) : theme2.secondaryVariables && BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_secondary",
-						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l)})`)) },
+						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l)})`)) },
 						onClick: () => {
-							setSecondaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.secondaryVariables.l)})`));
+							setSecondaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.secondaryVariables.l)})`));
 						}
 					},
 					"Secondary"
-				), theme.tertiary && getComputedStyle(document.body).getPropertyValue(theme.tertiary).match(/^\d.*%$/) ? BdApi.React.createElement(
+				), theme2.tertiary && getComputedStyle(document.body).getPropertyValue(theme2.tertiary).match(/^\d.*%$/) ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_tertiary",
 						style: {
-							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.tertiary)})`),
-							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.tertiary)})`))
+							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.tertiary)})`),
+							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.tertiary)})`))
 						},
 						onClick: () => {
-							setTertiaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.tertiary)})`));
+							setTertiaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.tertiary)})`));
 						}
 					},
 					"Tertiary"
-				) : theme.tertiary ? BdApi.React.createElement(
+				) : theme2.tertiary ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_tertiary",
 						style: {
-							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme.tertiary)),
-							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme.tertiary)))
+							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme2.tertiary)),
+							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme2.tertiary)))
 						},
 						onClick: () => {
-							setTertiaryColor(getHex(getComputedStyle(document.body).getPropertyValue(theme.tertiary)));
+							setTertiaryColor(getHex(getComputedStyle(document.body).getPropertyValue(theme2.tertiary)));
 						}
 					},
 					"Tertiary"
-				) : theme.tertiaryVariables && BdApi.React.createElement(
+				) : theme2.tertiaryVariables && BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_tertiary",
-						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l)})`)) },
+						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l)})`)) },
 						onClick: () => {
-							setTertiaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.tertiaryVariables.l)})`));
+							setTertiaryColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.tertiaryVariables.l)})`));
 						}
 					},
 					"Tertiary"
-				), theme.accent && getComputedStyle(document.body).getPropertyValue(theme.accent).match(/^\d.*%$/) ? BdApi.React.createElement(
+				), theme2.accent && getComputedStyle(document.body).getPropertyValue(theme2.accent).match(/^\d.*%$/) ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_accent",
 						style: {
-							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.accent)})`),
-							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.accent)})`))
+							backgroundColor: getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.accent)})`),
+							color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.accent)})`))
 						},
 						onClick: () => {
-							setAccentColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.accent)})`));
+							setAccentColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.accent)})`));
 						}
 					},
 					"Accent"
-				) : theme.accent ? BdApi.React.createElement(
+				) : theme2.accent ? BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_accent",
 						style: {
-							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme.accent)),
-							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme.accent)))
+							backgroundColor: getHex(getComputedStyle(document.body).getPropertyValue(theme2.accent)),
+							color: getFontOnBg(getHex(getComputedStyle(document.body).getPropertyValue(theme2.accent)))
 						},
 						onClick: () => {
-							setAccentColor(getHex(getComputedStyle(document.body).getPropertyValue(theme.accent)));
+							setAccentColor(getHex(getComputedStyle(document.body).getPropertyValue(theme2.accent)));
 						}
 					},
 					"Accent"
-				) : theme.accentVariables && BdApi.React.createElement(
+				) : theme2.accentVariables && BdApi.React.createElement(
 					"div",
 					{
 						className: "colorwayCreator-colorPreview colorwayCreator-colorPreview_accent",
-						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme.accentVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.accentVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l)})`)) },
+						style: { backgroundColor: `hsl(${getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l)})`, color: getFontOnBg(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l)})`)) },
 						onClick: () => {
-							setAccentColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme.accentVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme.accentVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme.accentVariables.l)})`));
+							setAccentColor(getHex(`hsl(${getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.h)} ${!getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.s)} ${!getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l).includes("%") ? getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l) + "%" : getComputedStyle(document.body).getPropertyValue(theme2.accentVariables.l)})`));
 						}
 					},
 					"Accent"
 				))
 			);
 		}
-	})))), BdApi.React.createElement(Modals.ModalFooter, null, BdApi.React.createElement(
-		Button,
+	})))), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
 			onClick: () => {
 				onFinished({
 					accent: accentColor,
@@ -2576,6 +3432,213 @@ function ConflictingColorsModal({
 			}
 		},
 		"Finish"
+	)));
+}
+
+function InputColorwayIdModal({ modalProps, onColorwayId }) {
+	const [colorwayID, setColorwayID] = React.useState("");
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Colorway ID:"), BdApi.React.createElement(
+		"input",
+		{
+			type: "text",
+			className: "colorwaySelector-search",
+			placeholder: "Enter Colorway ID",
+			onInput: ({ currentTarget: { value } }) => setColorwayID(value)
+		}
+	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: () => {
+				if (!colorwayID) {
+					throw new Error("Please enter a Colorway ID");
+				} else if (!hexToString(colorwayID).includes(",")) {
+					throw new Error("Invalid Colorway ID");
+				} else {
+					onColorwayId(colorwayID);
+					modalProps.onClose();
+				}
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => modalProps.onClose()
+		},
+		"Cancel"
+	)));
+}
+
+function SaveColorwayModal({ modalProps, colorways, onFinish }) {
+	const [offlineColorwayStores, setOfflineColorwayStores] = React.useState([]);
+	const [storename, setStorename] = React.useState();
+	const [noStoreError, setNoStoreError] = React.useState(false);
+	React.useEffect(() => {
+		(async () => {
+			setOfflineColorwayStores(await DataStore.get("customColorways"));
+		})();
+	});
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Save to source:"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, noStoreError ? BdApi.React.createElement("span", { style: { color: "var(--text-danger)" } }, "Error: No store selected") : BdApi.React.createElement(BdApi.React.Fragment, null), offlineColorwayStores.map((store) => BdApi.React.createElement(
+		"div",
+		{
+			className: "discordColorway",
+			style: { padding: "10px" },
+			"aria-checked": storename === store.name,
+			onClick: () => {
+				setStorename(store.name);
+			}
+		},
+		BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), storename === store.name && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
+		BdApi.React.createElement("span", { className: "colorwayLabel" }, store.name)
+	)), BdApi.React.createElement(
+		"div",
+		{
+			className: "discordColorway",
+			style: { padding: "10px" },
+			onClick: () => {
+				openModal((props) => BdApi.React.createElement(StoreNameModal, { modalProps: props, conflicting: false, originalName: "", onFinish: async (e) => {
+					await DataStore.set("customColorways", [...await DataStore.get("customColorways"), { name: e, colorways: [] }]);
+					setOfflineColorwayStores(await DataStore.get("customColorways"));
+				} }));
+			}
+		},
+		BdApi.React.createElement(PlusIcon, { width: 24, height: 24 }),
+		BdApi.React.createElement("span", { className: "colorwayLabel" }, "Create new store...")
+	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: async () => {
+				setNoStoreError(false);
+				if (!storename) {
+					setNoStoreError(true);
+				} else {
+					const oldStores = await DataStore.get("customColorways");
+					const storeToModify = (await DataStore.get("customColorways")).filter((source) => source.name === storename)[0];
+					colorways.map((colorway, i) => {
+						if (storeToModify.colorways.map((colorway2) => colorway2.name).includes(colorway.name)) {
+							openModal((props) => BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Duplicate Colorway"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "A colorway with the same name was found in this store, what do you want to do?")), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+								"button",
+								{
+									className: "colorwaysPillButton colorwaysPillButton-onSurface",
+									onClick: () => {
+										const newStore = { name: storeToModify.name, colorways: [...storeToModify.colorways.filter((colorwayy) => colorwayy.name !== colorway.name), colorway] };
+										DataStore.set("customColorways", [...oldStores.filter((source) => source.name !== storename), newStore]);
+										props.onClose();
+										if (i + 1 === colorways.length) {
+											modalProps.onClose();
+											onFinish();
+										}
+									}
+								},
+								"Override"
+							), BdApi.React.createElement(
+								"button",
+								{
+									className: "colorwaysPillButton colorwaysPillButton-onSurface",
+									onClick: () => {
+										function NewColorwayNameModal({ modalProps: modalProps2, onSelected }) {
+											const [errorMsg, setErrorMsg] = React.useState();
+											const [newColorwayName, setNewColorwayName] = React.useState("");
+											return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps2.transitionState == 2 ? "closing" : ""} ${modalProps2.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Select new name"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement(
+												"input",
+												{
+													type: "text",
+													className: "colorwaySelector-search",
+													value: newColorwayName,
+													onInput: ({ currentTarget: { value } }) => setNewColorwayName(value),
+													placeholder: "Enter valid colorway name"
+												}
+											)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+												"button",
+												{
+													className: "colorwaysPillButton",
+													onClick: () => {
+														setErrorMsg("");
+														if (storeToModify.colorways.map((colorway2) => colorway2.name).includes(newColorwayName)) {
+															setErrorMsg("Error: Name already exists");
+														} else {
+															onSelected(newColorwayName);
+															if (i + 1 === colorways.length) {
+																modalProps2.onClose();
+															}
+														}
+													}
+												},
+												"Finish"
+											), BdApi.React.createElement(
+												"button",
+												{
+													className: "colorwaysPillButton",
+													onClick: () => {
+														if (i + 1 === colorways.length) {
+															modalProps2.onClose();
+														}
+													}
+												},
+												"Cancel"
+											)));
+										}
+										openModal((propss) => BdApi.React.createElement(NewColorwayNameModal, { modalProps: propss, onSelected: (e) => {
+											const newStore = { name: storeToModify.name, colorways: [...storeToModify.colorways, { ...colorway, name: e }] };
+											DataStore.set("customColorways", [...oldStores.filter((source) => source.name !== storename), newStore]);
+											props.onClose();
+											if (i + 1 === colorways.length) {
+												modalProps.onClose();
+												onFinish();
+											}
+										} }));
+									}
+								},
+								"Rename"
+							), BdApi.React.createElement(
+								"button",
+								{
+									className: "colorwaysPillButton",
+									onClick: () => {
+										props.onClose();
+									}
+								},
+								"Select different store"
+							))));
+						} else {
+							const newStore = { name: storeToModify.name, colorways: [...storeToModify.colorways, colorway] };
+							DataStore.set("customColorways", [...oldStores.filter((source) => source.name !== storename), newStore]);
+							if (i + 1 === colorways.length) {
+								modalProps.onClose();
+								onFinish();
+							}
+						}
+					});
+				}
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => {
+				modalProps.onClose();
+			}
+		},
+		"Cancel"
 	)));
 }
 
@@ -2606,7 +3669,7 @@ function ThemePreview({
 					if (isModal) {
 						modalProps?.onClose();
 					} else {
-						openModal((props) => BdApi.React.createElement(ModalRoot, { className: "colorwaysPreview-modal", ...props }, BdApi.React.createElement("style", null, previewCSS), BdApi.React.createElement(ThemePreview, { accent, primary, secondary, tertiary, isModal: true, modalProps: props })));
+						openModal((props) => BdApi.React.createElement("div", { className: `colorwaysPreview-modal ${props.transitionState == 2 ? "closing" : ""} ${props.transitionState == 4 ? "hidden" : ""}` }, BdApi.React.createElement("style", null, previewCSS), BdApi.React.createElement(ThemePreview, { accent, primary, secondary, tertiary, isModal: true, modalProps: props })));
 					}
 				}
 			},
@@ -2681,16 +3744,10 @@ function ThemePreview({
 					"--primary-500-hsl": `${HexToHSL(primary)[0]} ${HexToHSL(primary)[1]}% ${Math.min(HexToHSL(primary)[2] + 3.6 * 3, 100)}%`
 				}
 			},
-			BdApi.React.createElement(
-				Text,
-				{
-					tag: "div",
-					variant: "text-md/semibold",
-					lineClamp: 1,
-					selectable: false
-				},
-				"Preview"
-			)
+			BdApi.React.createElement("span", { style: {
+				fontWeight: 700,
+				color: "var(--text-normal)"
+			} }, "Preview")
 		)), BdApi.React.createElement("div", { className: "colorwayPreview-chat", style: { background: `var(--dc-overlay-chat, ${primary})` } }, BdApi.React.createElement(
 			"div",
 			{
@@ -2708,598 +3765,69 @@ function ThemePreview({
 	));
 }
 
-function InputColorwayIdModal({ modalProps, onColorwayId }) {
-	const [colorwayID, setColorwayID] = React.useState("");
-	return BdApi.React.createElement(ModalRoot, { ...modalProps, className: "colorwaysCreator-noMinHeight" }, BdApi.React.createElement(ModalContent, { className: "colorwaysCreator-noHeader colorwaysCreator-noMinHeight" }, BdApi.React.createElement(Forms.FormTitle, null, "Colorway ID:"), BdApi.React.createElement(TextInput, { placeholder: "Enter Colorway ID", onInput: (e) => setColorwayID(e.currentTarget.value) })), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
-			onClick: () => {
-				if (!colorwayID) {
-					throw new Error("Please enter a Colorway ID");
-				} else if (!hexToString(colorwayID).includes(",")) {
-					throw new Error("Invalid Colorway ID");
-				} else {
-					onColorwayId(colorwayID);
-					modalProps.onClose();
-				}
-			}
-		},
-		"Finish"
-	), BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			onClick: () => modalProps.onClose()
-		},
-		"Cancel"
-	)));
-}
-
-function ColorwayCreatorSettingsModal({ modalProps, onSettings, presetId, hasTintedText, hasDiscordSaturation }) {
-	const [tintedText, setTintedText] = React.useState(hasTintedText);
-	const [discordSaturation, setDiscordSaturation] = React.useState(hasDiscordSaturation);
-	const [preset, setPreset] = React.useState(presetId);
-	return BdApi.React.createElement(ModalRoot, { ...modalProps, className: "colorwaysPresetPicker" }, BdApi.React.createElement(ModalHeader, null, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Creator Settings")), BdApi.React.createElement(ModalContent, { className: "colorwaysPresetPicker-content" }, BdApi.React.createElement(Forms.FormTitle, null, "Presets:"), BdApi.React.createElement(ScrollerThin, { orientation: "vertical", paddingFix: true, style: { paddingRight: "2px", marginBottom: "20px", maxHeight: "250px" } }, Object.values(getPreset()).map((pre) => {
-		return BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled}`, "aria-checked": preset === pre.id }, BdApi.React.createElement(
-			"div",
-			{
-				className: `${radioBar} ${radioPositionLeft}`,
-				style: { padding: "10px" },
-				onClick: () => {
-					setPreset(pre.id);
-				}
-			},
-			BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), preset === pre.id && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
-			BdApi.React.createElement(Text, { variant: "eyebrow", tag: "h5" }, pre.name)
-		));
-	})), BdApi.React.createElement(Switch, { value: tintedText, onChange: setTintedText }, "Use colored text"), BdApi.React.createElement(Switch, { value: discordSaturation, onChange: setDiscordSaturation, hideBorder: true, style: { marginBottom: "0" } }, "Use Discord's saturation")), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND_NEW,
-			size: Button.Sizes.MEDIUM,
-			onClick: () => {
-				onSettings({ presetId: preset, discordSaturation, tintedText });
-				modalProps.onClose();
-			}
-		},
-		"Finish"
-	), BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			onClick: () => {
-				modalProps.onClose();
-			}
-		},
-		"Cancel"
-	)));
-}
-
-function StoreNameModal({ modalProps, originalName, onFinish, conflicting }) {
-	const [error, setError] = React.useState("");
-	const [newStoreName, setNewStoreName] = React.useState(originalName);
-	return BdApi.React.createElement(ModalRoot, { ...modalProps }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, conflicting ? "Duplicate Store Name" : "Give this store a name")), BdApi.React.createElement(ModalContent, null, conflicting ? BdApi.React.createElement(Text, null, "A store with the same name already exists. Please give a different name to the imported store:") : BdApi.React.createElement(BdApi.React.Fragment, null), BdApi.React.createElement(Forms.FormTitle, null, "Name:"), BdApi.React.createElement(TextInput, { error, value: newStoreName, onChange: (e) => setNewStoreName(e), style: { marginBottom: "16px" } })), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
-			onClick: async () => {
-				setError("");
-				if (betterdiscord.Data.load("custom_colorways").map((store) => store.name).includes(newStoreName)) {
-					return setError("Error: Store name already exists");
-				}
-				onFinish(newStoreName);
-				modalProps.onClose();
-			}
-		},
-		"Finish"
-	), BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			onClick: () => modalProps.onClose()
-		},
-		"Cancel"
-	)));
-}
-function AddOnlineStoreModal({ modalProps, onFinish }) {
-	const [colorwaySourceName, setColorwaySourceName] = React.useState("");
-	const [colorwaySourceURL, setColorwaySourceURL] = React.useState("");
-	const [nameError, setNameError] = React.useState("");
-	const [URLError, setURLError] = React.useState("");
-	const [nameReadOnly, setNameReadOnly] = React.useState(false);
-	return BdApi.React.createElement(ModalRoot, { ...modalProps }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Add a source:")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(Forms.FormTitle, null, "Name:"), BdApi.React.createElement(
-		TextInput,
-		{
-			placeholder: "Enter a valid Name...",
-			onChange: setColorwaySourceName,
-			value: colorwaySourceName,
-			error: nameError,
-			readOnly: nameReadOnly,
-			disabled: nameReadOnly
-		}
-	), BdApi.React.createElement(Forms.FormTitle, { style: { marginTop: "8px" } }, "URL:"), BdApi.React.createElement(
-		TextInput,
-		{
-			placeholder: "Enter a valid URL...",
-			onChange: (value) => {
-				setColorwaySourceURL(value);
-				if (value === defaultColorwaySource) {
-					setNameReadOnly(true);
-					setColorwaySourceName("Project Colorway");
-				}
-			},
-			value: colorwaySourceURL,
-			error: URLError,
-			style: { marginBottom: "16px" }
-		}
-	)), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
-			onClick: async () => {
-				const sourcesArr = getSetting("colorwayLists");
-				if (!colorwaySourceName) {
-					setNameError("Error: Please enter a valid name");
-				} else if (!colorwaySourceURL) {
-					setURLError("Error: Please enter a valid URL");
-				} else if (sourcesArr.map((s) => s.name).includes(colorwaySourceName)) {
-					setNameError("Error: An online source with that name already exists");
-				} else if (sourcesArr.map((s) => s.url).includes(colorwaySourceURL)) {
-					setURLError("Error: An online source with that url already exists");
-				} else {
-					onFinish(colorwaySourceName, colorwaySourceURL);
-					modalProps.onClose();
-				}
-			}
-		},
-		"Finish"
-	), BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			onClick: () => modalProps.onClose()
-		},
-		"Cancel"
-	)));
-}
-function SourceManager({ inModal }) {
-	const [colorwaySourceFiles, setColorwaySourceFiles] = React.useState(getSetting("colorwayLists"));
-	const [customColorwayStores, setCustomColorwayStores] = React.useState(betterdiscord.Data.load("custom_colorways"));
-	const { item: radioBarItem, itemFilled: radioBarItemFilled } = Webpack.getByKeys("radioBar");
-	return BdApi.React.createElement(SettingsTab$1, { title: "Sources", inModal }, BdApi.React.createElement(Flex, { style: { gap: "0", marginBottom: "8px", alignItems: "center" } }, BdApi.React.createElement(Forms.FormTitle, { tag: "h5", style: { marginBottom: 0, flexGrow: 1 } }, "Online"), BdApi.React.createElement(
-		Button,
-		{
-			className: "colorwaysSettings-colorwaySourceAction",
-			innerClassName: "colorwaysSettings-iconButtonInner",
-			style: { flexShrink: "0" },
-			size: Button.Sizes.SMALL,
-			color: Button.Colors.TRANSPARENT,
-			onClick: () => {
-				openModal((props) => BdApi.React.createElement(AddOnlineStoreModal, { modalProps: props, onFinish: async (name, url) => {
-					saveSettings({ colorwayLists: [...getSetting("colorwayLists"), { name, url }] });
-					setColorwaySourceFiles([...getSetting("colorwayLists"), { name, url }]);
-				} }));
-			}
-		},
-		BdApi.React.createElement(
-			"svg",
-			{
-				xmlns: "http://www.w3.org/2000/svg",
-				"aria-hidden": "true",
-				role: "img",
-				width: "14",
-				height: "14",
-				viewBox: "0 0 24 24"
-			},
-			BdApi.React.createElement(
-				"path",
-				{
-					fill: "currentColor",
-					d: "M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"
-				}
-			)
-		),
-		"Add..."
-	)), BdApi.React.createElement(ScrollerThin, { orientation: "vertical", style: { maxHeight: "50%" }, className: "colorwaysSettings-sourceScroller" }, !colorwaySourceFiles.length && BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled} colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" }, onClick: () => {
-		saveSettings({ colorwayLists: [{ name: "Project Colorway", url: defaultColorwaySource }] });
-		setColorwaySourceFiles([{ name: "Project Colorway", url: defaultColorwaySource }]);
-	} }, BdApi.React.createElement(PlusIcon, { width: 24, height: 24 }), BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel" }, "Add Project Colorway Source")), colorwaySourceFiles.map(
-		(colorwaySourceFile, i) => BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled} colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement("div", { className: "hoverRoll" }, BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel hoverRoll_normal" }, colorwaySourceFile.name, " ", colorwaySourceFile.url === defaultColorwaySource && BdApi.React.createElement("div", { className: "colorways-badge" }, "Built-In")), BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel hoverRoll_hovered" }, colorwaySourceFile.url)), BdApi.React.createElement(Flex, { style: { marginLeft: "auto", gap: "8px" } }, BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.SMALL,
-				color: Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				onClick: () => {
-					Clipboard.copy(colorwaySourceFile.url);
-				}
-			},
-			BdApi.React.createElement(CopyIcon, { width: 14, height: 14 }),
-			" Copy URL"
-		), colorwaySourceFile.url !== defaultColorwaySource && BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.SMALL,
-				color: Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				onClick: async () => {
-					openModal((props) => BdApi.React.createElement(StoreNameModal, { conflicting: false, modalProps: props, originalName: colorwaySourceFile.name || "", onFinish: async (e) => {
-						const modal = openModal((propss) => BdApi.React.createElement(ModalRoot, { ...propss, className: "colorwaysLoadingModal" }, BdApi.React.createElement(Spinner, { style: { color: "#ffffff" } })));
-						const res = await fetch(colorwaySourceFile.url);
-						const data = await res.json();
-						betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways"), { name: e, colorways: data.colorways || [] }]);
-						setCustomColorwayStores(betterdiscord.Data.load("custom_colorways"));
-						closeModal(modal);
-					} }));
-				}
-			},
-			BdApi.React.createElement(DownloadIcon, { width: 14, height: 14 }),
-			" Download..."
-		), BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.SMALL,
-				color: Button.Colors.RED,
-				look: Button.Looks.OUTLINED,
-				onClick: async () => {
-					saveSettings({ colorwayLists: getSetting("colorwayLists").filter((src, ii) => ii !== i) });
-					setColorwaySourceFiles(getSetting("colorwayLists").filter((src, ii) => ii !== i));
-				}
-			},
-			BdApi.React.createElement(DeleteIcon, { width: 14, height: 14 }),
-			" Remove"
-		))))
-	)), BdApi.React.createElement(Flex, { style: { gap: "0", marginBottom: "8px", alignItems: "center" } }, BdApi.React.createElement(Forms.FormTitle, { tag: "h5", style: { marginBottom: 0, flexGrow: 1 } }, "Offline"), BdApi.React.createElement(
-		Button,
-		{
-			className: "colorwaysSettings-colorwaySourceAction",
-			innerClassName: "colorwaysSettings-iconButtonInner",
-			style: { flexShrink: "0", marginLeft: "8px" },
-			size: Button.Sizes.SMALL,
-			color: Button.Colors.TRANSPARENT,
-			onClick: async () => {
-				const [file] = await DiscordNative.fileManager.openFiles({
-					filters: [
-						{ name: "DiscordColorways Offline Store", extensions: ["json"] },
-						{ name: "all", extensions: ["*"] }
-					]
-				});
-				if (file) {
-					try {
-						if (betterdiscord.Data.load("custom_colorways").map((store) => store.name).includes(JSON.parse(new TextDecoder().decode(file.data)).name)) {
-							openModal((props) => BdApi.React.createElement(StoreNameModal, { conflicting: true, modalProps: props, originalName: JSON.parse(new TextDecoder().decode(file.data)).name, onFinish: async (e) => {
-								await betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways"), { name: e, colorways: JSON.parse(new TextDecoder().decode(file.data)).colorways }]);
-								setCustomColorwayStores(betterdiscord.Data.load("custom_colorways"));
-							} }));
-						} else {
-							await betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways"), JSON.parse(new TextDecoder().decode(file.data))]);
-							setCustomColorwayStores(betterdiscord.Data.load("custom_colorways"));
-						}
-					} catch (err) {
-						console.error(err);
-					}
-				}
-			}
-		},
-		BdApi.React.createElement(ImportIcon, { width: 14, height: 14 }),
-		"Import..."
-	), BdApi.React.createElement(
-		Button,
-		{
-			className: "colorwaysSettings-colorwaySourceAction",
-			innerClassName: "colorwaysSettings-iconButtonInner",
-			style: { flexShrink: "0", marginLeft: "8px" },
-			size: Button.Sizes.SMALL,
-			color: Button.Colors.TRANSPARENT,
-			onClick: () => {
-				openModal((props) => BdApi.React.createElement(StoreNameModal, { conflicting: false, modalProps: props, originalName: "", onFinish: async (e) => {
-					betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways"), { name: e, colorways: [] }]);
-					setCustomColorwayStores(betterdiscord.Data.load("custom_colorways"));
-					props.onClose();
-				} }));
-			}
-		},
-		BdApi.React.createElement(
-			"svg",
-			{
-				xmlns: "http://www.w3.org/2000/svg",
-				"aria-hidden": "true",
-				role: "img",
-				width: "14",
-				height: "14",
-				viewBox: "0 0 24 24"
-			},
-			BdApi.React.createElement(
-				"path",
-				{
-					fill: "currentColor",
-					d: "M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"
-				}
-			)
-		),
-		"New..."
-	)), BdApi.React.createElement(ScrollerThin, { orientation: "vertical", style: { maxHeight: "50%" }, className: "colorwaysSettings-sourceScroller" }, getComputedStyle(document.body).getPropertyValue("--os-accent-color") ? BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled} colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement(Flex, { style: { gap: 0, alignItems: "center", width: "100%", height: "30px" } }, BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel" }, "OS Accent Color", " ", BdApi.React.createElement("div", { className: "colorways-badge" }, "Built-In")))) : BdApi.React.createElement(BdApi.React.Fragment, null), customColorwayStores.map(
-		({ name: customColorwaySourceName, colorways: offlineStoreColorways }) => BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled} colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabel" }, customColorwaySourceName), BdApi.React.createElement(Flex, { style: { marginLeft: "auto", gap: "8px" } }, BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.SMALL,
-				color: Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				onClick: async () => {
-					DiscordNative.fileManager.saveWithDialog(JSON.stringify({ "name": customColorwaySourceName, "colorways": [...offlineStoreColorways] }), `${customColorwaySourceName.replaceAll(" ", "-").toLowerCase()}.colorways.json`);
-				}
-			},
-			BdApi.React.createElement(DownloadIcon, { width: 14, height: 14 }),
-			" Export as..."
-		), BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.SMALL,
-				color: Button.Colors.RED,
-				look: Button.Looks.OUTLINED,
-				onClick: async () => {
-					var sourcesArr = [];
-					const customColorwaySources = await betterdiscord.Data.load("custom_colorways");
-					customColorwaySources.map((source) => {
-						if (source.name !== customColorwaySourceName) {
-							sourcesArr.push(source);
-						}
-					});
-					betterdiscord.Data.save("custom_colorways", sourcesArr);
-					setCustomColorwayStores(sourcesArr);
-				}
-			},
-			BdApi.React.createElement(DeleteIcon, { width: 20, height: 20 }),
-			" Remove"
-		)))
-	)));
-}
-
-function SaveColorwayModal({ modalProps, colorways, onFinish }) {
-	const [offlineColorwayStores, setOfflineColorwayStores] = React.useState(betterdiscord.Data.load("custom_colorways"));
-	const [storename, setStorename] = React.useState();
-	const [noStoreError, setNoStoreError] = React.useState(false);
-	const { radioBar, item: radioBarItem, itemFilled: radioBarItemFilled, radioPositionLeft } = Webpack.getByKeys("radioBar");
-	return BdApi.React.createElement(ModalRoot, { ...modalProps }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Select Offline Colorway Source")), BdApi.React.createElement(ModalContent, null, noStoreError ? BdApi.React.createElement(Text, { variant: "text-xs/normal", style: { color: "var(--text-danger)" } }, "Error: No store selected") : BdApi.React.createElement(BdApi.React.Fragment, null), offlineColorwayStores.map((store) => {
-		return BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled}`, "aria-checked": storename === store.name }, BdApi.React.createElement(
-			"div",
-			{
-				className: `${radioBar} ${radioPositionLeft}`,
-				style: { padding: "10px" },
-				onClick: () => {
-					setStorename(store.name);
-				}
-			},
-			BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), storename === store.name && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
-			BdApi.React.createElement(Text, { variant: "eyebrow", tag: "h5" }, store.name)
-		));
-	}), BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled}` }, BdApi.React.createElement(
-		"div",
-		{
-			className: `${radioBar} ${radioPositionLeft}`,
-			style: { padding: "10px" },
-			onClick: () => {
-				openModal((props) => BdApi.React.createElement(StoreNameModal, { modalProps: props, conflicting: false, originalName: "", onFinish: async (e) => {
-					betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways"), { name: e, colorways: [] }]);
-					setOfflineColorwayStores(betterdiscord.Data.load("custom_colorways"));
-				} }));
-			}
-		},
-		BdApi.React.createElement(PlusIcon, { width: 24, height: 24 }),
-		BdApi.React.createElement(Text, { variant: "eyebrow", tag: "h5" }, "Create new store...")
-	))), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND_NEW,
-			size: Button.Sizes.MEDIUM,
-			onClick: async () => {
-				setNoStoreError(false);
-				if (!storename) {
-					setNoStoreError(true);
-				} else {
-					const storeToModify = betterdiscord.Data.load("custom_colorways").filter((source) => source.name === storename)[0];
-					colorways.map((colorway, i) => {
-						if (storeToModify.colorways.map((colorway2) => colorway2.name).includes(colorway.name)) {
-							openModal((props) => BdApi.React.createElement(ModalRoot, { ...props }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Duplicate Colorway")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(Text, null, "A colorway with the same name was found in this store, what do you want to do?")), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-								Button,
-								{
-									style: { marginLeft: 8 },
-									color: Button.Colors.BRAND,
-									size: Button.Sizes.MEDIUM,
-									look: Button.Looks.FILLED,
-									onClick: () => {
-										const newStore = { name: storeToModify.name, colorways: [...storeToModify.colorways.filter((colorwayy) => colorwayy.name !== colorway.name), colorway] };
-										betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways").filter((source) => source.name !== storename), newStore]);
-										props.onClose();
-										if (i + 1 === colorways.length) {
-											modalProps.onClose();
-											onFinish();
-										}
-									}
-								},
-								"Override"
-							), BdApi.React.createElement(
-								Button,
-								{
-									style: { marginLeft: 8 },
-									color: Button.Colors.BRAND,
-									size: Button.Sizes.MEDIUM,
-									look: Button.Looks.FILLED,
-									onClick: () => {
-										function NewColorwayNameModal({ modalProps: modalProps2, onSelected }) {
-											const [errorMsg, setErrorMsg] = React.useState();
-											const [newColorwayName, setNewColorwayName] = React.useState("");
-											return BdApi.React.createElement(ModalRoot, { ...modalProps2 }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Select new name")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(TextInput, { error: errorMsg, value: newColorwayName, onChange: (e) => setNewColorwayName(e), placeholder: "Enter valid colorway name" })), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-												Button,
-												{
-													style: { marginLeft: 8 },
-													color: Button.Colors.PRIMARY,
-													size: Button.Sizes.MEDIUM,
-													look: Button.Looks.OUTLINED,
-													onClick: () => {
-														setErrorMsg("");
-														if (storeToModify.colorways.map((colorway2) => colorway2.name).includes(newColorwayName)) {
-															setErrorMsg("Error: Name already exists");
-														} else {
-															onSelected(newColorwayName);
-															if (i + 1 === colorways.length) {
-																modalProps2.onClose();
-															}
-														}
-													}
-												},
-												"Finish"
-											), BdApi.React.createElement(
-												Button,
-												{
-													style: { marginLeft: 8 },
-													color: Button.Colors.PRIMARY,
-													size: Button.Sizes.MEDIUM,
-													look: Button.Looks.OUTLINED,
-													onClick: () => {
-														if (i + 1 === colorways.length) {
-															modalProps2.onClose();
-														}
-													}
-												},
-												"Cancel"
-											)));
-										}
-										openModal((propss) => BdApi.React.createElement(NewColorwayNameModal, { modalProps: propss, onSelected: (e) => {
-											const newStore = { name: storeToModify.name, colorways: [...storeToModify.colorways, { ...colorway, name: e }] };
-											betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways").filter((source) => source.name !== storename), newStore]);
-											props.onClose();
-											if (i + 1 === colorways.length) {
-												modalProps.onClose();
-												onFinish();
-											}
-										} }));
-									}
-								},
-								"Rename"
-							), BdApi.React.createElement(
-								Button,
-								{
-									style: { marginLeft: 8 },
-									color: Button.Colors.PRIMARY,
-									size: Button.Sizes.MEDIUM,
-									look: Button.Looks.OUTLINED,
-									onClick: () => {
-										props.onClose();
-									}
-								},
-								"Select different store"
-							))));
-						} else {
-							const newStore = { name: storeToModify.name, colorways: [...storeToModify.colorways, colorway] };
-							betterdiscord.Data.save("custom_colorways", [...betterdiscord.Data.load("custom_colorways").filter((source) => source.name !== storename), newStore]);
-							if (i + 1 === colorways.length) {
-								modalProps.onClose();
-								onFinish();
-							}
-						}
-					});
-				}
-			}
-		},
-		"Finish"
-	), BdApi.React.createElement(
-		Button,
-		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			onClick: () => {
-				modalProps.onClose();
-			}
-		},
-		"Cancel"
-	)));
-}
-
 function CreatorModal({
 	modalProps,
-	loadUIProps,
+	loadUIProps = () => new Promise(() => {
+	}),
 	colorwayID
 }) {
-	const [accentColor, setAccentColor] = React.useState("5865f2");
-	const [primaryColor, setPrimaryColor] = React.useState("313338");
-	const [secondaryColor, setSecondaryColor] = React.useState("2b2d31");
-	const [tertiaryColor, setTertiaryColor] = React.useState("1e1f22");
+	const [colors, updateColors] = React.useReducer((colors2, action) => {
+		if (action.task === "all") {
+			return { ...action.colorObj };
+		} else {
+			return { ...colors2, [action.task]: action.color };
+		}
+	}, {
+		accent: "5865f2",
+		primary: "313338",
+		secondary: "2b2d31",
+		tertiary: "1e1f22"
+	});
 	const [colorwayName, setColorwayName] = React.useState("");
 	const [tintedText, setTintedText] = React.useState(true);
 	const [discordSaturation, setDiscordSaturation] = React.useState(true);
 	const [preset, setPreset] = React.useState("default");
 	const [presetColorArray, setPresetColorArray] = React.useState(["accent", "primary", "secondary", "tertiary"]);
-	const [mutedTextBrightness, setMutedTextBrightness] = React.useState(Math.min(HexToHSL("#" + primaryColor)[2] + 3.6 * 3, 100));
-	const colorProps = {
-		accent: {
-			get: accentColor,
-			set: setAccentColor,
-			name: "Accent"
-		},
-		primary: {
-			get: primaryColor,
-			set: setPrimaryColor,
-			name: "Primary"
-		},
-		secondary: {
-			get: secondaryColor,
-			set: setSecondaryColor,
-			name: "Secondary"
-		},
-		tertiary: {
-			get: tertiaryColor,
-			set: setTertiaryColor,
-			name: "Tertiary"
-		}
-	};
+	const [mutedTextBrightness, setMutedTextBrightness] = React.useState(Math.min(HexToHSL("#" + colors.primary)[2] + 3.6 * 3, 100));
+	const [theme, setTheme] = React.useState("discord");
 	React.useEffect(() => {
-	});
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	const setColor = [
+		"accent",
+		"primary",
+		"secondary",
+		"tertiary"
+	];
+	const colorProps = [
+		{
+			name: "Accent",
+			id: "accent"
+		},
+		{
+			name: "Primary",
+			id: "primary"
+		},
+		{
+			name: "Secondary",
+			id: "secondary"
+		},
+		{
+			name: "Tertiary",
+			id: "tertiary"
+		}
+	];
 	React.useEffect(() => {
 		if (colorwayID) {
 			if (!colorwayID.includes(",")) {
 				throw new Error("Invalid Colorway ID");
 			} else {
-				const setColor = [
-					setAccentColor,
-					setPrimaryColor,
-					setSecondaryColor,
-					setTertiaryColor
-				];
 				colorwayID.split("|").forEach((prop) => {
 					if (prop.includes(",#")) {
-						prop.split(/,#/).forEach((color, i) => setColor[i](colorToHex(color)));
+						prop.split(/,#/).forEach((color, i) => updateColors({ task: setColor[i], color: colorToHex(color) }));
 					}
 					if (prop.includes("n:")) {
 						setColorwayName(prop.split("n:")[1]);
@@ -3323,31 +3851,47 @@ function CreatorModal({
 		],
 		showEyeDropper: true
 	};
-	return BdApi.React.createElement(ModalRoot, { ...modalProps, className: "colorwayCreator-modal" }, BdApi.React.createElement(ModalHeader, null, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Create Colorway")), BdApi.React.createElement(ModalContent, { className: "colorwayCreator-menuWrapper" }, BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Name:"), BdApi.React.createElement(
-		TextInput,
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Create a Colorway"), BdApi.React.createElement("div", { className: "colorwaysModalContent", style: { minWidth: 500 } }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Name:"), BdApi.React.createElement(
+		"input",
 		{
+			type: "text",
+			className: "colorwaySelector-search",
 			placeholder: "Give your Colorway a name",
 			value: colorwayName,
-			onChange: setColorwayName
+			onInput: (e) => setColorwayName(e.currentTarget.value)
 		}
-	), BdApi.React.createElement("div", { className: "colorwaysCreator-settingCat" }, BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: "0" } }, "Colors & Values:"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, presetColorArray.map((presetColor) => {
+	), BdApi.React.createElement("div", { className: "colorwaysCreator-settingCat" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Colors & Values:"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, colorProps.filter((color) => presetColorArray.includes(color.id) || Object.keys(getPreset()[preset].calculated || {}).includes(color.id)).map((presetColor) => {
 		return BdApi.React.createElement(
-			ColorPicker$1,
+			exports.ColorPicker,
 			{
-				label: BdApi.React.createElement(Text, { className: "colorwaysPicker-colorLabel" }, colorProps[presetColor].name),
-				color: parseInt(colorProps[presetColor].get, 16),
+				label: BdApi.React.createElement("span", { className: "colorwaysPicker-colorLabel" }, Object.keys(getPreset()[preset].calculated || {}).includes(presetColor.id) ? presetColor.name + " (Calculated)" : presetColor.name),
+				color: !Object.keys(
+					getPreset()[preset].calculated || {}
+				).includes(presetColor.id) ? parseInt(colors[presetColor.id], 16) : parseInt(
+					colorToHex(
+						getPreset(
+							colors.primary,
+							colors.secondary,
+							colors.tertiary,
+							colors.accent
+						)[preset].calculated[presetColor.id]
+					),
+					16
+				),
 				onChange: (color) => {
-					let hexColor = color.toString(16);
-					while (hexColor.length < 6) {
-						hexColor = "0" + hexColor;
+					if (!Object.keys(getPreset()[preset].calculated || {}).includes(presetColor.id)) {
+						let hexColor = color.toString(16);
+						while (hexColor.length < 6) {
+							hexColor = "0" + hexColor;
+						}
+						updateColors({ task: presetColor.id, color: hexColor });
 					}
-					colorProps[presetColor].set(hexColor);
 				},
 				...colorPickerProps
 			}
 		);
-	})), BdApi.React.createElement(Forms.FormDivider, { style: { margin: "10px 0" } }), BdApi.React.createElement(Forms.FormTitle, null, "Muted Text Brightness:"), BdApi.React.createElement(
-		Slider,
+	})), BdApi.React.createElement("div", { className: "colorwaysSettingsDivider", style: { margin: "10px 0" } }), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Muted Text Brightness:"), BdApi.React.createElement(
+		exports.Slider,
 		{
 			minValue: 0,
 			maxValue: 100,
@@ -3374,37 +3918,37 @@ function CreatorModal({
 				}
 			))
 		},
-		BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Settings & Presets"),
+		BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Settings & Presets"),
 		BdApi.React.createElement("svg", { width: "24", height: "24", viewBox: "0 0 24 24", "aria-hidden": "true", role: "img", style: { rotate: "-90deg" } }, BdApi.React.createElement("path", { fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", d: "M7 10L12 15 17 10", "aria-hidden": "true" }))
 	), BdApi.React.createElement(
 		ThemePreview,
 		{
-			accent: "#" + accentColor,
-			primary: "#" + primaryColor,
-			secondary: "#" + secondaryColor,
-			tertiary: "#" + tertiaryColor,
+			accent: "#" + colors.accent,
+			primary: "#" + colors.primary,
+			secondary: "#" + colors.secondary,
+			tertiary: "#" + colors.tertiary,
 			previewCSS: gradientPresetIds.includes(getPreset()[preset].id) ? pureGradientBase + `.colorwaysPreview-modal,.colorwaysPreview-wrapper {--gradient-theme-bg: linear-gradient(${getPreset(
-				primaryColor,
-				secondaryColor,
-				tertiaryColor,
-				accentColor
-			)[preset].preset(discordSaturation).base})}` : ""
+				colors.primary,
+				colors.secondary,
+				colors.tertiary,
+				colors.accent
+			)[preset].preset(discordSaturation).base})}` : tintedText ? `.colorwaysPreview-modal,.colorwaysPreview-wrapper {
+												--primary-500: hsl(${HexToHSL("#" + colors.primary)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + colors.primary)[1] / 100 * (100 + PrimarySatDiffs[500]) * 10) / 10 : HexToHSL("#" + colors.primary)[1]}%) ${mutedTextBrightness || Math.min(HexToHSL("#" + colors.primary)[2] + 3.6 * 3, 100)}%);
+												--primary-360: hsl(${HexToHSL("#" + colors.secondary)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + colors.primary)[1] / 100 * (100 + PrimarySatDiffs[360]) * 10) / 10 : HexToHSL("#" + colors.primary)[1]}%) 90%);
+								}` : ""
 		}
-	)), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
+	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
-			onClick: (e) => {
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: async () => {
 				var customColorwayCSS = "";
 				if (preset === "default") {
 					customColorwayCSS = generateCss(
-						primaryColor,
-						secondaryColor,
-						tertiaryColor,
-						accentColor,
+						colors.primary,
+						colors.secondary,
+						colors.tertiary,
+						colors.accent,
 						tintedText,
 						discordSaturation,
 						mutedTextBrightness,
@@ -3413,129 +3957,117 @@ function CreatorModal({
 				} else {
 					gradientPresetIds.includes(getPreset()[preset].id) ? customColorwayCSS = `/**
 																* @name ${colorwayName || "Colorway"}
-																* @version ${plugin.creatorVersion}
+																* @version ${PluginProps.creatorVersion}
 																* @description Automatically generated Colorway.
-																* @author ${UserStore.getCurrentUser().username}
-																* @authorId ${UserStore.getCurrentUser().id}
+																* @author ${exports.UserStore.getCurrentUser().username}
+																* @authorId ${exports.UserStore.getCurrentUser().id}
 																* @preset Gradient
 																*/
-															 ${getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor)[preset].preset(discordSaturation).full}` : customColorwayCSS = `/**
+															 ${getPreset(colors.primary, colors.secondary, colors.tertiary, colors.accent)[preset].preset(discordSaturation).full}` : customColorwayCSS = `/**
 															 * @name ${colorwayName || "Colorway"}
-															 * @version ${plugin.creatorVersion}
+															 * @version ${PluginProps.creatorVersion}
 															 * @description Automatically generated Colorway.
-															 * @author ${UserStore.getCurrentUser().username}
-															 * @authorId ${UserStore.getCurrentUser().id}
+															 * @author ${exports.UserStore.getCurrentUser().username}
+															 * @authorId ${exports.UserStore.getCurrentUser().id}
 															 * @preset ${getPreset()[preset].name}
 															 */
-															 ${getPreset(primaryColor, secondaryColor, tertiaryColor, accentColor)[preset].preset(discordSaturation)}`;
+															 ${getPreset(colors.primary, colors.secondary, colors.tertiary, colors.accent)[preset].preset(discordSaturation)}`;
 				}
 				const customColorway = {
 					name: colorwayName || "Colorway",
 					"dc-import": customColorwayCSS,
-					accent: "#" + accentColor,
-					primary: "#" + primaryColor,
-					secondary: "#" + secondaryColor,
-					tertiary: "#" + tertiaryColor,
+					accent: "#" + colors.accent,
+					primary: "#" + colors.primary,
+					secondary: "#" + colors.secondary,
+					tertiary: "#" + colors.tertiary,
 					colors: presetColorArray,
-					author: UserStore.getCurrentUser().username,
-					authorID: UserStore.getCurrentUser().id,
+					author: exports.UserStore.getCurrentUser().username,
+					authorID: exports.UserStore.getCurrentUser().id,
 					isGradient: gradientPresetIds.includes(getPreset()[preset].id),
 					linearGradient: gradientPresetIds.includes(getPreset()[preset].id) ? getPreset(
-						primaryColor,
-						secondaryColor,
-						tertiaryColor,
-						accentColor
+						colors.primary,
+						colors.secondary,
+						colors.tertiary,
+						colors.accent
 					)[preset].preset(discordSaturation).base : "",
 					preset: getPreset()[preset].id,
-					creatorVersion: plugin.creatorVersion
+					creatorVersion: PluginProps.creatorVersion
 				};
 				openModal((props) => BdApi.React.createElement(SaveColorwayModal, { modalProps: props, colorways: [customColorway], onFinish: () => {
 					modalProps.onClose();
 					loadUIProps();
+					updateRemoteSources();
 				} }));
 			}
 		},
 		"Finish"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			onClick: () => {
 				function setAllColors({ accent, primary, secondary, tertiary }) {
-					setAccentColor(accent.split("#")[1]);
-					setPrimaryColor(primary.split("#")[1]);
-					setSecondaryColor(secondary.split("#")[1]);
-					setTertiaryColor(tertiary.split("#")[1]);
+					updateColors({
+						task: "all",
+						colorObj: {
+							accent: accent.split("#")[1],
+							primary: primary.split("#")[1],
+							secondary: secondary.split("#")[1],
+							tertiary: tertiary.split("#")[1]
+						}
+					});
 				}
 				var copiedThemes = ["Discord"];
-				Object.values(knownThemeVars).map((theme, i) => {
-					if (getComputedStyle(document.body).getPropertyValue(theme.variable)) {
+				Object.values(knownThemeVars).map((theme2, i) => {
+					if (getComputedStyle(document.body).getPropertyValue(theme2.variable)) {
 						copiedThemes.push(Object.keys(knownThemeVars)[i]);
 					}
 				});
 				if (copiedThemes.length > 1) {
 					openModal((props) => BdApi.React.createElement(ConflictingColorsModal, { modalProps: props, onFinished: setAllColors }));
 				} else {
-					setPrimaryColor(
-						getHex(
-							getComputedStyle(
-								document.body
-							).getPropertyValue("--background-primary")
-						).split("#")[1]
-					);
-					setSecondaryColor(
-						getHex(
-							getComputedStyle(
-								document.body
-							).getPropertyValue("--background-secondary")
-						).split("#")[1]
-					);
-					setTertiaryColor(
-						getHex(
-							getComputedStyle(
-								document.body
-							).getPropertyValue("--background-tertiary")
-						).split("#")[1]
-					);
-					setAccentColor(
-						getHex(
-							getComputedStyle(
-								document.body
-							).getPropertyValue("--brand-experiment")
-						).split("#")[1]
-					);
+					updateColors({
+						task: "all",
+						colorObj: {
+							primary: getHex(
+								getComputedStyle(
+									document.body
+								).getPropertyValue("--primary-600")
+							).split("#")[1],
+							secondary: getHex(
+								getComputedStyle(
+									document.body
+								).getPropertyValue("--primary-630")
+							).split("#")[1],
+							tertiary: getHex(
+								getComputedStyle(
+									document.body
+								).getPropertyValue("--primary-700")
+							).split("#")[1],
+							accent: getHex(
+								getComputedStyle(
+									document.body
+								).getPropertyValue("--brand-experiment")
+							).split("#")[1]
+						}
+					});
 				}
 			}
 		},
 		"Copy Current Colors"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			onClick: () => openModal((props) => BdApi.React.createElement(InputColorwayIdModal, { modalProps: props, onColorwayId: (colorwayID2) => {
-				const setColor = [
-					setAccentColor,
-					setPrimaryColor,
-					setSecondaryColor,
-					setTertiaryColor
-				];
-				hexToString(colorwayID2).split(/,#/).forEach((color, i) => setColor[i](colorToHex(color)));
+				hexToString(colorwayID2).split(/,#/).forEach((color, i) => updateColors({ task: setColor[i], color: colorToHex(color) }));
 			} }))
 		},
 		"Enter Colorway ID"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			onClick: () => {
 				modalProps.onClose();
 			}
@@ -3544,29 +4076,30 @@ function CreatorModal({
 	)));
 }
 
-const CodeContainerClasses = proxyLazy(() => Webpack.getByKeys("markup", "codeContainer"));
-function CodeBlock(props) {
-	return BdApi.React.createElement("div", { className: CodeContainerClasses.markup }, Parser.defaultRules.codeBlock.react(props, null, {}));
-}
-
-const UserSummaryItem = findComponentByCodeLazy("defaultRenderUser", "showDefaultAvatarsForNullUsers");
 function RenameColorwayModal({ modalProps, ogName, onFinish, colorwayList }) {
 	const [error, setError] = React.useState("");
 	const [newName, setNewName] = React.useState(ogName);
-	return BdApi.React.createElement(ModalRoot, { ...modalProps }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1", style: { marginRight: "auto" } }, "Rename Colorway..."), BdApi.React.createElement(ModalCloseButton, { onClick: () => modalProps.onClose() })), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(
-		TextInput,
-		{
-			value: newName,
-			error,
-			onChange: setNewName
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
-	)), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Rename Colorway..."), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement(
+		"input",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
+			type: "text",
+			className: "colorwaySelector-search",
+			value: newName,
+			onInput: ({ currentTarget: { value } }) => {
+				setNewName(value);
+			}
+		}
+	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
 			onClick: async () => {
 				if (!newName) {
 					return setError("Error: Please enter a valid name");
@@ -3580,18 +4113,15 @@ function RenameColorwayModal({ modalProps, ogName, onFinish, colorwayList }) {
 		},
 		"Finish"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
+			className: "colorwaysPillButton",
 			onClick: () => modalProps.onClose()
 		},
 		"Cancel"
 	)));
 }
-function ColorwayInfoModal({
+function InfoModal({
 	modalProps,
 	colorway,
 	loadUIProps
@@ -3602,28 +4132,32 @@ function ColorwayInfoModal({
 		"secondary",
 		"tertiary"
 	];
-	const profile = useStateFromStores([UserStore], () => UserStore.getUser(colorway.authorID));
-	return BdApi.React.createElement(ModalRoot, { ...modalProps }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1", style: { marginRight: "auto" } }, "Colorway: ", colorway.name), BdApi.React.createElement(ModalCloseButton, { onClick: () => modalProps.onClose() })), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(Flex, { style: { gap: "8px", width: "100%" }, flexDirection: "column" }, BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0, width: "100%" } }, "Creator:"), BdApi.React.createElement(Flex, { style: { gap: ".5rem" } }, BdApi.React.createElement(
-		UserSummaryItem,
-		{
-			users: [profile],
-			guildId: void 0,
-			renderIcon: false,
-			showDefaultAvatarsForNullUsers: true,
-			size: 32,
-			showUserPopout: true
+	const profile = useStateFromStores([exports.UserStore], () => exports.UserStore.getUser(colorway.authorID));
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
-	), BdApi.React.createElement(Text, { style: { lineHeight: "32px" } }, colorway.author)), BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0, width: "100%" } }, "Colors:"), BdApi.React.createElement(Flex, { style: { gap: "8px" } }, colors.map((color) => BdApi.React.createElement("div", { className: "colorwayInfo-colorSwatch", style: { backgroundColor: colorway[color] } }))), BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0, width: "100%" } }, "Actions:"), BdApi.React.createElement(Flex, { style: { gap: "8px" }, flexDirection: "column" }, BdApi.React.createElement(
-		Button,
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Colorway: ", colorway.name), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("div", { style: { gap: "8px", width: "100%", display: "flex", flexDirection: "column" } }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Creator:"), BdApi.React.createElement("div", { style: { gap: ".5rem", display: "flex" } }, BdApi.React.createElement("img", { src: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.webp?size=32`, width: 32, height: 32, style: {
+		borderRadius: "32px"
+	} }), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader", style: { lineHeight: "32px" }, onClick: () => {
+		navigator.clipboard.writeText(profile.username);
+		Toasts.show({
+			message: "Copied Colorway Author Username Successfully",
+			type: 1,
+			id: "copy-colorway-author-username-notify"
+		});
+	} }, colorway.author)), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Colors:"), BdApi.React.createElement("div", { style: { gap: "8px", display: "flex" } }, colors.map((color) => BdApi.React.createElement("div", { className: "colorwayInfo-colorSwatch", style: { backgroundColor: colorway[color] } }))), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Actions:"), BdApi.React.createElement("div", { style: { gap: "8px", flexDirection: "column", display: "flex" } }, BdApi.React.createElement(
+		"button",
 		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			style: { width: "100%" },
 			onClick: () => {
 				const colorwayIDArray = `${colorway.accent},${colorway.primary},${colorway.secondary},${colorway.tertiary}|n:${colorway.name}${colorway.preset ? `|p:${colorway.preset}` : ""}`;
 				const colorwayID = stringToHex(colorwayIDArray);
-				Clipboard.copy(colorwayID);
+				navigator.clipboard.writeText(colorwayID);
 				Toasts.show({
 					message: "Copied Colorway ID Successfully",
 					type: 1,
@@ -3633,14 +4167,12 @@ function ColorwayInfoModal({
 		},
 		"Copy Colorway ID"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			style: { width: "100%" },
 			onClick: () => {
-				Clipboard.copy(colorway["dc-import"]);
+				navigator.clipboard.writeText(colorway["dc-import"]);
 				Toasts.show({
 					message: "Copied CSS to Clipboard",
 					type: 1,
@@ -3650,11 +4182,9 @@ function ColorwayInfoModal({
 		},
 		"Copy CSS"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			style: { width: "100%" },
 			onClick: async () => {
 				const newColorway = {
@@ -3667,16 +4197,14 @@ function ColorwayInfoModal({
 		},
 		"Update CSS"
 	), colorway.sourceType === "offline" && BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			style: { width: "100%" },
-			onClick: () => {
-				const customColorways = betterdiscord.Data.load("custom_colorways").map((o) => o.colorways).filter((colorArr) => colorArr.map((color) => color.name).includes(colorway.name))[0];
-				openModal((props) => BdApi.React.createElement(RenameColorwayModal, { ogName: colorway.name, colorwayList: customColorways, modalProps: props, onFinish: async (newName) => {
-					const stores = betterdiscord.Data.load("custom_colorways").map((source) => {
+			onClick: async () => {
+				const offlineSources = (await DataStore.get("customColorways")).map((o) => o.colorways).filter((colorArr) => colorArr.map((color) => color.name).includes(colorway.name))[0];
+				openModal((props) => BdApi.React.createElement(RenameColorwayModal, { ogName: colorway.name, colorwayList: offlineSources, modalProps: props, onFinish: async (newName) => {
+					const stores = (await DataStore.get("customColorways")).map((source) => {
 						if (source.name === colorway.source) {
 							return {
 								name: source.name,
@@ -3685,12 +4213,11 @@ function ColorwayInfoModal({
 									name: newName
 								}]
 							};
-						} else
-							return source;
+						} else return source;
 					});
-					betterdiscord.Data.save("custom_colorways", stores);
-					if (betterdiscord.Data.load("settings").activeColorwayObject.id === colorway.name) {
-						betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), activeColorwayObject: { id: newName, css: colorway.name, sourceType: "offline", source: colorway.source } });
+					DataStore.set("customColorways", stores);
+					if ((await DataStore.get("activeColorwayObject")).id === colorway.name) {
+						DataStore.set("activeColorwayObject", { id: newName, css: colorway.name, sourceType: "offline", source: colorway.source });
 					}
 					modalProps.onClose();
 					loadUIProps();
@@ -3699,49 +4226,33 @@ function ColorwayInfoModal({
 		},
 		"Rename"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			style: { width: "100%" },
-			onClick: () => {
-				openModal((props) => BdApi.React.createElement(ModalRoot, { ...props, className: "colorwayInfo-cssModal" }, BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(CodeBlock, { lang: "css", content: colorway["dc-import"] }))));
-			}
-		},
-		"Show CSS"
-	), BdApi.React.createElement(
-		Button,
-		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			style: { width: "100%" },
 			onClick: () => {
 				if (!colorway["dc-import"].includes("@name")) {
-					DiscordNative.fileManager.saveWithDialog(`/**
+					saveFile(new File([`/**
 																		* @name ${colorway.name || "Colorway"}
-																		* @version ${plugin.creatorVersion}
+																		* @version ${PluginProps.creatorVersion}
 																		* @description Automatically generated Colorway.
-																		* @author ${UserStore.getCurrentUser().username}
-																		* @authorId ${UserStore.getCurrentUser().id}
+																		* @author ${exports.UserStore.getCurrentUser().username}
+																		* @authorId ${exports.UserStore.getCurrentUser().id}
 																		*/
-																	 ${colorway["dc-import"].replace((colorway["dc-import"].match(/\/\*.+\*\//) || [""])[0], "").replaceAll("url("https://", "url(https://").replaceAll('url("//', 'url("https://')}`, `${colorway.name.replaceAll(" ", "-").toLowerCase()}.theme.css`);
+																	 ${colorway["dc-import"].replace((colorway["dc-import"].match(/\/\*.+\*\//) || [""])[0], "").replaceAll("url(//", "url(https://").replaceAll('url("//', 'url("https://')}`], `${colorway.name.replaceAll(" ", "-").toLowerCase()}.theme.css`, { type: "text/plain" }));
 				} else {
-					DiscordNative.fileManager.saveWithDialog(colorway["dc-import"], `${colorway.name.replaceAll(" ", "-").toLowerCase()}.theme.css`);
+					saveFile(new File([colorway["dc-import"]], `${colorway.name.replaceAll(" ", "-").toLowerCase()}.theme.css`, { type: "text/plain" }));
 				}
 			}
 		},
 		"Download CSS"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
+			className: "colorwaysPillButton",
 			style: { width: "100%" },
 			onClick: () => {
-				openModal((props) => BdApi.React.createElement(ModalRoot, { className: "colorwaysPreview-modal", ...props }, BdApi.React.createElement("style", null, colorway.isGradient ? pureGradientBase + `.colorwaysPreview-modal,.colorwaysPreview-wrapper {--gradient-theme-bg: linear-gradient(${colorway.linearGradient})}` : ""), BdApi.React.createElement(
+				openModal((props) => BdApi.React.createElement("div", { className: `colorwaysPreview-modal ${props.transitionState == 2 ? "closing" : ""} ${props.transitionState == 4 ? "hidden" : ""}` }, BdApi.React.createElement("style", null, colorway.isGradient ? pureGradientBase + `.colorwaysPreview-modal,.colorwaysPreview-wrapper {--gradient-theme-bg: linear-gradient(${colorway.linearGradient})}` : ""), BdApi.React.createElement(
 					ThemePreview,
 					{
 						accent: colorway.accent,
@@ -3756,480 +4267,287 @@ function ColorwayInfoModal({
 		},
 		"Show preview"
 	), colorway.sourceType === "offline" && BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			color: Button.Colors.RED,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.FILLED,
+			className: "colorwaysPillButton",
 			style: { width: "100%" },
 			onClick: async () => {
-				const customColorwaysArray = [];
-				betterdiscord.Data.load("custom_colorways").map((color, i) => {
-					if (betterdiscord.Data.load("custom_colorways").length > 0) {
-						if (color.name !== colorway.name) {
-							customColorwaysArray.push(color);
-						}
-						if (++i === betterdiscord.Data.load("custom_colorways").length) {
-							betterdiscord.Data.save("custom_colorways", customColorwaysArray);
-						}
-						if (getSetting("activeColorwayObject").id === colorway.name) {
-							saveSettings({ activeColorwayObject: { id: null, css: null, sourceType: null, source: null } });
-							ColorwayCSS.set("");
-						}
-						modalProps.onClose();
-						loadUIProps();
-					}
-				});
+				const oldStores = (await DataStore.get("customColorways")).filter((source) => source.name !== colorway.source);
+				const storeToModify = (await DataStore.get("customColorways")).filter((source) => source.name === colorway.source)[0];
+				const newStore = { name: storeToModify.name, colorways: storeToModify.colorways.filter((colorway2) => colorway2.name !== colorway2.name) };
+				DataStore.set("customColorways", [...oldStores, newStore]);
+				if ((await DataStore.get("activeColorwayObject")).id === colorway.name) {
+					DataStore.set("activeColorwayObject", { id: null, css: null, sourceType: null, source: null });
+					ColorwayCSS.remove();
+				}
+				modalProps.onClose();
+				loadUIProps();
 			}
 		},
 		"Delete"
-	))), BdApi.React.createElement("div", { style: { width: "100%", height: "20px" } })));
+	)))));
 }
 
-function AutoColorwaySelector({ modalProps, onChange }) {
-	const [autoId, setAutoId] = React.useState(betterdiscord.Data.load("settings").activeAutoPreset);
-	return BdApi.React.createElement(ModalRoot, { ...modalProps }, BdApi.React.createElement(ModalHeader, null, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Auto Preset Settings")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement("div", { className: "dc-info-card", style: { marginTop: "1em" } }, BdApi.React.createElement("strong", null, "About the Auto Colorway"), BdApi.React.createElement("span", null, "The auto colorway allows you to use your system's accent color in combination with a selection of presets that will fully utilize it.")), BdApi.React.createElement("div", { style: { marginBottom: "20px" } }, BdApi.React.createElement(Forms.FormTitle, null, "Presets:"), Object.values(getAutoPresets()).map((autoPreset) => {
-		return BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled}`, "aria-checked": autoId === autoPreset.id }, BdApi.React.createElement(
-			"div",
-			{
-				className: `${radioBar} ${radioPositionLeft}`,
-				style: { padding: "10px" },
-				onClick: () => {
-					setAutoId(autoPreset.id);
-				}
-			},
-			BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), autoId === autoPreset.id && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
-			BdApi.React.createElement(Text, { variant: "eyebrow", tag: "h5" }, autoPreset.name)
-		));
-	}))), BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
+function UseRepainterThemeModal({ modalProps, onFinish }) {
+	const [colorwaySourceURL, setColorwaySourceURL] = React.useState("");
+	const [URLError, setURLError] = React.useState("");
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Use Repainter theme"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "URL: ", URLError ? BdApi.React.createElement("span", { className: "colorwaysModalSectionError" }, URLError) : BdApi.React.createElement(BdApi.React.Fragment, null)), BdApi.React.createElement(
+		"input",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.BRAND_NEW,
-			size: Button.Sizes.MEDIUM,
-			onClick: () => {
-				betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), activeAutoPreset: autoId });
-				onChange(autoId);
-				modalProps.onClose();
+			type: "text",
+			placeholder: "Enter a valid URL...",
+			onInput: (e) => {
+				setColorwaySourceURL(e.currentTarget.value);
+			},
+			value: colorwaySourceURL,
+			className: "colorwaySelector-search"
+		}
+	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: async () => {
+				getRepainterTheme(colorwaySourceURL).then((data) => {
+					onFinish({ id: data.id, colors: data.colors });
+					modalProps.onClose();
+				}).catch((e) => setURLError("Error: " + e));
 			}
 		},
 		"Finish"
 	), BdApi.React.createElement(
-		Button,
+		"button",
 		{
-			style: { marginLeft: 8 },
-			color: Button.Colors.PRIMARY,
-			size: Button.Sizes.MEDIUM,
-			look: Button.Looks.OUTLINED,
-			onClick: () => {
-				modalProps.onClose();
-			}
+			className: "colorwaysPillButton",
+			onClick: () => modalProps.onClose()
 		},
 		"Cancel"
 	)));
 }
 
-function OnDemandPage({ inModal }) {
-	const [onDemand, setOnDemand] = React.useState(getSetting("onDemandWays"));
-	const [onDemandTinted, setOnDemandTinted] = React.useState(getSetting("onDemandWaysTintedText"));
-	const [onDemandDiscordSat, setOnDemandDiscordSat] = React.useState(getSetting("onDemandWaysDiscordSaturation"));
-	const [onDemandOsAccent, setOnDemandOsAccent] = React.useState(!getComputedStyle(document.body).getPropertyValue("--os-accent-color") ? false : betterdiscord.Data.load("settings").onDemandWaysOsAccentColor);
-	return BdApi.React.createElement(SettingsTab$1, { title: "On-Demand", inModal }, BdApi.React.createElement(
-		Switch,
-		{
-			value: onDemand,
-			onChange: (v) => {
-				setOnDemand(v);
-				betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), onDemandWays: v });
-			},
-			note: "Always utilise the latest of what DiscordColorways has to offer. CSS is being directly generated on the device and gets applied in the place of the normal import/CSS given by the colorway."
-		},
-		"Enable Colorways On Demand"
-	), BdApi.React.createElement(
-		Switch,
-		{
-			value: onDemandTinted,
-			onChange: (v) => {
-				setOnDemandTinted(v);
-				betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), onDemandWaysTintedText: v });
-			},
-			disabled: !onDemand
-		},
-		"Use tinted text"
-	), BdApi.React.createElement(
-		Switch,
-		{
-			value: onDemandDiscordSat,
-			onChange: (v) => {
-				setOnDemandDiscordSat(v);
-				betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), onDemandWaysDiscordSaturation: v });
-			},
-			disabled: !onDemand
-		},
-		"Use Discord's saturation"
-	), BdApi.React.createElement(
-		Switch,
-		{
-			hideBorder: true,
-			value: onDemandOsAccent,
-			onChange: (v) => {
-				setOnDemandOsAccent(v);
-				betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), onDemandWaysOsAccentColor: v });
-			},
-			disabled: !onDemand || !getComputedStyle(document.body).getPropertyValue("--os-accent-color")
-		},
-		"Use Operating System's Accent Color"
-	));
-}
-
-const GithubIconLight = "/assets/3ff98ad75ac94fa883af5ed62d17c459.svg";
-const GithubIconDark = "/assets/6a853b4c87fce386cbfef4a2efbacb09.svg";
-function GithubIcon() {
-	const src = getTheme() === Theme.Light ? GithubIconLight : GithubIconDark;
-	return BdApi.React.createElement("img", { src, alt: "GitHub" });
-}
-function Store({ inModal }) {
-	const [storeObject, setStoreObject] = React.useState([]);
-	const [colorwaySourceFiles, setColorwaySourceFiles] = React.useState(getSetting("colorwayLists"));
-	const [searchValue, setSearchValue] = React.useState("");
+function FiltersMenu({ sort, onSortChange }) {
+	const [pos, setPos] = React.useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = React.useState(false);
+	function rightClickContextMenu(e) {
+		e.stopPropagation();
+		window.dispatchEvent(new Event("click"));
+		setShowMenu(!showMenu);
+		setPos({
+			x: e.currentTarget.getBoundingClientRect().x,
+			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight + 8
+		});
+	}
+	function onPageClick(e) {
+		setShowMenu(false);
+	}
 	React.useEffect(() => {
-		if (!searchValue) {
-			(async function() {
-				const res = await fetch("https://dablulite.vercel.app/");
-				const data = await res.json();
-				setStoreObject(data.sources);
-			})();
-		}
+		window.addEventListener("click", onPageClick);
+		return () => {
+			window.removeEventListener("click", onPageClick);
+		};
 	}, []);
-	const { item: radioBarItem, itemFilled: radioBarItemFilled } = Webpack.getByKeys("radioBar");
-	return BdApi.React.createElement(SettingsTab$1, { title: "Colorway Store", inModal }, BdApi.React.createElement(Flex, { style: { gap: "0", marginBottom: "8px" } }, BdApi.React.createElement(
-		TextInput,
-		{
-			className: "colorwaySelector-search",
-			placeholder: "Search for sources...",
-			value: searchValue,
-			onChange: setSearchValue
-		}
-	), BdApi.React.createElement(Tooltip, { text: "Refresh..." }, ({ onMouseEnter, onMouseLeave }) => BdApi.React.createElement(
-		Button,
-		{
-			innerClassName: "colorwaysSettings-iconButtonInner",
-			size: Button.Sizes.ICON,
-			color: Button.Colors.PRIMARY,
-			look: Button.Looks.OUTLINED,
-			style: { marginLeft: "8px" },
-			onMouseEnter,
-			onMouseLeave,
-			onClick: async function() {
-				const res = await fetch("https://dablulite.vercel.app/");
-				const data = await res.json();
-				setStoreObject(data.sources);
-				setColorwaySourceFiles(getSetting("colorwayLists"));
-			}
-		},
-		BdApi.React.createElement(
-			"svg",
-			{
-				xmlns: "http://www.w3.org/2000/svg",
-				x: "0px",
-				y: "0px",
-				width: "20",
-				height: "20",
-				style: { padding: "6px", boxSizing: "content-box" },
-				viewBox: "0 0 24 24",
-				fill: "currentColor"
-			},
-			BdApi.React.createElement(
-				"rect",
-				{
-					y: "0",
-					fill: "none",
-					width: "24",
-					height: "24"
-				}
-			),
-			BdApi.React.createElement(
-				"path",
-				{
-					d: "M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z"
-				}
-			),
-			BdApi.React.createElement(
-				"path",
-				{
-					d: "M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z"
-				}
-			)
-		)
-	))), BdApi.React.createElement(ScrollerThin, { orientation: "vertical", className: "colorwaysSettings-sourceScroller" }, storeObject.map(
-		(item) => item.name.toLowerCase().includes(searchValue.toLowerCase()) ? BdApi.React.createElement("div", { className: `${radioBarItem} ${radioBarItemFilled} colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement(Flex, { flexDirection: "column", style: { gap: ".5rem", marginBottom: "8px" } }, BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceLabelHeader" }, item.name), BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceDesc" }, item.description), BdApi.React.createElement(Text, { className: "colorwaysSettings-colorwaySourceDesc", style: { opacity: ".8" } }, "by ", item.authorGh)), BdApi.React.createElement(Flex, { style: { gap: "8px", alignItems: "center", width: "100%" } }, BdApi.React.createElement(Link, { href: "https://github.com/" + item.authorGh }, BdApi.React.createElement(GithubIcon, null)), BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.SMALL,
-				color: colorwaySourceFiles.map((source) => source.name).includes(item.name) ? Button.Colors.RED : Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				style: { marginLeft: "auto" },
-				onClick: async () => {
-					if (colorwaySourceFiles.map((source) => source.name).includes(item.name)) {
-						const sourcesArr = colorwaySourceFiles.filter((source) => source.name !== item.name);
-						saveSettings({ colorwayLists: sourcesArr });
-						setColorwaySourceFiles(sourcesArr);
-					} else {
-						const sourcesArr = [...colorwaySourceFiles, { name: item.name, url: item.url }];
-						saveSettings({ colorwayLists: sourcesArr });
-						setColorwaySourceFiles(sourcesArr);
-					}
-				}
-			},
-			colorwaySourceFiles.map((source) => source.name).includes(item.name) ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(DeleteIcon, { width: 14, height: 14 }), " Remove") : BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(DownloadIcon, { width: 14, height: 14 }), " Add to Sources")
-		), BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.SMALL,
-				color: Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				onClick: async () => {
-					openModal((props) => BdApi.React.createElement(Selector, { modalProps: props, settings: { selectorType: "preview", previewSource: item.url } }));
-				}
-			},
-			BdApi.React.createElement(PalleteIcon, { width: 14, height: 14 }),
-			" ",
-			"Preview"
-		))) : BdApi.React.createElement(BdApi.React.Fragment, null)
-	)));
+	function onSortChange_internal(newSort) {
+		onSortChange(newSort);
+		setShowMenu(false);
+	}
+	return BdApi.React.createElement(BdApi.React.Fragment, null, showMenu ? BdApi.React.createElement("nav", { className: "colorwaysContextMenu", style: {
+		position: "fixed",
+		top: `${pos.y}px`,
+		left: `${pos.x}px`
+	} }, BdApi.React.createElement("button", { onClick: () => onSortChange_internal(1), className: "colorwaysContextMenuItm" }, "Name (A-Z)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 1 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(2), className: "colorwaysContextMenuItm" }, "Name (Z-A)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 2 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(3), className: "colorwaysContextMenuItm" }, "Source (A-Z)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 3 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(4), className: "colorwaysContextMenuItm" }, "Source (Z-A)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 4 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null))) : null, BdApi.React.createElement("button", { className: "colorwaysPillButton", onClick: rightClickContextMenu }, BdApi.React.createElement(SortIcon, { width: 14, height: 14 }), " Sort By..."));
 }
 
-function SettingsPage({ inModal }) {
-	const [colorways, setColorways] = React.useState([]);
-	const [colorsButtonVisibility, setColorsButtonVisibility] = React.useState(getSetting("showColorwaysButton"));
-	const [isButtonThin, setIsButtonThin] = React.useState(getSetting("useThinMenuButton"));
-	const [showLabelsInSelectorGridView, setShowLabelsInSelectorGridView] = React.useState(getSetting("showLabelsInSelectorGridView"));
+function SourcesMenu({ source, sources, onSourceChange }) {
+	const menuProps = React.useRef(null);
+	const [pos, setPos] = React.useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = React.useState(false);
+	const [current, setCurrent] = React.useState(source);
+	function rightClickContextMenu(e) {
+		e.stopPropagation();
+		window.dispatchEvent(new Event("click"));
+		setShowMenu(!showMenu);
+		setPos({
+			x: e.currentTarget.getBoundingClientRect().x,
+			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight + 8
+		});
+	}
+	function onPageClick() {
+		setShowMenu(false);
+	}
 	React.useEffect(() => {
-		(async function() {
-			const responses = await Promise.all(
-				getSetting("colorwayLists").map(
-					({ url }) => fetch(url)
-				)
-			);
-			const data = await Promise.all(
-				responses.map(
-					(res) => res.json()
-				)
-			);
-			const colorways2 = data.flatMap((json) => json.colorways);
-			setColorways(colorways2 || fallbackColorways);
-		})();
+		window.addEventListener("click", onPageClick);
+		return () => {
+			window.removeEventListener("click", onPageClick);
+		};
 	}, []);
-	return BdApi.React.createElement(SettingsTab$1, { title: "Settings", inModal }, BdApi.React.createElement("div", { className: "colorwaysSettingsPage-wrapper" }, BdApi.React.createElement(Forms.FormTitle, { tag: "h5" }, "Quick Switch"), BdApi.React.createElement(
-		Switch,
-		{
-			value: colorsButtonVisibility,
-			onChange: (v) => {
-				setColorsButtonVisibility(v);
-				saveSettings({ showColorwaysButton: v });
-				FluxDispatcher.dispatch({
-					type: "COLORWAYS_UPDATE_BUTTON_VISIBILITY",
-					isVisible: v
-				});
-			},
-			note: "Shows a button on the top of the servers list that opens a colorway selector modal."
-		},
-		"Enable Quick Switch"
-	), BdApi.React.createElement(
-		Switch,
-		{
-			value: isButtonThin,
-			onChange: (v) => {
-				setIsButtonThin(v);
-				saveSettings({ useThinMenuButton: v });
-				FluxDispatcher.dispatch({
-					type: "COLORWAYS_UPDATE_BUTTON_HEIGHT",
-					isTall: v
-				});
-			},
-			note: "Replaces the icon on the colorways launcher button with text, making it more compact."
-		},
-		"Use thin Quick Switch button"
-	), BdApi.React.createElement(Forms.FormTitle, { tag: "h5" }, "Selector"), BdApi.React.createElement(
-		Switch,
-		{
-			value: showLabelsInSelectorGridView,
-			onChange: (v) => {
-				setShowLabelsInSelectorGridView(v);
-				saveSettings({ showLabelsInSelectorGridView: v });
-			}
-		},
-		"Show labels in Grid View"
-	), BdApi.React.createElement(Flex, { flexDirection: "column", style: { gap: 0 } }, BdApi.React.createElement("h1", { style: {
-		fontFamily: "var(--font-headline)",
-		fontSize: "24px",
-		color: "var(--header-primary)",
-		lineHeight: "31px",
-		marginBottom: "0"
-	} }, "Discord ", BdApi.React.createElement("span", { style: {
-		fontFamily: "var(--font-display)",
-		fontSize: "24px",
-		backgroundColor: "var(--brand-500)",
-		padding: "0 4px",
-		borderRadius: "4px"
-	} }, "Colorways")), BdApi.React.createElement(
-		Text,
-		{
-			variant: "text-xs/normal",
-			style: {
-				color: "var(--text-normal)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "12px"
-			}
-		},
-		"by Project Colorway"
-	), BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Plugin Version:"), BdApi.React.createElement(
-		Text,
-		{
-			variant: "text-xs/normal",
-			style: {
-				color: "var(--text-muted)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "8px"
-			}
-		},
-		plugin.version
-	), BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Creator Version:"), BdApi.React.createElement(
-		Text,
-		{
-			variant: "text-xs/normal",
-			style: {
-				color: "var(--text-muted)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "8px"
-			}
-		},
-		plugin.creatorVersion
-	), BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Loaded Colorways:"), BdApi.React.createElement(
-		Text,
-		{
-			variant: "text-xs/normal",
-			style: {
-				color: "var(--text-muted)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "8px"
-			}
-		},
-		[...colorways, ...betterdiscord.Data.load("custom_colorways").map((source) => source.colorways).flat(2)].length + 1
-	), BdApi.React.createElement(Forms.FormTitle, { style: { marginBottom: 0 } }, "Project Repositories:"), BdApi.React.createElement(Forms.FormText, { style: { marginBottom: "8px" } }, BdApi.React.createElement(Link, { href: "https://github.com/DaBluLite/DiscordColorways" }, "DiscordColorways"), BdApi.React.createElement("br", null), BdApi.React.createElement(Link, { href: "https://github.com/DaBluLite/ProjectColorway" }, "Project Colorway")))));
+	function onSourceChange_internal(newSort) {
+		onSourceChange(newSort.id);
+		setCurrent(newSort);
+		setShowMenu(false);
+	}
+	return BdApi.React.createElement(BdApi.React.Fragment, null, showMenu ? BdApi.React.createElement("nav", { className: "colorwaysContextMenu", ref: menuProps, style: {
+		position: "fixed",
+		top: `${pos.y}px`,
+		left: `${pos.x}px`
+	} }, sources.map(({ name, id }) => {
+		return BdApi.React.createElement("button", { onClick: () => onSourceChange_internal({ name, id }), className: "colorwaysContextMenuItm" }, name, BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+			marginLeft: "8px"
+		} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), source.id == id ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null));
+	})) : null, BdApi.React.createElement("button", { className: "colorwaysPillButton", onClick: rightClickContextMenu }, "Source: ", current.name));
 }
 
-var SettingsTab = ((SettingsTab2) => {
-	SettingsTab2[SettingsTab2["Selector"] = 0] = "Selector";
-	SettingsTab2[SettingsTab2["Settings"] = 1] = "Settings";
-	SettingsTab2[SettingsTab2["Sources"] = 2] = "Sources";
-	SettingsTab2[SettingsTab2["OnDemand"] = 3] = "OnDemand";
-	SettingsTab2[SettingsTab2["Store"] = 4] = "Store";
-	return SettingsTab2;
-})(SettingsTab || {});
-function SettingsModal({ tab = 1 /* Settings */ }) {
-	const [currentTab, setCurrentTab] = React.useState(tab);
-	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(
-		TabBar,
+function ReloadButton({ onClick, onForceReload }) {
+	const menuProps = React.useRef(null);
+	const [pos, setPos] = React.useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = React.useState(false);
+	function rightClickContextMenu(e) {
+		e.stopPropagation();
+		window.dispatchEvent(new Event("click"));
+		setShowMenu(!showMenu);
+		setPos({
+			x: e.currentTarget.getBoundingClientRect().x,
+			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight + 8
+		});
+	}
+	function onPageClick(e) {
+		setShowMenu(false);
+	}
+	React.useEffect(() => {
+		window.addEventListener("click", onPageClick);
+		return () => {
+			window.removeEventListener("click", onPageClick);
+		};
+	}, []);
+	function onForceReload_internal() {
+		onForceReload();
+		setShowMenu(false);
+	}
+	return BdApi.React.createElement(BdApi.React.Fragment, null, showMenu ? BdApi.React.createElement("nav", { className: "colorwaysContextMenu", ref: menuProps, style: {
+		position: "fixed",
+		top: `${pos.y}px`,
+		left: `${pos.x}px`
+	} }, BdApi.React.createElement("button", { onClick: onForceReload_internal, className: "colorwaysContextMenuItm" }, "Force Refresh", BdApi.React.createElement(
+		"svg",
 		{
-			type: "top",
-			look: "brand",
-			className: "dc-settings-tab-bar",
-			selectedItem: currentTab,
-			onItemSelect: setCurrentTab
+			xmlns: "http://www.w3.org/2000/svg",
+			x: "0px",
+			y: "0px",
+			width: "18",
+			height: "18",
+			style: { boxSizing: "content-box", marginLeft: "8px" },
+			viewBox: "0 0 24 24",
+			fill: "currentColor"
 		},
 		BdApi.React.createElement(
-			TabBar.Item,
+			"rect",
 			{
-				className: "dc-settings-tab-bar-item",
-				id: 0 /* Selector */
-			},
-			"Colorways"
+				y: "0",
+				fill: "none",
+				width: "24",
+				height: "24"
+			}
 		),
 		BdApi.React.createElement(
-			TabBar.Item,
+			"path",
 			{
-				className: "dc-settings-tab-bar-item",
-				id: 1 /* Settings */
-			},
-			"Settings"
+				d: "M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z"
+			}
 		),
 		BdApi.React.createElement(
-			TabBar.Item,
+			"path",
 			{
-				className: "dc-settings-tab-bar-item",
-				id: 2 /* Sources */
-			},
-			"Sources"
-		),
-		BdApi.React.createElement(
-			TabBar.Item,
-			{
-				className: "dc-settings-tab-bar-item",
-				id: 3 /* OnDemand */
-			},
-			"On-Demand"
-		),
-		BdApi.React.createElement(
-			TabBar.Item,
-			{
-				className: "dc-settings-tab-bar-item",
-				id: 4 /* Store */
-			},
-			"Store"
+				d: "M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z"
+			}
 		)
-	), currentTab === 0 /* Selector */ && BdApi.React.createElement(Selector, { modalProps: { transitionState: 1, onClose: () => new Promise(() => {
-	}) }, isSettings: true, inModal: true }), currentTab === 1 /* Settings */ && BdApi.React.createElement(SettingsPage, { inModal: true }), currentTab === 2 /* Sources */ && BdApi.React.createElement(SourceManager, { inModal: true }), currentTab === 3 /* OnDemand */ && BdApi.React.createElement(OnDemandPage, { inModal: true }), currentTab === 4 /* Store */ && BdApi.React.createElement(Store, { inModal: true }));
+	))) : null, BdApi.React.createElement("button", { className: "colorwaysPillButton", onContextMenu: rightClickContextMenu, onClick }, BdApi.React.createElement(
+		"svg",
+		{
+			xmlns: "http://www.w3.org/2000/svg",
+			x: "0px",
+			y: "0px",
+			width: "14",
+			height: "14",
+			style: { boxSizing: "content-box" },
+			viewBox: "0 0 24 24",
+			fill: "currentColor"
+		},
+		BdApi.React.createElement(
+			"rect",
+			{
+				y: "0",
+				fill: "none",
+				width: "24",
+				height: "24"
+			}
+		),
+		BdApi.React.createElement(
+			"path",
+			{
+				d: "M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z"
+			}
+		),
+		BdApi.React.createElement(
+			"path",
+			{
+				d: "M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z"
+			}
+		)
+	), "Refresh"));
 }
 
-const { SelectionCircle } = proxyLazy(() => betterdiscord.Webpack.getByKeys("SelectionCircle"));
-function SelectorContainer({ children, isSettings, modalProps, inModal }) {
-	if (!isSettings) {
-		return BdApi.React.createElement(ModalRoot, { ...modalProps, className: "colorwaySelectorModal" }, children);
-	} else {
-		return BdApi.React.createElement(SettingsTab$1, { title: "Colors", inModal }, BdApi.React.createElement("div", { className: "colorwaysSettingsSelector-wrapper" }, children));
-	}
-}
-function SelectorHeader({ children, isSettings }) {
-	if (!isSettings) {
-		return BdApi.React.createElement(ModalHeader, { separator: false }, children);
-	} else {
-		return BdApi.React.createElement(Flex, { style: { gap: "0" } }, children);
-	}
-}
-function SelectorContent({ children, isSettings }) {
-	if (!isSettings) {
-		return BdApi.React.createElement(ModalContent, { className: "colorwaySelectorModalContent" }, children);
-	} else {
-		return BdApi.React.createElement(BdApi.React.Fragment, null, children);
-	}
-}
+let updateWS = () => {
+};
+let updateManagerRole = () => {
+};
+let updateActiveColorway = () => {
+};
 function Selector({
-	modalProps,
-	isSettings,
 	settings = { selectorType: "normal" },
-	inModal
+	hasTheme = false
 }) {
 	const [colorwayData, setColorwayData] = React.useState([]);
 	const [searchValue, setSearchValue] = React.useState("");
-	const [sortBy, setSortBy] = React.useState(1 /* NAME_AZ */);
-	const [activeColorwayObject, setActiveColorwayObject] = React.useState(betterdiscord.Data.load("settings").activeColorwayObject || { id: null, css: null, sourceType: null, source: null });
-	const [customColorwayData, setCustomColorwayData] = React.useState(settings.previewSource ? [] : betterdiscord.Data.load("custom_colorways").map((colorSrc) => ({ type: "offline", source: colorSrc.name, colorways: colorSrc.colorways })));
+	const [sortBy, setSortBy] = React.useState(SortOptions.NAME_AZ);
+	const [activeColorwayObject, setActiveColorwayObject] = React.useState(nullColorwayObj);
+	const [customColorwayData, setCustomColorwayData] = React.useState([]);
 	const [loaderHeight, setLoaderHeight] = React.useState("2px");
 	const [visibleSources, setVisibleSources] = React.useState("all");
-	const [showReloadMenu, setShowReloadMenu] = React.useState(false);
-	const [viewMode, setViewMode] = React.useState(betterdiscord.Data.load("settings").selectorViewMode || "grid");
-	const [showLabelsInSelectorGridView, setShowLabelsInSelectorGridView] = React.useState(betterdiscord.Data.load("settings").showLabelsInSelectorGridView || false);
-	const [showSortingMenu, setShowSotringMenu] = React.useState(false);
 	const [selectedColorways, setSelectedColorways] = React.useState([]);
 	const [errorCode, setErrorCode] = React.useState(0);
-	const { item: radioBarItem, itemFilled: radioBarItemFilled } = betterdiscord.Webpack.getByKeys("radioBar");
+	const [wsConnected, setWsConnected] = React.useState(wsOpen);
+	const [theme, setTheme] = React.useState("discord");
+	const [isManager, setManager] = React.useState(hasManagerRole);
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+		updateWS = setWsConnected;
+		updateManagerRole = setManager;
+		updateActiveColorway = setActiveColorwayObject;
+		return () => {
+			updateWS = () => {
+			};
+			updateManagerRole = () => {
+			};
+			updateActiveColorway = () => {
+			};
+		};
+	}, [isManager]);
 	const filters = [
 		{
 			name: "All",
@@ -4248,6 +4566,7 @@ function Selector({
 		}))
 	];
 	async function loadUI(force) {
+		setActiveColorwayObject(await DataStore.get("activeColorwayObject"));
 		setLoaderHeight("0px");
 		if (settings.previewSource) {
 			const res = await fetch(settings.previewSource);
@@ -4259,7 +4578,8 @@ function Selector({
 			const colorwayList = data.css ? data.css.map((customStore) => customStore.colorways).flat() : data.colorways;
 			setColorwayData([{ colorways: colorwayList || [], source: res.url, type: "online" }]);
 		} else {
-			const onlineSources = getSetting("colorwayLists");
+			setCustomColorwayData((await DataStore.get("customColorways")).map((colorSrc) => ({ type: "offline", source: colorSrc.name, colorways: colorSrc.colorways })));
+			const onlineSources = await DataStore.get("colorwaySourceFiles");
 			const responses = await Promise.all(
 				onlineSources.map(
 					(source) => fetch(source.url, force ? { cache: "no-store" } : {})
@@ -4275,260 +4595,106 @@ function Selector({
 	React.useEffect(() => {
 		loadUI();
 	}, [searchValue]);
-	function ReloadPopout(onClose) {
-		return BdApi.React.createElement(
-			Menu.Menu,
-			{
-				navId: "dc-reload-menu",
-				onClose
-			},
-			BdApi.React.createElement(
-				Menu.MenuItem,
-				{
-					id: "dc-force-reload",
-					label: "Force Reload",
-					action: () => loadUI(true)
-				}
-			)
-		);
+	function Header({ children }) {
+		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwayModal-selectorHeader", "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { className: "colorwayModal-selectorHeader" }, children);
 	}
-	function SortingPopout(onClose) {
-		return BdApi.React.createElement(
-			Menu.Menu,
-			{
-				navId: "dc-selector-options-menu",
-				onClose
-			},
-			BdApi.React.createElement(Menu.MenuGroup, { label: "View" }, BdApi.React.createElement(
-				Menu.MenuRadioItem,
-				{
-					group: "selector-viewMode",
-					id: "selector-viewMode_grid",
-					label: "Grid",
-					checked: viewMode === "grid",
-					action: () => {
-						setViewMode("grid");
-						betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), selectorViewMode: "grid" });
-					}
-				}
-			), BdApi.React.createElement(
-				Menu.MenuRadioItem,
-				{
-					group: "selector-viewMode",
-					id: "selector-viewMode_list",
-					label: "List",
-					checked: viewMode === "list",
-					action: () => {
-						setViewMode("list");
-						betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), selectorViewMode: "list" });
-					}
-				}
-			)),
-			BdApi.React.createElement(Menu.MenuGroup, { label: "Sort By" }, BdApi.React.createElement(
-				Menu.MenuRadioItem,
-				{
-					group: "sort-colorways",
-					id: "sort-colorways_name-az",
-					label: "Name (A-Z)",
-					checked: sortBy === 1 /* NAME_AZ */,
-					action: () => setSortBy(1 /* NAME_AZ */)
-				}
-			), BdApi.React.createElement(
-				Menu.MenuRadioItem,
-				{
-					group: "sort-colorways",
-					id: "sort-colorways_name-za",
-					label: "Name (Z-A)",
-					checked: sortBy === 2 /* NAME_ZA */,
-					action: () => setSortBy(2 /* NAME_ZA */)
-				}
-			), BdApi.React.createElement(
-				Menu.MenuRadioItem,
-				{
-					group: "sort-colorways",
-					id: "sort-colorways_source-az",
-					label: "Source (A-Z)",
-					checked: sortBy === 3 /* SOURCE_AZ */,
-					action: () => setSortBy(3 /* SOURCE_AZ */)
-				}
-			), BdApi.React.createElement(
-				Menu.MenuRadioItem,
-				{
-					group: "sort-colorways",
-					id: "sort-colorways_source-za",
-					label: "Source (Z-A)",
-					checked: sortBy === 4 /* SOURCE_ZA */,
-					action: () => setSortBy(4 /* SOURCE_ZA */)
-				}
-			))
-		);
+	function Container({ children }) {
+		if (hasTheme) return BdApi.React.createElement("div", { style: { maxHeight: settings.selectorType === "multiple-selection" ? "50%" : "unset" }, className: "ColorwaySelectorWrapper", "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { style: { maxHeight: settings.selectorType === "multiple-selection" ? "50%" : "unset" }, className: "ColorwaySelectorWrapper" }, children);
 	}
-	return BdApi.React.createElement(SelectorContainer, { modalProps, isSettings, inModal }, BdApi.React.createElement(SelectorHeader, { isSettings }, settings.selectorType !== "preview" ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(
-		TextInput,
+	return BdApi.React.createElement(BdApi.React.Fragment, null, settings.selectorType !== "preview" && (!wsConnected || wsConnected && isManager) ? BdApi.React.createElement(Header, null, BdApi.React.createElement(
+		"input",
 		{
+			type: "text",
 			className: "colorwaySelector-search",
 			placeholder: "Search for Colorways...",
 			value: searchValue,
-			onChange: setSearchValue
+			autoFocus: true,
+			onInput: ({ currentTarget: { value } }) => setSearchValue(value)
 		}
-	), BdApi.React.createElement(Tooltip, { text: "Refresh Colorways..." }, ({ onMouseEnter, onMouseLeave }) => BdApi.React.createElement(
-		Popout,
+	), BdApi.React.createElement("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap" } }, BdApi.React.createElement(ReloadButton, { onClick: () => {
+		setLoaderHeight("2px");
+		loadUI().then(() => setLoaderHeight("0px"));
+	}, onForceReload: () => {
+		setLoaderHeight("2px");
+		loadUI(true).then(() => setLoaderHeight("0px"));
+	} }), BdApi.React.createElement(
+		"button",
 		{
-			position: "bottom",
-			align: "right",
-			animation: Popout.Animation.NONE,
-			shouldShow: showReloadMenu,
-			onRequestClose: () => setShowReloadMenu(false),
-			renderPopout: () => ReloadPopout(() => setShowReloadMenu(false))
-		},
-		(_, { isShown }) => BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.ICON,
-				color: Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				style: { marginLeft: "8px" },
-				id: "colorway-refreshcolorway",
-				onMouseEnter: isShown ? () => {
-				} : onMouseEnter,
-				onMouseLeave: isShown ? () => {
-				} : onMouseLeave,
-				onClick: () => {
-					setLoaderHeight("2px");
-					loadUI().then(() => setLoaderHeight("0px"));
-				},
-				onContextMenu: () => {
-					onMouseLeave();
-					setShowReloadMenu(!showReloadMenu);
-				}
-			},
-			BdApi.React.createElement(
-				"svg",
-				{
-					xmlns: "http://www.w3.org/2000/svg",
-					x: "0px",
-					y: "0px",
-					width: "20",
-					height: "20",
-					style: { padding: "6px", boxSizing: "content-box" },
-					viewBox: "0 0 24 24",
-					fill: "currentColor"
-				},
-				BdApi.React.createElement(
-					"rect",
+			className: "colorwaysPillButton",
+			onClick: () => {
+				openModal((props) => BdApi.React.createElement(
+					CreatorModal,
 					{
-						y: "0",
-						fill: "none",
-						width: "24",
-						height: "24"
+						modalProps: props,
+						loadUIProps: loadUI
 					}
-				),
-				BdApi.React.createElement(
-					"path",
-					{
-						d: "M6.351,6.351C7.824,4.871,9.828,4,12,4c4.411,0,8,3.589,8,8h2c0-5.515-4.486-10-10-10 C9.285,2,6.779,3.089,4.938,4.938L3,3v6h6L6.351,6.351z"
-					}
-				),
-				BdApi.React.createElement(
-					"path",
-					{
-						d: "M17.649,17.649C16.176,19.129,14.173,20,12,20c-4.411,0-8-3.589-8-8H2c0,5.515,4.486,10,10,10 c2.716,0,5.221-1.089,7.062-2.938L21,21v-6h-6L17.649,17.649z"
-					}
-				)
-			)
-		)
-	)), BdApi.React.createElement(Tooltip, { text: "Create Colorway..." }, ({ onMouseEnter, onMouseLeave }) => BdApi.React.createElement(
-		Button,
-		{
-			innerClassName: "colorwaysSettings-iconButtonInner",
-			size: Button.Sizes.ICON,
-			color: Button.Colors.PRIMARY,
-			look: Button.Looks.OUTLINED,
-			style: { marginLeft: "8px" },
-			onMouseEnter,
-			onMouseLeave,
-			onClick: () => openModal((props) => BdApi.React.createElement(
-				CreatorModal,
-				{
-					modalProps: props,
-					loadUIProps: loadUI
-				}
-			))
+				));
+			}
 		},
-		BdApi.React.createElement(PlusIcon, { width: 20, height: 20, style: { padding: "6px", boxSizing: "content-box" } })
-	)), BdApi.React.createElement(Tooltip, { text: "Selector Options" }, ({ onMouseEnter, onMouseLeave }) => BdApi.React.createElement(
-		Popout,
+		BdApi.React.createElement(PlusIcon, { width: 14, height: 14, style: { boxSizing: "content-box" } }),
+		"Create"
+	), BdApi.React.createElement(
+		"button",
 		{
-			position: "bottom",
-			align: "right",
-			animation: Popout.Animation.NONE,
-			shouldShow: showSortingMenu,
-			onRequestClose: () => setShowSotringMenu(false),
-			renderPopout: () => SortingPopout(() => setShowSotringMenu(false))
+			className: "colorwaysPillButton",
+			id: "colorway-userepaintertheme",
+			onClick: () => {
+				openModal((props) => BdApi.React.createElement(UseRepainterThemeModal, { modalProps: props, onFinish: async ({ id, colors }) => {
+					const demandedColorway = generateCss(colors[7].replace("#", ""), colors[11].replace("#", ""), colors[14].replace("#", ""), colors[16].replace("#", ""));
+					ColorwayCSS.set(demandedColorway);
+					const newObj = {
+						id,
+						css: demandedColorway,
+						sourceType: "temporary",
+						source: "Repainter",
+						colors: {
+							accent: colors[16],
+							primary: colors[2],
+							secondary: colors[5],
+							tertiary: colors[8]
+						}
+					};
+					DataStore.set("activeColorwayObject", newObj);
+					setActiveColorwayObject(newObj);
+				} }));
+			}
 		},
-		(_, { isShown }) => BdApi.React.createElement(
-			Button,
-			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.ICON,
-				color: Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				style: { marginLeft: "8px" },
-				onMouseEnter: isShown ? () => {
-				} : onMouseEnter,
-				onMouseLeave: isShown ? () => {
-				} : onMouseLeave,
-				onClick: () => {
-					onMouseLeave();
-					setShowSotringMenu(!showSortingMenu);
-				}
-			},
-			BdApi.React.createElement(MoreIcon, { width: 20, height: 20, style: { padding: "6px", boxSizing: "content-box" } })
-		)
-	)), BdApi.React.createElement(Tooltip, { text: "Open Color Stealer" }, ({ onMouseEnter, onMouseLeave }) => BdApi.React.createElement(
-		Button,
+		BdApi.React.createElement(PalleteIcon, { width: 14, height: 14, style: { boxSizing: "content-box" } }),
+		"Use Repainter theme"
+	), BdApi.React.createElement(FiltersMenu, { sort: sortBy, onSortChange: (newSort) => {
+		setSortBy(newSort);
+	} }), BdApi.React.createElement(SourcesMenu, { source: filters.filter((filter) => filter.id == visibleSources)[0], sources: filters, onSourceChange: (sourceId) => {
+		setVisibleSources(sourceId);
+	} }))) : BdApi.React.createElement(BdApi.React.Fragment, null), wsConnected && settings.selectorType == "normal" && !isManager ? BdApi.React.createElement("span", { style: {
+		color: "#fff",
+		margin: "auto",
+		fontWeight: "bold",
+		display: "flex",
+		gap: "8px",
+		alignItems: "center"
+	} }, BdApi.React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "40", height: "40", fill: "currentColor", viewBox: "0 0 16 16", style: {
+		transform: "scaleX(1.2)"
+	} }, BdApi.React.createElement("path", { d: "M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" })), "Manager is controlling the colorways", BdApi.React.createElement(
+		"button",
 		{
-			innerClassName: "colorwaysSettings-iconButtonInner",
-			size: Button.Sizes.ICON,
-			color: Button.Colors.PRIMARY,
-			look: Button.Looks.OUTLINED,
-			style: { marginLeft: "8px" },
-			id: "colorway-opencolorstealer",
-			onMouseEnter,
-			onMouseLeave,
-			onClick: () => openModal((props) => BdApi.React.createElement(ColorPicker, { modalProps: props }))
+			className: "colorwaysPillButton",
+			onClick: requestManagerRole
 		},
-		BdApi.React.createElement(PalleteIcon, { width: 20, height: 20, style: { padding: "6px", boxSizing: "content-box" } })
-	)), isSettings ? BdApi.React.createElement(
-		Select,
-		{
-			className: "colorwaySelector-sources " + ButtonLooks.OUTLINED + " colorwaySelector-sources_settings",
-			look: 1,
-			popoutClassName: "colorwaySelector-sourceSelect",
-			options: filters.map((filter) => ({ label: filter.name, value: filter.id })),
-			select: (value) => setVisibleSources(value),
-			isSelected: (value) => visibleSources === value,
-			serialize: String,
-			popoutPosition: "bottom"
-		}
-	) : BdApi.React.createElement(BdApi.React.Fragment, null)) : BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Preview...")), BdApi.React.createElement(SelectorContent, { isSettings }, BdApi.React.createElement("div", { className: "colorwaysLoader-barContainer" }, BdApi.React.createElement("div", { className: "colorwaysLoader-bar", style: { height: loaderHeight } })), settings.selectorType === "multiple-selection" && BdApi.React.createElement(Forms.FormTitle, null, "Available"), BdApi.React.createElement(ScrollerThin, { style: { maxHeight: settings.selectorType === "multiple-selection" ? "50%" : isSettings ? "unset" : "450px" }, className: "ColorwaySelectorWrapper " + (viewMode === "grid" ? "ColorwaySelectorWrapper-grid" : "ColorwaySelectorWrapper-list") + (showLabelsInSelectorGridView ? " colorwaySelector-gridWithLabels" : "") }, activeColorwayObject.sourceType === "temporary" && settings.selectorType === "normal" && settings.selectorType === "normal" && BdApi.React.createElement(Tooltip, { text: "Temporary Colorway" }, ({ onMouseEnter, onMouseLeave }) => BdApi.React.createElement(
+		"Request Manager"
+	)) : BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { className: "colorwaysLoader-barContainer" }, BdApi.React.createElement("div", { className: "colorwaysLoader-bar", style: { height: loaderHeight } })), BdApi.React.createElement(Container, null, activeColorwayObject.sourceType === "temporary" && settings.selectorType === "normal" && settings.selectorType === "normal" && BdApi.React.createElement(
 		"div",
 		{
-			className: viewMode === "grid" ? "discordColorway" : `${radioBarItem} ${radioBarItemFilled} discordColorway-listItem`,
+			className: "discordColorway",
 			id: "colorway-Temporary",
 			"aria-checked": activeColorwayObject.id === "Auto" && activeColorwayObject.source === null,
-			onMouseEnter: viewMode === "grid" ? onMouseEnter : () => {
-			},
-			onMouseLeave: viewMode === "grid" ? onMouseLeave : () => {
-			},
 			onClick: async () => {
-				betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), activeColorwayObject: { id: null, css: null, sourceType: null, source: null } });
-				setActiveColorwayObject({ id: null, css: null, sourceType: null, source: null });
+				DataStore.set("activeColorwayObject", nullColorwayObj);
+				setActiveColorwayObject(nullColorwayObj);
 				ColorwayCSS.remove();
 			}
 		},
-		viewMode === "list" && BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), activeColorwayObject.id === "Temporary Colorway" && activeColorwayObject.sourceType === "temporary" && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", fill: "currentColor" })),
 		BdApi.React.createElement("div", { className: "discordColorwayPreviewColorContainer" }, BdApi.React.createElement(
 			"div",
 			{
@@ -4554,73 +4720,96 @@ function Selector({
 				style: { backgroundColor: "var(--background-tertiary)" }
 			}
 		)),
-		BdApi.React.createElement("div", { className: "colorwaySelectionCircle" }, activeColorwayObject.id === "Temporary Colorway" && activeColorwayObject.sourceType === "temporary" && viewMode === "grid" && BdApi.React.createElement(SelectionCircle, null)),
-		(showLabelsInSelectorGridView || viewMode === "list") && BdApi.React.createElement(Text, { className: "colorwayLabel" + (showLabelsInSelectorGridView && viewMode === "grid" ? " labelInGrid" : "") }, "Temporary Colorway"),
-		viewMode === "list" && BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(Tooltip, { text: "Add Colorway" }, ({ onMouseEnter: onMouseEnter2, onMouseLeave: onMouseLeave2 }) => BdApi.React.createElement(
-			Button,
+		BdApi.React.createElement("span", { className: "colorwayLabel" }, "Temporary Colorway"),
+		BdApi.React.createElement(
+			"button",
 			{
-				innerClassName: "colorwaysSettings-iconButtonInner",
-				size: Button.Sizes.ICON,
-				color: Button.Colors.PRIMARY,
-				look: Button.Looks.OUTLINED,
-				onMouseEnter: onMouseEnter2,
-				onMouseLeave: onMouseLeave2,
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
 				onClick: async (e) => {
 					e.stopPropagation();
-					const colorwayID = stringToHex(`#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--brand-500")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--background-primary")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--background-secondary")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--background-tertiary")))}`);
-					openModal((props) => BdApi.React.createElement(CreatorModal, { modalProps: props, colorwayID, loadUIProps: loadUI }));
+					openModal((props) => BdApi.React.createElement(CreatorModal, { modalProps: props, colorwayID: `#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--brand-500")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--primary-600")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--primary-630")))},#${colorToHex(getHex(getComputedStyle(document.body).getPropertyValue("--primary-700")))}`, loadUIProps: loadUI }));
 				}
 			},
 			BdApi.React.createElement(PlusIcon, { width: 20, height: 20 })
-		)))
-	)), getComputedStyle(document.body).getPropertyValue("--os-accent-color") && ["all", "official"].includes(visibleSources) && settings.selectorType === "normal" && "auto".includes(searchValue.toLowerCase()) ? BdApi.React.createElement(Tooltip, { text: "Auto" }, ({ onMouseEnter, onMouseLeave }) => BdApi.React.createElement(
+		)
+	), getComputedStyle(document.body).getPropertyValue("--os-accent-color") && ["all", "official"].includes(visibleSources) && settings.selectorType === "normal" && "auto".includes(searchValue.toLowerCase()) ? BdApi.React.createElement(
 		"div",
 		{
-			className: viewMode === "grid" ? "discordColorway" : `${radioBarItem} ${radioBarItemFilled} discordColorway-listItem`,
+			className: "discordColorway",
 			id: "colorway-Auto",
 			"aria-checked": activeColorwayObject.id === "Auto" && activeColorwayObject.source === null,
-			onMouseEnter: viewMode === "grid" ? onMouseEnter : () => {
-			},
-			onMouseLeave: viewMode === "grid" ? onMouseLeave : () => {
-			},
 			onClick: async () => {
-				const activeAutoPreset = betterdiscord.Data.load("settings").activeAutoPreset;
-				if (activeColorwayObject.id === "Auto") {
-					betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), activeColorwayObject: { id: null, css: null, sourceType: null, source: null } });
-					setActiveColorwayObject({ id: null, css: null, sourceType: null, source: null });
-					ColorwayCSS.remove();
+				if (isManager) {
+					Toasts.show({
+						message: "Cannot use Auto colorway while on manager mode",
+						type: 2,
+						id: "colorways-manager-role-auto-colorway-error"
+					});
 				} else {
-					if (!activeAutoPreset) {
-						openModal((props) => BdApi.React.createElement(AutoColorwaySelector, { modalProps: props, onChange: (autoPresetId) => {
-							const demandedColorway = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[autoPresetId].preset();
-							ColorwayCSS.set(demandedColorway);
-							saveSettings({ activeColorwayObject: { id: "Auto", css: demandedColorway, sourceType: "online", source: null } });
-							setActiveColorwayObject({ id: "Auto", css: demandedColorway, sourceType: "online", source: null });
-						} }));
+					const activeAutoPreset = await DataStore.get("activeAutoPreset");
+					if (activeColorwayObject.id === "Auto") {
+						DataStore.set("activeColorwayObject", nullColorwayObj);
+						setActiveColorwayObject(nullColorwayObj);
+						ColorwayCSS.remove();
 					} else {
-						const autoColorway = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset].preset();
-						saveSettings({ activeColorwayObject: { id: "Auto", css: autoColorway, sourceType: "online", source: null } });
-						setActiveColorwayObject({ id: "Auto", css: autoColorway, sourceType: "online", source: null });
-						ColorwayCSS.set(autoColorway);
+						if (!activeAutoPreset) {
+							openModal((props) => BdApi.React.createElement(AutoColorwaySelector, { autoColorwayId: "", modalProps: props, onChange: (autoPresetId) => {
+								const demandedColorway = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[autoPresetId].preset();
+								ColorwayCSS.set(demandedColorway);
+								const newObj = {
+									id: "Auto",
+									css: demandedColorway,
+									sourceType: "online",
+									source: null,
+									colors: {
+										accent: colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6)
+									}
+								};
+								DataStore.set("activeColorwayObject", newObj);
+								setActiveColorwayObject(newObj);
+							} }));
+						} else {
+							const autoColorway = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[activeAutoPreset].preset();
+							const newObj = {
+								id: "Auto",
+								css: autoColorway,
+								sourceType: "online",
+								source: null,
+								colors: {
+									accent: colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6)
+								}
+							};
+							DataStore.set("activeColorwayObject", newObj);
+							setActiveColorwayObject(newObj);
+							ColorwayCSS.set(autoColorway);
+						}
 					}
 				}
 			}
 		},
-		viewMode === "list" && BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), activeColorwayObject.id === "Auto" && activeColorwayObject.source === null && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", fill: "currentColor" })),
 		BdApi.React.createElement("div", { className: "discordColorwayPreviewColorContainer", style: { backgroundColor: "var(--os-accent-color)" } }),
-		BdApi.React.createElement("div", { className: "colorwaySelectionCircle" }, activeColorwayObject.id === "Auto" && activeColorwayObject.source === null && viewMode === "grid" && BdApi.React.createElement(SelectionCircle, null)),
-		(showLabelsInSelectorGridView || viewMode === "list") && BdApi.React.createElement(Text, { className: "colorwayLabel" + (showLabelsInSelectorGridView && viewMode === "grid" ? " labelInGrid" : "") }, "Auto"),
+		BdApi.React.createElement("span", { className: "colorwayLabel" }, "Auto Colorway"),
 		BdApi.React.createElement(
-			"div",
+			"button",
 			{
-				className: "colorwayInfoIconContainer",
+				className: "colorwaysPillButton colorwaysPillButton-onSurface",
 				onClick: async (e) => {
 					e.stopPropagation();
-					openModal((props) => BdApi.React.createElement(AutoColorwaySelector, { modalProps: props, onChange: (autoPresetId) => {
+					const activeAutoPreset = await DataStore.get("activeAutoPreset");
+					openModal((props) => BdApi.React.createElement(AutoColorwaySelector, { autoColorwayId: activeAutoPreset, modalProps: props, onChange: (autoPresetId) => {
 						if (activeColorwayObject.id === "Auto") {
 							const demandedColorway = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6))[autoPresetId].preset();
-							saveSettings({ activeColorwayObject: { id: "Auto", css: demandedColorway, sourceType: "online", source: null } });
-							setActiveColorwayObject({ id: "Auto", css: demandedColorway, sourceType: "online", source: null });
+							const newObj = {
+								id: "Auto",
+								css: demandedColorway,
+								sourceType: "online",
+								source: null,
+								colors: {
+									accent: colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")).slice(0, 6)
+								}
+							};
+							DataStore.set("activeColorwayObject", newObj);
+							setActiveColorwayObject(newObj);
 							ColorwayCSS.set(demandedColorway);
 						}
 					} }));
@@ -4628,74 +4817,74 @@ function Selector({
 			},
 			BdApi.React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "12", height: "12", style: { margin: "4px" }, viewBox: "0 0 24 24", fill: "currentColor" }, BdApi.React.createElement("path", { d: "M 21.2856,9.6 H 24 v 4.8 H 21.2868 C 20.9976,15.5172 20.52,16.5576 19.878,17.4768 L 21.6,19.2 19.2,21.6 17.478,19.8768 c -0.9216,0.642 -1.9596,1.1208 -3.078,1.4088 V 24 H 9.6 V 21.2856 C 8.4828,20.9976 7.4436,20.5188 6.5232,19.8768 L 4.8,21.6 2.4,19.2 4.1232,17.4768 C 3.4812,16.5588 3.0024,15.5184 2.7144,14.4 H 0 V 9.6 H 2.7144 C 3.0024,8.4816 3.48,7.4424 4.1232,6.5232 L 2.4,4.8 4.8,2.4 6.5232,4.1232 C 7.4424,3.48 8.4816,3.0024 9.6,2.7144 V 0 h 4.8 v 2.7132 c 1.1184,0.2892 2.1564,0.7668 3.078,1.4088 l 1.722,-1.7232 2.4,2.4 -1.7232,1.7244 c 0.642,0.9192 1.1208,1.9596 1.4088,3.0768 z M 12,16.8 c 2.65092,0 4.8,-2.14908 4.8,-4.8 0,-2.650968 -2.14908,-4.8 -4.8,-4.8 -2.650968,0 -4.8,2.149032 -4.8,4.8 0,2.65092 2.149032,4.8 4.8,4.8 z" }))
 		)
-	)) : BdApi.React.createElement(BdApi.React.Fragment, null), (!getComputedStyle(document.body).getPropertyValue("--os-accent-color") || !["all", "official"].includes(visibleSources)) && !filters.filter((filter) => filter.id === visibleSources)[0].sources.map((source) => source.colorways).flat().length ? BdApi.React.createElement(
-		Forms.FormTitle,
-		{
-			style: {
-				marginBottom: 0,
-				width: "100%",
-				textAlign: "center"
-			}
-		},
-		"No colorways..."
-	) : BdApi.React.createElement(BdApi.React.Fragment, null), errorCode !== 0 && BdApi.React.createElement(
-		Forms.FormTitle,
-		{
-			style: {
-				marginBottom: 0,
-				width: "100%",
-				textAlign: "center"
-			}
-		},
-		errorCode === 1 && "Error: Invalid Colorway Source Format. If this error persists, contact the source author to resolve the issue."
-	), filters.map((filter) => filter.id).includes(visibleSources) && filters.filter((filter) => filter.id === visibleSources)[0].sources.map(({ colorways, source, type }) => colorways.map((colorway) => ({ ...colorway, sourceType: type, source, preset: colorway.preset || (colorway.isGradient ? "Gradient" : "Default") }))).flat().sort((a, b) => {
+	) : BdApi.React.createElement(BdApi.React.Fragment, null), (!getComputedStyle(document.body).getPropertyValue("--os-accent-color") || !["all", "official"].includes(visibleSources)) && !filters.filter((filter) => filter.id === visibleSources)[0].sources.map((source) => source.colorways).flat().length ? BdApi.React.createElement("span", { style: {
+		color: "#fff",
+		margin: "auto",
+		fontWeight: "bold",
+		display: "flex",
+		gap: "8px",
+		alignItems: "center"
+	} }, "No colorways...") : BdApi.React.createElement(BdApi.React.Fragment, null), errorCode !== 0 && BdApi.React.createElement("span", { style: {
+		color: "#fff",
+		margin: "auto",
+		fontWeight: "bold",
+		display: "flex",
+		gap: "8px",
+		alignItems: "center"
+	} }, errorCode === 1 && "Error: Invalid Colorway Source Format. If this error persists, contact the source author to resolve the issue."), filters.map((filter) => filter.id).includes(visibleSources) && filters.filter((filter) => filter.id === visibleSources)[0].sources.map(({ colorways, source, type }) => colorways.map((colorway) => ({ ...colorway, sourceType: type, source, preset: colorway.preset || (colorway.isGradient ? "Gradient" : "Default") }))).flat().sort((a, b) => {
 		switch (sortBy) {
-			case 1 /* NAME_AZ */:
+			case SortOptions.NAME_AZ:
 				return a.name.localeCompare(b.name);
-			case 2 /* NAME_ZA */:
+			case SortOptions.NAME_ZA:
 				return b.name.localeCompare(a.name);
-			case 3 /* SOURCE_AZ */:
+			case SortOptions.SOURCE_AZ:
 				return a.source.localeCompare(b.source);
-			case 4 /* SOURCE_ZA */:
+			case SortOptions.SOURCE_ZA:
 				return b.source.localeCompare(a.source);
 			default:
 				return a.name.localeCompare(b.name);
 		}
+	}).map((color) => color.colors ? color : { ...color, colors: ["accent", "primary", "secondary", "tertiary"] }).map((color) => {
+		const colors = {};
+		color.colors.map((colorStr) => colors[colorStr] = colorToHex(color[colorStr]));
+		return { ...color, colorObj: colors };
 	}).map((color) => {
-		const colors = color.colors || [
-			"accent",
-			"primary",
-			"secondary",
-			"tertiary"
-		];
-		return color.name.toLowerCase().includes(searchValue.toLowerCase()) ? BdApi.React.createElement(Tooltip, { text: color.name }, ({ onMouseEnter, onMouseLeave }) => {
-			return BdApi.React.createElement(
-				"div",
-				{
-					className: viewMode === "grid" ? "discordColorway" : `${radioBarItem} ${radioBarItemFilled} discordColorway-listItem`,
-					id: "colorway-" + color.name,
-					onMouseEnter: viewMode === "grid" ? onMouseEnter : () => {
-					},
-					onMouseLeave: viewMode === "grid" ? onMouseLeave : () => {
-					},
-					"aria-checked": activeColorwayObject.id === color.name && activeColorwayObject.source === color.source,
-					onClick: async () => {
-						if (settings.selectorType === "normal") {
-							const [
-								onDemandWays,
-								onDemandWaysTintedText,
-								onDemandWaysDiscordSaturation,
-								onDemandWaysOsAccentColor
-							] = getBulkSetting(
-								"onDemandWays",
-								"onDemandWaysTintedText",
-								"onDemandWaysDiscordSaturation",
-								"onDemandWaysOsAccentColor"
-							);
-							if (activeColorwayObject.id === color.name && activeColorwayObject.source === color.source) {
-								saveSettings({ activeColorwayObject: { id: null, css: null, sourceType: null, source: null } });
-								setActiveColorwayObject({ id: null, css: null, sourceType: null, source: null });
+		return color.name.toLowerCase().includes(searchValue.toLowerCase()) ? BdApi.React.createElement(
+			"div",
+			{
+				className: "discordColorway",
+				id: "colorway-" + color.name,
+				"aria-checked": activeColorwayObject.id === color.name && activeColorwayObject.source === color.source,
+				onClick: async () => {
+					if (settings.selectorType === "normal") {
+						const [
+							onDemandWays,
+							onDemandWaysTintedText,
+							onDemandWaysDiscordSaturation,
+							onDemandWaysOsAccentColor
+						] = await DataStore.getMany([
+							"onDemandWays",
+							"onDemandWaysTintedText",
+							"onDemandWaysDiscordSaturation",
+							"onDemandWaysOsAccentColor"
+						]);
+						if (activeColorwayObject.id === color.name && activeColorwayObject.source === color.source) {
+							if (isManager) {
+								sendColorway(nullColorwayObj);
+							} else {
+								DataStore.set("activeColorwayObject", nullColorwayObj);
+								setActiveColorwayObject(nullColorwayObj);
 								ColorwayCSS.remove();
+							}
+						} else {
+							if (isManager) {
+								const newObj = {
+									id: color.name,
+									sourceType: color.type,
+									source: color.source,
+									colors: color.colorObj
+								};
+								sendColorway(newObj);
 							} else {
 								if (onDemandWays) {
 									const demandedColorway = !color.isGradient ? generateCss(
@@ -4709,262 +4898,388 @@ function Selector({
 										color.name
 									) : gradientBase(colorToHex(onDemandWaysOsAccentColor ? getComputedStyle(document.body).getPropertyValue("--os-accent-color") : color.accent), onDemandWaysDiscordSaturation) + `:root:root {--custom-theme-background: linear-gradient(${color.linearGradient})}`;
 									ColorwayCSS.set(demandedColorway);
-									setActiveColorwayObject({ id: color.name, css: demandedColorway, sourceType: color.type, source: color.source });
-									saveSettings({ activeColorwayObject: { id: color.name, css: demandedColorway, sourceType: color.type, source: color.source } });
+									const newObj = {
+										id: color.name,
+										css: demandedColorway,
+										sourceType: color.type,
+										source: color.source,
+										colors: { ...color.colorObj, accent: colorToHex(onDemandWaysOsAccentColor ? getComputedStyle(document.body).getPropertyValue("--os-accent-color") : color.accent).slice(0, 6) }
+									};
+									setActiveColorwayObject(newObj);
+									DataStore.set("activeColorwayObject", newObj);
 								} else {
 									ColorwayCSS.set(color["dc-import"]);
-									setActiveColorwayObject({ id: color.name, css: color["dc-import"], sourceType: color.type, source: color.source });
-									saveSettings({ activeColorwayObject: { id: color.name, css: color["dc-import"], sourceType: color.type, source: color.source } });
+									const newObj = {
+										id: color.name,
+										css: color["dc-import"],
+										sourceType: color.type,
+										source: color.source,
+										colors: color.colorObj
+									};
+									setActiveColorwayObject(newObj);
+									DataStore.set("activeColorwayObject", newObj);
 								}
 							}
 						}
-						if (settings.selectorType === "multiple-selection") {
+					}
+					if (settings.selectorType === "multiple-selection") {
+						if (selectedColorways.includes(color)) {
+							setSelectedColorways(selectedColorways.filter((c) => c !== color));
+						} else {
 							setSelectedColorways([...selectedColorways, color]);
 						}
 					}
-				},
-				viewMode === "list" && settings.selectorType === "normal" && BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), activeColorwayObject.id === color.name && activeColorwayObject.source === color.source && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
-				BdApi.React.createElement("div", { className: "discordColorwayPreviewColorContainer" }, !color.isGradient ? colors.map((colorItm) => BdApi.React.createElement(
-					"div",
-					{
-						className: "discordColorwayPreviewColor",
-						style: {
-							backgroundColor: color[colorItm]
-						}
-					}
-				)) : BdApi.React.createElement(
-					"div",
-					{
-						className: "discordColorwayPreviewColor",
-						style: {
-							background: `linear-gradient(${color.linearGradient})`
-						}
-					}
-				)),
-				settings.selectorType === "normal" && BdApi.React.createElement("div", { className: "colorwaySelectionCircle" }, activeColorwayObject.id === color.name && activeColorwayObject.source === color.source && viewMode === "grid" && BdApi.React.createElement(SelectionCircle, null)),
-				(showLabelsInSelectorGridView || viewMode === "list") && BdApi.React.createElement(Text, { className: "colorwayLabel" + (showLabelsInSelectorGridView && viewMode === "grid" ? " labelInGrid" : "") }, color.name),
-				settings.selectorType === "normal" && BdApi.React.createElement(
-					"div",
-					{
-						className: "colorwayInfoIconContainer",
-						onClick: (e) => {
-							e.stopPropagation();
-							openModal((props) => BdApi.React.createElement(
-								ColorwayInfoModal,
-								{
-									modalProps: props,
-									colorway: color,
-									loadUIProps: loadUI
-								}
-							));
-						}
-					},
-					BdApi.React.createElement(
-						"svg",
-						{
-							xmlns: "http://www.w3.org/2000/svg",
-							width: "20",
-							height: "20",
-							fill: "currentColor",
-							viewBox: "0 0 16 16"
-						},
-						BdApi.React.createElement("path", { d: "m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" })
-					)
-				),
-				viewMode === "list" && BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(Tooltip, { text: "Copy Colorway CSS" }, ({ onMouseEnter: onMouseEnter2, onMouseLeave: onMouseLeave2 }) => BdApi.React.createElement(
-					Button,
-					{
-						innerClassName: "colorwaysSettings-iconButtonInner",
-						size: Button.Sizes.ICON,
-						color: Button.Colors.PRIMARY,
-						look: Button.Looks.OUTLINED,
-						onMouseEnter: onMouseEnter2,
-						onMouseLeave: onMouseLeave2,
-						onClick: async (e) => {
-							e.stopPropagation();
-							Clipboard.copy(color["dc-import"]);
-							Toasts.show({
-								message: "Copied Colorway CSS Successfully",
-								type: 1,
-								id: "copy-colorway-css-notify"
-							});
-						}
-					},
-					BdApi.React.createElement(CodeIcon, { width: 20, height: 20 })
-				)), BdApi.React.createElement(Tooltip, { text: "Copy Colorway ID" }, ({ onMouseEnter: onMouseEnter2, onMouseLeave: onMouseLeave2 }) => BdApi.React.createElement(
-					Button,
-					{
-						innerClassName: "colorwaysSettings-iconButtonInner",
-						size: Button.Sizes.ICON,
-						color: Button.Colors.PRIMARY,
-						look: Button.Looks.OUTLINED,
-						onMouseEnter: onMouseEnter2,
-						onMouseLeave: onMouseLeave2,
-						onClick: async (e) => {
-							e.stopPropagation();
-							const colorwayIDArray = `${color.accent},${color.primary},${color.secondary},${color.tertiary}|n:${color.name}${color.preset ? `|p:${color.preset}` : ""}`;
-							const colorwayID = stringToHex(colorwayIDArray);
-							Clipboard.copy(colorwayID);
-							Toasts.show({
-								message: "Copied Colorway ID Successfully",
-								type: 1,
-								id: "copy-colorway-id-notify"
-							});
-						}
-					},
-					BdApi.React.createElement(IDIcon, { width: 20, height: 20 })
-				)), color.sourceType === "offline" && settings.selectorType !== "preview" && BdApi.React.createElement(Tooltip, { text: "Delete Colorway" }, ({ onMouseEnter: onMouseEnter2, onMouseLeave: onMouseLeave2 }) => BdApi.React.createElement(
-					Button,
-					{
-						innerClassName: "colorwaysSettings-iconButtonInner",
-						size: Button.Sizes.ICON,
-						color: Button.Colors.RED,
-						look: Button.Looks.OUTLINED,
-						onMouseEnter: onMouseEnter2,
-						onMouseLeave: onMouseLeave2,
-						onClick: async (e) => {
-							e.stopPropagation();
-							const oldStores = betterdiscord.Data.load("custom_colorways").filter((sourcee) => sourcee.name !== color.source);
-							const storeToModify = betterdiscord.Data.load("custom_colorways").filter((sourcee) => sourcee.name === color.source)[0];
-							const newStore = { name: storeToModify.name, colorways: storeToModify.colorways.filter((colorway) => colorway.name !== color.name) };
-							betterdiscord.Data.save("custom_colorways", [...oldStores, newStore]);
-							setCustomColorwayData([...oldStores, newStore].map((colorSrc) => ({ type: "offline", source: colorSrc.name, colorways: colorSrc.colorways })));
-							if (getSetting("activeColorwayObject").id === color.name) {
-								saveSettings({ activeColorwayObject: { id: null, css: null, sourceType: null, source: null } });
-								setActiveColorwayObject({ id: null, css: null, sourceType: null, source: null });
-								ColorwayCSS.remove();
-							}
-						}
-					},
-					BdApi.React.createElement(DeleteIcon, { width: 20, height: 20 })
-				)))
-			);
-		}) : BdApi.React.createElement(BdApi.React.Fragment, null);
-	})), settings.selectorType === "multiple-selection" && BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(Forms.FormTitle, { style: { marginTop: "8px" } }, "Selected"), BdApi.React.createElement(ScrollerThin, { style: { maxHeight: "50%" }, className: "ColorwaySelectorWrapper " + (viewMode === "grid" ? "ColorwaySelectorWrapper-grid" : "ColorwaySelectorWrapper-list") + (showLabelsInSelectorGridView ? " colorwaySelector-gridWithLabels" : "") }, selectedColorways.map((color, i) => {
-		const colors = color.colors || [
-			"accent",
-			"primary",
-			"secondary",
-			"tertiary"
-		];
-		return BdApi.React.createElement(Tooltip, { text: color.name }, ({ onMouseEnter, onMouseLeave }) => {
-			return BdApi.React.createElement(
+				}
+			},
+			BdApi.React.createElement("div", { className: "discordColorwayPreviewColorContainer" }, !color.isGradient ? Object.values(color.colorObj).map((colorStr) => BdApi.React.createElement(
 				"div",
 				{
-					className: viewMode === "grid" ? "discordColorway" : `${radioBarItem} ${radioBarItemFilled} discordColorway-listItem`,
-					id: "colorway-" + color.name,
-					onMouseEnter: viewMode === "grid" ? onMouseEnter : () => {
-					},
-					onMouseLeave: viewMode === "grid" ? onMouseLeave : () => {
-					},
-					"aria-checked": activeColorwayObject.id === color.name && activeColorwayObject.source === color.source,
-					onClick: () => setSelectedColorways(selectedColorways.filter((colorway, ii) => ii !== i))
+					className: "discordColorwayPreviewColor",
+					style: {
+						backgroundColor: `#${colorToHex(colorStr)}`
+					}
+				}
+			)) : BdApi.React.createElement(
+				"div",
+				{
+					className: "discordColorwayPreviewColor",
+					style: {
+						background: `linear-gradient(${color.linearGradient})`
+					}
+				}
+			)),
+			BdApi.React.createElement("span", { className: "colorwayLabel" }, color.name),
+			settings.selectorType === "normal" && BdApi.React.createElement(
+				"button",
+				{
+					className: "colorwaysPillButton colorwaysPillButton-onSurface",
+					onClick: (e) => {
+						e.stopPropagation();
+						openModal((props) => BdApi.React.createElement(
+							InfoModal,
+							{
+								modalProps: props,
+								colorway: color,
+								loadUIProps: loadUI
+							}
+						));
+					}
 				},
-				viewMode === "list" && BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), activeColorwayObject.id === color.name && activeColorwayObject.source === color.source && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
-				BdApi.React.createElement("div", { className: "discordColorwayPreviewColorContainer" }, !color.isGradient ? colors.map((colorItm) => BdApi.React.createElement(
-					"div",
+				BdApi.React.createElement(
+					"svg",
 					{
-						className: "discordColorwayPreviewColor",
-						style: {
-							backgroundColor: color[colorItm]
-						}
-					}
-				)) : BdApi.React.createElement(
-					"div",
-					{
-						className: "discordColorwayPreviewColor",
-						style: {
-							background: `linear-gradient(${color.linearGradient})`
-						}
-					}
-				)),
-				BdApi.React.createElement("div", { className: "colorwaySelectionCircle" }, activeColorwayObject.id === color.name && activeColorwayObject.source === color.source && viewMode === "grid" && BdApi.React.createElement(SelectionCircle, null)),
-				(showLabelsInSelectorGridView || viewMode === "list") && BdApi.React.createElement(Text, { className: "colorwayLabel" + (showLabelsInSelectorGridView && viewMode === "grid" ? " labelInGrid" : "") }, color.name),
-				viewMode === "list" && BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(Tooltip, { text: "Copy Colorway CSS" }, ({ onMouseEnter: onMouseEnter2, onMouseLeave: onMouseLeave2 }) => BdApi.React.createElement(
-					Button,
-					{
-						innerClassName: "colorwaysSettings-iconButtonInner",
-						size: Button.Sizes.ICON,
-						color: Button.Colors.PRIMARY,
-						look: Button.Looks.OUTLINED,
-						onMouseEnter: onMouseEnter2,
-						onMouseLeave: onMouseLeave2,
-						onClick: async (e) => {
-							e.stopPropagation();
-							Clipboard.copy(color["dc-import"]);
-							Toasts.show({
-								message: "Copied Colorway CSS Successfully",
-								type: 1,
-								id: "copy-colorway-css-notify"
-							});
-						}
+						xmlns: "http://www.w3.org/2000/svg",
+						width: "20",
+						height: "20",
+						fill: "currentColor",
+						viewBox: "0 0 16 16"
 					},
-					BdApi.React.createElement(CodeIcon, { width: 20, height: 20 })
-				)), BdApi.React.createElement(Tooltip, { text: "Copy Colorway ID" }, ({ onMouseEnter: onMouseEnter2, onMouseLeave: onMouseLeave2 }) => BdApi.React.createElement(
-					Button,
-					{
-						innerClassName: "colorwaysSettings-iconButtonInner",
-						size: Button.Sizes.ICON,
-						color: Button.Colors.PRIMARY,
-						look: Button.Looks.OUTLINED,
-						onMouseEnter: onMouseEnter2,
-						onMouseLeave: onMouseLeave2,
-						onClick: async (e) => {
-							e.stopPropagation();
-							const colorwayIDArray = `${color.accent},${color.primary},${color.secondary},${color.tertiary}|n:${color.name}${color.preset ? `|p:${color.preset}` : ""}`;
-							const colorwayID = stringToHex(colorwayIDArray);
-							Clipboard.copy(colorwayID);
-							Toasts.show({
-								message: "Copied Colorway ID Successfully",
-								type: 1,
-								id: "copy-colorway-id-notify"
-							});
+					BdApi.React.createElement("path", { d: "m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" })
+				)
+			),
+			BdApi.React.createElement(
+				"button",
+				{
+					className: "colorwaysPillButton colorwaysPillButton-onSurface",
+					onClick: async (e) => {
+						e.stopPropagation();
+						navigator.clipboard.writeText(color["dc-import"]);
+						Toasts.show({
+							message: "Copied Colorway CSS Successfully",
+							type: 1,
+							id: "copy-colorway-css-notify"
+						});
+					}
+				},
+				BdApi.React.createElement(CodeIcon, { width: 20, height: 20 })
+			),
+			BdApi.React.createElement(
+				"button",
+				{
+					className: "colorwaysPillButton colorwaysPillButton-onSurface",
+					onClick: async (e) => {
+						e.stopPropagation();
+						const colorwayIDArray = `${color.accent},${color.primary},${color.secondary},${color.tertiary}|n:${color.name}${color.preset ? `|p:${color.preset}` : ""}`;
+						const colorwayID = stringToHex(colorwayIDArray);
+						navigator.clipboard.writeText(colorwayID);
+						Toasts.show({
+							message: "Copied Colorway ID Successfully",
+							type: 1,
+							id: "copy-colorway-id-notify"
+						});
+					}
+				},
+				BdApi.React.createElement(IDIcon, { width: 20, height: 20 })
+			),
+			color.sourceType === "offline" && settings.selectorType !== "preview" && BdApi.React.createElement(
+				"button",
+				{
+					className: "colorwaysPillButton colorwaysPillButton-onSurface",
+					onClick: async (e) => {
+						e.stopPropagation();
+						const oldStores = (await DataStore.get("customColorways")).filter((sourcee) => sourcee.name !== color.source);
+						const storeToModify = (await DataStore.get("customColorways")).filter((sourcee) => sourcee.name === color.source)[0];
+						const newStore = { name: storeToModify.name, colorways: storeToModify.colorways.filter((colorway) => colorway.name !== color.name) };
+						DataStore.set("customColorways", [...oldStores, newStore]);
+						setCustomColorwayData([...oldStores, newStore].map((colorSrc) => ({ type: "offline", source: colorSrc.name, colorways: colorSrc.colorways })));
+						if ((await DataStore.get("activeColorwayObject")).id === color.name) {
+							DataStore.set("activeColorwayObject", nullColorwayObj);
+							setActiveColorwayObject(nullColorwayObj);
+							ColorwayCSS.remove();
 						}
-					},
-					BdApi.React.createElement(IDIcon, { width: 20, height: 20 })
-				)))
-			);
-		});
-	})))), !isSettings && settings.selectorType !== "preview" ? BdApi.React.createElement(ModalFooter, null, BdApi.React.createElement(
-		Button,
-		{
-			size: Button.Sizes.MEDIUM,
-			color: Button.Colors.PRIMARY,
-			look: Button.Looks.OUTLINED,
-			style: { marginLeft: "8px" },
-			onClick: () => openModal((props) => BdApi.React.createElement(ModalRoot, { ...props, size: "medium" }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Settings")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(SettingsModal, null))))
-		},
-		"Settings"
-	), BdApi.React.createElement(
-		Button,
-		{
-			size: Button.Sizes.MEDIUM,
-			color: Button.Colors.PRIMARY,
-			look: Button.Looks.OUTLINED,
-			onClick: () => modalProps.onClose()
-		},
-		"Close"
-	), BdApi.React.createElement(
-		Select,
-		{
-			className: "colorwaySelector-sources " + ButtonLooks.OUTLINED,
-			look: 1,
-			popoutClassName: "colorwaySelector-sourceSelect",
-			options: filters.map((filter) => {
-				return { label: filter.name, value: filter.id };
-			}),
-			select: (value) => setVisibleSources(value),
-			isSelected: (value) => visibleSources === value,
-			serialize: String,
-			popoutPosition: "top"
+						updateRemoteSources();
+					}
+				},
+				BdApi.React.createElement(DeleteIcon, { width: 20, height: 20 })
+			)
+		) : BdApi.React.createElement(BdApi.React.Fragment, null);
+	}))));
+}
+
+function OnDemandPage({
+	hasTheme = false
+}) {
+	const [onDemand, setOnDemand] = React.useState(false);
+	const [onDemandTinted, setOnDemandTinted] = React.useState(false);
+	const [onDemandDiscordSat, setOnDemandDiscordSat] = React.useState(false);
+	const [onDemandOsAccent, setOnDemandOsAccent] = React.useState(false);
+	const [theme, setTheme] = React.useState("discord");
+	React.useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
-	)) : BdApi.React.createElement(BdApi.React.Fragment, null));
+		load();
+	}, []);
+	async function loadUI() {
+		const [
+			onDemandWays,
+			onDemandWaysTintedText,
+			onDemandWaysDiscordSaturation,
+			onDemandWaysOsAccentColor
+		] = await DataStore.getMany([
+			"onDemandWays",
+			"onDemandWaysTintedText",
+			"onDemandWaysDiscordSaturation",
+			"onDemandWaysOsAccentColor"
+		]);
+		setOnDemand(onDemandWays);
+		setOnDemandTinted(onDemandWaysTintedText);
+		setOnDemandDiscordSat(onDemandWaysDiscordSaturation);
+		if (getComputedStyle(document.body).getPropertyValue("--os-accent-color") !== "") {
+			setOnDemandOsAccent(onDemandWaysOsAccentColor);
+		}
+	}
+	const cached_loadUI = React.useCallback(loadUI, []);
+	React.useEffect(() => {
+		cached_loadUI();
+	}, []);
+	function Container({ children }) {
+		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
+	}
+	return BdApi.React.createElement(Container, null, BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement(
+		Switch,
+		{
+			label: "Enable Colorways On Demand",
+			id: "onDemandWays",
+			value: onDemand,
+			onChange: (v) => {
+				setOnDemand(v);
+				DataStore.set("onDemandWays", v);
+			}
+		}
+	), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Always utilise the latest of what DiscordColorways has to offer. CSS is being directly generated on the device and gets applied in the place of the normal import/CSS given by the colorway.")), BdApi.React.createElement(Setting, { divider: true, disabled: !onDemand }, BdApi.React.createElement(
+		Switch,
+		{
+			label: "Use tinted text",
+			id: "onDemandWaysTintedText",
+			value: onDemandTinted,
+			onChange: (v) => {
+				setOnDemandTinted(v);
+				DataStore.set("onDemandWaysTintedText", v);
+			}
+		}
+	)), BdApi.React.createElement(Setting, { divider: true, disabled: !onDemand }, BdApi.React.createElement(
+		Switch,
+		{
+			label: "Use Discord's saturation",
+			id: "onDemandWaysDiscordSaturation",
+			value: onDemandDiscordSat,
+			onChange: (v) => {
+				setOnDemandDiscordSat(v);
+				DataStore.set("onDemandWaysDiscordSaturation", v);
+			}
+		}
+	)), BdApi.React.createElement(Setting, { disabled: !onDemand || !getComputedStyle(document.body).getPropertyValue("--os-accent-color") }, BdApi.React.createElement(
+		Switch,
+		{
+			label: "Use Operating System's Accent Color",
+			id: "onDemandWaysOsAccentColor",
+			value: onDemandOsAccent,
+			onChange: (v) => {
+				setOnDemandOsAccent(v);
+				DataStore.set("onDemandWaysOsAccentColor", v);
+			}
+		}
+	)));
+}
+
+async function defaultsLoader() {
+	const [
+		customColorways,
+		colorwaySourceFiles,
+		showColorwaysButton,
+		onDemandWays,
+		onDemandWaysTintedText,
+		onDemandWaysDiscordSaturation,
+		onDemandWaysOsAccentColor,
+		activeColorwayObject,
+		colorwaysPluginTheme,
+		colorwaysBoundManagers,
+		colorwaysManagerAutoconnectPeriod,
+		colorwaysManagerDoAutoconnect
+	] = await DataStore.getMany([
+		"customColorways",
+		"colorwaySourceFiles",
+		"showColorwaysButton",
+		"onDemandWays",
+		"onDemandWaysTintedText",
+		"onDemandWaysDiscordSaturation",
+		"onDemandWaysOsAccentColor",
+		"activeColorwayObject",
+		"colorwaysPluginTheme",
+		"colorwaysBoundManagers",
+		"colorwaysManagerAutoconnectPeriod",
+		"colorwaysManagerDoAutoconnect"
+	]);
+	const defaults = [
+		{
+			name: "colorwaysManagerAutoconnectPeriod",
+			value: colorwaysManagerAutoconnectPeriod,
+			default: 3e3
+		},
+		{
+			name: "colorwaysManagerDoAutoconnect",
+			value: colorwaysManagerDoAutoconnect,
+			default: true
+		},
+		{
+			name: "showColorwaysButton",
+			value: showColorwaysButton,
+			default: false
+		},
+		{
+			name: "onDemandWays",
+			value: onDemandWays,
+			default: false
+		},
+		{
+			name: "onDemandWaysTintedText",
+			value: onDemandWaysTintedText,
+			default: true
+		},
+		{
+			name: "onDemandWaysDiscordSaturation",
+			value: onDemandWaysDiscordSaturation,
+			default: false
+		},
+		{
+			name: "onDemandWaysOsAccentColor",
+			value: onDemandWaysOsAccentColor,
+			default: false
+		},
+		{
+			name: "colorwaysBoundManagers",
+			value: colorwaysBoundManagers,
+			default: []
+		},
+		{
+			name: "activeColorwayObject",
+			value: activeColorwayObject,
+			default: nullColorwayObj
+		},
+		{
+			name: "colorwaysPluginTheme",
+			value: colorwaysPluginTheme,
+			default: "discord"
+		}
+	];
+	defaults.forEach(({ name, value, default: def }) => {
+		if (!value) DataStore.set(name, def);
+	});
+	if (customColorways && Array.isArray(customColorways) && customColorways.length) {
+		if (typeof customColorways[0] !== "object" || !Object.keys(customColorways[0]).includes("colorways")) {
+			DataStore.set("customColorways", [{ name: "Custom", colorways: customColorways }]);
+		}
+	} else {
+		DataStore.set("customColorways", []);
+	}
+	if (colorwaySourceFiles) {
+		if (typeof colorwaySourceFiles[0] === "string") {
+			DataStore.set("colorwaySourceFiles", colorwaySourceFiles.map((sourceURL, i) => {
+				return { name: sourceURL === defaultColorwaySource ? "Project Colorway" : `Source #${i}`, url: sourceURL === "https://raw.githubusercontent.com/DaBluLite/ProjectColorway/master/index.json" ? defaultColorwaySource : sourceURL };
+			}));
+		}
+	} else {
+		DataStore.set("colorwaySourceFiles", [{
+			name: "Project Colorway",
+			url: defaultColorwaySource
+		}]);
+	}
+}
+
+function Tooltip({
+	children,
+	text,
+	position = "top"
+}) {
+	const [visible, setVisible] = React.useState(false);
+	const [pos, setPos] = React.useState({ x: 0, y: 0 });
+	const btn = React.useRef(null);
+	function showTooltip() {
+		setPos({
+			x: btn.current.children[0].getBoundingClientRect().x + btn.current.children[0].offsetWidth + 8,
+			y: btn.current.children[0].getBoundingClientRect().y
+		});
+		setVisible(true);
+	}
+	function onWindowUnfocused(e) {
+		e = e ? e : window.event;
+		var from = e.relatedTarget || e.toElement;
+		if (!from || from.nodeName == "HTML") {
+			setVisible(false);
+		}
+	}
+	React.useEffect(() => {
+		document.addEventListener("mouseout", onWindowUnfocused);
+		return () => {
+			document.removeEventListener("mouseout", onWindowUnfocused);
+		};
+	}, []);
+	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { ref: btn, style: {
+		display: "contents"
+	} }, children({
+		onMouseEnter: () => showTooltip(),
+		onMouseLeave: () => setVisible(false),
+		onClick: () => setVisible(false)
+	})), BdApi.React.createElement("div", { className: `colorwaysTooltip colorwaysTooltip-${position} ${!visible ? "colorwaysTooltip-hidden" : ""}`, style: {
+		top: `${pos.y}px`,
+		left: `${pos.x}px`
+	} }, BdApi.React.createElement("div", { className: "colorwaysTooltipPointer" }), BdApi.React.createElement("div", { className: "colorwaysTooltipContent" }, text)));
 }
 
 function ColorwaysButton() {
 	const [activeColorway, setActiveColorway] = React.useState("None");
-	const [visibility, setVisibility] = React.useState(betterdiscord.Data.load("settings").showInGuildBar);
-	const [isThin, setIsThin] = React.useState(betterdiscord.Data.load("settings").isButtonThin);
+	const [visibility, setVisibility] = React.useState(true);
+	const [isThin, setIsThin] = React.useState(false);
+	const [autoPreset, setAutoPreset] = React.useState("hueRotation");
+	React.useEffect(() => {
+		(async function() {
+			setVisibility(await DataStore.get("showColorwaysButton"));
+			setIsThin(await DataStore.get("useThinMenuButton"));
+			setAutoPreset(await DataStore.get("activeAutoPreset"));
+		})();
+	});
 	FluxDispatcher.subscribe("COLORWAYS_UPDATE_BUTTON_HEIGHT", ({ isTall }) => {
 		setIsThin(isTall);
 	});
@@ -4974,31 +5289,47 @@ function ColorwaysButton() {
 	return BdApi.React.createElement(
 		Tooltip,
 		{
-			text: BdApi.React.createElement(BdApi.React.Fragment, null, !isThin ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("span", null, "Colorways"), BdApi.React.createElement(Text, { variant: "text-xs/normal", style: { color: "var(--text-muted)", fontWeight: 500 } }, "Active Colorway: " + activeColorway)) : BdApi.React.createElement("span", null, "Active Colorway: " + activeColorway), getSetting("activeColorwayObject").id === "Auto" ? BdApi.React.createElement(Text, { variant: "text-xs/normal", style: { color: "var(--text-muted)", fontWeight: 500 } }, "Auto Preset: " + getAutoPresets()[betterdiscord.Data.load("settings").activeAutoPreset].name) : BdApi.React.createElement(BdApi.React.Fragment, null)),
-			position: "right",
-			tooltipContentClassName: "colorwaysBtn-tooltipContent"
+			text: BdApi.React.createElement(BdApi.React.Fragment, null, !isThin ? BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("span", null, "Colorways"), BdApi.React.createElement("span", { style: { color: "var(--text-muted)", fontWeight: 500, fontSize: 12 } }, "Active Colorway: " + activeColorway)) : BdApi.React.createElement("span", null, "Active Colorway: " + activeColorway), activeColorway === "Auto" ? BdApi.React.createElement("span", { style: { color: "var(--text-muted)", fontWeight: 500, fontSize: 12 } }, "Auto Preset: " + (getAutoPresets()[autoPreset].name || "None")) : BdApi.React.createElement(BdApi.React.Fragment, null)),
+			position: "right"
 		},
-		({ onMouseEnter, onMouseLeave, onClick }) => visibility ? BdApi.React.createElement("div", { className: "ColorwaySelectorBtnContainer" }, BdApi.React.createElement(
+		({ onMouseEnter, onMouseLeave, onClick }) => visibility || PluginProps.clientMod === "BetterDiscord" ? BdApi.React.createElement("div", { className: "ColorwaySelectorBtnContainer" }, BdApi.React.createElement(
 			"div",
 			{
 				className: "ColorwaySelectorBtn" + (isThin ? " ColorwaySelectorBtn_thin" : ""),
-				onMouseEnter: () => {
+				onMouseEnter: async () => {
 					onMouseEnter();
-					setActiveColorway(getSetting("activeColorwayObject").id || "None");
+					setActiveColorway((await DataStore.get("activeColorwayObject")).id || "None");
+					setAutoPreset(await DataStore.get("activeAutoPreset"));
 				},
 				onMouseLeave,
 				onClick: () => {
 					onClick();
-					openModal((props) => BdApi.React.createElement(Selector, { modalProps: props }));
+					openModal((props) => BdApi.React.createElement(Selector$1, { modalProps: props }));
 				}
 			},
-			isThin ? BdApi.React.createElement(Text, { variant: "text-xs/normal", style: { color: "var(--header-primary)", fontWeight: 700, fontSize: 9 } }, "Colorways") : BdApi.React.createElement(PalleteIcon, null)
+			isThin ? BdApi.React.createElement("span", { style: { color: "var(--header-primary)", fontWeight: 700, fontSize: 9 } }, "Colorways") : BdApi.React.createElement(PalleteIcon, null)
 		)) : BdApi.React.createElement(BdApi.React.Fragment, null)
 	);
 }
 
-const css = "/* stylelint-disable no-descending-specificity */\n/* stylelint-disable declaration-block-no-redundant-longhand-properties */\n/* stylelint-disable selector-id-pattern */\n/* stylelint-disable selector-class-pattern */\n@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-experiment);\n  	border-radius: 16px;\n}\n\n.discordColorway {\n  	width: 56px;\n  	cursor: pointer;\n  	display: flex;\n  	flex-direction: column;\n  	position: relative;\n  	align-items: center;\n  	transition: 170ms ease;\n}\n\n.discordColorway:hover {\n  	filter: brightness(.8);\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1.5px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorwayPreviewColor {\n  	width: 50%;\n  	height: 50%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(2)))>.discordColorwayPreviewColor {\n  	height: 100%;\n  	width: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(3)))>.discordColorwayPreviewColor {\n  	height: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(>.discordColorwayPreviewColor:nth-child(4)))>.discordColorwayPreviewColor:nth-child(3) {\n  	width: 100%;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 16px 28px;\n  	width: 100%;\n  	flex-wrap: wrap;\n  	padding: 2px;\n  	scrollbar-width: none !important;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal {\n  	width: 100% !important;\n  	min-width: 596px !important;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	max-width: 596px;\n  	overflow: visible !important;\n  	padding: 0 16px !important;\n}\n\n.ColorwaySelectorBtnContainer {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayInfoIconContainer {\n  	height: 22px;\n  	width: 22px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: -1px;\n  	left: -1px;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n  	color: var(--white-500);\n  	padding: 1px;\n  	box-sizing: border-box;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-experiment-560);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: .15s;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	box-sizing: border-box;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews>[class^=\"colorSwatch\"]>[class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews>.colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"])>.colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: center;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100%;\n  	height: 38px;\n  	border-radius: 3px;\n  	cursor: pointer;\n  	position: relative;\n  	transition: .15s;\n}\n\n.colorwayInfo-colorSwatch:hover {\n  	filter: brightness(.8);\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: auto;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed>:is(.colorwaysCreator-settingsList, .colorwayInfo-cssCodeblock),\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-wrapper {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: .2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: .48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: .15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 1 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n  	flex: 0 1 auto;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow: 0 1px 0 hsl(var(--primary-900-hsl)/20%), 0 1.5px 0 hsl(var(--primary-860-hsl)/5%), 0 2px 0 hsl(var(--primary-900-hsl)/5%);\n  	width: 100%;\n  	height: 32px;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels>.colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl)/30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition: transform .1s ease-out, opacity .1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwaySelector-search {\n  	width: 100%;\n}\n\n.colorwaySelector-sources {\n  	flex: 0 0 auto;\n  	margin-right: auto;\n  	color: var(--button-outline-primary-text);\n  	border-color: var(--button-outline-primary-border);\n}\n\n.colorwaySelector-sources:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: .3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1)*9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1)*5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: .15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: .6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1)*87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile .colorwaySelector-doublePillBar>.colorwaySelector-pillWrapper:first-child>.colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: .15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: .23s;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 8px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	align-items: center;\n}\n\n.discordColorway-listItem {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: start;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	line-height: 30px;\n}\n\n.colorwaysSettings-colorwaySourceLabelHeader {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	font-weight: 700;\n  	font-size: 16px;\n}\n\n.colorwaysSettings-colorwaySourceDesc {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: .2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: .15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary+.colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary+.colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary+.colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent+.colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwaySelector-searchPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: .625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: var(--brand-experiment);\n  	color: var(--white-500);\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 7.5px;\n  	border-radius: 4px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all .22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0,-107%,0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.dc-warning-card {\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n}\n\n/* stylelint-disable-next-line no-duplicate-selectors */\n.colorwaysPreview-modal {\n  	width: 90vw !important;\n  	height: 90vh !important;\n  	max-height: unset !important;\n}\n\n.colorwaysPresetPicker-content {\n  	padding: 16px;\n}\n\n.colorwaysPresetPicker {\n  	width: 600px;\n}\n\n.colorwaysCreator-setting {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	padding: 10px 18px;\n  	padding-right: 10px;\n  	cursor: pointer;\n  	align-items: center;\n}\n\n.colorwaysCreator-setting:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.dc-colorway-selector::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-appearance) center/contain no-repeat !important;\n  	mask: var(--si-appearance) center/contain no-repeat !important\n}\n\n.dc-colorway-settings::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-vencordsettings) center/contain no-repeat !important;\n  	mask: var(--si-vencordsettings) center/contain no-repeat !important\n}\n\n.dc-colorway-ondemand::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-vencordupdater) center/contain no-repeat !important;\n  	mask: var(--si-vencordupdater) center/contain no-repeat !important\n}\n\n.dc-colorway-sources-manager::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-instantinvites) center/contain no-repeat !important;\n  	mask: var(--si-instantinvites) center/contain no-repeat !important\n}\n\n.colorwaySourceModal {\n  	min-height: unset;\n}\n\n.colorwaySelector-sourceSelect {\n  	width: fit-content !important;\n}\n\n.dc-info-card {\n  	border-radius: 5px;\n  	border: 1px solid var(--blue-345);\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	display: flex;\n  	gap: 1em;\n  	flex-direction: column;\n}\n\n.theme-dark .dc-info-card {\n  	color: var(--white-500);\n}\n\n.theme-light .dc-info-card {\n  	color: var(--black-500);\n}\n\n.colorwaysSettings-sourceScroller {\n  	scrollbar-width: none;\n}\n\n.colorwaysSettings-sourceScroller::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwayMessage {\n  	padding: 20px;\n  	border: 1px solid;\n  	border-radius: 5px;\n  	display: flex;\n}\n\n.colorwayMessage-contents {\n  	display: flex;\n  	flex-direction: column;\n}\n\n.theme-dark .colorwayMessage {\n  	background: hsl(var(--primary-630-hsl)/60%);\n  	border-color: hsl(var(--primary-630-hsl)/90%);\n}\n\n.theme-light .colorwayMessage {\n  	background: hsl(var(--primary-100-hsl)/60%);\n  	border-color: hsl(var(--primary-200-hsl)/30%);\n}\n\n.colorwaySelector-sources_settings {\n  	margin-left: 8px;\n}\n\n.colorwaysLoadingModal,\n.colorwayInfo-cssModal {\n  	width: fit-content;\n  	height: fit-content;\n  	min-width: unset;\n  	min-height: unset;\n  	background: none;\n  	box-shadow: none !important;\n  	border: none;\n}\n\n.ColorwaySelectorWrapper-list {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 0;\n  	flex-wrap: nowrap;\n  	padding-bottom: 0;\n}\n\n.discordColorway-listItem .discordColorwayPreviewColorContainer {\n  	width: 30px;\n  	height: 30px;\n}\n\n.colorwayLabel.labelInGrid {\n  	max-height: 2rem;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	margin-top: 4px;\n  	text-align: center;\n}\n\n.discordColorway-listItem .colorwayInfoIconContainer {\n  	height: 28px;\n  	width: 28px;\n  	border-radius: 3px;\n  	position: static;\n  	opacity: 1;\n  	justify-content: center;\n  	display: flex;\n  	align-items: center;\n  	background: transparent;\n  	border: 1px solid var(--button-outline-primary-border);\n  	color: var(--button-outline-primary-text);\n  	transition: .15s;\n}\n\n.discordColorway-listItem .colorwayInfoIconContainer:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwayLabel:not(.labelInGrid) {\n  	margin-right: auto;\n  	margin-top: 0 !important;\n  	margin-left: .5rem;\n}\n\n.colorwaySelectionCircle {\n  	position: absolute;\n  	width: 56px;\n  	height: 56px;\n  	top: 0;\n  	left: 0;\n}\n\n.ColorwaySelectorWrapper-grid {\n  	margin-bottom: 16px;\n}\n\n.colorwaySelector-sorter {\n  	height: 50px;\n  	width: 100%;\n  	box-shadow: var(--elevation-low);\n  	margin-bottom: 8px;\n  	display: flex;\n}\n\n.colorwaySelector-sorter_selectedSpacer {\n  	width: 80px;\n  	height: 50px;\n}\n\n.colorwaySelector-sorter_text {\n  	line-height: 50px;\n  	margin: 0;\n}\n\n.colorwaySelector-sorter_name {\n  	margin-right: auto;\n  	cursor: pointer;\n}\n\n.colorwayPresetLabel {\n  	margin-right: 1rem;\n}\n\n.colorwayPreview-channel {\n  	margin: 10px;\n  	width: calc(100% - 20px);\n  	height: 8px;\n  	border-radius: 16px;\n}\n\n.dc-settings-tab-bar-item {\n  	margin-right: 32px;\n  	padding-bottom: 16px;\n  	margin-bottom: -2px;\n}\n\n.dc-settings-tab-bar {\n  	border-bottom: none;\n  	margin-bottom: 16px;\n}";
-
+const DataStore = {
+	get: async (key) => {
+		return getSetting(key);
+	},
+	set: async (key, value) => {
+		saveSettings({ [key]: value });
+	},
+	getMany: async (keys) => {
+		return getBulkSetting(...keys);
+	}
+};
+const PluginProps = {
+	pluginVersion: "6.1.0",
+	clientMod: "BetterDiscord",
+	UIVersion: "2.0.0",
+	creatorVersion: "1.20"
+};
+defaultsLoader();
 const guildStyles = Webpack.getModule(Filters.byKeys("guilds", "base"), { searchExports: false, defaultExport: true });
 const treeStyles = Webpack.getModule(Filters.byKeys("tree", "scroller"), { searchExports: false, defaultExport: true });
 const GuildsNav = Webpack.getModule(Filters.bySource("guildsnav"), { searchExports: true, defaultExport: true });
@@ -5034,45 +5365,53 @@ const triggerRerender = async () => {
 		console.warn("Unable to rerender guilds");
 	}
 };
-betterdiscord.Data.save("settings", Object.assign(
-	{},
-	{
-		activeAutoPreset: null,
-		showInGuildBar: false,
-		onDemandWays: false,
-		onDemandWaysTintedText: false,
-		onDemandWaysDiscordSaturation: false,
-		onDemandWaysOsAccentColor: false,
-		isButtonThin: false,
-		activeColorwayObject: { id: null, css: null, sourceType: null, source: null },
-		selectorViewMode: "grid",
-		showLabelsInSelectorGridView: false
-	},
-	betterdiscord.Data.load("settings")
-));
-if (getSetting("colorwayLists")) {
-	if (typeof getSetting("colorwayLists")[0] === "string") {
-		saveSettings({ colorwayLists: getSetting("colorwayLists").map((sourceURL, i) => {
-			return { name: sourceURL === defaultColorwaySource ? "Project Colorway" : `Source #${i}`, url: sourceURL };
-		}) });
-	}
-} else {
-	saveSettings({ colorwayLists: [{
-		name: "Project Colorway",
-		url: defaultColorwaySource
-	}] });
-}
-if (betterdiscord.Data.load("custom_colorways")) {
-	if (!betterdiscord.Data.load("custom_colorways")[0].colorways) {
-		betterdiscord.Data.save("custom_colorways", [{ name: "Custom", colorways: betterdiscord.Data.load("custom_colorways") }]);
-	}
-} else {
-	betterdiscord.Data.save("custom_colorways", []);
-}
 class DiscordColorways {
 	load() {
 	}
+	settingsSection = [
+		{
+			section: "DIVIDER"
+		},
+		{
+			section: "HEADER",
+			label: "Discord Colorways",
+			className: "vc-settings-header"
+		},
+		{
+			section: "ColorwaysSelector",
+			label: "Colorways",
+			element: () => BdApi.React.createElement(Selector, { hasTheme: true }),
+			className: "dc-colorway-selector"
+		},
+		{
+			section: "ColorwaysSettings",
+			label: "Settings",
+			element: () => BdApi.React.createElement(SettingsPage, { hasTheme: true }),
+			className: "dc-colorway-settings"
+		},
+		{
+			section: "ColorwaysSourceManager",
+			label: "Sources",
+			element: () => BdApi.React.createElement(SourceManager, { hasTheme: true }),
+			className: "dc-colorway-sources-manager"
+		},
+		{
+			section: "ColorwaysOnDemand",
+			label: "On-Demand",
+			element: () => BdApi.React.createElement(OnDemandPage, { hasTheme: true }),
+			className: "dc-colorway-ondemand"
+		},
+		{
+			section: "ColorwaysStore",
+			label: "Store",
+			element: () => BdApi.React.createElement(Store, { hasTheme: true }),
+			className: "dc-colorway-store"
+		}
+	];
 	async start() {
+		betterdiscord.DOM.addStyle(css$1);
+		betterdiscord.DOM.addStyle(css);
+		ColorwayCSS$1.set(getSetting("activeColorwayObject").css);
 		betterdiscord.Patcher.after(
 			GuildsNav,
 			"type",
@@ -5095,43 +5434,44 @@ class DiscordColorways {
 				});
 			}
 		);
-		betterdiscord.DOM.addStyle(css);
+		betterdiscord.DOM.addStyle(css$1 + css);
 		triggerRerender();
-		ColorwayCSS.set(getSetting("activeColorwayObject").css");
-	}
-	getToolboxActions() {
-		return {
-			"Change Colorway": () => openModal((props) => BdApi.React.createElement(Selector, { modalProps: props })),
-			"Open Colorway Creator": () => openModal((props) => BdApi.React.createElement(CreatorModal, { modalProps: props })),
-			"Open Color Stealer": () => openModal((props) => BdApi.React.createElement(ColorPicker, { modalProps: props })),
-			"Open Settings": () => openModal((props) => BdApi.React.createElement(ModalRoot, { ...props, size: "medium" }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Settings")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(SettingsModal, null)))),
-			"Open On-Demand Settings": () => openModal((props) => BdApi.React.createElement(ModalRoot, { ...props, size: "medium" }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Settings")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(SettingsModal, { tab: SettingsTab.OnDemand })))),
-			"Manage Colorway Sources": () => openModal((props) => BdApi.React.createElement(ModalRoot, { ...props, size: "medium" }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Settings")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(SettingsModal, { tab: SettingsTab.Sources })))),
-			"Open Colorway Store": () => openModal((props) => BdApi.React.createElement(ModalRoot, { ...props, size: "medium" }, BdApi.React.createElement(ModalHeader, { separator: false }, BdApi.React.createElement(Text, { variant: "heading-lg/semibold", tag: "h1" }, "Settings")), BdApi.React.createElement(ModalContent, null, BdApi.React.createElement(SettingsModal, { tab: SettingsTab.Store })))),
-			"Change Auto Colorway Preset": async () => {
-				openModal((props) => BdApi.React.createElement(AutoColorwaySelector, { modalProps: props, onChange: (autoPresetId) => {
-					if (getSetting("activeColorwayObject").id === "Auto") {
-						const demandedColorway = getAutoPresets(colorToHex(getComputedStyle(document.body).getPropertyValue("--os-accent-color")))[autoPresetId].preset();
-						saveSettings({ activeColorwayObject: { id: "Auto", css: demandedColorway, sourceType: "online", source: null } });
-						ColorwayCSS.set(demandedColorway);
-					}
-				} }));
-			}
-		};
-	}
-	getSettingsPanel() {
-		const elem = document.createElement("div");
-		ReactDOM.render(BdApi.React.createElement(SettingsModal, null), elem);
-		return elem;
+		connect();
 	}
 	stop() {
-		ColorwayCSS.remove();
+		ColorwayCSS$1.remove();
 		betterdiscord.DOM.removeStyle();
 		betterdiscord.Patcher.unpatchAll();
-		triggerRerender();
+		closeWS();
 	}
 }
 
-module.exports = DiscordColorways;
+Object.defineProperty(exports, 'useCallback', {
+		enumerable: true,
+		get: () => React.useCallback
+});
+Object.defineProperty(exports, 'useEffect', {
+		enumerable: true,
+		get: () => React.useEffect
+});
+Object.defineProperty(exports, 'useReducer', {
+		enumerable: true,
+		get: () => React.useReducer
+});
+Object.defineProperty(exports, 'useRef', {
+		enumerable: true,
+		get: () => React.useRef
+});
+Object.defineProperty(exports, 'useState', {
+		enumerable: true,
+		get: () => React.useState
+});
+exports.DataStore = DataStore;
+exports.FluxDispatcher = FluxDispatcher;
+exports.PluginProps = PluginProps;
+exports.Toasts = Toasts;
+exports["default"] = DiscordColorways;
+exports.openModal = openModal;
+exports.useStateFromStores = useStateFromStores;
 
 /*@end@*/
