@@ -1,7 +1,7 @@
 # DiscordColorways (by [Project Colorway](https://github.com/ProjectColorway/ProjectColorway))
 
 ## Before you read further below, let's address the main question: *What is a colorway?*
-Colorways are simple color schemes/themes for Discord, meant to expand the functionality of the built in light and dark themes, by offering more simple color choices, that aren't locked behind Nitro.
+Colorways are color-only themes for various apps, meant to enhance the user experience and create a more unified look between apps
 
 ### The Definitive way of styling Discord and select themes
 
