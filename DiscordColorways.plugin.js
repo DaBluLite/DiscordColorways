@@ -2,7 +2,7 @@
  * @name DiscordColorways
  * @author DaBluLite
  * @description A plugin that offers easy access to simple color schemes/themes for Discord, also known as Colorways
- * @version 6.3.0
+ * @version 6.4.0
  * @authorId 582170007505731594
  * @invite ZfPH6SDkMW
  */
@@ -31,22 +31,17 @@
 
 @else@*/
 
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-const betterdiscord = new BdApi("DiscordColorways");
-const React = BdApi.React;
-const ReactDOM = BdApi.ReactDOM;
-const colorwaysAPI = require('plugins/discordColorways/colorwaysAPI');
-const utils = require('plugins/discordColorways/utils');
+import { Webpack as Webpack$1, Data, DOM, Patcher } from 'betterdiscord';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
+export { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 
 function Spinner({ className, style }) {
 	return BdApi.React.createElement("div", { className: "colorwaysBtn-spinner" + (className ? ` ${className}` : ""), role: "img", "aria-label": "Loading", style }, BdApi.React.createElement("div", { className: "colorwaysBtn-spinnerInner" }, BdApi.React.createElement("svg", { className: "colorwaysBtn-spinnerCircular", viewBox: "25 25 50 50", fill: "currentColor" }, BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam3", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam colorwaysBtn-spinnerBeam2", cx: "50", cy: "50", r: "20" }), BdApi.React.createElement("circle", { className: "colorwaysBtn-spinnerBeam", cx: "50", cy: "50", r: "20" }))));
 }
 
 const Filters = {
-	...betterdiscord.Webpack.Filters,
+	...Webpack$1.Filters,
 	byName: (name) => {
 		return (target) => (target?.displayName ?? target?.constructor?.displayName) === name;
 	},
@@ -125,7 +120,7 @@ function removeListener(listener) {
 	return listeners.delete(listener);
 }
 const Webpack = {
-	...betterdiscord.Webpack,
+	...Webpack$1,
 	getLazy: (filter, options = {}) => {
 		const {
 			signal: abortSignal,
@@ -345,7 +340,7 @@ let TextArea;
 let Text;
 let Select;
 let SearchableSelect;
-exports.Slider = void 0;
+let Slider;
 let ButtonLooks;
 let Popout;
 let Dialog;
@@ -358,7 +353,7 @@ let FocusLock;
 let useToken;
 Webpack.getByKeys("open", "saveAccountChanges");
 ({ ...Webpack.getByKeys("MenuItem", "MenuSliderControl") });
-exports.ColorPicker = () => {
+let ColorPicker = () => {
 	return BdApi.React.createElement(Spinner, { className: "colorways-creator-module-warning" });
 };
 Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
@@ -373,7 +368,7 @@ Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
 		Text,
 		Select,
 		SearchableSelect,
-		Slider: exports.Slider,
+		Slider,
 		ButtonLooks,
 		TabBar: TabBar$1,
 		Popout,
@@ -386,9 +381,9 @@ Webpack.waitForModule(Filters.byKeys("FormItem", "Button")).then((m) => {
 	} = m);
 });
 Webpack.waitForModule(Filters.byStrings("showEyeDropper")).then(
-	(e) => exports.ColorPicker = e
+	(e) => ColorPicker = e
 );
-exports.UserStore = void 0;
+let UserStore;
 proxyLazy(
 	() => Webpack.getByKeys("openUserProfileModal", "closeUserProfileModal")
 );
@@ -411,7 +406,7 @@ function waitForStore(storeName, callback) {
 	);
 }
 waitForStore("DraftStore", (s) => s);
-waitForStore("UserStore", (s) => exports.UserStore = s);
+waitForStore("UserStore", (s) => UserStore = s);
 waitForStore(
 	"SelectedChannelStore",
 	(s) => s
@@ -454,340 +449,31 @@ function openModal(render, options, contextKey) {
 Webpack.waitForModule(Filters.byKeys("parseTopic")).then((m) => m);
 proxyLazy(() => Webpack.getByKeys("PreloadedUserSettingsActionCreators"));
 function saveSettings(settings) {
-	betterdiscord.Data.save("settings", { ...betterdiscord.Data.load("settings"), ...settings });
+	Data.save("settings", { ...Data.load("settings"), ...settings });
 }
 function getSetting(setting) {
-	return betterdiscord.Data.load("settings")[setting];
+	return Data.load("settings")[setting];
 }
 function getBulkSetting(...settings) {
-	return settings.map((setting) => betterdiscord.Data.load("settings")[setting]);
+	return settings.map((setting) => Data.load("settings")[setting]);
 }
 
-const css$1 = "/* stylelint-disable no-descending-specificity */\n/* stylelint-disable declaration-block-no-redundant-longhand-properties */\n/* stylelint-disable selector-id-pattern */\n/* stylelint-disable selector-class-pattern */\n@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n@import url(\"https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Edu+AU+VIC+WA+NT+Hand:wght@400..700&display=swap\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: 0.15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-500);\n  	border-radius: 16px;\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1.5px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorwayPreviewColor {\n  	width: 50%;\n  	height: 50%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(2)))\n  	> .discordColorwayPreviewColor {\n  	height: 100%;\n  	width: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(3)))\n  	> .discordColorwayPreviewColor {\n  	height: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(4)))\n  	> .discordColorwayPreviewColor:nth-child(3) {\n  	width: 100%;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 8px;\n  	width: 100%;\n  	scrollbar-width: none !important;\n  	flex-direction: column;\n  	padding: 0 16px !important;\n  	box-sizing: border-box;\n  	overflow: hidden auto;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal,\n.colorwayModal {\n  	width: 90% !important;\n  	height: 90% !important;\n  	border-radius: 8px;\n  	border: 1px solid #a6a6a6f0;\n  	display: flex;\n  	flex-direction: row;\n  	background-color: #090909;\n  	margin: 0 auto;\n  	pointer-events: all;\n  	position: relative;\n  	animation: show-modal 0.2s ease-in-out;\n}\n\n@keyframes reveal-modal {\n  	from {\n  			translate: 0 -20px;\n  	}\n  	to {\n  			translate: 0;\n  	}\n}\n@keyframes reveal-modal-backdrop {\n  	from {\n  			opacity: 0;\n  	}\n  	to {\n  			opacity: 0.75;\n  	}\n}\n\n.colorwaysModalBackdrop {\n  	background-color: #707070;\n  	opacity: 0.75;\n  	position: fixed;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	z-index: 1;\n  	transition: 0.4s ease;\n  	animation: reveal-modal-backdrop 0.4s ease;\n  	pointer-events: all;\n}\n\n.colorwayModal {\n  	flex-direction: column;\n}\n\n.colorwaySelectorModal.closing,\n.colorwayModal.closing,\n.colorwaysPreview-modal.closing,\n.colorwaysModal.closing {\n  	animation: close-modal 0.2s ease-in-out;\n  	transform: scale(0.5);\n  	opacity: 0;\n}\n\n.colorwaySelectorModal.hidden,\n.colorwayModal.hidden,\n.colorwaysPreview-modal.hidden,\n.colorwaysModal.hidden {\n  	animation: close-modal 0.2s ease-in-out;\n  	transform: scale(0.5);\n  	opacity: 0;\n}\n\n@keyframes show-modal {\n  	0% {\n  			transform: scale(0.7);\n  			opacity: 0;\n  	}\n  	75% {\n  			transform: scale(1.009);\n  			opacity: 1;\n  	}\n  	100% {\n  			transform: scale(1);\n  			opacity: 1;\n  	}\n}\n\n@keyframes close-modal {\n  	from {\n  			transform: scale(1);\n  			opacity: 1;\n  	}\n  	to {\n  			transform: scale(0.7);\n  			opacity: 0;\n  	}\n}\n\n.colorwaysSettingsDivider {\n  	width: 100%;\n  	height: 1px;\n  	border-top: thin solid #fff;\n  	margin-top: 20px;\n}\n\n.colorwaysSettings-switch {\n  	background-color: rgb(85, 87, 94);\n  	flex: 0 0 auto;\n  	position: relative;\n  	border-radius: 14px;\n  	width: 40px;\n  	height: 24px;\n  	cursor: pointer;\n  	transition: 0.15s ease;\n  	cursor: pointer;\n}\n\n.colorwaysSettings-switch.checked {\n  	background-color: #fff;\n}\n\n.colorwaySwitch-label {\n  	flex: 1;\n  	display: block;\n  	overflow: hidden;\n  	margin-top: 0;\n  	margin-bottom: 0;\n  	color: #fff;\n  	line-height: 24px;\n  	font-size: 16px;\n  	font-weight: 500;\n  	word-wrap: break-word;\n  	cursor: pointer;\n}\n\n.colorwaysNote {\n  	color: #fff;\n  	opacity: 0.5;\n}\n\n.colorwayModal-selectorHeader {\n  	display: flex;\n  	width: 100%;\n  	padding: 16px;\n  	padding-bottom: 8px;\n  	box-sizing: border-box;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwayModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 100%;\n}\n\n.colorwaySelectorSidebar-tab {\n  	font-family: bootstrap-icons;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 8px;\n  	cursor: pointer;\n  	transition: 0.2s ease;\n  	border: 1px solid transparent;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	font-size: 24px;\n}\n\n.colorwaysPillButton {\n  	padding: 4px 12px;\n  	border-radius: 16px;\n  	background-color: #101010;\n  	color: #fff;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n  	display: flex;\n  	gap: 0.5rem;\n  	justify-content: center;\n  	align-items: center;\n  	width: fit-content;\n  	height: 32px;\n}\n\n.colorwaysPillButton.colorwaysPillButton-onSurface {\n  	background-color: #1a1a1a;\n}\n\n.colorwaysPillButton.colorwaysPillButton-icon {\n  	padding: 4px;\n}\n\n.colorwaysPillButton:hover {\n  	background-color: #2a2a2a;\n}\n\n.colorwaySelectorSidebar-tab:hover {\n  	background-color: #2a2a2a;\n}\n\n.colorwaySelectorSidebar-tab.active {\n  	background-color: #0a0a0a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaySelectorSidebar {\n  	background-color: #101010;\n  	color: #fff;\n  	box-sizing: border-box;\n  	height: 100%;\n  	flex: 0 0 auto;\n  	padding: 16px;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	border-top-left-radius: 8px;\n  	border-bottom-left-radius: 8px;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 100%;\n  	overflow: visible !important;\n  	padding: 0 16px !important;\n}\n\n.colorwaysServerListItem {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayInfoIconContainer {\n  	height: 22px;\n  	width: 22px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: -1px;\n  	left: -1px;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n  	color: var(--white-500);\n  	padding: 1px;\n  	box-sizing: border-box;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-experiment-560);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: 0.15s;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	box-sizing: border-box;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorwayCreator-colorPreviews > [class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews > [class^=\"colorSwatch\"] > [class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews > .colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"]) > .colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: center;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100px;\n  	height: 38px;\n  	border-radius: 3px;\n  	cursor: pointer;\n  	position: relative;\n  	transition: 0.15s;\n}\n\n.colorwayInfo-colorSwatch:hover {\n  	filter: brightness(0.8);\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	border-radius: 8px;\n  	background-color: #1a1a1a;\n  	box-sizing: border-box;\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: hidden auto;\n  	scrollbar-width: none !important;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed > :is(.colorwaysCreator-settingsList, .colorwayInfo-cssCodeblock),\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n  	pointer-events: all;\n}\n\n.colorwaysPreview-modal > .colorwaysPreview-wrapper {\n  	height: 100%;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-wrapper {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: 0.2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: 0.48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: 0.15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 1 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n  	flex: 0 1 auto;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow:\n  			0 1px 0 hsl(var(--primary-900-hsl) / 20%),\n  			0 1.5px 0 hsl(var(--primary-860-hsl) / 5%),\n  			0 2px 0 hsl(var(--primary-900-hsl) / 5%);\n  	width: 100%;\n  	height: 32px;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-channels > .colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels > .colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl) / 30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition:\n  			transform 0.1s ease-out,\n  			opacity 0.1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwayTextBox {\n  	width: 100%;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	transition: 0.2s ease;\n  	border: 1px solid transparent;\n  	padding-left: 12px;\n  	color: #fff;\n  	height: 40px;\n  	box-sizing: border-box;\n}\n\n.colorwayTextBox:hover {\n  	background-color: #1a1a1a;\n}\n\n.colorwayTextBox:focus {\n  	background-color: #1a1a1a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaySelector-sources {\n  	flex: 0 0 auto;\n  	color: var(--button-outline-primary-text);\n  	border-color: var(--button-outline-primary-border);\n}\n\n.colorwaySelector-sources:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: 0.3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1) * 9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1) * 5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: 0.15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: 0.6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1) * 87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar > .colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar > .colorwaySelector-pillWrapper:first-child > .colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile\n  	.colorwaySelector-doublePillBar\n  	> .colorwaySelector-pillWrapper:first-child\n  	> .colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: 0.15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: 0.23s;\n}\n\n.colorwaysModalTab {\n  	padding: 16px;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 8px;\n  	gap: 5px;\n  	border-radius: 8px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	background-color: #101010;\n}\n\n.discordColorway {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: start;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n  	border: 1px solid transparent;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n}\n\n.discordColorway:hover {\n  	background-color: #2a2a2a;\n  	filter: brightness(0.8);\n}\n\n.discordColorway[aria-checked=\"true\"] {\n  	background-color: #2a2a2a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	line-height: 30px;\n}\n\n.colorwaysSettings-colorwaySourceLabelHeader {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	font-weight: 700;\n  	font-size: 16px;\n}\n\n.colorwaysModalSectionHeader,\n.colorwaysSettings-colorwaySourceLabel,\n.colorwaysSettings-colorwaySourceLabelHeader,\n.colorwaysSettings-colorwaySourceDesc {\n  	color: #fff;\n}\n\n.colorwaysSettings-colorwaySourceDesc {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: 0.2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: 0.15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary + .colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary + .colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary + .colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent + .colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n  	color: #fff;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwayTextBoxPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: 0.625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: #fff;\n  	color: #000;\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 7.5px;\n  	border-radius: 16px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all 0.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0, -107%, 0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.dc-warning-card {\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n}\n\n/* stylelint-disable-next-line no-duplicate-selectors */\n.colorwaysPreview-modal {\n  	width: 90vw !important;\n  	height: 90vh !important;\n  	max-height: unset !important;\n  	animation: show-modal 0.2s ease;\n}\n\n.colorwaysPresetPicker-content {\n  	padding: 16px;\n}\n\n.colorwaysPresetPicker {\n  	width: 600px;\n}\n\n.colorwaysCreator-setting {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	border-radius: 8px;\n  	background-color: #1a1a1a;\n  	box-sizing: border-box;\n  	padding: 10px 18px;\n  	padding-right: 10px;\n  	cursor: pointer;\n  	align-items: center;\n}\n\n.colorwaysCreator-setting:hover {\n  	background-color: #2a2a2a;\n}\n\n.dc-colorway-selector::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-appearance) center/contain no-repeat !important;\n  	mask: var(--si-appearance) center/contain no-repeat !important;\n}\n\n.dc-colorway-settings::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-vencordsettings) center/contain no-repeat !important;\n  	mask: var(--si-vencordsettings) center/contain no-repeat !important;\n}\n\n.dc-colorway-ondemand::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-vencordupdater) center/contain no-repeat !important;\n  	mask: var(--si-vencordupdater) center/contain no-repeat !important;\n}\n\n.dc-colorway-sources-manager::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-instantinvites) center/contain no-repeat !important;\n  	mask: var(--si-instantinvites) center/contain no-repeat !important;\n}\n\n.colorwaySourceModal {\n  	min-height: unset;\n}\n\n.colorwaySelector-sourceSelect {\n  	width: fit-content !important;\n}\n\n.dc-info-card {\n  	border-radius: 5px;\n  	border: 1px solid var(--blue-345);\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	display: flex;\n  	gap: 1em;\n  	flex-direction: column;\n}\n\n.theme-dark .dc-info-card {\n  	color: var(--white-500);\n}\n\n.theme-light .dc-info-card {\n  	color: var(--black-500);\n}\n\n.colorwaysSettings-sourceScroller {\n  	scrollbar-width: none;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	overflow: hidden auto;\n}\n\n.colorwaysScroller {\n  	scrollbar-width: none !important;\n  	overflow: hidden auto;\n}\n\n.colorwaysSettings-sourceScroller::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwayMessage {\n  	padding: 20px;\n  	border: 1px solid #a6a6a6f0;\n  	border-radius: 8px;\n  	background-color: #090909;\n  	display: flex;\n}\n\n.colorwayMessage-contents {\n  	display: flex;\n  	flex-direction: column;\n}\n\n.colorwaysLoadingModal,\n.colorwayInfo-cssModal {\n  	width: fit-content;\n  	height: fit-content;\n  	min-width: unset;\n  	min-height: unset;\n  	background: none;\n  	box-shadow: none !important;\n  	border: none;\n}\n\n.discordColorway .discordColorwayPreviewColorContainer {\n  	width: 30px;\n  	height: 30px;\n}\n\n.discordColorway .colorwayInfoIconContainer {\n  	height: 28px;\n  	width: 28px;\n  	border-radius: 3px;\n  	position: static;\n  	opacity: 1;\n  	justify-content: center;\n  	display: flex;\n  	align-items: center;\n  	background: transparent;\n  	border: 1px solid var(--button-outline-primary-border);\n  	color: var(--button-outline-primary-text);\n  	transition: 0.15s;\n}\n\n.discordColorway .colorwayInfoIconContainer:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwayLabel {\n  	margin-right: auto;\n  	margin-top: 0 !important;\n  	margin-left: 0.5rem;\n  	color: #dfdfdf;\n}\n\n.colorwaySelectionCircle {\n  	position: absolute;\n  	width: 56px;\n  	height: 56px;\n  	top: 0;\n  	left: 0;\n}\n\n.colorwaySelector-sorter {\n  	height: 50px;\n  	width: 100%;\n  	box-shadow: var(--elevation-low);\n  	margin-bottom: 8px;\n  	display: flex;\n}\n\n.colorwaySelector-sorter_selectedSpacer {\n  	width: 80px;\n  	height: 50px;\n}\n\n.colorwaySelector-sorter_text {\n  	line-height: 50px;\n  	margin: 0;\n}\n\n.colorwaySelector-sorter_name {\n  	margin-right: auto;\n  	cursor: pointer;\n}\n\n.colorwayPresetLabel {\n  	margin-right: 1rem;\n}\n\n.colorwayPreview-channel {\n  	margin: 10px;\n  	width: calc(100% - 20px);\n  	height: 8px;\n  	border-radius: 16px;\n}\n\n.colorwaysModal {\n  	border-radius: 16px;\n  	background-color: #000;\n  	color: #fff;\n  	height: fit-content;\n  	min-height: unset;\n  	width: fit-content;\n  	border: none;\n  	padding: 0;\n  	margin: 0;\n  	transition: 0.4s ease;\n  	animation: show-modal 0.4s ease;\n  	pointer-events: all;\n}\n\n.colorwaysModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 4px;\n  	padding: 16px;\n}\n\n.colorwaysModalContent-sourcePreview {\n  	padding-left: 0;\n  	padding-right: 0;\n}\n\n.colorwaysMenuTabs {\n  	width: 100%;\n  	height: 30px;\n  	padding-bottom: 8px;\n  	box-sizing: content-box;\n}\n\n.colorwaysMenuTab {\n  	color: #fff;\n  	text-decoration: none;\n  	padding: 4px 12px;\n  	border-radius: 32px;\n  	transition: 0.2s ease;\n  	margin-right: 8px;\n  	display: inline-block;\n}\n\n.colorwaySourceTab {\n  	box-sizing: border-box;\n  	width: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysMenuTab:hover {\n  	background-color: #1f1f1f;\n}\n\n.colorwaysMenuTab.active {\n  	color: #000;\n  	background-color: #fff;\n}\n\n.colorwaysModalFooter {\n  	border-top-left-radius: 8px;\n  	border-top-right-radius: 8px;\n  	border-bottom-left-radius: 16px;\n  	border-bottom-right-radius: 16px;\n  	padding: 8px;\n  	display: flex;\n  	flex-direction: row-reverse;\n  	background-color: #0a0a0a;\n  	width: calc(100% - 16px);\n  	gap: 8px;\n}\n\n.colorwaysModalFooter > .colorwaysPillButton {\n  	width: 100%;\n}\n\n.colorwaysModalHeader {\n  	margin: 0;\n  	font-weight: normal;\n  	font-size: 1.25em;\n  	padding: 16px;\n}\n\n.colorwaysModalSectionHeader {\n  	font-size: 14px;\n  	margin-bottom: 4px;\n  	display: block;\n}\n\n.colorwaysModalSectionError {\n  	color: red;\n  	font-style: italic;\n}\n\n.colorwayIDCard {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 1em;\n}\n\n.colorwaysContextMenu {\n  	border-radius: 8px;\n  	border: 1px solid #dfdfdf;\n  	background-color: #000;\n  	padding: 4px;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 4px;\n  	z-index: 5;\n}\n\n.colorwaysContextMenuItm {\n  	box-sizing: border-box;\n  	display: flex;\n  	justify-content: space-between;\n  	align-items: center;\n  	min-height: 32px;\n  	padding: 6px 8px;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	border: 1px solid transparent;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n  	color: #dfdfdf;\n}\n\n.colorwaysContextMenuItm:hover {\n  	background-color: #2a2a2a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaysRadioSelected {\n  	fill: #fff;\n}\n\n.colorwaysTooltip {\n  	background-color: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	color: var(--text-normal);\n  	pointer-events: none;\n  	border-radius: 5px;\n  	font-weight: 500;\n  	font-size: 14px;\n  	line-height: 16px;\n  	max-width: 190px;\n  	box-sizing: border-box;\n  	word-wrap: break-word;\n  	z-index: 1002;\n  	will-change: opacity, transform;\n  	transition:\n  			transform 0.1s ease,\n  			opacity 0.1s ease;\n  	position: fixed;\n}\n\n.colorwaysTooltip.colorwaysTooltip-hidden {\n  	transform: scale(0.95);\n  	opacity: 0;\n}\n\n.colorwaysTooltip-right {\n  	transform-origin: 0% 50%;\n}\n\n.colorwaysTooltipPointer {\n  	width: 0;\n  	height: 0;\n  	border: 0 solid transparent;\n  	border-width: 5px;\n  	pointer-events: none;\n  	border-top-color: var(--background-floating);\n}\n\n.colorwaysTooltip-right > .colorwaysTooltipPointer {\n  	position: absolute;\n  	right: 100%;\n  	top: 50%;\n  	margin-top: -5px;\n  	border-left-width: 5px;\n  	transform: rotate(90deg);\n}\n\n.colorwaysTooltipContent {\n  	padding: 8px 12px;\n  	overflow: hidden;\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n  	display: flex;\n  	flex-direction: column;\n}\n\n.colorwaysManagerConnectionMenu {\n  	transform: translateX(-20px);\n  	opacity: 0;\n  	border: 1px solid #a6a6a6f0;\n  	background-color: #090909;\n  	transition:\n  			transform 0.2s ease,\n  			opacity 0.2s ease;\n  	display: flex;\n  	flex-direction: column;\n  	padding: 8px 12px;\n  	color: #fff;\n  	pointer-events: none;\n  	border-radius: 8px;\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysManagerConnectionMenu.visible {\n  	opacity: 1;\n  	transform: none;\n  	pointer-events: all;\n}\n\n.colorwaysManagerConnectionValue {\n  	color: #80868e;\n  	font-weight: 500;\n  	font-size: 12;\n}\n\n.colorwaysManagerConnectionValue > b {\n  	color: #a0a6ae;\n}\n\n.colorwaysWordmarkFirstPart {\n  	font-family: var(--font-headline);\n  	font-size: 24px;\n  	color: var(--header-primary);\n  	line-height: 31px;\n  	margin-bottom: 0px;\n}\n\n.colorwaysWordmarkSecondPart {\n  	font-family: var(--font-display);\n  	font-size: 24px;\n  	background-color: var(--brand-500);\n  	padding: 0px 4px;\n  	border-radius: 4px;\n}\n\n.visual-refresh .colorwaysWordmarkSecondPart {\n  	border-radius: 8px;\n  	padding: 0px 8px;\n  	border: 1px solid var(--border-strong);\n  	font-family: \"Edu AU VIC WA NT Hand\", cursive;\n  	line-height: 32px;\n  	display: inline-block;\n}\n\n.visual-refresh .ColorwaySelectorBtn {\n  	width: 44px;\n  	height: 44px;\n}\n\n.colorwaysServerListItemPill {\n  	width: 4px;\n  	margin-left: -4px;\n  	height: 0px;\n  	position: absolute;\n  	top: 50%;\n  	left: 0;\n  	transform: translateY(-50%);\n  	background-color: var(--header-primary);\n  	border-radius: 0 4px 4px 0;\n  	transition: 0.2s ease-in-out;\n}\n\n.colorwaysServerListItemPill[data-status=\"hover\"],\n.colorwaysServerListItemPill[data-status=\"active\"] {\n  	margin-left: 0;\n  	height: 20px;\n}\n\n.colorwaysServerListItemPill[data-status=\"active\"] {\n  	height: 40px;\n}\n";
+const css$1 = "/* stylelint-disable no-descending-specificity */\n/* stylelint-disable declaration-block-no-redundant-longhand-properties */\n/* stylelint-disable selector-id-pattern */\n/* stylelint-disable selector-class-pattern */\n@import url(\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\");\n@import url(\"https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Edu+AU+VIC+WA+NT+Hand:wght@400..700&display=swap\");\n\n.ColorwaySelectorBtn {\n  	height: 48px;\n  	width: 48px;\n  	border-radius: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: 0.15s ease-out;\n  	background-color: var(--background-primary);\n  	cursor: pointer;\n  	color: var(--text-normal);\n}\n\n.ColorwaySelectorBtn:hover {\n  	background-color: var(--brand-500);\n  	border-radius: 16px;\n}\n\n.discordColorwayPreviewColorContainer {\n  	display: flex;\n  	flex-flow: wrap;\n  	flex-direction: row;\n  	overflow: hidden;\n  	border-radius: 50%;\n  	width: 56px;\n  	height: 56px;\n  	box-shadow: 0 0 0 1.5px var(--interactive-normal);\n  	box-sizing: border-box;\n}\n\n.discordColorwayPreviewColor {\n  	width: 50%;\n  	height: 50%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(2)))\n  	> .discordColorwayPreviewColor {\n  	height: 100%;\n  	width: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(3)))\n  	> .discordColorwayPreviewColor {\n  	height: 100%;\n}\n\n.discordColorwayPreviewColorContainer:not(:has(> .discordColorwayPreviewColor:nth-child(4)))\n  	> .discordColorwayPreviewColor:nth-child(3) {\n  	width: 100%;\n}\n\n.ColorwaySelectorWrapper {\n  	position: relative;\n  	display: flex;\n  	gap: 8px;\n  	width: 100%;\n  	scrollbar-width: none !important;\n  	flex-direction: column;\n  	box-sizing: border-box;\n  	overflow: hidden auto;\n}\n\n.ColorwaySelectorWrapper::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwaySelectorModal,\n.colorwayModal {\n  	width: 90% !important;\n  	height: 90% !important;\n  	border-radius: 12px;\n  	border: 1px solid #2a2a2a;\n  	display: flex;\n  	flex-direction: row;\n  	background-color: #090909;\n  	margin: 0 auto;\n  	pointer-events: all;\n  	position: relative;\n  	animation: show-modal 0.2s ease-in-out;\n}\n\n@keyframes reveal-modal {\n  	from {\n  			translate: 0 -20px;\n  	}\n  	to {\n  			translate: 0;\n  	}\n}\n@keyframes reveal-modal-backdrop {\n  	from {\n  			opacity: 0;\n  	}\n  	to {\n  			opacity: 0.75;\n  	}\n}\n\n.colorwaysModalBackdrop {\n  	background-color: #707070;\n  	opacity: 0.75;\n  	position: fixed;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	z-index: 1;\n  	transition: 0.4s ease;\n  	animation: reveal-modal-backdrop 0.4s ease;\n  	pointer-events: all;\n}\n\n.colorwayModal {\n  	flex-direction: column;\n}\n\n.colorwaySelectorModal.closing,\n.colorwayModal.closing,\n.colorwaysPreview-modal.closing,\n.colorwaysModal.closing {\n  	animation: close-modal 0.2s ease-in-out;\n  	transform: scale(0.5);\n  	opacity: 0;\n}\n\n.colorwaySelectorModal.hidden,\n.colorwayModal.hidden,\n.colorwaysPreview-modal.hidden,\n.colorwaysModal.hidden {\n  	animation: close-modal 0.2s ease-in-out;\n  	transform: scale(0.5);\n  	opacity: 0;\n}\n\n@keyframes show-modal {\n  	0% {\n  			transform: scale(0.7);\n  			opacity: 0;\n  	}\n  	75% {\n  			transform: scale(1.009);\n  			opacity: 1;\n  	}\n  	100% {\n  			transform: scale(1);\n  			opacity: 1;\n  	}\n}\n\n@keyframes close-modal {\n  	from {\n  			transform: scale(1);\n  			opacity: 1;\n  	}\n  	to {\n  			transform: scale(0.7);\n  			opacity: 0;\n  	}\n}\n\n.colorwaysSettingsDivider {\n  	width: 100%;\n  	height: 1px;\n  	border-top: thin solid #fff;\n  	margin-top: 20px;\n}\n\n.colorwaysSettings-switch {\n  	background-color: rgb(85, 87, 94);\n  	flex: 0 0 auto;\n  	position: relative;\n  	border-radius: 14px;\n  	width: 40px;\n  	height: 24px;\n  	cursor: pointer;\n  	transition: 0.15s ease;\n  	cursor: pointer;\n}\n\n.colorwaysSettings-switch.checked {\n  	background-color: #fff;\n}\n\n.colorwaySwitch-label {\n  	flex: 1;\n  	display: block;\n  	overflow: hidden;\n  	margin-top: 0;\n  	margin-bottom: 0;\n  	color: #fff;\n  	line-height: 24px;\n  	font-size: 16px;\n  	font-weight: 500;\n  	word-wrap: break-word;\n  	cursor: pointer;\n}\n\n.colorwaysNote {\n  	color: #fff;\n  	opacity: 0.5;\n}\n\n.colorwayModal-selectorHeader {\n  	display: flex;\n  	width: 100%;\n  	padding-bottom: 8px;\n  	box-sizing: border-box;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwayModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 100%;\n  	position: relative;\n  	overflow: hidden;\n  	border-radius: 0 4px 4px 0;\n}\n\n.colorwaySelectorSidebar-tab {\n  	font-family: bootstrap-icons;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 8px;\n  	cursor: pointer;\n  	transition: 0.2s ease;\n  	border: 1px solid transparent;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	font-size: 24px;\n}\n\n.colorwaysPillButton {\n  	padding: 4px 12px;\n  	border-radius: 16px;\n  	background-color: #101010;\n  	color: #fff;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n  	display: flex;\n  	gap: 0.5rem;\n  	justify-content: center;\n  	align-items: center;\n  	width: fit-content;\n  	height: 32px;\n}\n\n.colorwaysPillButton.colorwaysPillButton-onSurface {\n  	background-color: #1a1a1a;\n}\n\n.colorwaysPillButton.colorwaysPillButton-icon {\n  	padding: 4px;\n}\n\n.colorwaysPillButton:hover {\n  	background-color: #2a2a2a;\n}\n\n.colorwaySelectorSidebar-tab:hover {\n  	background-color: #2a2a2a;\n}\n\n.colorwaySelectorSidebar-tab.active {\n  	background-color: #0a0a0a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaysPageHeader {\n  	color: #fff;\n  	margin: 8px;\n  	font-weight: normal;\n  	padding-left: 16px;\n  	box-sizing: border-box;\n  	border-radius: 8px;\n  	background-color: #101010;\n  	display: flex;\n  	gap: 16px;\n  	align-items: center;\n  	height: 50px;\n  	flex-shrink: 0;\n}\n\n.colorwaySelectorSidebar {\n  	background-color: #101010;\n  	color: #fff;\n  	box-sizing: border-box;\n  	height: calc(100% - 16px);\n  	border-radius: 8px;\n  	flex: 0 0 auto;\n  	padding: 8px;\n  	margin: 8px;\n  	margin-right: 0;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	border-top-left-radius: 8px;\n  	border-bottom-left-radius: 8px;\n}\n\n.colorwaySelectorModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 100%;\n  	overflow: visible !important;\n  	padding: 0 16px !important;\n}\n\n.colorwaysServerListItem {\n  	position: relative;\n  	margin: 0 0 8px;\n  	display: flex;\n  	-webkit-box-pack: center;\n  	-ms-flex-pack: center;\n  	justify-content: center;\n  	width: 72px;\n}\n\n.colorwayInfoIconContainer {\n  	height: 22px;\n  	width: 22px;\n  	background-color: var(--brand-500);\n  	position: absolute;\n  	top: -1px;\n  	left: -1px;\n  	border-radius: 50%;\n  	opacity: 0;\n  	z-index: +1;\n  	color: var(--white-500);\n  	padding: 1px;\n  	box-sizing: border-box;\n}\n\n.colorwayInfoIconContainer:hover {\n  	background-color: var(--brand-experiment-560);\n}\n\n.discordColorway:hover .colorwayInfoIconContainer {\n  	opacity: 1;\n  	transition: 0.15s;\n}\n\n.colorwayCreator-swatch {\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	height: 50px;\n  	border-radius: 4px;\n  	box-sizing: border-box;\n  	border: none;\n  	width: 100%;\n  	position: relative;\n  	color: #fff;\n}\n\n.colorwayCreator-swatchName {\n  	color: currentcolor;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews {\n  	width: 100%;\n  	height: fit-content;\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	gap: 8px;\n  	position: relative;\n  	box-sizing: border-box;\n}\n\n.colorwayCreator-colorInput {\n  	width: 1px;\n  	height: 1px;\n  	opacity: 0;\n  	position: absolute;\n  	pointer-events: none;\n}\n\n.colorwayCreator-menuWrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	padding: 20px 16px !important;\n  	overflow: visible !important;\n  	min-height: unset;\n}\n\n.colorwayCreator-modal {\n  	width: 620px !important;\n  	max-width: 620px;\n  	max-height: unset !important;\n}\n\n.colorways-creator-module-warning {\n  	color: var(--brand-500);\n}\n\n.colorwayCreator-colorPreviews > [class^=\"colorSwatch\"],\n.colorwayCreator-colorPreviews > [class^=\"colorSwatch\"] > [class^=\"swatch\"] {\n  	width: 100%;\n  	border: none;\n  	position: relative;\n}\n\n.colorwaysPicker-colorLabel {\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	align-items: center;\n  	justify-content: center;\n  	pointer-events: none;\n}\n\n.colorwayCreator-colorPreviews > .colorSwatch-2UxEuG:has([fill=\"var(--primary-530)\"]) > .colorwaysPicker-colorLabel {\n  	color: var(--primary-530);\n}\n\n.colorwaySelector-noDisplay {\n  	display: none;\n}\n\n.colorwayInfo-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	color: var(--header-primary);\n}\n\n.colorwayInfo-colorSwatches {\n  	width: 100%;\n  	height: 46px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: center;\n  	margin: 12px 0;\n  	gap: 8px;\n}\n\n.colorwayInfo-colorSwatch {\n  	display: flex;\n  	width: 100px;\n  	height: 38px;\n  	border-radius: 3px;\n  	cursor: pointer;\n  	position: relative;\n  	transition: 0.15s;\n}\n\n.colorwayInfo-colorSwatch:hover {\n  	filter: brightness(0.8);\n}\n\n.colorwayInfo-row {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	margin-bottom: 4px;\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	justify-content: space-between;\n  	gap: 8px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwayInfo-css {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwayInfo-cssCodeblock {\n  	border-radius: 4px;\n  	border: 1px solid var(--background-accent);\n  	padding: 3px 6px;\n  	white-space: pre;\n  	max-height: 400px;\n  	overflow: auto;\n  	font-size: 0.875rem;\n  	line-height: 1.125rem;\n  	width: 100%;\n  	box-sizing: border-box;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar {\n  	width: 8px;\n  	height: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-corner {\n  	background-color: transparent;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb {\n  	background-color: var(--scrollbar-auto-thumb);\n  	min-height: 40px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-thumb,\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	border: 2px solid transparent;\n  	background-clip: padding-box;\n  	border-radius: 8px;\n}\n\n.colorwayInfo-cssCodeblock::-webkit-scrollbar-track {\n  	margin-bottom: 8px;\n}\n\n.colorwaysCreator-settingCat {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	border-radius: 8px;\n  	background-color: #1a1a1a;\n  	box-sizing: border-box;\n  	max-height: 250px;\n  	overflow: hidden overlay;\n}\n\n.colorwaysColorpicker-settingCat {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysColorpicker-search {\n  	width: 100%;\n}\n\n.colorwaysCreator-settingItm {\n  	display: flex;\n  	flex-direction: row;\n  	align-items: center;\n  	width: 100%;\n  	border-radius: 4px;\n  	cursor: pointer;\n  	box-sizing: border-box;\n  	padding: 8px;\n  	justify-content: space-between;\n}\n\n.colorwaysCreator-settingItm:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n.colorwaysCreator-settingsList .colorwaysCreator-preset {\n  	justify-content: start;\n  	gap: 8px;\n}\n\n.colorwaysCreator-settingsList {\n  	overflow: hidden auto;\n  	scrollbar-width: none !important;\n  	max-height: 185px;\n}\n\n.colorwaysCreator-settingCat-collapsed > :is(.colorwaysCreator-settingsList, .colorwayInfo-cssCodeblock),\n.colorwaysColorpicker-collapsed {\n  	display: none !important;\n}\n\n.colorwayColorpicker {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 20px 16px !important;\n  	width: 620px !important;\n  	min-height: unset;\n}\n\n.colorwaysCreator-noHeader {\n  	margin-top: 12px;\n  	margin-bottom: 12px;\n}\n\n.colorwaysCreator-noMinHeight {\n  	min-height: unset;\n  	height: fit-content;\n}\n\n.colorwaysPreview-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	width: 100%;\n  	height: 270px;\n  	flex: 1 0 auto;\n  	border-radius: 4px;\n  	overflow: hidden;\n}\n\n.colorwaysPreview-modal {\n  	max-width: unset !important;\n  	max-height: unset !important;\n  	width: fit-content;\n  	height: fit-content;\n  	pointer-events: all;\n}\n\n.colorwaysPreview-modal > .colorwaysPreview-wrapper {\n  	height: 100%;\n}\n\n.colorwaysPreview-titlebar {\n  	height: 22px;\n  	width: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-body {\n  	height: 100%;\n  	width: 100%;\n  	display: flex;\n}\n\n.colorwayPreview-guilds {\n  	width: 72px;\n  	height: 100%;\n  	display: flex;\n  	flex: 1 0 auto;\n  	padding-top: 4px;\n  	flex-direction: column;\n}\n\n.colorwayPreview-channels {\n  	width: 140px;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column-reverse;\n  	border-top-left-radius: 8px;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-channels {\n  	width: 240px;\n}\n\n.colorwayPreview-chat {\n  	width: 100%;\n  	height: 100%;\n  	display: flex;\n  	position: relative;\n  	flex-direction: column-reverse;\n}\n\n.colorwayPreview-userArea {\n  	width: 100%;\n  	height: 40px;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-userArea {\n  	height: 52px;\n}\n\n.colorwaysPreview {\n  	display: flex;\n  	flex-direction: column;\n  	padding: 10px;\n  	gap: 5px;\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	box-sizing: border-box;\n  	color: var(--header-secondary);\n  	overflow: hidden overlay;\n  	margin-bottom: 4px;\n}\n\n.colorwaysPreview-collapsed .colorwaysPreview-wrapper {\n  	display: none;\n}\n\n.colorwayInfo-lastCat,\n.colorwaysCreator-lastCat {\n  	margin-bottom: 12px;\n}\n\n.colorwayPreview-guild {\n  	width: 100%;\n  	margin-bottom: 8px;\n  	display: flex;\n  	justify-content: center;\n}\n\n.colorwayPreview-guildItem {\n  	cursor: pointer;\n  	width: 48px;\n  	height: 48px;\n  	border-radius: 50px;\n  	transition: 0.2s ease;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwayPreview-guildItem:hover {\n  	border-radius: 16px;\n}\n\n.colorwayPreview-guildSeparator {\n  	width: 32px;\n  	height: 2px;\n  	opacity: 0.48;\n  	border-radius: 1px;\n}\n\n.colorwayToolbox-listItem {\n  	align-items: center;\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	background-color: transparent !important;\n  	width: calc(564px / 4);\n  	cursor: default;\n  	float: left;\n  	box-sizing: border-box;\n  	margin: 0;\n  	padding: 0;\n}\n\n.colorwayToolbox-listItemSVG {\n  	padding: 19px;\n  	overflow: visible;\n  	border-radius: 50%;\n  	background-color: var(--background-tertiary);\n  	border: 1px solid transparent;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	transition: 0.15s ease;\n  	cursor: pointer;\n  	color: var(--interactive-normal);\n}\n\n.colorwayToolbox-listItem:hover {\n  	color: var(--interactive-normal) !important;\n}\n\n.colorwayToolbox-listItemSVG:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover) !important;\n}\n\n.colorwayToolbox-title {\n  	align-items: center;\n  	display: flex;\n  	text-transform: uppercase;\n  	margin-top: 2px;\n  	padding-bottom: 8px;\n  	margin-bottom: 0;\n}\n\n.colorwayToolbox-list {\n  	box-sizing: border-box;\n  	height: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 12px;\n  	overflow: hidden;\n}\n\n.colorwayPreview-chatBox {\n  	height: 32px;\n  	border-radius: 6px;\n  	margin: 8px;\n  	margin-bottom: 12px;\n  	margin-top: 0;\n  	flex: 1 1 auto;\n}\n\n.colorwayPreview-filler {\n  	width: 100%;\n  	height: 100%;\n  	flex: 0 1 auto;\n}\n\n.colorwayPreview-topShadow {\n  	box-shadow:\n  			0 1px 0 hsl(var(--primary-900-hsl) / 20%),\n  			0 1.5px 0 hsl(var(--primary-860-hsl) / 5%),\n  			0 2px 0 hsl(var(--primary-900-hsl) / 5%);\n  	width: 100%;\n  	height: 32px;\n  	font-family: var(--font-display);\n  	font-weight: 500;\n  	padding: 12px 16px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	display: flex;\n  	flex: 1 0 auto;\n}\n\n.colorwayPreview-channels > .colorwayPreview-topShadow {\n  	border-top-left-radius: 8px;\n}\n\n.colorwayPreview-channels > .colorwayPreview-topShadow:hover {\n  	background-color: hsl(var(--primary-500-hsl) / 30%);\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-topShadow {\n  	height: 48px;\n}\n\n.colorwaysPreview-wrapper:fullscreen .colorwayPreview-chatBox {\n  	height: 44px;\n  	border-radius: 8px;\n  	margin: 16px;\n  	margin-bottom: 24px;\n}\n\n.colorwaysBtn-tooltipContent {\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaySelector-headerIcon {\n  	box-sizing: border-box;\n  	width: 100%;\n  	height: 100%;\n  	transition:\n  			transform 0.1s ease-out,\n  			opacity 0.1s ease-out;\n  	color: var(--interactive-normal);\n}\n\n.colorwaySelector-header {\n  	align-items: center;\n  	justify-content: center;\n  	padding-bottom: 0;\n  	box-shadow: none !important;\n}\n\n.colorwayTextBox {\n  	width: 100%;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	transition: 0.2s ease;\n  	border: 1px solid transparent;\n  	padding-left: 12px;\n  	color: #fff;\n  	height: 40px;\n  	box-sizing: border-box;\n}\n\n.colorwayTextBox:hover {\n  	background-color: #1a1a1a;\n}\n\n.colorwayTextBox:focus {\n  	background-color: #1a1a1a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaySelector-sources {\n  	flex: 0 0 auto;\n  	color: var(--button-outline-primary-text);\n  	border-color: var(--button-outline-primary-border);\n}\n\n.colorwaySelector-sources:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwaySelector-headerBtn {\n  	position: absolute;\n  	top: 64px;\n  	right: 20px;\n}\n\n.theme-light .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-160) !important;\n}\n\n.theme-dark .colorwaySelector-pill_selected {\n  	border-color: var(--brand-500) !important;\n  	background-color: var(--brand-experiment-15a) !important;\n}\n\n.colorwaysTooltip-tooltipPreviewRow {\n  	display: flex;\n  	align-items: center;\n  	margin-top: 8px;\n}\n\n.colorwayCreator-colorPreview {\n  	width: 100%;\n  	border-radius: 4px;\n  	height: 50px;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n}\n\n.colorwaysCreator-colorPreviewItm .colorwayCreator-colorPreviews {\n  	padding: 0;\n  	background-color: transparent;\n  	border-radius: 0;\n}\n\n.colorwaysCreator-colorPreviewItm {\n  	flex-direction: column;\n  	align-items: start;\n}\n\n.colorwaysTooltip-header {\n  	background-color: var(--background-primary);\n  	padding: 2px 8px;\n  	border-radius: 16px;\n  	height: min-content;\n  	color: var(--header-primary);\n  	margin-bottom: 2px;\n  	display: inline-flex;\n  	margin-left: -4px;\n}\n\n.colorwaySelector-pillSeparator {\n  	height: 24px;\n  	width: 1px;\n  	background-color: var(--primary-400);\n}\n\n.colorwaysSelector-changelog {\n  	font-weight: 400;\n  	font-size: 20px;\n  	color: var(--header-secondary);\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n  	padding: 8px 12px;\n}\n\n.colorwaysChangelog-li {\n  	position: relative;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysChangelog-li::before {\n  	content: \"\";\n  	position: absolute;\n  	top: 10px;\n  	left: -15px;\n  	width: 6px;\n  	height: 6px;\n  	margin-top: -4px;\n  	margin-left: -3px;\n  	border-radius: 50%;\n  	opacity: 0.3;\n}\n\n.theme-dark .colorwaysChangelog-li::before {\n  	background-color: hsl(216deg calc(var(--saturation-factor, 1) * 9.8%) 90%);\n}\n\n.theme-light .colorwaysChangelog-li::before {\n  	background-color: hsl(223deg calc(var(--saturation-factor, 1) * 5.8%) 52.9%);\n}\n\n.ColorwaySelectorWrapper .colorwayToolbox-list {\n  	width: 100%;\n}\n\n.colorwaysToolbox-label {\n  	border-radius: 20px;\n  	box-sizing: border-box;\n  	color: var(--text-normal);\n  	transition: 0.15s ease;\n  	width: 100%;\n  	margin-left: 0;\n  	height: fit-content;\n  	text-align: center;\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: wrap;\n  	cursor: default;\n  	max-height: 2rem;\n  	padding: 0 8px;\n}\n\n.colorwaysSelector-changelogHeader {\n  	font-weight: 700;\n  	font-size: 16px;\n  	line-height: 20px;\n  	text-transform: uppercase;\n  	position: relative;\n  	display: flex;\n  	align-items: center;\n}\n\n.colorwaysSelector-changelogHeader::after {\n  	content: \"\";\n  	height: 1px;\n  	flex: 1 1 auto;\n  	margin-left: 4px;\n  	opacity: 0.6;\n  	background-color: currentcolor;\n}\n\n.colorwaysSelector-changelogHeader_added {\n  	color: var(--text-positive);\n}\n\n.colorwaysSelector-changelogHeader_fixed {\n  	color: hsl(359deg calc(var(--saturation-factor, 1) * 87.3%) 59.8%);\n}\n\n.colorwaysSelector-changelogHeader_changed {\n  	color: var(--text-warning);\n}\n\n.is-mobile .colorwaySelectorModal,\n.is-mobile .colorwayCreator-modal {\n  	width: 100vw !important;\n  	box-sizing: border-box;\n  	min-width: unset;\n  	border-radius: 0;\n  	height: 100vh;\n  	max-height: unset;\n  	border: none;\n}\n\n.is-mobile .colorwaySelectorModalContent {\n  	box-sizing: border-box;\n  	width: 100vw;\n}\n\n.is-mobile .colorwaySelector-doublePillBar {\n  	flex-direction: column-reverse;\n  	align-items: end;\n}\n\n.is-mobile .colorwaySelector-doublePillBar > .colorwaySelector-pillWrapper:first-child {\n  	width: 100%;\n  	gap: 4px;\n  	overflow-x: auto;\n  	justify-content: space-between;\n}\n\n.is-mobile .colorwaySelector-doublePillBar > .colorwaySelector-pillWrapper:first-child > .colorwaySelector-pill {\n  	border-radius: 0;\n  	border-top: none;\n  	border-left: none;\n  	border-right: none;\n  	background-color: transparent;\n  	width: 100%;\n  	justify-content: center;\n  	flex: 0 0 min-content;\n}\n\n.is-mobile\n  	.colorwaySelector-doublePillBar\n  	> .colorwaySelector-pillWrapper:first-child\n  	> .colorwaySelector-pillSeparator {\n  	display: none;\n}\n\n.is-mobile .layer-fP3xEz:has(.colorwaySelectorModal, .colorwayCreator-modal) {\n  	padding: 0;\n}\n\n.is-mobile .ColorwaySelectorWrapper {\n  	justify-content: space-around;\n  	gap: 10px;\n}\n\n#colorwaySelector-pill_closeSelector {\n  	display: none !important;\n}\n\n.is-mobile #colorwaySelector-pill_closeSelector {\n  	display: flex !important;\n}\n\n.colorwaysBtn-spinner {\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerInner {\n  	transform: rotate(280deg);\n  	position: relative;\n  	display: inline-block;\n  	width: 32px;\n  	height: 32px;\n  	contain: paint;\n}\n\n@keyframes spinner-spinning-circle-rotate {\n  	100% {\n  			transform: rotate(1turn);\n  	}\n}\n\n@keyframes spinner-spinning-circle-dash {\n  	0% {\n  			stroke-dasharray: 1, 200;\n  			stroke-dashoffset: 0;\n  	}\n\n  	50% {\n  			stroke-dasharray: 130, 200;\n  	}\n\n  	100% {\n  			stroke-dasharray: 130, 200;\n  			stroke-dashoffset: -124;\n  	}\n}\n\n.colorwaysBtn-spinnerCircular {\n  	animation: spinner-spinning-circle-rotate 2s linear infinite;\n  	height: 100%;\n  	width: 100%;\n}\n\n.colorwaysBtn-spinnerBeam {\n  	animation: spinner-spinning-circle-dash 2s ease-in-out infinite;\n  	stroke-dasharray: 1, 200;\n  	stroke-dashoffset: 0;\n  	fill: none;\n  	stroke-width: 6;\n  	stroke-miterlimit: 10;\n  	stroke-linecap: round;\n  	stroke: currentcolor;\n}\n\n.colorwaysBtn-spinnerBeam2 {\n  	stroke: currentcolor;\n  	opacity: 0.6;\n  	animation-delay: 0.15s;\n}\n\n.colorwaysBtn-spinnerBeam3 {\n  	stroke: currentcolor;\n  	opacity: 0.3;\n  	animation-delay: 0.23s;\n}\n\n.colorwaysModalTab {\n  	height: 100%;\n}\n\n.colorwaysSettings-colorwaySource {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	padding: 8px;\n  	gap: 5px;\n  	border-radius: 8px;\n  	box-sizing: border-box;\n  	align-items: center;\n  	background-color: #101010;\n}\n\n.discordColorway {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: start;\n  	padding: 0 8px;\n  	gap: 5px;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	box-sizing: border-box;\n  	min-height: 44px;\n  	align-items: center;\n  	border: 1px solid transparent;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n}\n\n.discordColorway:hover {\n  	background-color: #2a2a2a;\n  	filter: brightness(0.8);\n}\n\n.discordColorway[aria-checked=\"true\"] {\n  	background-color: #2a2a2a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaysSettings-modalRoot {\n  	min-width: 520px;\n}\n\n.colorwaysSettings-colorwaySourceLabel {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	line-height: 30px;\n}\n\n.colorwaysSettings-colorwaySourceLabelHeader {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n  	font-weight: 700;\n  	font-size: 16px;\n}\n\n.colorwaysModalSectionHeader,\n.colorwaysSettings-colorwaySourceLabel,\n.colorwaysSettings-colorwaySourceLabelHeader,\n.colorwaysSettings-colorwaySourceDesc {\n  	color: #fff;\n}\n\n.colorwaysSettings-colorwaySourceDesc {\n  	overflow: hidden;\n  	text-overflow: ellipsis;\n  	white-space: nowrap;\n  	flex-grow: 1;\n}\n\n.colorwaysSettings-iconButton {\n  	background-color: transparent !important;\n  	border-radius: 0;\n}\n\n.colorwaysSettings-iconButtonInner {\n  	display: flex;\n  	gap: 4px;\n  	align-items: center;\n}\n\n.colorwaysSettings-modalContent {\n  	margin: 8px 0;\n}\n\n@keyframes loading-bar {\n  	0% {\n  			left: 0;\n  			right: 100%;\n  			width: 0;\n  	}\n\n  	10% {\n  			left: 0;\n  			right: 75%;\n  			width: 25%;\n  	}\n\n  	90% {\n  			right: 0;\n  			left: 75%;\n  			width: 25%;\n  	}\n\n  	100% {\n  			left: 100%;\n  			right: 0;\n  			width: 0;\n  	}\n}\n\n.colorwaysLoader-barContainer {\n  	width: 100%;\n  	border-radius: var(--radius-round);\n  	border: 0;\n  	position: relative;\n  	padding: 0;\n}\n\n.colorwaysLoader-bar {\n  	position: absolute;\n  	border-radius: var(--radius-round);\n  	top: 0;\n  	right: 100%;\n  	bottom: 0;\n  	left: 0;\n  	background: var(--brand-500);\n  	width: 0;\n  	animation: loading-bar 2s linear infinite;\n  	transition: 0.2s ease;\n}\n\n.colorwaysSettingsSelector-wrapper {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem {\n  	gap: 8px;\n  	border-radius: 50px;\n  	padding: 12px 16px;\n  	background-color: var(--background-tertiary);\n  	transition: 0.15s ease;\n  	border: 1px solid transparent;\n  	color: var(--interactive-normal);\n}\n\n.colorwaysSettingsPage-wrapper .colorwayToolbox-listItem:hover {\n  	border-color: var(--brand-500);\n  	background-color: var(--brand-experiment-15a);\n  	color: var(--interactive-hover);\n}\n\n.colorwaysSettingsSelector-wrapper .colorwaySelector-doublePillBar {\n  	justify-content: start;\n}\n\n.colorwaysCreator-toolboxItm:hover {\n  	background-color: var(--brand-experiment) !important;\n}\n\n.colorwayCreator-colorPreview_primary + .colorwayCreator-colorPreview_primary,\n.colorwayCreator-colorPreview_secondary + .colorwayCreator-colorPreview_secondary,\n.colorwayCreator-colorPreview_tertiary + .colorwayCreator-colorPreview_tertiary,\n.colorwayCreator-colorPreview_accent + .colorwayCreator-colorPreview_accent {\n  	display: none;\n}\n\n.colorwaysConflictingColors-warning {\n  	width: 100%;\n  	text-align: center;\n  	justify-content: center;\n  	color: #fff;\n}\n\n.ColorwaySelectorBtn_thin {\n  	height: 21px !important;\n  	width: 56px !important;\n}\n\n.ColorwaySelectorBtn_thin:hover {\n  	border-radius: 8px;\n}\n\n.colorwayTextBoxPopout {\n  	display: none !important;\n}\n\n.colorways-badge {\n  	font-size: 0.625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	background: #fff;\n  	color: #000;\n  	flex: 0 0 auto;\n  	height: 15px;\n  	padding: 0 4px;\n  	margin-top: 7.5px;\n  	border-radius: 16px;\n}\n\n.hoverRoll {\n  	display: inline-block;\n  	vertical-align: top;\n  	cursor: default;\n  	text-align: left;\n  	box-sizing: border-box;\n  	position: relative;\n  	width: 100%;\n  	contain: paint;\n}\n\n.hoverRoll_hovered {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n  	opacity: 0;\n  	transform: translate3d(0, 107%, 0);\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	bottom: 0;\n  	right: 0;\n}\n\n.hoverRoll:hover .hoverRoll_hovered,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_hovered {\n  	transform: translateZ(0);\n  	opacity: 1;\n}\n\n.hoverRoll_normal {\n  	white-space: nowrap;\n  	text-overflow: ellipsis;\n  	overflow: hidden;\n  	display: block;\n  	transition: all 0.22s ease;\n  	transform-style: preserve-3d;\n  	pointer-events: none;\n  	width: 100%;\n}\n\n.hoverRoll:hover .hoverRoll_normal,\n.colorwaysSettings-colorwaySource:hover .hoverRoll_normal {\n  	transform: translate3d(0, -107%, 0);\n  	opacity: 0;\n  	user-select: none;\n}\n\n.dc-warning-card {\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	background-color: var(--info-warning-background);\n  	border-color: var(--info-warning-foreground);\n  	color: var(--info-warning-text);\n}\n\n/* stylelint-disable-next-line no-duplicate-selectors */\n.colorwaysPreview-modal {\n  	width: 90vw !important;\n  	height: 90vh !important;\n  	max-height: unset !important;\n  	animation: show-modal 0.2s ease;\n}\n\n.colorwaysPresetPicker-content {\n  	padding: 16px;\n}\n\n.colorwaysPresetPicker {\n  	width: 600px;\n}\n\n.colorwaysCreator-setting {\n  	display: flex;\n  	flex-direction: row;\n  	justify-content: space-between;\n  	border-radius: 8px;\n  	background-color: #1a1a1a;\n  	box-sizing: border-box;\n  	padding: 10px 18px;\n  	padding-right: 10px;\n  	cursor: pointer;\n  	align-items: center;\n}\n\n.colorwaysCreator-setting:hover {\n  	background-color: #2a2a2a;\n}\n\n.dc-colorway-selector::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-appearance) center/contain no-repeat !important;\n  	mask: var(--si-appearance) center/contain no-repeat !important;\n}\n\n.dc-colorway-settings::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-vencordsettings) center/contain no-repeat !important;\n  	mask: var(--si-vencordsettings) center/contain no-repeat !important;\n}\n\n.dc-colorway-sources-manager::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-instantinvites) center/contain no-repeat !important;\n  	mask: var(--si-instantinvites) center/contain no-repeat !important;\n}\n\n.dc-colorway-store::before {\n  	/* stylelint-disable-next-line property-no-vendor-prefix */\n  	-webkit-mask: var(--si-discovery) center/contain no-repeat !important;\n  	mask: var(--si-discovery) center/contain no-repeat !important;\n}\n\n.colorwaySourceModal {\n  	min-height: unset;\n}\n\n.colorwaySelector-sourceSelect {\n  	width: fit-content !important;\n}\n\n.dc-info-card {\n  	border-radius: 5px;\n  	border: 1px solid var(--blue-345);\n  	padding: 1em;\n  	margin-bottom: 1em;\n  	display: flex;\n  	gap: 1em;\n  	flex-direction: column;\n}\n\n.theme-dark .dc-info-card {\n  	color: var(--white-500);\n}\n\n.theme-light .dc-info-card {\n  	color: var(--black-500);\n}\n\n.colorwaysSettings-sourceScroller {\n  	scrollbar-width: none;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	overflow: hidden auto;\n}\n\n.colorwaysScroller {\n  	scrollbar-width: none !important;\n  	overflow: hidden auto;\n}\n\n.colorwaysSettings-sourceScroller::-webkit-scrollbar {\n  	width: 0;\n}\n\n.colorwayMessage {\n  	padding: 20px;\n  	border: 1px solid #a6a6a6f0;\n  	border-radius: 8px;\n  	background-color: #090909;\n  	display: flex;\n}\n\n.colorwayMessage-contents {\n  	display: flex;\n  	flex-direction: column;\n}\n\n.colorwaysLoadingModal,\n.colorwayInfo-cssModal {\n  	width: fit-content;\n  	height: fit-content;\n  	min-width: unset;\n  	min-height: unset;\n  	background: none;\n  	box-shadow: none !important;\n  	border: none;\n}\n\n.discordColorway .discordColorwayPreviewColorContainer {\n  	width: 30px;\n  	height: 30px;\n}\n\n.discordColorway .colorwayInfoIconContainer {\n  	height: 28px;\n  	width: 28px;\n  	border-radius: 3px;\n  	position: static;\n  	opacity: 1;\n  	justify-content: center;\n  	display: flex;\n  	align-items: center;\n  	background: transparent;\n  	border: 1px solid var(--button-outline-primary-border);\n  	color: var(--button-outline-primary-text);\n  	transition: 0.15s;\n}\n\n.discordColorway .colorwayInfoIconContainer:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n.colorwayLabel {\n  	margin-right: auto;\n  	margin-top: 0 !important;\n  	margin-left: 0.5rem;\n  	color: #dfdfdf;\n}\n\n.colorwaySelectionCircle {\n  	position: absolute;\n  	width: 56px;\n  	height: 56px;\n  	top: 0;\n  	left: 0;\n}\n\n.colorwaySelector-sorter {\n  	height: 50px;\n  	width: 100%;\n  	box-shadow: var(--elevation-low);\n  	margin-bottom: 8px;\n  	display: flex;\n}\n\n.colorwaySelector-sorter_selectedSpacer {\n  	width: 80px;\n  	height: 50px;\n}\n\n.colorwaySelector-sorter_text {\n  	line-height: 50px;\n  	margin: 0;\n}\n\n.colorwaySelector-sorter_name {\n  	margin-right: auto;\n  	cursor: pointer;\n}\n\n.colorwayPresetLabel {\n  	margin-right: 1rem;\n}\n\n.colorwayPreview-channel {\n  	margin: 10px;\n  	width: calc(100% - 20px);\n  	height: 8px;\n  	border-radius: 16px;\n}\n\n.colorwaysModal {\n  	border-radius: 16px;\n  	background-color: #000;\n  	color: #fff;\n  	height: fit-content;\n  	min-height: unset;\n  	width: fit-content;\n  	border: none;\n  	padding: 0;\n  	margin: 0;\n  	transition: 0.4s ease;\n  	animation: show-modal 0.4s ease;\n  	pointer-events: all;\n}\n\n.colorwaysModalContent {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 4px;\n  	padding: 16px;\n}\n\n.colorwaysModalContent-sourcePreview {\n  	padding-left: 0;\n  	padding-right: 0;\n}\n\n.colorwaysMenuTabs {\n  	width: 100%;\n  	height: 24px;\n}\n\n.colorwaysMenuTab {\n  	color: #fff;\n  	text-decoration: none;\n  	padding: 4px 12px;\n  	border-radius: 32px;\n  	transition: 0.2s ease;\n  	margin-right: 8px;\n  	display: inline-block;\n}\n\n.colorwayInnerTab {\n  	box-sizing: border-box;\n  	width: 100%;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 8px;\n  	background-color: #090909;\n  	height: calc(100% - 58px);\n  	padding: 8px;\n}\n\n.colorwaysMenuTab:hover {\n  	background-color: #1f1f1f;\n}\n\n.colorwaysMenuTab.active {\n  	color: #000;\n  	background-color: #fff;\n}\n\n.colorwaysModalFooter {\n  	border-top-left-radius: 8px;\n  	border-top-right-radius: 8px;\n  	border-bottom-left-radius: 16px;\n  	border-bottom-right-radius: 16px;\n  	padding: 8px;\n  	display: flex;\n  	flex-direction: row-reverse;\n  	background-color: #0a0a0a;\n  	width: calc(100% - 16px);\n  	gap: 8px;\n}\n\n.colorwaysModalFooter > .colorwaysPillButton {\n  	width: 100%;\n}\n\n.colorwaysModalHeader {\n  	margin: 0;\n  	font-weight: normal;\n  	font-size: 1.25em;\n  	padding: 16px;\n}\n\n.colorwaysModalSectionHeader {\n  	font-size: 14px;\n  	margin-bottom: 4px;\n  	display: block;\n}\n\n.colorwaysModalSectionError {\n  	color: red;\n  	font-style: italic;\n}\n\n.colorwayIDCard {\n  	display: flex;\n  	flex-direction: column;\n  	gap: 1em;\n}\n\n.colorwaysContextMenu {\n  	border-radius: 8px;\n  	border: 1px solid #dfdfdf;\n  	background-color: #000;\n  	padding: 4px;\n  	display: flex;\n  	flex-direction: column;\n  	gap: 4px;\n  	z-index: 5;\n}\n\n.colorwaysContextMenuItm {\n  	box-sizing: border-box;\n  	display: flex;\n  	justify-content: space-between;\n  	align-items: center;\n  	min-height: 32px;\n  	padding: 6px 8px;\n  	border-radius: 6px;\n  	background-color: #101010;\n  	border: 1px solid transparent;\n  	transition: 0.2s ease;\n  	cursor: pointer;\n  	color: #dfdfdf;\n}\n\n.colorwaysContextMenuItm:hover {\n  	background-color: #2a2a2a;\n  	border-color: #a6a6a6;\n}\n\n.colorwaysRadioSelected {\n  	fill: #fff;\n}\n\n.colorwaysTooltip {\n  	background-color: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	color: var(--text-normal);\n  	pointer-events: none;\n  	border-radius: 5px;\n  	font-weight: 500;\n  	font-size: 14px;\n  	line-height: 16px;\n  	max-width: 190px;\n  	box-sizing: border-box;\n  	word-wrap: break-word;\n  	z-index: 1002;\n  	will-change: opacity, transform;\n  	transition:\n  			transform 0.1s ease,\n  			opacity 0.1s ease;\n  	position: fixed;\n}\n\n.colorwaysTooltip.colorwaysTooltip-hidden {\n  	transform: scale(0.95);\n  	opacity: 0;\n}\n\n.colorwaysTooltip-right {\n  	transform-origin: 0% 50%;\n}\n\n.colorwaysTooltipPointer {\n  	width: 0;\n  	height: 0;\n  	border: 0 solid transparent;\n  	border-width: 5px;\n  	pointer-events: none;\n  	border-top-color: var(--background-floating);\n}\n\n.colorwaysTooltip-right > .colorwaysTooltipPointer {\n  	position: absolute;\n  	right: 100%;\n  	top: 50%;\n  	margin-top: -5px;\n  	border-left-width: 5px;\n  	transform: rotate(90deg);\n}\n\n.colorwaysTooltipContent {\n  	padding: 8px 12px;\n  	overflow: hidden;\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n  	display: flex;\n  	flex-direction: column;\n}\n\n.colorwaysManagerConnectionMenu {\n  	transform: translateX(-20px);\n  	opacity: 0;\n  	border: 1px solid #a6a6a6f0;\n  	background-color: #090909;\n  	transition:\n  			transform 0.2s ease,\n  			opacity 0.2s ease;\n  	display: flex;\n  	flex-direction: column;\n  	padding: 8px 12px;\n  	color: #fff;\n  	pointer-events: none;\n  	border-radius: 8px;\n  	font-weight: 600;\n  	font-size: 16px;\n  	line-height: 20px;\n}\n\n.colorwaysManagerConnectionMenu.visible {\n  	opacity: 1;\n  	transform: none;\n  	pointer-events: all;\n}\n\n.colorwaysManagerConnectionValue {\n  	color: #80868e;\n  	font-weight: 500;\n  	font-size: 12;\n}\n\n.colorwaysManagerConnectionValue > b {\n  	color: #a0a6ae;\n}\n\n.colorwaysWordmarkFirstPart {\n  	font-family: var(--font-headline);\n  	font-size: 24px;\n  	color: var(--header-primary);\n  	line-height: 31px;\n  	margin-bottom: 0px;\n}\n\n.colorwaysWordmarkSecondPart {\n  	font-family: var(--font-display);\n  	font-size: 24px;\n  	background-color: var(--brand-500);\n  	padding: 0px 4px;\n  	border-radius: 4px;\n}\n\n.visual-refresh .colorwaysWordmarkSecondPart {\n  	border-radius: 8px;\n  	padding: 0px 8px;\n  	border: 1px solid var(--border-strong);\n  	font-family: \"Edu AU VIC WA NT Hand\", cursive;\n  	line-height: 32px;\n  	display: inline-block;\n}\n\n.visual-refresh .ColorwaySelectorBtn {\n  	width: 44px;\n  	height: 44px;\n}\n\n.colorwaysServerListItemPill {\n  	width: 4px;\n  	margin-left: -4px;\n  	height: 0px;\n  	position: absolute;\n  	top: 50%;\n  	left: 0;\n  	transform: translateY(-50%);\n  	background-color: var(--header-primary);\n  	border-radius: 0 4px 4px 0;\n  	transition: 0.2s ease-in-out;\n}\n\n.colorwaysServerListItemPill[data-status=\"hover\"],\n.colorwaysServerListItemPill[data-status=\"active\"] {\n  	margin-left: 0;\n  	height: 20px;\n}\n\n.colorwaysServerListItemPill[data-status=\"active\"] {\n  	height: 40px;\n}\n\n.colorwaysManagerActive {\n  	color: #fff;\n  	margin: auto;\n  	font-weight: bold;\n  	display: flex;\n  	justify-content: center;\n  	gap: 8px;\n  	align-items: center;\n  	position: absolute;\n  	top: 0;\n  	left: 0;\n  	height: 100%;\n  	width: 100%;\n  	backdrop-filter: blur(16px);\n  	z-index: +5;\n}\n";
 
-const css = ".colorwaySelectorModal[data-theme=\"discord\"],\n.colorwayModal[data-theme=\"discord\"] {\n  	border: none;\n  	box-shadow: var(--legacy-elevation-border), var(--legacy-elevation-high);\n  	background-color: var(--modal-background);\n}\n\n[data-theme=\"discord\"] .colorwaysSettingsDivider {\n  	border-color: var(--background-modifier-accent);\n}\n\n[data-theme=\"discord\"] .colorwaySwitch-label,\n[data-theme=\"discord\"] .colorwaysNote {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switchCircle {\n  	fill: #fff !important;\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switch {\n  	background-color: rgb(128, 132, 142);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switch.checked {\n  	background-color: #23a55a;\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab {\n  	transition: none;\n  	border-radius: 4px;\n  	border: none;\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab.active {\n  	background-color: var(--background-modifier-selected);\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysPillButton {\n  	color: var(--white-500);\n  	background-color: var(--button-secondary-background);\n  	height: var(--custom-button-button-sm-height);\n  	min-width: var(--custom-button-button-sm-width);\n  	min-height: var(--custom-button-button-sm-height);\n  	width: auto;\n  	transition:\n  			background-color var(--custom-button-transition-duration) ease,\n  			color var(--custom-button-transition-duration) ease;\n  	position: relative;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	box-sizing: border-box;\n  	border: none;\n  	border-radius: 3px;\n  	font-size: 14px;\n  	font-weight: 500;\n  	line-height: 16px;\n  	padding: 2px 16px;\n  	-moz-user-select: none;\n  	user-select: none;\n}\n\n[data-theme=\"discord\"] .colorwaysPillButton:hover {\n  	background-color: var(--button-secondary-background-hover);\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar {\n  	border-top-left-radius: 4px;\n  	border-bottom-left-radius: 4px;\n  	background-color: var(--modal-footer-background);\n  	box-shadow: inset 0 1px 0 hsl(var(--primary-630-hsl) / 0.6);\n  	padding: 12px;\n}\n\n[data-theme=\"discord\"] .colorwayTextBox {\n  	border-radius: 3px;\n  	color: var(--text-normal);\n  	background-color: var(--input-background) !important;\n  	height: 40px;\n  	padding: 10px;\n  	transition: none;\n  	font-size: 16px;\n  	border: none;\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySource {\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	background-color: var(--background-secondary);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySource:hover {\n  	color: var(--interactive-active);\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .discordColorway {\n  	border-radius: 4px;\n  	transition: none;\n  	background-color: var(--background-secondary);\n  	border: none;\n}\n\n[data-theme=\"discord\"] .discordColorway:hover {\n  	filter: none;\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .discordColorway[aria-checked=\"true\"] {\n  	background-color: var(--background-modifier-selected);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabelHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceDesc {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorways-badge {\n  	height: 16px;\n  	padding: 0 4px;\n  	border-radius: 4px;\n  	margin-left: 4px;\n  	flex: 0 0 auto;\n  	background: var(--bg-brand);\n  	color: var(--white);\n  	font-size: 0.625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	font-weight: 600;\n  	font-size: 12px;\n  	line-height: 16px;\n}\n\n.colorwaysModal[data-theme=\"discord\"] {\n  	box-shadow: var(--legacy-elevation-border), var(--legacy-elevation-high);\n  	background-color: var(--modal-background);\n  	border-radius: 4px;\n  	display: flex;\n  	flex-direction: column;\n  	margin: 0 auto;\n  	pointer-events: all;\n  	position: relative;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTabs {\n  	padding-bottom: 16px;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab {\n  	padding: 0;\n  	padding-bottom: 16px;\n  	margin-right: 32px;\n  	margin-bottom: -2px;\n  	border-bottom: 2px solid transparent;\n  	transition: none;\n  	border-radius: 0;\n  	background-color: transparent;\n  	font-size: 16px;\n  	line-height: 20px;\n  	cursor: pointer;\n  	font-weight: 500;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab:hover {\n  	color: var(--interactive-hover);\n  	border-bottom-color: var(--brand-500);\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab.active {\n  	cursor: default;\n  	color: var(--interactive-active);\n  	border-bottom-color: var(--control-brand-foreground);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter {\n  	border-radius: 0 0 5px 5px;\n  	background-color: var(--modal-footer-background);\n  	padding: 16px;\n  	box-shadow: inset 0 1px 0 hsl(var(--primary-630-hsl) / 0.6);\n  	gap: 0;\n  	width: unset;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton {\n  	width: auto;\n  	height: var(--custom-button-button-md-height);\n  	min-width: var(--custom-button-button-md-width);\n  	min-height: var(--custom-button-button-md-height);\n  	transition:\n  			color var(--custom-button-transition-duration) ease,\n  			background-color var(--custom-button-transition-duration) ease,\n  			border-color var(--custom-button-transition-duration) ease;\n  	border: 1px solid var(--button-outline-primary-border);\n  	color: var(--button-outline-primary-text);\n  	margin-left: 8px;\n  	background-color: transparent;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton:active {\n  	background-color: var(--button-outline-primary-background-active);\n  	border-color: var(--button-outline-primary-border-active);\n  	color: var(--button-outline-primary-text-active);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface {\n  	color: var(--white-500);\n  	background-color: var(--brand-500);\n  	border: none;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface:hover {\n  	background-color: var(--brand-560);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface:active {\n  	background-color: var(--brand-600);\n}\n\n[data-theme=\"discord\"] .colorwaysModalHeader {\n  	box-shadow:\n  			0 1px 0 0 hsl(var(--primary-800-hsl) / 0.3),\n  			0 1px 2px 0 hsl(var(--primary-800-hsl) / 0.3);\n  	border-radius: 4px 4px 0 0;\n  	transition: box-shadow 0.1s ease-out;\n  	word-wrap: break-word;\n}\n\n[data-theme=\"discord\"] .colorwaysModalSectionHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabel,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabelHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceDesc {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorwaysCreator-setting,\n[data-theme=\"discord\"] .colorwaysCreator-settingCat {\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n}\n\n[data-theme=\"discord\"] .colorwaysCreator-setting:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenu {\n  	background: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	border-radius: 4px;\n  	padding: 6px 8px;\n  	border: none;\n  	gap: 0;\n  	min-width: 188px;\n  	max-width: 320px;\n  	box-sizing: border-box;\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm {\n  	border: none;\n  	transition: none;\n  	margin: 2px 0;\n  	border-radius: 2px;\n  	font-size: 14px;\n  	font-weight: 500;\n  	line-height: 18px;\n  	color: var(--interactive-normal);\n  	background-color: transparent;\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm:hover {\n  	background-color: var(--menu-item-default-hover-bg);\n  	color: var(--white);\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm:active {\n  	background-color: var(--menu-item-default-active-bg);\n  	color: var(--white);\n}\n\n[data-theme=\"discord\"] .colorwaysRadioSelected {\n  	fill: var(--control-brand-foreground-new);\n}\n\n[data-theme=\"discord\"] .colorwaysConflictingColors-warning {\n  	color: var(--text-normal);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionMenu {\n  	transition:\n  			transform 0.1s ease,\n  			opacity 0.1s ease !important;\n  	transform: scale(0.95);\n  	transform-origin: 0% 50%;\n  	background-color: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	color: var(--text-normal);\n  	border: none;\n  	border-radius: 5px;\n}\n\n.colorwayIDCard[data-theme=\"discord\"] > .colorwayMessage {\n  	border-radius: 5px;\n  	border: none;\n  	background-color: var(--background-secondary);\n}\n\n.theme-dark .colorwayIDCard[data-theme=\"discord\"] .colorwayMessage {\n  	background: hsl(var(--primary-630-hsl) / 60%);\n}\n\n.theme-light .colorwayIDCard[data-theme=\"discord\"] .colorwayMessage {\n  	background: hsl(var(--primary-100-hsl) / 60%);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionValue {\n  	color: var(--text-muted);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionValue > b {\n  	color: var(--text-normal);\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] {\n  	border-radius: 12px;\n  	background-color: var(--bg-base-primary);\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] > .colorwaySelectorSidebar {\n  	border-top-left-radius: 12px;\n  	border-bottom-left-radius: 12px;\n  	background-color: var(--bg-base-tertiary);\n  	margin-right: 0;\n  	border: 1px solid var(--border-subtle);\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] .colorwaySelectorSidebar-tab {\n  	border-radius: 8px;\n  	width: 44px;\n  	height: 44px;\n  	border: 1px solid transparent;\n  	transition:\n  			background-color 0.1s ease-in-out,\n  			border-color 0.1s ease-in-out;\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] .colorwaySelectorSidebar-tab.active {\n  	background: var(--bg-overlay-1, var(--bg-surface-raised));\n  	border-color: var(--border-faint);\n}\n\n.visual-refresh [data-theme=\"discord\"] .colorwaysPillButton,\n.visual-refresh [data-theme=\"discord\"] .discordColorway,\n.visual-refresh [data-theme=\"discord\"] .colorwaysSettings-colorwaySource {\n  	background: var(--bg-mod-faint);\n  	border-radius: 8px;\n  	transition:\n  			background-color 0.1s ease-in-out,\n  			border-color 0.1s ease-in-out;\n}\n\n.visual-refresh [data-theme=\"discord\"] .discordColorway {\n  	border: 1px solid transparent;\n}\n\n.visual-refresh [data-theme=\"discord\"] .colorwaysPillButton:hover,\n.visual-refresh [data-theme=\"discord\"] .discordColorway:hover,\n.visual-refresh [data-theme=\"discord\"] .colorwaysSettings-colorwaySource:hover {\n  	background: var(--bg-mod-subtle);\n}\n\n.visual-refresh [data-theme=\"discord\"] .discordColorway[aria-checked=\"true\"] {\n  	border-color: var(--border-faint);\n  	background: var(--bg-mod-strong);\n}\n\n.visual-refresh [data-theme=\"discord\"] .colorwayTextBox {\n  	background: var(--bg-overlay-3, var(--bg-mod-strong)) !important;\n  	border-radius: 8px;\n}\n\n[data-theme=\"discord\"] .colorwayLabel,\n[data-theme=\"discord\"] .colorwaysPillButton {\n  	color: var(--interactive-active);\n}\n";
+const css = ".colorwaySelectorModal[data-theme=\"discord\"],\n.colorwayModal[data-theme=\"discord\"] {\n  	border: none;\n  	box-shadow: var(--legacy-elevation-border), var(--legacy-elevation-high);\n  	background-color: var(--modal-footer-background);\n}\n\n[data-theme=\"discord\"] .colorwaysSettingsDivider {\n  	border-color: var(--background-modifier-accent);\n}\n\n[data-theme=\"discord\"] .colorwaySwitch-label,\n[data-theme=\"discord\"] .colorwaysNote {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switchCircle {\n  	fill: #fff !important;\n}\n\n[data-theme=\"discord\"] .colorwayInnerTab,\n.colorwayInnerTab[data-theme=\"discord\"] {\n  	background-color: var(--modal-background);\n  	border-top-left-radius: 4px;\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switch {\n  	background-color: rgb(128, 132, 142);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-switch.checked {\n  	background-color: #23a55a;\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab {\n  	transition: none;\n  	border-radius: 4px;\n  	border: none;\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab.active {\n  	background-color: var(--background-modifier-selected);\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar > .colorwaySelectorSidebar-tab:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysPillButton {\n  	color: var(--white-500);\n  	background-color: var(--button-secondary-background);\n  	height: var(--custom-button-button-sm-height);\n  	min-width: var(--custom-button-button-sm-width);\n  	min-height: var(--custom-button-button-sm-height);\n  	width: auto;\n  	transition:\n  			background-color var(--custom-button-transition-duration) ease,\n  			color var(--custom-button-transition-duration) ease;\n  	position: relative;\n  	display: flex;\n  	justify-content: center;\n  	align-items: center;\n  	box-sizing: border-box;\n  	border: none;\n  	border-radius: 3px;\n  	font-size: 14px;\n  	font-weight: 500;\n  	line-height: 16px;\n  	padding: 2px 16px;\n  	-moz-user-select: none;\n  	user-select: none;\n}\n\n[data-theme=\"discord\"] .colorwaysPillButton:hover {\n  	background-color: var(--button-secondary-background-hover);\n}\n\n[data-theme=\"discord\"] > .colorwaySelectorSidebar {\n  	border-radius: 4px 0 0 4px;\n  	background-color: var(--modal-footer-background);\n  	box-shadow: inset 0 1px 0 hsl(var(--primary-630-hsl) / 0.6);\n  	padding: 12px;\n  	margin: 0;\n  	height: 100%;\n}\n\n[data-theme=\"discord\"] .colorwayTextBox {\n  	border-radius: 3px;\n  	color: var(--text-normal);\n  	background-color: var(--input-background) !important;\n  	height: 40px;\n  	padding: 10px;\n  	transition: none;\n  	font-size: 16px;\n  	border: none;\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySource {\n  	border-radius: 4px;\n  	color: var(--interactive-normal);\n  	background-color: var(--background-secondary);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySource:hover {\n  	color: var(--interactive-active);\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .discordColorway {\n  	border-radius: 4px;\n  	transition: none;\n  	background-color: var(--background-secondary);\n  	border: none;\n}\n\n[data-theme=\"discord\"] .discordColorway:hover {\n  	filter: none;\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .discordColorway[aria-checked=\"true\"] {\n  	background-color: var(--background-modifier-selected);\n}\n\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabelHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceDesc {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorways-badge {\n  	height: 16px;\n  	padding: 0 4px;\n  	border-radius: 4px;\n  	margin-left: 4px;\n  	flex: 0 0 auto;\n  	background: var(--bg-brand);\n  	color: var(--white);\n  	font-size: 0.625rem;\n  	text-transform: uppercase;\n  	vertical-align: top;\n  	display: inline-flex;\n  	align-items: center;\n  	text-indent: 0;\n  	font-weight: 600;\n  	font-size: 12px;\n  	line-height: 16px;\n}\n\n.colorwaysModal[data-theme=\"discord\"] {\n  	box-shadow: var(--legacy-elevation-border), var(--legacy-elevation-high);\n  	background-color: var(--modal-background);\n  	border-radius: 4px;\n  	display: flex;\n  	flex-direction: column;\n  	margin: 0 auto;\n  	pointer-events: all;\n  	position: relative;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTabs {\n  	padding-bottom: 16px;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab {\n  	padding: 0;\n  	padding-bottom: 16px;\n  	margin-right: 32px;\n  	margin-bottom: -2px;\n  	border-bottom: 2px solid transparent;\n  	transition: none;\n  	border-radius: 0;\n  	background-color: transparent;\n  	font-size: 16px;\n  	line-height: 20px;\n  	cursor: pointer;\n  	font-weight: 500;\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab:hover {\n  	color: var(--interactive-hover);\n  	border-bottom-color: var(--brand-500);\n}\n\n[data-theme=\"discord\"] .colorwaysMenuTab.active {\n  	cursor: default;\n  	color: var(--interactive-active);\n  	border-bottom-color: var(--control-brand-foreground);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter {\n  	border-radius: 0 0 5px 5px;\n  	background-color: var(--modal-footer-background);\n  	padding: 16px;\n  	box-shadow: inset 0 1px 0 hsl(var(--primary-630-hsl) / 0.6);\n  	gap: 0;\n  	width: unset;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton {\n  	width: auto;\n  	height: var(--custom-button-button-md-height);\n  	min-width: var(--custom-button-button-md-width);\n  	min-height: var(--custom-button-button-md-height);\n  	transition:\n  			color var(--custom-button-transition-duration) ease,\n  			background-color var(--custom-button-transition-duration) ease,\n  			border-color var(--custom-button-transition-duration) ease;\n  	border: 1px solid var(--button-outline-primary-border);\n  	color: var(--button-outline-primary-text);\n  	margin-left: 8px;\n  	background-color: transparent;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton:hover {\n  	background-color: var(--button-outline-primary-background-hover);\n  	border-color: var(--button-outline-primary-border-hover);\n  	color: var(--button-outline-primary-text-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton:active {\n  	background-color: var(--button-outline-primary-background-active);\n  	border-color: var(--button-outline-primary-border-active);\n  	color: var(--button-outline-primary-text-active);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface {\n  	color: var(--white-500);\n  	background-color: var(--brand-500);\n  	border: none;\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface:hover {\n  	background-color: var(--brand-560);\n}\n\n[data-theme=\"discord\"] .colorwaysModalFooter > .colorwaysPillButton.colorwaysPillButton-onSurface:active {\n  	background-color: var(--brand-600);\n}\n\n[data-theme=\"discord\"] .colorwaysModalHeader {\n  	box-shadow:\n  			0 1px 0 0 hsl(var(--primary-800-hsl) / 0.3),\n  			0 1px 2px 0 hsl(var(--primary-800-hsl) / 0.3);\n  	border-radius: 4px 4px 0 0;\n  	transition: box-shadow 0.1s ease-out;\n  	word-wrap: break-word;\n}\n\n[data-theme=\"discord\"] .colorwaysModalSectionHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabel,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceLabelHeader,\n[data-theme=\"discord\"] .colorwaysSettings-colorwaySourceDesc {\n  	color: var(--header-primary);\n}\n\n[data-theme=\"discord\"] .colorwaysCreator-setting,\n[data-theme=\"discord\"] .colorwaysCreator-settingCat {\n  	border-radius: 4px;\n  	background-color: var(--background-secondary);\n}\n\n[data-theme=\"discord\"] .colorwaysCreator-setting:hover {\n  	background-color: var(--background-modifier-hover);\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenu {\n  	background: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	border-radius: 4px;\n  	padding: 6px 8px;\n  	border: none;\n  	gap: 0;\n  	min-width: 188px;\n  	max-width: 320px;\n  	box-sizing: border-box;\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm {\n  	border: none;\n  	transition: none;\n  	margin: 2px 0;\n  	border-radius: 2px;\n  	font-size: 14px;\n  	font-weight: 500;\n  	line-height: 18px;\n  	color: var(--interactive-normal);\n  	background-color: transparent;\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm:hover {\n  	background-color: var(--menu-item-default-hover-bg);\n  	color: var(--white);\n}\n\n[data-theme=\"discord\"] .colorwaysContextMenuItm:active {\n  	background-color: var(--menu-item-default-active-bg);\n  	color: var(--white);\n}\n\n[data-theme=\"discord\"] .colorwaysRadioSelected {\n  	fill: var(--control-brand-foreground-new);\n}\n\n[data-theme=\"discord\"] .colorwaysConflictingColors-warning {\n  	color: var(--text-normal);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionMenu {\n  	transition:\n  			transform 0.1s ease,\n  			opacity 0.1s ease !important;\n  	transform: scale(0.95);\n  	transform-origin: 0% 50%;\n  	background-color: var(--background-floating);\n  	box-shadow: var(--shadow-high);\n  	color: var(--text-normal);\n  	border: none;\n  	border-radius: 5px;\n}\n\n.colorwayIDCard[data-theme=\"discord\"] > .colorwayMessage {\n  	border-radius: 5px;\n  	border: none;\n  	background-color: var(--background-secondary);\n}\n\n.theme-dark .colorwayIDCard[data-theme=\"discord\"] .colorwayMessage {\n  	background: hsl(var(--primary-630-hsl) / 60%);\n}\n\n.theme-light .colorwayIDCard[data-theme=\"discord\"] .colorwayMessage {\n  	background: hsl(var(--primary-100-hsl) / 60%);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionValue {\n  	color: var(--text-muted);\n}\n\n[data-theme=\"discord\"] .colorwaysManagerConnectionValue > b {\n  	color: var(--text-normal);\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] {\n  	border-radius: 12px;\n  	background-color: var(--bg-base-primary);\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] > .colorwaySelectorSidebar {\n  	border-top-left-radius: 12px;\n  	border-bottom-left-radius: 12px;\n  	background-color: var(--bg-base-tertiary);\n  	margin-right: 0;\n  	border: 1px solid var(--border-subtle);\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] .colorwaySelectorSidebar-tab {\n  	border-radius: 8px;\n  	width: 44px;\n  	height: 44px;\n  	border: 1px solid transparent;\n  	transition:\n  			background-color 0.1s ease-in-out,\n  			border-color 0.1s ease-in-out;\n}\n\n.visual-refresh .colorwaySelectorModal[data-theme=\"discord\"] .colorwaySelectorSidebar-tab.active {\n  	background: var(--bg-overlay-1, var(--bg-surface-raised));\n  	border-color: var(--border-faint);\n}\n\n.visual-refresh [data-theme=\"discord\"] .colorwaysPillButton,\n.visual-refresh [data-theme=\"discord\"] .discordColorway,\n.visual-refresh [data-theme=\"discord\"] .colorwaysSettings-colorwaySource {\n  	background: var(--bg-mod-faint);\n  	border-radius: 8px;\n  	transition:\n  			background-color 0.1s ease-in-out,\n  			border-color 0.1s ease-in-out;\n}\n\n.visual-refresh [data-theme=\"discord\"] .discordColorway {\n  	border: 1px solid transparent;\n}\n\n.visual-refresh [data-theme=\"discord\"] .colorwaysPillButton:hover,\n.visual-refresh [data-theme=\"discord\"] .discordColorway:hover,\n.visual-refresh [data-theme=\"discord\"] .colorwaysSettings-colorwaySource:hover {\n  	background: var(--bg-mod-subtle);\n}\n\n.visual-refresh [data-theme=\"discord\"] .discordColorway[aria-checked=\"true\"] {\n  	border-color: var(--border-faint);\n  	background: var(--bg-mod-strong);\n}\n\n.visual-refresh [data-theme=\"discord\"] .colorwayTextBox {\n  	background: var(--bg-overlay-3, var(--bg-mod-strong)) !important;\n  	border-radius: 8px;\n}\n\n[data-theme=\"discord\"] .colorwayLabel,\n[data-theme=\"discord\"] .colorwaysPillButton {\n  	color: var(--interactive-active);\n}\n\n[data-theme=\"discord\"] .colorwaysPageHeader {\n  	border-radius: 0;\n  	border-top-right-radius: 4px;\n  	padding-top: 16px;\n  	margin: 0;\n  	background-color: transparent;\n}\n\n[data-theme=\"discord\"] .colorwaySelectorModal {\n  	border-radius: 4px;\n}\n";
 
-function HexToHSL(H) {
-	let r = 0, g = 0, b = 0;
-	if (H.length === 4) r = "0x" + H[1] + H[1], g = "0x" + H[2] + H[2], b = "0x" + H[3] + H[3];
-	else if (H.length === 7) {
-		r = "0x" + H[1] + H[2];
-		g = "0x" + H[3] + H[4];
-		b = "0x" + H[5] + H[6];
-	}
-	r /= 255, g /= 255, b /= 255;
-	var cmin = Math.min(r, g, b), cmax = Math.max(r, g, b), delta = cmax - cmin, h = 0, s = 0, l = 0;
-	if (delta === 0) h = 0;
-	else if (cmax === r) h = (g - b) / delta % 6;
-	else if (cmax === g) h = (b - r) / delta + 2;
-	else h = (r - g) / delta + 4;
-	h = Math.round(h * 60);
-	if (h < 0) h += 360;
-	l = (cmax + cmin) / 2;
-	s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-	s = +(s * 100).toFixed(1);
-	l = +(l * 100).toFixed(1);
-	return [Math.round(h), Math.round(s), Math.round(l)];
-}
-const stringToHex = (str) => {
-	let hex = "";
-	for (let i = 0; i < str.length; i++) {
-		const charCode = str.charCodeAt(i);
-		const hexValue = charCode.toString(16);
-		hex += hexValue.padStart(2, "0");
-	}
-	return hex;
+const ColorwayCSS = {
+	get: () => document.getElementById("activeColorwayCSS").textContent || "",
+	set: (e) => {
+		if (!document.getElementById("activeColorwayCSS")) {
+			document.head.append(Object.assign(document.createElement("style"), {
+				id: "activeColorwayCSS",
+				textContent: e
+			}));
+		} else document.getElementById("activeColorwayCSS").textContent = e;
+	},
+	remove: () => document.getElementById("activeColorwayCSS")?.remove()
 };
-const hexToString = (hex) => {
-	let str = "";
-	for (let i = 0; i < hex.length; i += 2) {
-		const hexValue = hex.substr(i, 2);
-		const decimalValue = parseInt(hexValue, 16);
-		str += String.fromCharCode(decimalValue);
-	}
-	return str;
-};
-function getHex(str) {
-	const color = Object.assign(
-		document.createElement("canvas").getContext("2d"),
-		{ fillStyle: str }
-	).fillStyle;
-	if (color.includes("rgba(")) {
-		return getHex(String([...color.split(",").slice(0, 3), ")"]).replace(",)", ")").replace("a", ""));
-	} else {
-		return color;
-	}
-}
-function getFontOnBg(bgColor) {
-	var color = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
-	var r = parseInt(color.substring(0, 2), 16);
-	var g = parseInt(color.substring(2, 4), 16);
-	var b = parseInt(color.substring(4, 6), 16);
-	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
-}
-function hslToHex(h, s, l) {
-	h /= 360;
-	s /= 100;
-	l /= 100;
-	let r, g, b;
-	if (s === 0) {
-		r = g = b = l;
-	} else {
-		const hue2rgb = (p2, q2, t) => {
-			if (t < 0) t += 1;
-			if (t > 1) t -= 1;
-			if (t < 1 / 6) return p2 + (q2 - p2) * 6 * t;
-			if (t < 1 / 2) return q2;
-			if (t < 2 / 3) return p2 + (q2 - p2) * (2 / 3 - t) * 6;
-			return p2;
-		};
-		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		const p = 2 * l - q;
-		r = hue2rgb(p, q, h + 1 / 3);
-		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1 / 3);
-	}
-	const toHex = (x) => {
-		const hex = Math.round(x * 255).toString(16);
-		return hex.length === 1 ? "0" + hex : hex;
-	};
-	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-function rgbToHex(r, g, b) {
-	const toHex = (x) => {
-		const hex = Math.round(x * 255).toString(16);
-		return hex.length === 1 ? "0" + hex : hex;
-	};
-	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-function colorToHex(color) {
-	var colorType = "hex";
-	if (color.includes("hsl")) {
-		colorType = "hsl";
-	} else if (color.includes("rgb")) {
-		colorType = "rgb";
-	}
-	color = color.replaceAll(",", "").replace(/.+?\(/, "").replace(")", "").replaceAll(/[ \t]+\/[ \t]+/g, " ").replaceAll("%", "").replaceAll("/", "");
-	if (colorType === "hsl") {
-		color = hslToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
-	}
-	if (colorType === "rgb") {
-		color = rgbToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
-	}
-	return color.replace("#", "");
-}
-const parseClr = (clr) => (clr & 16777215).toString(16).padStart(6, "0");
-async function getRepainterTheme(link) {
-	const linkCheck = link.match(/https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&\/\/=]*)/g).filter((x) => x.startsWith("https://repainter.app/themes/"))[0];
-	if (!linkCheck) return { status: "fail", errorCode: 0, errorMsg: "Invalid URL" };
-	const { pageProps: { fallback: { a: { name, colors } } } } = { "pageProps": { "initialId": "01G5PMR5G9H76H1R2RET4A0ZHY", "fallback": { a: { "id": "01G5PMR5G9H76H1R2RET4A0ZHY", "name": "Midwinter Fire", "description": "Very red", "createdAt": "2022-06-16T16:15:11.881Z", "updatedAt": "2022-07-12T08:37:13.141Z", "settingsLines": ["Colorful", "Bright", "Vibrant style"], "voteCount": 309, "colors": [-1426063361, 4294901760, 4294901760, -1426071591, -1426080078, -1426089335, 4294901760, -1426119398, -1428615936, -1431629312, -1434644480, 4294901760, 4294901760, 4294901760, 4294901760, -1426067223, -1426071086, -1426079070, -1426088082, 4294901760, -1428201216, -1430761216, -1433255936, 4294901760, 4294901760, 4294901760, 4294901760, 4294901760, 4294901760, -1426070330, 4294901760, -1426086346, 4294901760, -1430030080, 4294901760, -1434431744, 4294901760, 4294901760, 4294901760, 4294901760, -1426064133, 4294901760, -1426071591, 4294901760, -1426874223, 4294901760, -1430359452, 4294901760, -1433845194, 4294901760, -1437922816, 4294901760, 4294901760, 4294901760, 4294901760, -1426071591, -1426080078, -1426089335, -1427799438, -1429640356, 4294901760, -1433191891, 4294901760, 4294901760, 4294901760] } } }, "__N_SSP": true };
-	return { status: "success", id: name, colors: colors.filter((c) => c !== 4294901760).map((c) => "#" + parseClr(c)) };
-}
-function chooseFile(mimeTypes) {
-	return new Promise((resolve) => {
-		const input = document.createElement("input");
-		input.type = "file";
-		input.style.display = "none";
-		input.accept = mimeTypes;
-		input.onchange = async () => {
-			resolve(input.files?.[0] ?? null);
-		};
-		document.body.appendChild(input);
-		input.click();
-		setImmediate(() => document.body.removeChild(input));
-	});
-}
-function saveFile(file) {
-	const a = document.createElement("a");
-	a.href = URL.createObjectURL(file);
-	a.download = file.name;
-	document.body.appendChild(a);
-	a.click();
-	setImmediate(() => {
-		URL.revokeObjectURL(a.href);
-		document.body.removeChild(a);
-	});
-}
-function classes(...classes2) {
-	return classes2.filter(Boolean).join(" ");
-}
-function getWsClientIdentity() {
-	switch (PluginProps.clientMod) {
-		case "Vencord":
-			return "vencord";
-		case "BetterDiscord":
-			return "betterdiscord";
-		default:
-			return "discord";
-	}
-}
-
-function Icon({ height = 24, width = 24, className, children, viewBox, ...svgProps }) {
-	return BdApi.React.createElement(
-		"svg",
-		{
-			className: classes(className, "dc-icon"),
-			role: "img",
-			width,
-			height,
-			viewBox,
-			...svgProps
-		},
-		children
-	);
-}
-function CopyIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-copy-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement("g", { fill: "currentColor" }, BdApi.React.createElement("path", { d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1z" }), BdApi.React.createElement("path", { d: "M15 5H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z" }))
-	);
-}
-function DeleteIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-delete-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"
-			}
-		),
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"
-			}
-		)
-	);
-}
-function PlusIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-plus-icon"),
-			viewBox: "0 0 18 18"
-		},
-		BdApi.React.createElement(
-			"polygon",
-			{
-				"fill-rule": "nonzero",
-				fill: "currentColor",
-				points: "15 10 10 10 10 15 8 15 8 10 3 10 3 8 8 8 8 3 10 3 10 8 15 8"
-			}
-		)
-	);
-}
-function CloseIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-close-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
-			}
-		)
-	);
-}
-function PalleteIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-pallete-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M 12,0 C 5.3733333,0 0,5.3733333 0,12 c 0,6.626667 5.3733333,12 12,12 1.106667,0 2,-0.893333 2,-2 0,-0.52 -0.2,-0.986667 -0.52,-1.346667 -0.306667,-0.346666 -0.506667,-0.813333 -0.506667,-1.32 0,-1.106666 0.893334,-2 2,-2 h 2.36 C 21.013333,17.333333 24,14.346667 24,10.666667 24,4.7733333 18.626667,0 12,0 Z M 4.6666667,12 c -1.1066667,0 -2,-0.893333 -2,-2 0,-1.1066667 0.8933333,-2 2,-2 1.1066666,0 2,0.8933333 2,2 0,1.106667 -0.8933334,2 -2,2 z M 8.666667,6.6666667 c -1.106667,0 -2.0000003,-0.8933334 -2.0000003,-2 0,-1.1066667 0.8933333,-2 2.0000003,-2 1.106666,0 2,0.8933333 2,2 0,1.1066666 -0.893334,2 -2,2 z m 6.666666,0 c -1.106666,0 -2,-0.8933334 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.1066666 -0.893333,2 -2,2 z m 4,5.3333333 c -1.106666,0 -2,-0.893333 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.106667 -0.893333,2 -2,2 z"
-			}
-		)
-	);
-}
-function DownloadIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-download-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M12 2a1 1 0 0 1 1 1v10.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V3a1 1 0 0 1 1-1ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
-			}
-		)
-	);
-}
-function ImportIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-import-icon"),
-			viewBox: "0 0 24 24"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M.9 3a.9.9 0 0 1 .892.778l.008.123v16.201a.9.9 0 0 1-1.792.121L0 20.102V3.899A.9.9 0 0 1 .9 3Zm14.954 2.26.1-.112a1.2 1.2 0 0 1 1.584-.1l.113.1 5.998 5.998a1.2 1.2 0 0 1 .1 1.584l-.1.112-5.997 6.006a1.2 1.2 0 0 1-1.799-1.584l.1-.113 3.947-3.954H4.8a1.2 1.2 0 0 1-1.191-1.06l-.008-.14a1.2 1.2 0 0 1 1.06-1.192l.14-.008h15.103l-3.95-3.952a1.2 1.2 0 0 1-.1-1.585l.1-.112z"
-			}
-		)
-	);
-}
-function IDIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			viewBox: "0 0 24 24",
-			className: classes(props.className, "dc-id-icon"),
-			fillRule: "evenodd",
-			clipRule: "evenodd"
-		},
-		BdApi.React.createElement("path", { fill: "currentColor", d: "M15.3 14.48c-.46.45-1.08.67-1.86.67h-1.39V9.2h1.39c.78 0 1.4.22 1.86.67.46.45.68 1.22.68 2.31 0 1.1-.22 1.86-.68 2.31Z" }),
-		BdApi.React.createElement("path", { fill: "currentColor", "fill-rule": "evenodd", d: "M5 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3H5Zm1 15h2.04V7.34H6V17Zm4-9.66V17h3.44c1.46 0 2.6-.42 3.38-1.25.8-.83 1.2-2.02 1.2-3.58s-.4-2.75-1.2-3.58c-.79-.83-1.92-1.25-3.38-1.25H10Z", "clip-rule": "evenodd" })
-	);
-}
-function SortIcon(props) {
-	return BdApi.React.createElement(
-		Icon,
-		{
-			...props,
-			className: classes(props.className, "dc-sort-icon"),
-			viewBox: "0 0 16 16"
-		},
-		BdApi.React.createElement(
-			"path",
-			{
-				fill: "currentColor",
-				d: "M3.5 3.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 12.293zm4 .5a.5.5 0 0 1 0-1h1a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h3a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h5a.5.5 0 0 1 0 1zM7 12.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5"
-			}
-		)
-	);
-}
 
 const defaultColorwaySource = "https://raw.githubusercontent.com/ProjectColorway/ProjectColorway/master/index.json";
 const fallbackColorways = [
@@ -1088,6 +774,161 @@ const knownThemeVars = {
 };
 const nullColorwayObj = { id: null, css: null, sourceType: null, source: null };
 
+function HexToHSL(H) {
+	let r = 0, g = 0, b = 0;
+	if (H.length === 4) r = "0x" + H[1] + H[1], g = "0x" + H[2] + H[2], b = "0x" + H[3] + H[3];
+	else if (H.length === 7) {
+		r = "0x" + H[1] + H[2];
+		g = "0x" + H[3] + H[4];
+		b = "0x" + H[5] + H[6];
+	}
+	r /= 255, g /= 255, b /= 255;
+	var cmin = Math.min(r, g, b), cmax = Math.max(r, g, b), delta = cmax - cmin, h = 0, s = 0, l = 0;
+	if (delta === 0) h = 0;
+	else if (cmax === r) h = (g - b) / delta % 6;
+	else if (cmax === g) h = (b - r) / delta + 2;
+	else h = (r - g) / delta + 4;
+	h = Math.round(h * 60);
+	if (h < 0) h += 360;
+	l = (cmax + cmin) / 2;
+	s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+	s = +(s * 100).toFixed(1);
+	l = +(l * 100).toFixed(1);
+	return [Math.round(h), Math.round(s), Math.round(l)];
+}
+const stringToHex = (str) => {
+	let hex = "";
+	for (let i = 0; i < str.length; i++) {
+		const charCode = str.charCodeAt(i);
+		const hexValue = charCode.toString(16);
+		hex += hexValue.padStart(2, "0");
+	}
+	return hex;
+};
+const hexToString = (hex) => {
+	let str = "";
+	for (let i = 0; i < hex.length; i += 2) {
+		const hexValue = hex.substr(i, 2);
+		const decimalValue = parseInt(hexValue, 16);
+		str += String.fromCharCode(decimalValue);
+	}
+	return str;
+};
+function getHex(str) {
+	const color = Object.assign(
+		document.createElement("canvas").getContext("2d"),
+		{ fillStyle: str }
+	).fillStyle;
+	if (color.includes("rgba(")) {
+		return getHex(String([...color.split(",").slice(0, 3), ")"]).replace(",)", ")").replace("a", ""));
+	} else {
+		return color;
+	}
+}
+function getFontOnBg(bgColor) {
+	var color = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
+	var r = parseInt(color.substring(0, 2), 16);
+	var g = parseInt(color.substring(2, 4), 16);
+	var b = parseInt(color.substring(4, 6), 16);
+	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#ffffff";
+}
+function hslToHex(h, s, l) {
+	h /= 360;
+	s /= 100;
+	l /= 100;
+	let r, g, b;
+	if (s === 0) {
+		r = g = b = l;
+	} else {
+		const hue2rgb = (p2, q2, t) => {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p2 + (q2 - p2) * 6 * t;
+			if (t < 1 / 2) return q2;
+			if (t < 2 / 3) return p2 + (q2 - p2) * (2 / 3 - t) * 6;
+			return p2;
+		};
+		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		const p = 2 * l - q;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+	const toHex = (x) => {
+		const hex = Math.round(x * 255).toString(16);
+		return hex.length === 1 ? "0" + hex : hex;
+	};
+	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+function rgbToHex(r, g, b) {
+	const toHex = (x) => {
+		const hex = Math.round(x * 255).toString(16);
+		return hex.length === 1 ? "0" + hex : hex;
+	};
+	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+function colorToHex(color) {
+	var colorType = "hex";
+	if (color.includes("hsl")) {
+		colorType = "hsl";
+	} else if (color.includes("rgb")) {
+		colorType = "rgb";
+	}
+	color = color.replaceAll(",", "").replace(/.+?\(/, "").replace(")", "").replaceAll(/[ \t]+\/[ \t]+/g, " ").replaceAll("%", "").replaceAll("/", "");
+	if (colorType === "hsl") {
+		color = hslToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
+	}
+	if (colorType === "rgb") {
+		color = rgbToHex(Number(color.split(" ")[0]), Number(color.split(" ")[1]), Number(color.split(" ")[2]));
+	}
+	return color.replace("#", "");
+}
+const parseClr = (clr) => (clr & 16777215).toString(16).padStart(6, "0");
+async function getRepainterTheme(link) {
+	const linkCheck = link.match(/https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&\/\/=]*)/g).filter((x) => x.startsWith("https://repainter.app/themes/"))[0];
+	if (!linkCheck) return { status: "fail", errorCode: 0, errorMsg: "Invalid URL" };
+	const { pageProps: { fallback: { a: { name, colors } } } } = { "pageProps": { "initialId": "01G5PMR5G9H76H1R2RET4A0ZHY", "fallback": { a: { "id": "01G5PMR5G9H76H1R2RET4A0ZHY", "name": "Midwinter Fire", "description": "Very red", "createdAt": "2022-06-16T16:15:11.881Z", "updatedAt": "2022-07-12T08:37:13.141Z", "settingsLines": ["Colorful", "Bright", "Vibrant style"], "voteCount": 309, "colors": [-1426063361, 4294901760, 4294901760, -1426071591, -1426080078, -1426089335, 4294901760, -1426119398, -1428615936, -1431629312, -1434644480, 4294901760, 4294901760, 4294901760, 4294901760, -1426067223, -1426071086, -1426079070, -1426088082, 4294901760, -1428201216, -1430761216, -1433255936, 4294901760, 4294901760, 4294901760, 4294901760, 4294901760, 4294901760, -1426070330, 4294901760, -1426086346, 4294901760, -1430030080, 4294901760, -1434431744, 4294901760, 4294901760, 4294901760, 4294901760, -1426064133, 4294901760, -1426071591, 4294901760, -1426874223, 4294901760, -1430359452, 4294901760, -1433845194, 4294901760, -1437922816, 4294901760, 4294901760, 4294901760, 4294901760, -1426071591, -1426080078, -1426089335, -1427799438, -1429640356, 4294901760, -1433191891, 4294901760, 4294901760, 4294901760] } } }, "__N_SSP": true };
+	return { status: "success", id: name, colors: colors.filter((c) => c !== 4294901760).map((c) => "#" + parseClr(c)) };
+}
+function chooseFile(mimeTypes) {
+	return new Promise((resolve) => {
+		const input = document.createElement("input");
+		input.type = "file";
+		input.style.display = "none";
+		input.accept = mimeTypes;
+		input.onchange = async () => {
+			resolve(input.files?.[0] ?? null);
+		};
+		document.body.appendChild(input);
+		input.click();
+		setImmediate(() => document.body.removeChild(input));
+	});
+}
+function saveFile(file) {
+	const a = document.createElement("a");
+	a.href = URL.createObjectURL(file);
+	a.download = file.name;
+	document.body.appendChild(a);
+	a.click();
+	setImmediate(() => {
+		URL.revokeObjectURL(a.href);
+		document.body.removeChild(a);
+	});
+}
+function classes(...classes2) {
+	return classes2.filter(Boolean).join(" ");
+}
+function getWsClientIdentity() {
+	switch (PluginProps.clientMod) {
+		case "Vencord":
+			return "vencord";
+		case "BetterDiscord":
+			return "betterdiscord";
+		default:
+			return "discord";
+	}
+}
+
 const PrimarySatDiffs = {
 	130: 63.9594,
 	160: 49.4382,
@@ -1351,8 +1192,8 @@ function generateCss(colors, tintedText = true, discordSaturation = true, mutedT
  * @name ${name}
  * @version ${PluginProps.CSSVersion}
  * @description Automatically generated Colorway.
- * @author ${exports.UserStore.getCurrentUser().username}
- * @authorId ${exports.UserStore.getCurrentUser().id}
+ * @author ${UserStore.getCurrentUser().username}
+ * @authorId ${UserStore.getCurrentUser().id}
  */
 :root:root {
 		--brand-100-hsl: ${HexToHSL("#" + accentColor)[0]} calc(var(--saturation-factor, 1)*${discordSaturation ? Math.round(HexToHSL("#" + accentColor)[1] / 100 * (100 + BrandSatDiffs[100]) * 10) / 10 : HexToHSL("#" + accentColor)[1]}%) ${Math.max(Math.round((HexToHSL("#" + accentColor)[2] + BrandLightDiffs[100]) * 10) / 10, 0)};
@@ -1717,6 +1558,24 @@ function getPreset(colors, discordSaturation = false) {
 			id: "solana",
 			colors: ["accent", "primary"]
 		},
+		neobrutal: {
+			name: "Neobrutal",
+			preset: `.theme-light {
+		--neobrutal-color-1: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%) !important;
+		--neobrutal-color-2: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 80, 90)}%) !important;
+		--neobrutal-color-text: hsl(${HexToHSL("#" + accentColor)[0]} ${HexToHSL("#" + accentColor)[1]} ${HexToHSL("#" + accentColor)[2] - 10}) !important;
+		--neobrutal-color-accent: #${accentColor} !important;
+}
+
+.theme-dark {
+		--neobrutal-color-1: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${Math.min(HexToHSL("#" + primaryColor)[2] + 80, 90)}%) !important;
+		--neobrutal-color-2: hsl(${HexToHSL("#" + primaryColor)[0]} calc(var(--saturation-factor, 1)*${HexToHSL("#" + primaryColor)[1]}%) ${HexToHSL("#" + primaryColor)[2]}%) !important;
+		--neobrutal-color-text: hsl(${HexToHSL("#" + accentColor)[0]} ${HexToHSL("#" + accentColor)[1]}% ${HexToHSL("#" + accentColor)[2] + 10}%) !important;
+		--neobrutal-color-accent: #${accentColor} !important;
+}`,
+			id: "neobrutal",
+			colors: ["accent", "primary"]
+		},
 		gradientType1: {
 			name: "Gradient Type 1",
 			preset: {
@@ -1815,82 +1674,527 @@ var SortOptions = ((SortOptions2) => {
 	return SortOptions2;
 })(SortOptions || {});
 
-function AutoColorwaySelector({ modalProps, onChange, autoColorwayId = "" }) {
-	const [autoId, setAutoId] = React.useState(autoColorwayId);
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
-		async function load() {
-			setTheme(await DataStore.get("colorwaysPluginTheme"));
-		}
-		load();
-	}, []);
-	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Auto Preset Settings"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("div", { className: "dc-info-card", style: { marginTop: "1em" } }, BdApi.React.createElement("strong", null, "About the Auto Colorway"), BdApi.React.createElement("span", null, "The auto colorway allows you to use your system's accent color in combination with a selection of presets that will fully utilize it.")), BdApi.React.createElement("div", { style: { marginBottom: "20px" } }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Presets:"), Object.values(getAutoPresets()).map((autoPreset) => BdApi.React.createElement(
-		"div",
-		{
-			className: "discordColorway",
-			"aria-checked": autoId === autoPreset.id,
-			style: { padding: "10px", marginBottom: "8px" },
-			onClick: () => {
-				setAutoId(autoPreset.id);
-			}
-		},
-		BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), autoId === autoPreset.id && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
-		BdApi.React.createElement("span", { className: "colorwayLabel" }, autoPreset.name)
-	)))), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
-		"button",
-		{
-			className: "colorwaysPillButton colorwaysPillButton-onSurface",
-			onClick: () => {
-				DataStore.set("activeAutoPreset", autoId);
-				onChange(autoId);
-				modalProps.onClose();
-			}
-		},
-		"Finish"
-	), BdApi.React.createElement(
-		"button",
-		{
-			className: "colorwaysPillButton",
-			onClick: () => {
-				modalProps.onClose();
-			}
-		},
-		"Cancel"
-	)));
+function Setting({
+	children,
+	divider = false,
+	disabled = false
+}) {
+	return BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "column",
+		marginBottom: "20px"
+	} }, disabled ? BdApi.React.createElement("div", { style: {
+		pointerEvents: "none",
+		opacity: 0.5,
+		cursor: "not-allowed"
+	} }, children) : children, divider && BdApi.React.createElement("div", { className: "colorwaysSettingsDivider" }));
 }
 
-const ColorwayCSS = {
-	get: () => document.getElementById("activeColorwayCSS").textContent || "",
-	set: (e) => {
-		if (!document.getElementById("activeColorwayCSS")) {
-			document.head.append(Object.assign(document.createElement("style"), {
-				id: "activeColorwayCSS",
-				textContent: e
-			}));
-		} else document.getElementById("activeColorwayCSS").textContent = e;
-	},
-	remove: () => document.getElementById("activeColorwayCSS")?.remove()
-};
+function Switch({
+	onChange,
+	value,
+	id,
+	label
+}) {
+	return label ? BdApi.React.createElement("div", { style: {
+		display: "flex",
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		cursor: "pointer"
+	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label", htmlFor: id }, label), BdApi.React.createElement("div", { className: `colorwaysSettings-switch ${value ? "checked" : ""}` }, BdApi.React.createElement("svg", { viewBox: "0 0 28 20", preserveAspectRatio: "xMinYMid meet", "aria-hidden": "true", style: {
+		left: value ? "12px" : "-3px",
+		transition: ".2s ease",
+		display: "block",
+		position: "absolute",
+		width: "28px",
+		height: "18px",
+		margin: "3px"
+	} }, BdApi.React.createElement("rect", { className: "colorwaysSettings-switchCircle", fill: "#000", x: "4", y: "0", height: "20", width: "20", rx: "10" })), BdApi.React.createElement("input", { checked: value, id, type: "checkbox", style: {
+		position: "absolute",
+		opacity: 0,
+		width: "100%",
+		height: "100%",
+		cursor: "pointer",
+		borderRadius: "14px",
+		top: 0,
+		left: 0,
+		margin: 0
+	}, tabIndex: 0, onChange: (e) => {
+		onChange(e.currentTarget.checked);
+	} }))) : BdApi.React.createElement("div", { className: `colorwaysSettings-switch ${value ? "checked" : ""}` }, BdApi.React.createElement("svg", { viewBox: "0 0 28 20", preserveAspectRatio: "xMinYMid meet", "aria-hidden": "true", style: {
+		left: value ? "12px" : "-3px",
+		transition: ".2s ease",
+		display: "block",
+		position: "absolute",
+		width: "28px",
+		height: "18px",
+		margin: "3px"
+	} }, BdApi.React.createElement("rect", { className: "colorwaysSettings-switchCircle", fill: "#000", x: "4", y: "0", height: "20", width: "20", rx: "10" })), BdApi.React.createElement("input", { checked: value, id, type: "checkbox", style: {
+		position: "absolute",
+		opacity: 0,
+		width: "100%",
+		height: "100%",
+		cursor: "pointer",
+		borderRadius: "14px",
+		top: 0,
+		left: 0,
+		margin: 0
+	}, tabIndex: 0, onChange: (e) => {
+		onChange(e.currentTarget.checked);
+	} }));
+}
 
 function TabBar({
-	items = []
+	items = [],
+	container = ({ children }) => BdApi.React.createElement(BdApi.React.Fragment, null, children)
 }) {
-	const [active, setActive] = React.useState(items[0].name);
-	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { className: "colorwaysMenuTabs" }, items.map((item) => {
-		return BdApi.React.createElement("div", { className: `colorwaysMenuTab ${active == item.name ? "active" : ""}`, onClick: () => {
-			setActive(item.name);
-		} }, item.name);
-	})), items.map((item) => {
+	const [active, setActive] = useState(items[0].name);
+	return BdApi.React.createElement(BdApi.React.Fragment, null, container({
+		children: BdApi.React.createElement("div", { className: "colorwaysMenuTabs" }, items.map((item) => {
+			return BdApi.React.createElement("div", { className: `colorwaysMenuTab ${active === item.name ? "active" : ""}`, onClick: () => {
+				setActive(item.name);
+			} }, item.name);
+		}))
+	}), items.map((item) => {
 		const Component = item.component;
-		return active == item.name ? BdApi.React.createElement(Component, null) : null;
+		return active === item.name ? BdApi.React.createElement(Component, null) : null;
 	}));
 }
 
+function SettingsPage({
+	hasTheme = false
+}) {
+	const [colorways, setColorways] = useState([]);
+	const [customColorways, setCustomColorways] = useState([]);
+	const [colorsButtonVisibility, setColorsButtonVisibility] = useState(false);
+	const [theme, setTheme] = useState("discord");
+	const [shouldAutoconnect, setShouldAutoconnect] = useState("1");
+	const [preset, setPreset] = useState("default");
+	useEffect(() => {
+		(async function() {
+			const [
+				customColorways2,
+				colorwaySourceFiles,
+				showColorwaysButton,
+				colorwaysPreset,
+				colorwaysPluginTheme,
+				colorwaysManagerDoAutoconnect
+			] = await DataStore.getMany([
+				"customColorways",
+				"colorwaySourceFiles",
+				"showColorwaysButton",
+				"colorwaysPreset",
+				"colorwaysPluginTheme",
+				"colorwaysManagerDoAutoconnect"
+			]);
+			setTheme(colorwaysPluginTheme);
+			setShouldAutoconnect(colorwaysManagerDoAutoconnect ? "1" : "2");
+			setPreset(colorwaysPreset);
+			const responses = await Promise.all(
+				colorwaySourceFiles.map(
+					({ url }) => fetch(url)
+				)
+			);
+			const data = await Promise.all(
+				responses.map(
+					(res) => res.json().catch(() => {
+						return { colorways: [] };
+					})
+				)
+			);
+			const colorways2 = data.flatMap((json) => json.colorways);
+			setColorways(colorways2 || fallbackColorways);
+			setCustomColorways(customColorways2.map((source) => source.colorways).flat(2));
+			setColorsButtonVisibility(showColorwaysButton);
+		})();
+	}, []);
+	function Container({ children }) {
+		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
+	}
+	return BdApi.React.createElement(Container, null, BdApi.React.createElement(TabBar, { container: ({ children }) => BdApi.React.createElement("div", { className: "colorwaysPageHeader" }, children), items: [
+		{
+			name: "Settings",
+			component: () => BdApi.React.createElement("div", { className: "colorwayInnerTab" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Quick Switch"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement(
+				Switch,
+				{
+					value: colorsButtonVisibility,
+					label: "Enable Quick Switch",
+					id: "showColorwaysButton",
+					onChange: (v) => {
+						setColorsButtonVisibility(v);
+						DataStore.set("showColorwaysButton", v);
+						FluxDispatcher.dispatch({
+							type: "COLORWAYS_UPDATE_BUTTON_VISIBILITY",
+							isVisible: v
+						});
+					}
+				}
+			), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Shows a button on the top of the servers list that opens a colorway selector modal.")), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Appearance"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
+				display: "flex",
+				flexDirection: "row",
+				width: "100%",
+				alignItems: "center",
+				cursor: "pointer"
+			} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Plugin Theme"), BdApi.React.createElement(
+				"select",
+				{
+					className: "colorwaysPillButton",
+					style: { border: "none" },
+					onChange: ({ currentTarget: { value } }) => {
+						setTheme(value);
+						DataStore.set("colorwaysPluginTheme", value);
+						FluxDispatcher.dispatch({
+							type: "COLORWAYS_UPDATE_THEME",
+							theme: value
+						});
+					},
+					value: theme
+				},
+				BdApi.React.createElement("option", { value: "discord" }, "Discord (Default)"),
+				BdApi.React.createElement("option", { value: "colorish" }, "Colorish")
+			))), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Manager"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
+				display: "flex",
+				flexDirection: "row",
+				width: "100%",
+				alignItems: "center",
+				cursor: "pointer"
+			} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Automatically retry to connect to Manager"), BdApi.React.createElement(
+				"select",
+				{
+					className: "colorwaysPillButton",
+					style: { border: "none" },
+					onChange: ({ currentTarget: { value } }) => {
+						setShouldAutoconnect(value);
+						if (value == "1") {
+							DataStore.set("colorwaysManagerDoAutoconnect", true);
+							if (!isWSOpen()) connect();
+						} else {
+							DataStore.set("colorwaysManagerDoAutoconnect", false);
+						}
+					},
+					value: shouldAutoconnect
+				},
+				BdApi.React.createElement("option", { value: "1" }, "On (Default)"),
+				BdApi.React.createElement("option", { value: "2" }, "Off")
+			))), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Colorways"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
+				display: "flex",
+				flexDirection: "row",
+				width: "100%",
+				alignItems: "center",
+				cursor: "pointer"
+			} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Colorway preset"), BdApi.React.createElement(
+				"select",
+				{
+					className: "colorwaysPillButton",
+					style: { border: "none" },
+					onChange: ({ currentTarget: { value } }) => {
+						setPreset(value);
+						DataStore.set("colorwaysPreset", value);
+						DataStore.get("activeColorwayObject").then((active) => {
+							if (active.id) {
+								if (wsOpen) {
+									if (hasManagerRole) {
+										sendColorway(active);
+									}
+								} else {
+									if (value == "default") {
+										ColorwayCSS.set(generateCss(
+											active.colors,
+											true,
+											true,
+											void 0,
+											active.id
+										));
+									} else {
+										if (gradientPresetIds.includes(value)) {
+											const css = Object.keys(active).includes("linearGradient") ? gradientBase(colorToHex(active.colors.accent), true) + `:root:root {--custom-theme-background: linear-gradient(${active.linearGradient})}` : getPreset(active.colors)[value].preset.full;
+											ColorwayCSS.set(css);
+										} else {
+											ColorwayCSS.set(getPreset(active.colors)[value].preset);
+										}
+									}
+								}
+							}
+						});
+					},
+					value: preset
+				},
+				Object.values(getPreset({})).map((pre) => BdApi.React.createElement(
+					"option",
+					{
+						value: pre.id
+					},
+					pre.name
+				))
+			)), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Presets allow colorways to adapt to various Discord themes.")), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Other..."), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
+				display: "flex",
+				flexDirection: "row",
+				width: "100%",
+				alignItems: "center",
+				cursor: "pointer"
+			} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Reset plugin to default settings (CANNOT BE UNDONE)"), BdApi.React.createElement(
+				"button",
+				{
+					className: "colorwaysPillButton",
+					onClick: () => {
+						DataStore.setMany([
+							["customColorways", []],
+							["colorwaySourceFiles", [{
+								name: "Project Colorway",
+								url: defaultColorwaySource
+							}]],
+							["showColorwaysButton", false],
+							["activeColorwayObject", nullColorwayObj],
+							["colorwaysPluginTheme", "discord"],
+							["colorwaysBoundManagers", []],
+							["colorwaysManagerAutoconnectPeriod", 3e3],
+							["colorwaysManagerDoAutoconnect", true],
+							["colorwaysPreset", "default"]
+						]);
+					}
+				},
+				"Reset..."
+			)), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Reset the plugin to its default settings. All bound managers, sources, and colorways will be deleted. Please reload Discord after use.")))
+		},
+		{
+			name: "About",
+			component: () => BdApi.React.createElement("div", { style: { flexDirection: "column", display: "flex" }, className: "colorwayInnerTab" }, BdApi.React.createElement("h1", { className: "colorwaysWordmarkFirstPart" }, "Discord ", BdApi.React.createElement("span", { className: "colorwaysWordmarkSecondPart" }, "Colorways")), BdApi.React.createElement(
+				"span",
+				{
+					style: {
+						color: "var(--text-normal)",
+						fontWeight: 500,
+						fontSize: "14px",
+						marginBottom: "12px"
+					}
+				},
+				"by Project Colorway"
+			), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Plugin Version:"), BdApi.React.createElement(
+				"span",
+				{
+					style: {
+						color: "var(--text-muted)",
+						fontWeight: 500,
+						fontSize: "14px",
+						marginBottom: "8px"
+					}
+				},
+				PluginProps.pluginVersion,
+				" (",
+				PluginProps.clientMod,
+				")"
+			), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "UI Version:"), BdApi.React.createElement(
+				"span",
+				{
+					style: {
+						color: "var(--text-muted)",
+						fontWeight: 500,
+						fontSize: "14px",
+						marginBottom: "8px"
+					}
+				},
+				PluginProps.UIVersion
+			), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "CSS Version:"), BdApi.React.createElement(
+				"span",
+				{
+					style: {
+						color: "var(--text-muted)",
+						fontWeight: 500,
+						fontSize: "14px",
+						marginBottom: "8px"
+					}
+				},
+				PluginProps.CSSVersion
+			), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Loaded Colorways:"), BdApi.React.createElement(
+				"span",
+				{
+					style: {
+						color: "var(--text-muted)",
+						fontWeight: 500,
+						fontSize: "14px",
+						marginBottom: "8px"
+					}
+				},
+				[...colorways, ...customColorways].length
+			), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Project Repositories:"), BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/DaBluLite/DiscordColorways" }, "DiscordColorways"), BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/DaBluLite/ProjectColorway" }, "Project Colorway"))
+		}
+	] }));
+}
+
+function Icon({ height = 24, width = 24, className, children, viewBox, ...svgProps }) {
+	return BdApi.React.createElement(
+		"svg",
+		{
+			className: classes(className, "dc-icon"),
+			role: "img",
+			width,
+			height,
+			viewBox,
+			...svgProps
+		},
+		children
+	);
+}
+function CopyIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-copy-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement("g", { fill: "currentColor" }, BdApi.React.createElement("path", { d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1z" }), BdApi.React.createElement("path", { d: "M15 5H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z" }))
+	);
+}
+function DeleteIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-delete-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"
+			}
+		),
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"
+			}
+		)
+	);
+}
+function PlusIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-plus-icon"),
+			viewBox: "0 0 18 18"
+		},
+		BdApi.React.createElement(
+			"polygon",
+			{
+				"fill-rule": "nonzero",
+				fill: "currentColor",
+				points: "15 10 10 10 10 15 8 15 8 10 3 10 3 8 8 8 8 3 10 3 10 8 15 8"
+			}
+		)
+	);
+}
+function CloseIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-close-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"
+			}
+		)
+	);
+}
+function PalleteIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-pallete-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M 12,0 C 5.3733333,0 0,5.3733333 0,12 c 0,6.626667 5.3733333,12 12,12 1.106667,0 2,-0.893333 2,-2 0,-0.52 -0.2,-0.986667 -0.52,-1.346667 -0.306667,-0.346666 -0.506667,-0.813333 -0.506667,-1.32 0,-1.106666 0.893334,-2 2,-2 h 2.36 C 21.013333,17.333333 24,14.346667 24,10.666667 24,4.7733333 18.626667,0 12,0 Z M 4.6666667,12 c -1.1066667,0 -2,-0.893333 -2,-2 0,-1.1066667 0.8933333,-2 2,-2 1.1066666,0 2,0.8933333 2,2 0,1.106667 -0.8933334,2 -2,2 z M 8.666667,6.6666667 c -1.106667,0 -2.0000003,-0.8933334 -2.0000003,-2 0,-1.1066667 0.8933333,-2 2.0000003,-2 1.106666,0 2,0.8933333 2,2 0,1.1066666 -0.893334,2 -2,2 z m 6.666666,0 c -1.106666,0 -2,-0.8933334 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.1066666 -0.893333,2 -2,2 z m 4,5.3333333 c -1.106666,0 -2,-0.893333 -2,-2 0,-1.1066667 0.893334,-2 2,-2 1.106667,0 2,0.8933333 2,2 0,1.106667 -0.893333,2 -2,2 z"
+			}
+		)
+	);
+}
+function DownloadIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-download-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M12 2a1 1 0 0 1 1 1v10.59l3.3-3.3a1 1 0 1 1 1.4 1.42l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.42l3.3 3.3V3a1 1 0 0 1 1-1ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
+			}
+		)
+	);
+}
+function ImportIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-import-icon"),
+			viewBox: "0 0 24 24"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M.9 3a.9.9 0 0 1 .892.778l.008.123v16.201a.9.9 0 0 1-1.792.121L0 20.102V3.899A.9.9 0 0 1 .9 3Zm14.954 2.26.1-.112a1.2 1.2 0 0 1 1.584-.1l.113.1 5.998 5.998a1.2 1.2 0 0 1 .1 1.584l-.1.112-5.997 6.006a1.2 1.2 0 0 1-1.799-1.584l.1-.113 3.947-3.954H4.8a1.2 1.2 0 0 1-1.191-1.06l-.008-.14a1.2 1.2 0 0 1 1.06-1.192l.14-.008h15.103l-3.95-3.952a1.2 1.2 0 0 1-.1-1.585l.1-.112z"
+			}
+		)
+	);
+}
+function IDIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			viewBox: "0 0 24 24",
+			className: classes(props.className, "dc-id-icon"),
+			fillRule: "evenodd",
+			clipRule: "evenodd"
+		},
+		BdApi.React.createElement("path", { fill: "currentColor", d: "M15.3 14.48c-.46.45-1.08.67-1.86.67h-1.39V9.2h1.39c.78 0 1.4.22 1.86.67.46.45.68 1.22.68 2.31 0 1.1-.22 1.86-.68 2.31Z" }),
+		BdApi.React.createElement("path", { fill: "currentColor", "fill-rule": "evenodd", d: "M5 2a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3H5Zm1 15h2.04V7.34H6V17Zm4-9.66V17h3.44c1.46 0 2.6-.42 3.38-1.25.8-.83 1.2-2.02 1.2-3.58s-.4-2.75-1.2-3.58c-.79-.83-1.92-1.25-3.38-1.25H10Z", "clip-rule": "evenodd" })
+	);
+}
+function SortIcon(props) {
+	return BdApi.React.createElement(
+		Icon,
+		{
+			...props,
+			className: classes(props.className, "dc-sort-icon"),
+			viewBox: "0 0 16 16"
+		},
+		BdApi.React.createElement(
+			"path",
+			{
+				fill: "currentColor",
+				d: "M3.5 3.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 12.293zm4 .5a.5.5 0 0 1 0-1h1a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h3a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h5a.5.5 0 0 1 0 1zM7 12.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5"
+			}
+		)
+	);
+}
+
 function StoreNameModal({ modalProps, originalName, onFinish, conflicting }) {
-	const [error, setError] = React.useState("");
-	const [newStoreName, setNewStoreName] = React.useState(originalName);
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [error, setError] = useState("");
+	const [newStoreName, setNewStoreName] = useState(originalName);
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -1922,13 +2226,13 @@ function StoreNameModal({ modalProps, originalName, onFinish, conflicting }) {
 	)));
 }
 function AddOnlineStoreModal({ modalProps, onFinish }) {
-	const [colorwaySourceName, setColorwaySourceName] = React.useState("");
-	const [colorwaySourceURL, setColorwaySourceURL] = React.useState("");
-	const [nameError, setNameError] = React.useState("");
-	const [URLError, setURLError] = React.useState("");
-	const [nameReadOnly, setNameReadOnly] = React.useState(false);
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [colorwaySourceName, setColorwaySourceName] = useState("");
+	const [colorwaySourceURL, setColorwaySourceURL] = useState("");
+	const [nameError, setNameError] = useState("");
+	const [URLError, setURLError] = useState("");
+	const [nameReadOnly, setNameReadOnly] = useState(false);
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -1994,8 +2298,8 @@ function AddOnlineStoreModal({ modalProps, onFinish }) {
 function SourceManager({
 	hasTheme = false
 }) {
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -2005,7 +2309,7 @@ function SourceManager({
 		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
 		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
 	}
-	return BdApi.React.createElement(Container, null, BdApi.React.createElement(TabBar, { items: [
+	return BdApi.React.createElement(Container, null, BdApi.React.createElement(TabBar, { container: ({ children }) => BdApi.React.createElement("div", { className: "colorwaysPageHeader" }, children), items: [
 		{
 			name: "Online",
 			component: OnlineTab
@@ -2017,14 +2321,14 @@ function SourceManager({
 	] }));
 }
 function OfflineTab() {
-	const [customColorwayStores, setCustomColorwayStores] = React.useState([]);
-	React.useEffect(() => {
+	const [customColorwayStores, setCustomColorwayStores] = useState([]);
+	useEffect(() => {
 		(async function() {
 			setCustomColorwayStores(await DataStore.get("customColorways"));
 			updateRemoteSources();
 		})();
 	}, []);
-	return BdApi.React.createElement("div", { className: "colorwaySourceTab" }, BdApi.React.createElement("div", { style: {
+	return BdApi.React.createElement("div", { className: "colorwayInnerTab" }, BdApi.React.createElement("div", { style: {
 		display: "flex",
 		gap: "8px"
 	} }, BdApi.React.createElement(
@@ -2126,14 +2430,14 @@ function OfflineTab() {
 	)));
 }
 function OnlineTab() {
-	const [colorwaySourceFiles, setColorwaySourceFiles] = React.useState([]);
-	React.useEffect(() => {
+	const [colorwaySourceFiles, setColorwaySourceFiles] = useState([]);
+	useEffect(() => {
 		(async function() {
 			setColorwaySourceFiles(await DataStore.get("colorwaySourceFiles"));
 			updateRemoteSources();
 		})();
 	}, []);
-	return BdApi.React.createElement("div", { className: "colorwaySourceTab" }, BdApi.React.createElement("div", { style: {
+	return BdApi.React.createElement("div", { className: "colorwayInnerTab" }, BdApi.React.createElement("div", { style: {
 		display: "flex",
 		gap: "8px"
 	} }, BdApi.React.createElement(
@@ -2259,17 +2563,17 @@ function OnlineTab() {
 function Store({
 	hasTheme = false
 }) {
-	const [storeObject, setStoreObject] = React.useState([]);
-	const [colorwaySourceFiles, setColorwaySourceFiles] = React.useState([]);
-	const [searchValue, setSearchValue] = React.useState("");
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [storeObject, setStoreObject] = useState([]);
+	const [colorwaySourceFiles, setColorwaySourceFiles] = useState([]);
+	const [searchValue, setSearchValue] = useState("");
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
 		load();
 	}, []);
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!searchValue) {
 			(async function() {
 				const res = await fetch("https://dablulite.vercel.app/");
@@ -2280,8 +2584,8 @@ function Store({
 		}
 	}, []);
 	function Container({ children }) {
-		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
-		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
+		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab colorwayInnerTab", style: { height: "100%" }, "data-theme": theme }, children);
+		else return BdApi.React.createElement("div", { className: "colorwaysModalTab colorwayInnerTab", style: { height: "100%" } }, children);
 	}
 	return BdApi.React.createElement(Container, null, BdApi.React.createElement("div", { style: { display: "flex", marginBottom: "8px" } }, BdApi.React.createElement(
 		"input",
@@ -2340,7 +2644,7 @@ function Store({
 		),
 		"Refresh"
 	)), BdApi.React.createElement("div", { className: "colorwaysSettings-sourceScroller" }, storeObject.map(
-		(item) => item.name.toLowerCase().includes(searchValue.toLowerCase()) ? BdApi.React.createElement("div", { className: `colorwaysSettings-colorwaySource`, style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement("div", { style: { gap: ".5rem", display: "flex", marginBottom: "8px", flexDirection: "column" } }, BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabelHeader" }, item.name), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceDesc" }, item.description), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceDesc", style: { opacity: ".8" } }, "by ", item.authorGh)), BdApi.React.createElement("div", { style: { gap: "8px", alignItems: "center", width: "100%", display: "flex" } }, BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/" + item.authorGh }, BdApi.React.createElement("img", { src: "/assets/6a853b4c87fce386cbfef4a2efbacb09.svg", alt: "GitHub" })), BdApi.React.createElement(
+		(item) => item.name.toLowerCase().includes(searchValue.toLowerCase()) ? BdApi.React.createElement("div", { className: "colorwaysSettings-colorwaySource", style: { flexDirection: "column", padding: "16px", alignItems: "start" } }, BdApi.React.createElement("div", { style: { gap: ".5rem", display: "flex", marginBottom: "8px", flexDirection: "column" } }, BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceLabelHeader" }, item.name), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceDesc" }, item.description), BdApi.React.createElement("span", { className: "colorwaysSettings-colorwaySourceDesc", style: { opacity: ".8" } }, "by ", item.authorGh)), BdApi.React.createElement("div", { style: { gap: "8px", alignItems: "center", width: "100%", display: "flex" } }, BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/" + item.authorGh }, BdApi.React.createElement("img", { src: "/assets/6a853b4c87fce386cbfef4a2efbacb09.svg", alt: "GitHub" })), BdApi.React.createElement(
 			"button",
 			{
 				className: "colorwaysPillButton colorwaysPillButton-onSurface",
@@ -2372,340 +2676,17 @@ function Store({
 	)));
 }
 
-function Setting({
-	children,
-	divider = false,
-	disabled = false
-}) {
-	return BdApi.React.createElement("div", { style: {
-		display: "flex",
-		flexDirection: "column",
-		marginBottom: "20px"
-	} }, disabled ? BdApi.React.createElement("div", { style: {
-		pointerEvents: "none",
-		opacity: 0.5,
-		cursor: "not-allowed"
-	} }, children) : children, divider && BdApi.React.createElement("div", { className: "colorwaysSettingsDivider" }));
-}
-
-function Switch({
-	onChange,
-	value,
-	id,
-	label
-}) {
-	return label ? BdApi.React.createElement("div", { style: {
-		display: "flex",
-		flexDirection: "row",
-		width: "100%",
-		alignItems: "center",
-		cursor: "pointer"
-	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label", htmlFor: id }, label), BdApi.React.createElement("div", { className: `colorwaysSettings-switch ${value ? "checked" : ""}` }, BdApi.React.createElement("svg", { viewBox: "0 0 28 20", preserveAspectRatio: "xMinYMid meet", "aria-hidden": "true", style: {
-		left: value ? "12px" : "-3px",
-		transition: ".2s ease",
-		display: "block",
-		position: "absolute",
-		width: "28px",
-		height: "18px",
-		margin: "3px"
-	} }, BdApi.React.createElement("rect", { className: "colorwaysSettings-switchCircle", fill: "#000", x: "4", y: "0", height: "20", width: "20", rx: "10" })), BdApi.React.createElement("input", { checked: value, id, type: "checkbox", style: {
-		position: "absolute",
-		opacity: 0,
-		width: "100%",
-		height: "100%",
-		cursor: "pointer",
-		borderRadius: "14px",
-		top: 0,
-		left: 0,
-		margin: 0
-	}, tabIndex: 0, onChange: (e) => {
-		onChange(e.currentTarget.checked);
-	} }))) : BdApi.React.createElement("div", { className: `colorwaysSettings-switch ${value ? "checked" : ""}` }, BdApi.React.createElement("svg", { viewBox: "0 0 28 20", preserveAspectRatio: "xMinYMid meet", "aria-hidden": "true", style: {
-		left: value ? "12px" : "-3px",
-		transition: ".2s ease",
-		display: "block",
-		position: "absolute",
-		width: "28px",
-		height: "18px",
-		margin: "3px"
-	} }, BdApi.React.createElement("rect", { className: "colorwaysSettings-switchCircle", fill: "#000", x: "4", y: "0", height: "20", width: "20", rx: "10" })), BdApi.React.createElement("input", { checked: value, id, type: "checkbox", style: {
-		position: "absolute",
-		opacity: 0,
-		width: "100%",
-		height: "100%",
-		cursor: "pointer",
-		borderRadius: "14px",
-		top: 0,
-		left: 0,
-		margin: 0
-	}, tabIndex: 0, onChange: (e) => {
-		onChange(e.currentTarget.checked);
-	} }));
-}
-
-function SettingsPage({
-	hasTheme = false
-}) {
-	const [colorways, setColorways] = React.useState([]);
-	const [customColorways, setCustomColorways] = React.useState([]);
-	const [colorsButtonVisibility, setColorsButtonVisibility] = React.useState(false);
-	const [theme, setTheme] = React.useState("discord");
-	const [shouldAutoconnect, setShouldAutoconnect] = React.useState("1");
-	const [preset, setPreset] = React.useState("default");
-	React.useEffect(() => {
-		(async function() {
-			const [
-				customColorways2,
-				colorwaySourceFiles,
-				showColorwaysButton,
-				colorwaysPreset,
-				colorwaysPluginTheme,
-				colorwaysManagerDoAutoconnect
-			] = await DataStore.getMany([
-				"customColorways",
-				"colorwaySourceFiles",
-				"showColorwaysButton",
-				"colorwaysPreset",
-				"colorwaysPluginTheme",
-				"colorwaysManagerDoAutoconnect"
-			]);
-			setTheme(colorwaysPluginTheme);
-			setShouldAutoconnect(colorwaysManagerDoAutoconnect ? "1" : "2");
-			setPreset(colorwaysPreset);
-			const responses = await Promise.all(
-				colorwaySourceFiles.map(
-					({ url }) => fetch(url)
-				)
-			);
-			const data = await Promise.all(
-				responses.map(
-					(res) => res.json().catch(() => {
-						return { colorways: [] };
-					})
-				)
-			);
-			const colorways2 = data.flatMap((json) => json.colorways);
-			setColorways(colorways2 || fallbackColorways);
-			setCustomColorways(customColorways2.map((source) => source.colorways).flat(2));
-			setColorsButtonVisibility(showColorwaysButton);
-		})();
-	}, []);
-	function Container({ children }) {
-		if (hasTheme) return BdApi.React.createElement("div", { className: "colorwaysModalTab", "data-theme": theme }, children);
-		else return BdApi.React.createElement("div", { className: "colorwaysModalTab" }, children);
-	}
-	return BdApi.React.createElement(Container, null, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Quick Switch"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement(
-		Switch,
-		{
-			value: colorsButtonVisibility,
-			label: "Enable Quick Switch",
-			id: "showColorwaysButton",
-			onChange: (v) => {
-				setColorsButtonVisibility(v);
-				DataStore.set("showColorwaysButton", v);
-				FluxDispatcher.dispatch({
-					type: "COLORWAYS_UPDATE_BUTTON_VISIBILITY",
-					isVisible: v
-				});
-			}
-		}
-	), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Shows a button on the top of the servers list that opens a colorway selector modal.")), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Appearance"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
-		display: "flex",
-		flexDirection: "row",
-		width: "100%",
-		alignItems: "center",
-		cursor: "pointer"
-	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Plugin Theme"), BdApi.React.createElement(
-		"select",
-		{
-			className: "colorwaysPillButton",
-			style: { border: "none" },
-			onChange: ({ currentTarget: { value } }) => {
-				setTheme(value);
-				DataStore.set("colorwaysPluginTheme", value);
-				FluxDispatcher.dispatch({
-					type: "COLORWAYS_UPDATE_THEME",
-					theme: value
-				});
-			},
-			value: theme
-		},
-		BdApi.React.createElement("option", { value: "discord" }, "Discord (Default)"),
-		BdApi.React.createElement("option", { value: "colorish" }, "Colorish")
-	))), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Manager"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
-		display: "flex",
-		flexDirection: "row",
-		width: "100%",
-		alignItems: "center",
-		cursor: "pointer"
-	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Automatically retry to connect to Manager"), BdApi.React.createElement(
-		"select",
-		{
-			className: "colorwaysPillButton",
-			style: { border: "none" },
-			onChange: ({ currentTarget: { value } }) => {
-				setShouldAutoconnect(value);
-				if (value == "1") {
-					DataStore.set("colorwaysManagerDoAutoconnect", true);
-					if (!isWSOpen()) connect();
-				} else {
-					DataStore.set("colorwaysManagerDoAutoconnect", false);
-				}
-			},
-			value: shouldAutoconnect
-		},
-		BdApi.React.createElement("option", { value: "1" }, "On (Default)"),
-		BdApi.React.createElement("option", { value: "2" }, "Off")
-	))), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Colorways"), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
-		display: "flex",
-		flexDirection: "row",
-		width: "100%",
-		alignItems: "center",
-		cursor: "pointer"
-	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Colorway preset"), BdApi.React.createElement(
-		"select",
-		{
-			className: "colorwaysPillButton",
-			style: { border: "none" },
-			onChange: ({ currentTarget: { value } }) => {
-				setPreset(value);
-				DataStore.set("colorwaysPreset", value);
-				DataStore.get("activeColorwayObject").then((active) => {
-					if (active.id) {
-						if (wsOpen) {
-							if (hasManagerRole) {
-								sendColorway(active);
-							}
-						} else {
-							if (value == "default") {
-								colorwaysAPI.ColorwayCSS.set(generateCss(
-									active.colors,
-									true,
-									true,
-									void 0,
-									active.id
-								));
-							} else {
-								if (gradientPresetIds.includes(value)) {
-									const css = Object.keys(active).includes("linearGradient") ? gradientBase(utils.colorToHex(active.colors.accent), true) + `:root:root {--custom-theme-background: linear-gradient(${active.linearGradient})}` : getPreset(active.colors)[value].preset.full;
-									colorwaysAPI.ColorwayCSS.set(css);
-								} else {
-									colorwaysAPI.ColorwayCSS.set(getPreset(active.colors)[value].preset);
-								}
-							}
-						}
-					}
-				});
-			},
-			value: preset
-		},
-		Object.values(getPreset({})).map((pre) => BdApi.React.createElement(
-			"option",
-			{
-				value: pre.id
-			},
-			pre.name
-		))
-	)), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Presets allow colorways to adapt to various Discord themes.")), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Other..."), BdApi.React.createElement(Setting, { divider: true }, BdApi.React.createElement("div", { style: {
-		display: "flex",
-		flexDirection: "row",
-		width: "100%",
-		alignItems: "center",
-		cursor: "pointer"
-	} }, BdApi.React.createElement("label", { className: "colorwaySwitch-label" }, "Reset plugin to default settings (CANNOT BE UNDONE)"), BdApi.React.createElement(
-		"button",
-		{
-			className: "colorwaysPillButton",
-			onClick: () => {
-				DataStore.setMany([
-					["customColorways", []],
-					["colorwaySourceFiles", [{
-						name: "Project Colorway",
-						url: defaultColorwaySource
-					}]],
-					["showColorwaysButton", false],
-					["activeColorwayObject", nullColorwayObj],
-					["colorwaysPluginTheme", "discord"],
-					["colorwaysBoundManagers", []],
-					["colorwaysManagerAutoconnectPeriod", 3e3],
-					["colorwaysManagerDoAutoconnect", true],
-					["colorwaysPreset", "default"]
-				]);
-			}
-		},
-		"Reset..."
-	)), BdApi.React.createElement("span", { className: "colorwaysNote" }, "Reset the plugin to its default settings. All bound managers, sources, and colorways will be deleted. Please reload Discord after use.")), BdApi.React.createElement("div", { style: { flexDirection: "column", display: "flex" } }, BdApi.React.createElement("h1", { className: "colorwaysWordmarkFirstPart" }, "Discord ", BdApi.React.createElement("span", { className: "colorwaysWordmarkSecondPart" }, "Colorways")), BdApi.React.createElement(
-		"span",
-		{
-			style: {
-				color: "var(--text-normal)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "12px"
-			}
-		},
-		"by Project Colorway"
-	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Plugin Version:"), BdApi.React.createElement(
-		"span",
-		{
-			style: {
-				color: "var(--text-muted)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "8px"
-			}
-		},
-		PluginProps.pluginVersion,
-		" (",
-		PluginProps.clientMod,
-		")"
-	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "UI Version:"), BdApi.React.createElement(
-		"span",
-		{
-			style: {
-				color: "var(--text-muted)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "8px"
-			}
-		},
-		PluginProps.UIVersion
-	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "CSS Version:"), BdApi.React.createElement(
-		"span",
-		{
-			style: {
-				color: "var(--text-muted)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "8px"
-			}
-		},
-		PluginProps.CSSVersion
-	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Loaded Colorways:"), BdApi.React.createElement(
-		"span",
-		{
-			style: {
-				color: "var(--text-muted)",
-				fontWeight: 500,
-				fontSize: "14px",
-				marginBottom: "8px"
-			}
-		},
-		[...colorways, ...customColorways].length
-	), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Project Repositories:"), BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/DaBluLite/DiscordColorways" }, "DiscordColorways"), BdApi.React.createElement("a", { role: "link", target: "_blank", href: "https://github.com/DaBluLite/ProjectColorway" }, "Project Colorway")));
-}
-
 function Selector$1({
 	modalProps
 }) {
-	const [activeTab, setActiveTab] = React.useState("selector");
-	const [theme, setTheme] = React.useState("discord");
-	const [pos, setPos] = React.useState({ x: 0, y: 0 });
-	const [showMenu, setShowMenu] = React.useState(false);
-	const [wsConnected, setWsConnected] = React.useState(wsOpen);
-	const [boundKey$1, setBoundKey] = React.useState(boundKey);
-	const menuProps = React.useRef(null);
-	React.useEffect(() => {
+	const [activeTab, setActiveTab] = useState("selector");
+	const [theme, setTheme] = useState("discord");
+	const [pos, setPos] = useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = useState(false);
+	const [wsConnected, setWsConnected] = useState(wsOpen);
+	const [boundKey$1, setBoundKey] = useState(boundKey);
+	const menuProps = useRef(null);
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -2734,13 +2715,13 @@ function Selector$1({
 	function onPageClick(e) {
 		setShowMenu(false);
 	}
-	React.useEffect(() => {
+	useEffect(() => {
 		window.addEventListener("click", onPageClick);
 		return () => {
 			window.removeEventListener("click", onPageClick);
 		};
 	}, []);
-	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { className: `colorwaySelectorModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme, ...modalProps }, BdApi.React.createElement("div", { className: "colorwaySelectorSidebar" }, BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF30D"), id: "selector", title: "Change Colorway" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF3E3"), id: "settings", title: "Settings" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF2C6"), id: "sources", title: "Sources" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF543"), id: "store", title: "Store" }), BdApi.React.createElement(SidebarTab, { bottom: true, icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF3EE"), id: "ws_connection", title: "Manager Connection" })), BdApi.React.createElement("div", { className: "colorwayModalContent" }, activeTab === "selector" && BdApi.React.createElement(Selector, null), activeTab == "sources" && BdApi.React.createElement(SourceManager, null), activeTab == "store" && BdApi.React.createElement(Store, null), activeTab == "settings" && BdApi.React.createElement("div", { style: { padding: "16px" } }, BdApi.React.createElement(SettingsPage, null))), BdApi.React.createElement("div", { ref: menuProps, className: `colorwaysManagerConnectionMenu ${showMenu ? "visible" : ""}`, style: {
+	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { className: `colorwaySelectorModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme, ...modalProps }, BdApi.React.createElement("div", { className: "colorwaySelectorSidebar" }, BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF4B0"), id: "selector", title: "Change Colorway" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF3E3"), id: "settings", title: "Settings" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF61C"), id: "sources", title: "Sources" }), BdApi.React.createElement(SidebarTab, { icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF2D0"), id: "discover", title: "Discover" }), BdApi.React.createElement(SidebarTab, { bottom: true, icon: BdApi.React.createElement(BdApi.React.Fragment, null, "\uF61C"), id: "ws_connection", title: "Manager Connection" })), BdApi.React.createElement("div", { className: "colorwayModalContent" }, activeTab === "selector" && BdApi.React.createElement("div", { className: "colorwayInnerTab", style: { height: "100%" } }, BdApi.React.createElement(Selector, null)), activeTab == "sources" && BdApi.React.createElement(SourceManager, null), activeTab == "discover" && BdApi.React.createElement(Store, null), activeTab == "settings" && BdApi.React.createElement(SettingsPage, null)), BdApi.React.createElement("div", { ref: menuProps, className: `colorwaysManagerConnectionMenu ${showMenu ? "visible" : ""}`, style: {
 		position: "fixed",
 		top: `${pos.y}px`,
 		left: `${pos.x}px`
@@ -2949,32 +2930,76 @@ function connect(doAutoconnect = true, autoconnectTimeout = 3e3) {
 	ws.onerror = () => hasErrored = true;
 }
 
+function AutoColorwaySelector({ modalProps, onChange, autoColorwayId = "" }) {
+	const [autoId, setAutoId] = useState(autoColorwayId);
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Auto Preset Settings"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("div", { className: "dc-info-card", style: { marginTop: "1em" } }, BdApi.React.createElement("strong", null, "About the Auto Colorway"), BdApi.React.createElement("span", null, "The auto colorway allows you to use your system's accent color in combination with a selection of presets that will fully utilize it.")), BdApi.React.createElement("div", { style: { marginBottom: "20px" } }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Presets:"), Object.values(getAutoPresets()).map((autoPreset) => BdApi.React.createElement(
+		"div",
+		{
+			className: "discordColorway",
+			"aria-checked": autoId === autoPreset.id,
+			style: { padding: "10px", marginBottom: "8px" },
+			onClick: () => {
+				setAutoId(autoPreset.id);
+			}
+		},
+		BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "24", height: "24", viewBox: "0 0 24 24" }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), autoId === autoPreset.id && BdApi.React.createElement("circle", { cx: "12", cy: "12", r: "5", className: "radioIconForeground-3wH3aU", fill: "currentColor" })),
+		BdApi.React.createElement("span", { className: "colorwayLabel" }, autoPreset.name)
+	)))), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: () => {
+				DataStore.set("activeAutoPreset", autoId);
+				onChange(autoId);
+				modalProps.onClose();
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => {
+				modalProps.onClose();
+			}
+		},
+		"Cancel"
+	)));
+}
+
 function ConflictingColorsModal({
 	modalProps,
 	onFinished
 }) {
-	const [accentColor, setAccentColor] = React.useState(getHex(
+	const [accentColor, setAccentColor] = useState(getHex(
 		getComputedStyle(
 			document.body
 		).getPropertyValue("--brand-experiment")
 	));
-	const [primaryColor, setPrimaryColor] = React.useState(getHex(
+	const [primaryColor, setPrimaryColor] = useState(getHex(
 		getComputedStyle(
 			document.body
 		).getPropertyValue("--background-primary")
 	));
-	const [secondaryColor, setSecondaryColor] = React.useState(getHex(
+	const [secondaryColor, setSecondaryColor] = useState(getHex(
 		getComputedStyle(
 			document.body
 		).getPropertyValue("--background-secondary")
 	));
-	const [tertiaryColor, setTertiaryColor] = React.useState(getHex(
+	const [tertiaryColor, setTertiaryColor] = useState(getHex(
 		getComputedStyle(
 			document.body
 		).getPropertyValue("--background-tertiary")
 	));
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -3271,9 +3296,9 @@ function ConflictingColorsModal({
 }
 
 function InputColorwayIdModal({ modalProps, onColorwayId }) {
-	const [colorwayID, setColorwayID] = React.useState("");
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [colorwayID, setColorwayID] = useState("");
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -3314,16 +3339,16 @@ function InputColorwayIdModal({ modalProps, onColorwayId }) {
 }
 
 function SaveColorwayModal({ modalProps, colorways, onFinish }) {
-	const [offlineColorwayStores, setOfflineColorwayStores] = React.useState([]);
-	const [storename, setStorename] = React.useState();
-	const [noStoreError, setNoStoreError] = React.useState(false);
-	React.useEffect(() => {
+	const [offlineColorwayStores, setOfflineColorwayStores] = useState([]);
+	const [storename, setStorename] = useState();
+	const [noStoreError, setNoStoreError] = useState(false);
+	useEffect(() => {
 		(async () => {
 			setOfflineColorwayStores(await DataStore.get("customColorways"));
 		})();
 	});
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -3389,8 +3414,8 @@ function SaveColorwayModal({ modalProps, colorways, onFinish }) {
 									className: "colorwaysPillButton colorwaysPillButton-onSurface",
 									onClick: () => {
 										function NewColorwayNameModal({ modalProps: modalProps2, onSelected }) {
-											const [errorMsg, setErrorMsg] = React.useState();
-											const [newColorwayName, setNewColorwayName] = React.useState("");
+											const [errorMsg, setErrorMsg] = useState();
+											const [newColorwayName, setNewColorwayName] = useState("");
 											return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps2.transitionState == 2 ? "closing" : ""} ${modalProps2.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Select new name"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement(
 												"input",
 												{
@@ -3483,7 +3508,7 @@ function CreatorModal({
 	}),
 	colorwayID
 }) {
-	const [colors, updateColors] = React.useReducer((colors2, action) => {
+	const [colors, updateColors] = useReducer((colors2, action) => {
 		if (action.task === "all") {
 			return { ...action.colorObj };
 		} else {
@@ -3495,10 +3520,10 @@ function CreatorModal({
 		secondary: "2b2d31",
 		tertiary: "1e1f22"
 	});
-	const [colorwayName, setColorwayName] = React.useState("");
-	const [mutedTextBrightness, setMutedTextBrightness] = React.useState(Math.min(HexToHSL("#" + colors.primary)[2] + 3.6 * 3, 100));
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [colorwayName, setColorwayName] = useState("");
+	const [mutedTextBrightness, setMutedTextBrightness] = useState(Math.min(HexToHSL("#" + colors.primary)[2] + 3.6 * 3, 100));
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -3528,7 +3553,7 @@ function CreatorModal({
 			id: "tertiary"
 		}
 	];
-	React.useEffect(() => {
+	useEffect(() => {
 		if (colorwayID) {
 			if (!colorwayID.includes(",")) {
 				throw new Error("Invalid Colorway ID");
@@ -3564,7 +3589,7 @@ function CreatorModal({
 		}
 	), BdApi.React.createElement("div", { className: "colorwaysCreator-settingCat" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Colors & Values:"), BdApi.React.createElement("div", { className: "colorwayCreator-colorPreviews" }, colorProps.map((presetColor) => {
 		return BdApi.React.createElement(
-			exports.ColorPicker,
+			ColorPicker,
 			{
 				label: BdApi.React.createElement("span", { className: "colorwaysPicker-colorLabel" }, presetColor.name),
 				color: parseInt(colors[presetColor.id], 16),
@@ -3579,7 +3604,7 @@ function CreatorModal({
 			}
 		);
 	})), BdApi.React.createElement("div", { className: "colorwaysSettingsDivider", style: { margin: "10px 0" } }), BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "Muted Text Brightness:"), BdApi.React.createElement(
-		exports.Slider,
+		Slider,
 		{
 			minValue: 0,
 			maxValue: 100,
@@ -3597,8 +3622,8 @@ function CreatorModal({
 					primary: "#" + colors.primary,
 					secondary: "#" + colors.secondary,
 					tertiary: "#" + colors.tertiary,
-					author: exports.UserStore.getCurrentUser().username,
-					authorID: exports.UserStore.getCurrentUser().id,
+					author: UserStore.getCurrentUser().username,
+					authorID: UserStore.getCurrentUser().id,
 					CSSVersion: PluginProps.CSSVersion
 				};
 				openModal((props) => BdApi.React.createElement(SaveColorwayModal, { modalProps: props, colorways: [customColorway], onFinish: () => {
@@ -3682,6 +3707,46 @@ function CreatorModal({
 		},
 		"Cancel"
 	)));
+}
+
+function FiltersMenu({ sort, onSortChange }) {
+	const [pos, setPos] = useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = useState(false);
+	function rightClickContextMenu(e) {
+		e.stopPropagation();
+		window.dispatchEvent(new Event("click"));
+		setShowMenu(!showMenu);
+		setPos({
+			x: e.currentTarget.getBoundingClientRect().x,
+			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight + 8
+		});
+	}
+	function onPageClick(e) {
+		setShowMenu(false);
+	}
+	useEffect(() => {
+		window.addEventListener("click", onPageClick);
+		return () => {
+			window.removeEventListener("click", onPageClick);
+		};
+	}, []);
+	function onSortChange_internal(newSort) {
+		onSortChange(newSort);
+		setShowMenu(false);
+	}
+	return BdApi.React.createElement(BdApi.React.Fragment, null, showMenu ? BdApi.React.createElement("nav", { className: "colorwaysContextMenu", style: {
+		position: "fixed",
+		top: `${pos.y}px`,
+		left: `${pos.x}px`
+	} }, BdApi.React.createElement("button", { onClick: () => onSortChange_internal(1), className: "colorwaysContextMenuItm" }, "Name (A-Z)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 1 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(2), className: "colorwaysContextMenuItm" }, "Name (Z-A)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 2 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(3), className: "colorwaysContextMenuItm" }, "Source (A-Z)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 3 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(4), className: "colorwaysContextMenuItm" }, "Source (Z-A)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+		marginLeft: "8px"
+	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 4 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null))) : null, BdApi.React.createElement("button", { className: "colorwaysPillButton", onClick: rightClickContextMenu }, BdApi.React.createElement(SortIcon, { width: 14, height: 14 }), " Sort By..."));
 }
 
 function ThemePreview({
@@ -3808,10 +3873,10 @@ function ThemePreview({
 }
 
 function RenameColorwayModal({ modalProps, ogName, onFinish, colorwayList }) {
-	const [error, setError] = React.useState("");
-	const [newName, setNewName] = React.useState(ogName);
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [error, setError] = useState("");
+	const [newName, setNewName] = useState(ogName);
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -3863,9 +3928,9 @@ function InfoModal({
 		"secondary",
 		"tertiary"
 	];
-	const profile = useStateFromStores([exports.UserStore], () => exports.UserStore.getUser(colorway.authorID));
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const profile = useStateFromStores([UserStore], () => UserStore.getUser(colorway.authorID));
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -3961,8 +4026,8 @@ function InfoModal({
 																				* @name ${colorway.name || "Colorway"}
 																				* @version ${PluginProps.CSSVersion}
 																				* @description Automatically generated Colorway.
-																				* @author ${exports.UserStore.getCurrentUser().username}
-																				* @authorId ${exports.UserStore.getCurrentUser().id}
+																				* @author ${UserStore.getCurrentUser().username}
+																				* @authorId ${UserStore.getCurrentUser().id}
 																				*/
 																			 ${colorway["dc-import"].replace((colorway["dc-import"].match(/\/\*.+\*\//) || [""])[0], "").replaceAll("url(//", "url(https://").replaceAll('url("//', 'url("https://')}`], `${colorway.name.replaceAll(" ", "-").toLowerCase()}.theme.css`, { type: "text/plain" }));
 					} else {
@@ -4014,132 +4079,10 @@ function InfoModal({
 	)))));
 }
 
-function UseRepainterThemeModal({ modalProps, onFinish }) {
-	const [colorwaySourceURL, setColorwaySourceURL] = React.useState("");
-	const [URLError, setURLError] = React.useState("");
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
-		async function load() {
-			setTheme(await DataStore.get("colorwaysPluginTheme"));
-		}
-		load();
-	}, []);
-	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Use Repainter theme"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "URL: ", URLError ? BdApi.React.createElement("span", { className: "colorwaysModalSectionError" }, URLError) : BdApi.React.createElement(BdApi.React.Fragment, null)), BdApi.React.createElement(
-		"input",
-		{
-			type: "text",
-			placeholder: "Enter a valid URL...",
-			onInput: (e) => {
-				setColorwaySourceURL(e.currentTarget.value);
-			},
-			value: colorwaySourceURL,
-			className: "colorwayTextBox"
-		}
-	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
-		"button",
-		{
-			className: "colorwaysPillButton colorwaysPillButton-onSurface",
-			onClick: async () => {
-				getRepainterTheme(colorwaySourceURL).then((data) => {
-					onFinish({ id: data.id, colors: data.colors });
-					modalProps.onClose();
-				}).catch((e) => setURLError("Error: " + e));
-			}
-		},
-		"Finish"
-	), BdApi.React.createElement(
-		"button",
-		{
-			className: "colorwaysPillButton",
-			onClick: () => modalProps.onClose()
-		},
-		"Cancel"
-	)));
-}
-
-function FiltersMenu({ sort, onSortChange }) {
-	const [pos, setPos] = React.useState({ x: 0, y: 0 });
-	const [showMenu, setShowMenu] = React.useState(false);
-	function rightClickContextMenu(e) {
-		e.stopPropagation();
-		window.dispatchEvent(new Event("click"));
-		setShowMenu(!showMenu);
-		setPos({
-			x: e.currentTarget.getBoundingClientRect().x,
-			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight + 8
-		});
-	}
-	function onPageClick(e) {
-		setShowMenu(false);
-	}
-	React.useEffect(() => {
-		window.addEventListener("click", onPageClick);
-		return () => {
-			window.removeEventListener("click", onPageClick);
-		};
-	}, []);
-	function onSortChange_internal(newSort) {
-		onSortChange(newSort);
-		setShowMenu(false);
-	}
-	return BdApi.React.createElement(BdApi.React.Fragment, null, showMenu ? BdApi.React.createElement("nav", { className: "colorwaysContextMenu", style: {
-		position: "fixed",
-		top: `${pos.y}px`,
-		left: `${pos.x}px`
-	} }, BdApi.React.createElement("button", { onClick: () => onSortChange_internal(1), className: "colorwaysContextMenuItm" }, "Name (A-Z)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
-		marginLeft: "8px"
-	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 1 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(2), className: "colorwaysContextMenuItm" }, "Name (Z-A)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
-		marginLeft: "8px"
-	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 2 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(3), className: "colorwaysContextMenuItm" }, "Source (A-Z)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
-		marginLeft: "8px"
-	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 3 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null)), BdApi.React.createElement("button", { onClick: () => onSortChange_internal(4), className: "colorwaysContextMenuItm" }, "Source (Z-A)", BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
-		marginLeft: "8px"
-	} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), sort == 4 ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null))) : null, BdApi.React.createElement("button", { className: "colorwaysPillButton", onClick: rightClickContextMenu }, BdApi.React.createElement(SortIcon, { width: 14, height: 14 }), " Sort By..."));
-}
-
-function SourcesMenu({ source, sources, onSourceChange }) {
-	const menuProps = React.useRef(null);
-	const [pos, setPos] = React.useState({ x: 0, y: 0 });
-	const [showMenu, setShowMenu] = React.useState(false);
-	const [current, setCurrent] = React.useState(source);
-	function rightClickContextMenu(e) {
-		e.stopPropagation();
-		window.dispatchEvent(new Event("click"));
-		setShowMenu(!showMenu);
-		setPos({
-			x: e.currentTarget.getBoundingClientRect().x,
-			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight + 8
-		});
-	}
-	function onPageClick() {
-		setShowMenu(false);
-	}
-	React.useEffect(() => {
-		window.addEventListener("click", onPageClick);
-		return () => {
-			window.removeEventListener("click", onPageClick);
-		};
-	}, []);
-	function onSourceChange_internal(newSort) {
-		onSourceChange(newSort.id);
-		setCurrent(newSort);
-		setShowMenu(false);
-	}
-	return BdApi.React.createElement(BdApi.React.Fragment, null, showMenu ? BdApi.React.createElement("nav", { className: "colorwaysContextMenu", ref: menuProps, style: {
-		position: "fixed",
-		top: `${pos.y}px`,
-		left: `${pos.x}px`
-	} }, sources.map(({ name, id }) => {
-		return BdApi.React.createElement("button", { onClick: () => onSourceChange_internal({ name, id }), className: "colorwaysContextMenuItm" }, name, BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
-			marginLeft: "8px"
-		} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), source.id == id ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null));
-	})) : null, BdApi.React.createElement("button", { className: "colorwaysPillButton", onClick: rightClickContextMenu }, "Source: ", current.name));
-}
-
 function ReloadButton({ onClick, onForceReload }) {
-	const menuProps = React.useRef(null);
-	const [pos, setPos] = React.useState({ x: 0, y: 0 });
-	const [showMenu, setShowMenu] = React.useState(false);
+	const menuProps = useRef(null);
+	const [pos, setPos] = useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = useState(false);
 	function rightClickContextMenu(e) {
 		e.stopPropagation();
 		window.dispatchEvent(new Event("click"));
@@ -4152,7 +4095,7 @@ function ReloadButton({ onClick, onForceReload }) {
 	function onPageClick(e) {
 		setShowMenu(false);
 	}
-	React.useEffect(() => {
+	useEffect(() => {
 		window.addEventListener("click", onPageClick);
 		return () => {
 			window.removeEventListener("click", onPageClick);
@@ -4235,23 +4178,105 @@ function ReloadButton({ onClick, onForceReload }) {
 	), "Refresh"));
 }
 
+function SourcesMenu({ source, sources, onSourceChange }) {
+	const menuProps = useRef(null);
+	const [pos, setPos] = useState({ x: 0, y: 0 });
+	const [showMenu, setShowMenu] = useState(false);
+	const [current, setCurrent] = useState(source);
+	function rightClickContextMenu(e) {
+		e.stopPropagation();
+		window.dispatchEvent(new Event("click"));
+		setShowMenu(!showMenu);
+		setPos({
+			x: e.currentTarget.getBoundingClientRect().x,
+			y: e.currentTarget.getBoundingClientRect().y + e.currentTarget.offsetHeight + 8
+		});
+	}
+	function onPageClick() {
+		setShowMenu(false);
+	}
+	useEffect(() => {
+		window.addEventListener("click", onPageClick);
+		return () => {
+			window.removeEventListener("click", onPageClick);
+		};
+	}, []);
+	function onSourceChange_internal(newSort) {
+		onSourceChange(newSort.id);
+		setCurrent(newSort);
+		setShowMenu(false);
+	}
+	return BdApi.React.createElement(BdApi.React.Fragment, null, showMenu ? BdApi.React.createElement("nav", { className: "colorwaysContextMenu", ref: menuProps, style: {
+		position: "fixed",
+		top: `${pos.y}px`,
+		left: `${pos.x}px`
+	} }, sources.map(({ name, id }) => {
+		return BdApi.React.createElement("button", { onClick: () => onSourceChange_internal({ name, id }), className: "colorwaysContextMenuItm" }, name, BdApi.React.createElement("svg", { "aria-hidden": "true", role: "img", width: "18", height: "18", viewBox: "0 0 24 24", style: {
+			marginLeft: "8px"
+		} }, BdApi.React.createElement("path", { "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z", fill: "currentColor" }), source.id == id ? BdApi.React.createElement("circle", { className: "colorwaysRadioSelected", cx: "12", cy: "12", r: "5" }) : null));
+	})) : null, BdApi.React.createElement("button", { className: "colorwaysPillButton", onClick: rightClickContextMenu }, "Source: ", current.name));
+}
+
+function UseRepainterThemeModal({ modalProps, onFinish }) {
+	const [colorwaySourceURL, setColorwaySourceURL] = useState("");
+	const [URLError, setURLError] = useState("");
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
+		async function load() {
+			setTheme(await DataStore.get("colorwaysPluginTheme"));
+		}
+		load();
+	}, []);
+	return BdApi.React.createElement("div", { className: `colorwaysModal ${modalProps.transitionState == 2 ? "closing" : ""} ${modalProps.transitionState == 4 ? "hidden" : ""}`, "data-theme": theme }, BdApi.React.createElement("h2", { className: "colorwaysModalHeader" }, "Use Repainter theme"), BdApi.React.createElement("div", { className: "colorwaysModalContent" }, BdApi.React.createElement("span", { className: "colorwaysModalSectionHeader" }, "URL: ", URLError ? BdApi.React.createElement("span", { className: "colorwaysModalSectionError" }, URLError) : BdApi.React.createElement(BdApi.React.Fragment, null)), BdApi.React.createElement(
+		"input",
+		{
+			type: "text",
+			placeholder: "Enter a valid URL...",
+			onInput: (e) => {
+				setColorwaySourceURL(e.currentTarget.value);
+			},
+			value: colorwaySourceURL,
+			className: "colorwayTextBox"
+		}
+	)), BdApi.React.createElement("div", { className: "colorwaysModalFooter" }, BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton colorwaysPillButton-onSurface",
+			onClick: async () => {
+				getRepainterTheme(colorwaySourceURL).then((data) => {
+					onFinish({ id: data.id, colors: data.colors });
+					modalProps.onClose();
+				}).catch((e) => setURLError("Error: " + e));
+			}
+		},
+		"Finish"
+	), BdApi.React.createElement(
+		"button",
+		{
+			className: "colorwaysPillButton",
+			onClick: () => modalProps.onClose()
+		},
+		"Cancel"
+	)));
+}
+
 function Selector({
 	settings = { selectorType: "normal" },
 	hasTheme = false
 }) {
-	const [colorwayData, setColorwayData] = React.useState([]);
-	const [searchValue, setSearchValue] = React.useState("");
-	const [sortBy, setSortBy] = React.useState(SortOptions.NAME_AZ);
-	const [activeColorwayObject, setActiveColorwayObject] = React.useState(nullColorwayObj);
-	const [customColorwayData, setCustomColorwayData] = React.useState([]);
-	const [loaderHeight, setLoaderHeight] = React.useState("2px");
-	const [visibleSources, setVisibleSources] = React.useState("all");
-	const [selectedColorways, setSelectedColorways] = React.useState([]);
-	const [errorCode, setErrorCode] = React.useState(0);
-	const [wsConnected, setWsConnected] = React.useState(wsOpen);
-	const [theme, setTheme] = React.useState("discord");
-	const [isManager, setManager] = React.useState(hasManagerRole);
-	React.useEffect(() => {
+	const [colorwayData, setColorwayData] = useState([]);
+	const [searchValue, setSearchValue] = useState("");
+	const [sortBy, setSortBy] = useState(SortOptions.NAME_AZ);
+	const [activeColorwayObject, setActiveColorwayObject] = useState(nullColorwayObj);
+	const [customColorwayData, setCustomColorwayData] = useState([]);
+	const [loaderHeight, setLoaderHeight] = useState("2px");
+	const [visibleSources, setVisibleSources] = useState("all");
+	const [selectedColorways, setSelectedColorways] = useState([]);
+	const [errorCode, setErrorCode] = useState(0);
+	const [wsConnected, setWsConnected] = useState(wsOpen);
+	const [theme, setTheme] = useState("discord");
+	const [isManager, setManager] = useState(hasManagerRole);
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -4309,7 +4334,7 @@ function Selector({
 			));
 		}
 	}
-	React.useEffect(() => {
+	useEffect(() => {
 		loadUI();
 	}, [searchValue]);
 	function Header({ children }) {
@@ -4320,7 +4345,7 @@ function Selector({
 		if (hasTheme) return BdApi.React.createElement("div", { style: { maxHeight: settings.selectorType === "multiple-selection" ? "50%" : "unset" }, className: "ColorwaySelectorWrapper", "data-theme": theme }, children);
 		else return BdApi.React.createElement("div", { style: { maxHeight: settings.selectorType === "multiple-selection" ? "50%" : "unset" }, className: "ColorwaySelectorWrapper" }, children);
 	}
-	return BdApi.React.createElement(BdApi.React.Fragment, null, settings.selectorType !== "preview" && (!wsConnected || wsConnected && isManager) ? BdApi.React.createElement(Header, null, BdApi.React.createElement(
+	return BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement(Header, null, BdApi.React.createElement(
 		"input",
 		{
 			type: "text",
@@ -4389,23 +4414,16 @@ function Selector({
 		setSortBy(newSort);
 	} }), BdApi.React.createElement(SourcesMenu, { source: filters.filter((filter) => filter.id == visibleSources)[0], sources: filters, onSourceChange: (sourceId) => {
 		setVisibleSources(sourceId);
-	} }))) : BdApi.React.createElement(BdApi.React.Fragment, null), wsConnected && settings.selectorType == "normal" && !isManager ? BdApi.React.createElement("span", { style: {
-		color: "#fff",
-		margin: "auto",
-		fontWeight: "bold",
-		display: "flex",
-		gap: "8px",
-		alignItems: "center"
-	} }, BdApi.React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "40", height: "40", fill: "currentColor", viewBox: "0 0 16 16", style: {
-		transform: "scaleX(1.2)"
-	} }, BdApi.React.createElement("path", { d: "M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" })), "Manager is controlling the colorways", BdApi.React.createElement(
+	} }))), wsConnected && settings.selectorType == "normal" && !isManager ? BdApi.React.createElement("div", { className: "colorwaysManagerActive" }, BdApi.React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "40", height: "40", fill: "currentColor", viewBox: "0 0 16 16", style: {
+		transform: "scaleX(1.4) scaleY(0.9)"
+	} }, BdApi.React.createElement("path", { d: "M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" })), "A manager is controlling colors", BdApi.React.createElement(
 		"button",
 		{
 			className: "colorwaysPillButton",
 			onClick: requestManagerRole
 		},
-		"Request Manager"
-	)) : BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("div", { className: "colorwaysLoader-barContainer" }, BdApi.React.createElement("div", { className: "colorwaysLoader-bar", style: { height: loaderHeight } })), BdApi.React.createElement(Container, null, activeColorwayObject.sourceType === "temporary" && settings.selectorType === "normal" && settings.selectorType === "normal" && BdApi.React.createElement(
+		"Request Manager Role"
+	)) : BdApi.React.createElement(BdApi.React.Fragment, null), BdApi.React.createElement("div", { className: "colorwaysLoader-barContainer" }, BdApi.React.createElement("div", { className: "colorwaysLoader-bar", style: { height: loaderHeight } })), BdApi.React.createElement(Container, null, activeColorwayObject.sourceType === "temporary" && settings.selectorType === "normal" && settings.selectorType === "normal" && BdApi.React.createElement(
 		"div",
 		{
 			className: "discordColorway",
@@ -4745,7 +4763,7 @@ function Selector({
 			},
 			BdApi.React.createElement(DeleteIcon, { width: 20, height: 20 })
 		)
-	)))));
+	))));
 }
 
 async function defaultsLoader() {
@@ -4836,9 +4854,9 @@ function Tooltip({
 	text,
 	position = "top"
 }) {
-	const [visible, setVisible] = React.useState(false);
-	const [pos, setPos] = React.useState({ x: 0, y: 0 });
-	const tooltip = React.useRef(null);
+	const [visible, setVisible] = useState(false);
+	const [pos, setPos] = useState({ x: 0, y: 0 });
+	const tooltip = useRef(null);
 	function showTooltip({ currentTarget }) {
 		setPos((() => {
 			switch (position) {
@@ -4878,7 +4896,7 @@ function Tooltip({
 			setVisible(false);
 		}
 	}
-	React.useEffect(() => {
+	useEffect(() => {
 		document.addEventListener("mouseout", onWindowUnfocused);
 		return () => {
 			document.removeEventListener("mouseout", onWindowUnfocused);
@@ -4899,8 +4917,8 @@ function ListItem({
 	tooltip,
 	hasPill = false
 }) {
-	const [status, setStatus] = React.useState("none");
-	const btn = React.useRef(null);
+	const [status, setStatus] = useState("none");
+	const btn = useRef(null);
 	function onWindowUnfocused(e) {
 		e = e ? e : window.event;
 		var from = e.relatedTarget || e.toElement;
@@ -4908,7 +4926,7 @@ function ListItem({
 			setStatus("none");
 		}
 	}
-	React.useEffect(() => {
+	useEffect(() => {
 		document.addEventListener("mouseout", () => onWindowUnfocused);
 		return () => {
 			document.removeEventListener("mouseout", onWindowUnfocused);
@@ -4937,10 +4955,10 @@ function ListItem({
 }
 
 function ColorwaysButton() {
-	const [activeColorway, setActiveColorway] = React.useState("None");
-	const [visibility, setVisibility] = React.useState(true);
-	const [autoPreset, setAutoPreset] = React.useState("hueRotation");
-	React.useEffect(() => {
+	const [activeColorway, setActiveColorway] = useState("None");
+	const [visibility, setVisibility] = useState(true);
+	const [autoPreset, setAutoPreset] = useState("hueRotation");
+	useEffect(() => {
 		(async function() {
 			setVisibility(await DataStore.get("showColorwaysButton"));
 			setAutoPreset(await DataStore.get("activeAutoPreset"));
@@ -4954,7 +4972,7 @@ function ColorwaysButton() {
 		ListItem,
 		{
 			hasPill: true,
-			tooltip: BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("span", null, "Colorways"), BdApi.React.createElement("span", { style: { color: "var(--text-muted)", fontWeight: 500, fontSize: 12 } }, "Active Colorway: " + activeColorway), activeColorway === "Auto" ? BdApi.React.createElement("span", { style: { color: "var(--text-muted)", fontWeight: 500, fontSize: 12 } }, "Auto Preset: " + (getAutoPresets()[autoPreset].name || "None")) : BdApi.React.createElement(BdApi.React.Fragment, null))
+			tooltip: BdApi.React.createElement(BdApi.React.Fragment, null, BdApi.React.createElement("span", null, "Colorways"), BdApi.React.createElement("span", { style: { color: "var(--text-muted)", fontWeight: 500, fontSize: 12 } }, "Active Colorway: " + activeColorway), activeColorway === "Auto" ? BdApi.React.createElement("span", { style: { color: "var(--text-muted)", fontWeight: 500, fontSize: 12 } }, "Auto Preset: " + (autoPreset ? getAutoPresets()[autoPreset].name : "None")) : BdApi.React.createElement(BdApi.React.Fragment, null))
 		},
 		({ onMouseEnter, onMouseLeave, isActive, onClick }) => {
 			return BdApi.React.createElement(
@@ -4982,8 +5000,8 @@ function ColorwaysButton() {
 }
 
 function PCSMigrationModal({ modalProps }) {
-	const [theme, setTheme] = React.useState("discord");
-	React.useEffect(() => {
+	const [theme, setTheme] = useState("discord");
+	useEffect(() => {
 		async function load() {
 			setTheme(await DataStore.get("colorwaysPluginTheme"));
 		}
@@ -5004,10 +5022,10 @@ const DataStore = {
 	}
 };
 const PluginProps = {
-	pluginVersion: "6.3.0",
+	pluginVersion: "6.4.0",
 	clientMod: "BetterDiscord",
 	UIVersion: "2.1.0",
-	creatorVersion: "1.20"
+	creatorVersion: "1.21"
 };
 defaultsLoader();
 const guildStyles = Webpack.getModule(Filters.byKeys("guilds", "base"), { searchExports: false, defaultExport: true });
@@ -5018,7 +5036,7 @@ const instead = (object, method, callback, options) => {
 	if (!(original instanceof Function)) {
 		throw TypeError(`patch target ${original} is not a function`);
 	}
-	const cancel = betterdiscord.Patcher.instead(object, method, options.once ? (...args) => {
+	const cancel = Patcher.instead(object, method, options.once ? (...args) => {
 		const result = callback(cancel, original, args);
 		cancel();
 		return result;
@@ -5083,10 +5101,10 @@ class DiscordColorways {
 		}
 	];
 	async start() {
-		betterdiscord.DOM.addStyle(css$1);
-		betterdiscord.DOM.addStyle(css);
+		DOM.addStyle(css$1);
+		DOM.addStyle(css);
 		ColorwayCSS$1.set(getSetting("activeColorwayObject").css);
-		betterdiscord.Patcher.after(
+		Patcher.after(
 			GuildsNav,
 			"type",
 			(cancel, result, ...args) => {
@@ -5108,7 +5126,7 @@ class DiscordColorways {
 				});
 			}
 		);
-		betterdiscord.DOM.addStyle(css$1 + css);
+		DOM.addStyle(css$1 + css);
 		triggerRerender();
 		const [
 			activeColorwayObject,
@@ -5152,38 +5170,12 @@ class DiscordColorways {
 	}
 	stop() {
 		ColorwayCSS$1.remove();
-		betterdiscord.DOM.removeStyle();
-		betterdiscord.Patcher.unpatchAll();
+		DOM.removeStyle();
+		Patcher.unpatchAll();
 		closeWS();
 	}
 }
 
-Object.defineProperty(exports, 'useCallback', {
-		enumerable: true,
-		get: () => React.useCallback
-});
-Object.defineProperty(exports, 'useEffect', {
-		enumerable: true,
-		get: () => React.useEffect
-});
-Object.defineProperty(exports, 'useReducer', {
-		enumerable: true,
-		get: () => React.useReducer
-});
-Object.defineProperty(exports, 'useRef', {
-		enumerable: true,
-		get: () => React.useRef
-});
-Object.defineProperty(exports, 'useState', {
-		enumerable: true,
-		get: () => React.useState
-});
-exports.DataStore = DataStore;
-exports.FluxDispatcher = FluxDispatcher;
-exports.PluginProps = PluginProps;
-exports.Toasts = Toasts;
-exports["default"] = DiscordColorways;
-exports.openModal = openModal;
-exports.useStateFromStores = useStateFromStores;
+export { ColorPicker, DataStore, FluxDispatcher, PluginProps, Slider, Toasts, UserStore, DiscordColorways as default, openModal, useStateFromStores };
 
 /*@end@*/
