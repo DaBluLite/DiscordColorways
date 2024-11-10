@@ -165,7 +165,11 @@
       "author": "DaBluLite",
       "authorID": "582170007505731594",
       "isGradient": true,
-      "colors": ["accent","primary","secondary"]
+      "colors": [
+        "accent",
+        "primary",
+        "secondary"
+      ]
     },
     {
       "name": "Neon Candy",
@@ -178,7 +182,10 @@
       "author": "DaBluLite",
       "authorID": "582170007505731594",
       "isGradient": true,
-      "colors": ["accent","primary"]
+      "colors": [
+        "accent",
+        "primary"
+      ]
     },
     {
       "name": "Wildberry",
@@ -223,7 +230,9 @@
       "dc-import": "@import url(\"https://dablulite.github.io/css-snippets/DiscordTeal/import.css\");",
       "author": "DaBluLite",
       "authorID": "582170007505731594",
-      "colors": ["accent"]
+      "colors": [
+        "accent"
+      ]
     },
     {
       "name": "黄昏の花 (Twilight Blossom)",
@@ -268,6 +277,16 @@
       "dc-import": "@import url(\"https://dablulite.github.io/DiscordColorways/Colorish/import.css\");",
       "author": "DaBluLite",
       "authorID": "582170007505731594"
+    },
+    {
+      "name": "Vicious",
+      "accent": "#e87393",
+      "primary": "#1e2022",
+      "secondary": "#2b2d31",
+      "tertiary": "#313338",
+      "author": "dablulite",
+      "authorID": "582170007505731594",
+      "CSSVersion": "1.23"
     }
   ]
 }
