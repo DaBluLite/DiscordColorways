@@ -11,17 +11,11 @@ Colorways are color-only themes for various apps, meant to enhance the user expe
 * Use the new [CSS Import Generator](https://dablulite.vercel.app/projectcolorway/generator) available at my Project Hub, and generate CSS for any colorway, official or not
 * Colorish Web Helper coming soon with support for various apps, such as Discord
 
-### Currently Available Presets
-#### Normal Colorways only:
-* Discord Default
-* [Virtual Boy](https://github.com/Riddim-GLiTCH/Virtual-Boy), by [Riddim GLiTCH](https://github.com/Riddim-GLiTCH)
-* [Modular](https://github.com/SEELE1306/Modular), by [SEELE1306](https://github.com/SEELE1306)
-* [Cyan and Cyan 1 (Legacy)](https://github.com/DaBluLite/Cyan)
-* [Nexus Remastered](https://github.com/DaBluLite/NexusRemastered)
-* [Solana](https://github.com/maenDisease/Solana) by [maenDisease](https://github.com/maenDisease)
-* 2 Gradient types
-#### With Auto Colorway support:
-* Hue Rotation
-* Accent Swap
-* Material You
-* AMOLED
+### Key features
+DiscordColorways offers various features, expanding the basic Colorway implementation, such as:
+* 3rd party presets (online + offline)
+* BetterDiscord-compatible theme support, along with a custom Colorway Theme format
+* Auto Colorway: Use your OS's accent color as a colorway
+* Simple Colorway and Preset creator menus
+* App themes
+* Import/Export app settings
